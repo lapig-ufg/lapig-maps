@@ -1,0 +1,1 @@
+../../routines.d/all/remove-dummy-files.sh

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link href="thirdparty/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
+
+<style>
+
+body {
+  overflow: hidden;
+}
+
+text {
+  font: 12px sans-serif;
+}
+
+</style>
+<body>
+
+  <select id="year1"></select>a<select id="year2"></select>
+  <a href="#" id="filterLink">Filtrar</a>
+  <a style="float:right" href="#" id="downloadLink">Salvar&nbsp;<img src="/theme/app/img/file-xls.png" /></a>
+  <a style="float:right" href="#" id="dataLink" download="lapig-maps-raster-series.csv"></a>
+  <div id="raster-series-chart" class='with-3d-shadow with-transitions'>
+    <svg> </svg>
+  </div>
+
+<script type="text/javascript" src="thirdparty/jquery/jquery.min.js"></script>
+<script src="thirdparty/nvd3/lib/d3.v3.js"></script>
+<script src="thirdparty/nvd3/nv.d3.js"></script>
+<script src="thirdparty/nvd3/src/utils.js"></script>
+<script src="thirdparty/nvd3/src/tooltip.js"></script>
+<script src="thirdparty/nvd3/src/models/legend.js"></script>
+<script src="thirdparty/nvd3/src/models/axis.js"></script>
+<script src="thirdparty/nvd3/src/models/scatter.js"></script>
+<script src="thirdparty/nvd3/src/models/line.js"></script>
+<script src="thirdparty/nvd3/src/models/historicalBar.js"></script>
+<script src="thirdparty/nvd3/src/models/linePlusBarChartGuideline.js"></script>
+<script>
+
+var result = JSON.parse('<%-JSON.stringify(resultado)%>');
+
+var csv = '';
+var csvSchema = ['lat', 'lon', 'strDate'];
+
+if(result.bar.name) csvSchema.push(result.bar.name);
+if(result.line.name) csvSchema.push(result.line.name);
+
+var years = {};
+
+result.line.color = '#fe3732';
+
+result.bar.color = '#0189fc';
+result.bar.bar = true;
+
+var chart;
+
+var getRasterData = function() {
+
+  var aux = [];
+  result.bar.values = [];
+  result.line.values = [];
+
+  if(result.bar.name)
+    aux.push(result.bar);
+
+  if(result.line.name)
+    aux.push(result.line);
+  
+  csv = csvSchema.join('\t') + "\n";
+  
+  result.value.forEach(function(row) {
+    
+    var barValue = (row[ result.bar.name ]) ? row[ result.bar.name ] : 0;
+    var lineValue = (row[ result.line.name ]) ? row[ result.line.name ] : 0;
+
+    var filtrar = function(row) {
+      
+      var years = [];      
+      var year1 = Number($( "#year1 option:selected" ).text());
+      var year2 = Number($( "#year2 option:selected" ).text());
+      
+      if(!year1 && !year2) return true;
+
+      for(var i=year1; i <= year2; i++)
+        years.push(i);
+
+      for(var i in years)
+        if(new Date(row.date).getFullYear() == years[i])
+          return true;
+      
+      return false;
+    }
+
+    if(filtrar(row)) {
+      
+      result.line.values.push({x: row.date, y: lineValue });
+      result.bar.values.push({x: row.date, y: barValue });
+
+      csvSchema.forEach(function(col) {
+        csv += ((row[col]) ? row[col] : '') + "\t";
+      })
+      csv += "\n";
+
+    }
+
+    years[ new Date(row.date).getFullYear() ] = true;
+
+  });
+
+  return aux;
+}
+
+var configureViewComponents = function() {
+  for(var y in years) {
+    $("#year1").append(new Option(y));
+    $("#year2").append(new Option(y));
+  }
+
+  $("#year2 option:last").attr("selected","selected");
+
+  $("#filterLink").on("click", function(e) {
+    updateChart();
+  });
+
+  $("#downloadLink").on("click", function(e) {
+    $("#dataLink").attr("href", 'data:Application/octet-stream,' + encodeURIComponent(csv))[0].click();
+  });
+}
+
+var initChart = function() {
+  var rasterData = getRasterData();
+
+  console.log(rasterData);
+
+  nv.addGraph(function() {
+      chart = nv.models.linePlusBarChart()
+          .useInteractiveGuideline(true)
+          .margin({top: 50, right: 50, bottom: 25, left: 50})
+          .x(function(d,i) { return i })
+          .color(d3.scale.category10().range());
+
+      chart.xAxis
+        .tickFormat(function(d) {
+          var dx = rasterData[0].values[d] && rasterData[0].values[d].x || 0;
+          
+          return d3.time.format('%d/%m/%y')(new Date(dx))
+        });
+      
+      chart.y1Axis
+            .tickFormat(function(d) { 
+              return d3.format(',.2f')(d) 
+            });
+          
+      chart.y2Axis
+          .tickFormat(function(d) { 
+            return d3.format(',.2f')(d) 
+          });
+          
+      chart.bars.forceY([0]);
+      
+      d3.select('#raster-series-chart svg')
+          .datum(rasterData)
+          .transition(1000)
+          .duration(1000)
+          .call(chart);
+
+      return chart;
+  });
+}
+
+var updateChart = function() {
+  var rasterData = getRasterData();
+
+  d3.select('#raster-series-chart svg')
+          .datum(rasterData)
+          .transition()
+          .duration(2000)
+          .call(chart);
+
+  nv.utils.windowResize(chart.update);
+}
+
+
+initChart();
+configureViewComponents();
+
+</script>

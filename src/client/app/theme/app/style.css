@@ -1,0 +1,120 @@
+/* setting font fixes combobox rendering issues in IE. See
+ * http://extjs.com/forum/showthread.php?t=72505 */
+body {
+    font-family:helvetica,tahoma,verdana,sans-serif;
+}
+
+.x-fieldset legend {
+    font: 11px tahoma, arial, helvetica, sans-serif;
+}
+
+.x-tree-node-anchor {
+    font-style: normal;
+}
+
+.x-combo-list .x-combo-selected {
+    border: 0px !important;
+}
+
+.x-panel-tc > .x-panel-header {
+    padding: 7px 3px 5px 2px;
+}
+
+.olControlLapigCoordenadas {
+    cursor : crosshair;
+}
+
+.olControlAttribution {
+    text-align: right;
+    font-size: 9px;
+    bottom: 2px;
+}
+
+div.olControlMousePosition {
+    right: 3px;
+    top: 3px;
+    display: block;
+    position: absolute;
+    font-family: Arial;
+    font-size: 13px;
+    background-color: white;
+    bottom: 97%;
+}
+
+.form-logo-field>div {
+    background-color: white;
+    border: 1px solid #C1C1C1;
+    text-align: center;
+}
+
+.form-preview-field>div {
+    background-color: white;
+    border: 1px solid #C1C1C1;
+}
+
+/* gxp_downloadLapiglayer */
+.x-btn .gxp-icon-downloadlayer, .x-menu-item .gxp-icon-downloadlayer, .x-tree-node .gxp-icon-downloadlayer {
+    background-image: url(img/save-layer.png);
+}
+
+.x-btn .gxp-icon-asyncdownloadlayer, .x-menu-item .gxp-icon-asyncdownloadlayer, .x-tree-node .gxp-icon-asyncdownloadlayer {
+    background-image: url(img/save.png);
+}
+
+.x-btn .gxp-icon-downloadmap, .x-menu-item .gxp-icon-downloadmap, .x-tree-node .gxp-icon-downloadmap {
+    background-image: url(img/save-map.png);
+}
+
+.x-btn .gxp-icon-downloadmany, .x-menu-item .gxp-icon-downloadmany, .x-tree-node .gxp-icon-downloadmany {
+    background-image: url(img/save-many.png);
+}
+
+/* gxp_metadataLapiglayer */
+.x-btn .gxp-icon-metadatalayer, .x-menu-item .gxp-icon-metadatalayer, .x-tree-node .gxp-icon-metadatalayer {
+    background-image: url(img/metadata.png);
+}
+
+.x-btn .gxp-icon-lapigpcoordenadas, .x-menu-item .gxp-icon-icon-lapigpcoordenadas, .x-tree-node .gxp-icon-lapigpcoordenadas {
+    background-image: url(img/lapig-coordenadas.png); !import
+}
+
+.x-btn .gxp-icon-lapigprint, .x-menu-item .gxp-icon-icon-lapigprint, .x-tree-node .gxp-icon-lapigprint {
+    background-image: url(img/ico_print.png); !import
+}
+
+.gxp-icon-lapigpublicacoes {
+    background-image: url(img/publicacoes.png); !import
+    height:16px; !import
+    width:16px; !import
+}
+
+.lapig-slider {
+    width: 230px;
+    margin-left: 35px;
+}
+
+.x-collapsed-title {
+    color: #15428b;
+    font: 11px/15px tahoma,arial,verdana,sans-serif;
+    padding: 2px 5px;
+}
+
+.x-form-cb-label {
+    font-size: 12px;
+}
+
+/* gxp_metadatalayer
+.x-btn .gxp-icon-imagestats, .x-menu-item .gxp-icon-imagestats, .x-tree-node .gxp-icon-imagestats {
+    background-image: url(img/image-stats.jpg);
+}
+.x-btn .gxp-icon-lapig-add-point, .x-menu-item .gxp-icon-lapig-add-point, .x-tree-node .gxp-icon-lapig-add-point {
+    background-image: url(img/shape_square_add.png); !import
+}
+
+.x-btn .gxp-icon-lapigpcoordenadas, .x-menu-item .gxp-icon-icon-lapigpcoordenadas, .x-tree-node .gxp-icon-lapigpcoordenadas {
+    background-image: url(img/shape_square_add.png); !import
+}
+
+.x-btn .gxp-icon-lapig-delete-point, .x-menu-item .gxp-icon-lapig-delete-point, .x-tree-node .gxp-icon-lapig-delete-point {
+    background-image: url(img/shape_square_delete.png); !import
+} */

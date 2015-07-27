@@ -1,0 +1,84 @@
+MAP
+  CONFIG "MS_ERRORFILE" "{path_logfile}"
+  EXTENT -73.992931 -33.752061 -28.835884 5.271808
+  DEBUG {log_level}
+
+  NAME "ogcserver"
+  CONFIG "PROJ_LIB" "{path_projlib}"
+  SHAPEPATH "{path_catalog}"
+  FONTSET "{path_fonts_list}"
+
+  PROJECTION
+    "init=epsg:{default_epsgproj}"
+  END
+
+  LEGEND
+    KEYSIZE 20 10
+    KEYSPACING 5 5
+    LABEL
+      FONT "droid"
+      SIZE 10
+      OFFSET 0 0
+      SHADOWSIZE 1 1
+      TYPE TRUETYPE
+    END
+    STATUS OFF
+  END
+
+  OUTPUTFORMAT
+    NAME GEOTIFF_F32
+    DRIVER "GDAL/GTiff"
+    MIMETYPE "image/tiff"
+    IMAGEMODE FLOAT32
+    EXTENSION "tif"
+  END
+
+  OUTPUTFORMAT
+    NAME GEOTIFF_I16
+    DRIVER "GDAL/GTiff"
+    MIMETYPE "image/tiff"
+    IMAGEMODE INT16
+    EXTENSION "tif"
+  END
+
+  OUTPUTFORMAT
+    NAME "GML2"
+    DRIVER "OGR/GML"
+    FORMATOPTION "STORAGE=filesystem"
+    FORMATOPTION "FORM=multipart"
+    FORMATOPTION "FILENAME=result.gml"
+  END
+
+  OUTPUTFORMAT
+    NAME "SHAPE-ZIP"
+    DRIVER "OGR/ESRI Shapefile"
+    FORMATOPTION "STORAGE=memory"
+    FORMATOPTION "FORM=zip"
+    FORMATOPTION "FILENAME=basename.ext.zip"
+  END
+
+  WEB
+    FOOTER ""
+    HEADER ""
+    TEMPPATH "/mnt/tmpfs"
+    METADATA
+      "wms_enable_request"	"*"
+      "wfs_enable_request"  "*"
+      "ows_onlineresource"	"{ows_onlineresource}"
+      "ows_srs"	"{ows_srs}"
+      "ows_title"	"{ows_title}"
+      "wms_getfeatureinfo_formatlist"	"{wms_getfeatureinfo_formatlist}"
+      "wms_bbox_extended"	"{wms_bbox_extended}"
+      "ows_featureid" "FID"
+      "wfs_getfeature_formatlist" "CSV,GML,SHAPE-ZIP"
+      "ows_encoding" "UTF-8"
+      "ows_sld_enabled" "TRUE"
+      "wcs_srs" "{ows_srs}"
+      "wcs_enable_request" "*"
+      "wms_getmap_formatlist" "image/png"
+    END
+  END
+
+  {map_layers}
+
+END

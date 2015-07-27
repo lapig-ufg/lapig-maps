@@ -1,0 +1,36 @@
+NameVirtualHost	*:80
+
+<VirtualHost *:80>
+	ServerName maps.lapig.iesa.ufg.br
+        ProxyPreserveHost On
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName m1.lapig.iesa.ufg.br
+	ProxyPreserveHost On
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName m2.lapig.iesa.ufg.br
+        ProxyPreserveHost On
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+</VirtualHost>
+
+<VirtualHost *:80>	
+	ServerName m3.lapig.iesa.ufg.br
+        ProxyPreserveHost On
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+</VirtualHost>
+
+<VirtualHost *:80>
+	ServerName m4.lapig.iesa.ufg.br
+	ProxyPreserveHost On
+        ProxyPass / http://localhost:3000/
+        ProxyPassReverse / http://localhost:3000/
+</VirtualHost>

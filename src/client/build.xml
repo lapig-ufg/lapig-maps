@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="suite-sdk" default="usage">
+
+	<description>
+		Lapig-Maps
+	</description>
+
+	<target name="usage">
+		<echo message=""/>
+		<echo message="Suite Client SDK Commands"/>
+		<echo message=""/>
+		<echo message=" create     --&gt; create a new application"/>
+		<echo message=" debug      --&gt; run an application in debug mode"/>
+		<echo message=" deploy     --&gt; deploy an existing application"/>
+	</target>
+
+	<property name="sdk.home" location="."/>
+	<property name="sdk.build" location="${sdk.home}/build"/>
+	<property name="sdk.logfile" location="${sdk.home}/dev.log"/>
+
+	<target name="checkpath">
+		<echo file="${sdk.logfile}" append="true" message="Checking provided application path.${line.separator}"/>
+		<condition property="app.path.set">
+			<isset property="app.path"/>
+		</condition>
+		<fail message="Missing app path." unless="app.path.set"/>
+		<property name="app.fullpath" location="${app.path}"/>
+		<condition property="app.exists">
+			<available file="${app.fullpath}" type="dir"/>
+		</condition>
+		<basename property="temp.app.name" file="${app.fullpath}"/>
+		<condition property="app.name.blacklisted">
+			<or>
+				<equals arg1="${temp.app.name}" arg2="manager"/>
+				<equals arg1="${temp.app.name}" arg2="geoserver"/>
+				<equals arg1="${temp.app.name}" arg2="geoexplorer"/>
+				<equals arg1="${temp.app.name}" arg2="dashboard"/>
+				<equals arg1="${temp.app.name}" arg2="apps"/>
+				<equals arg1="${temp.app.name}" arg2="recipes"/>
+				<equals arg1="${temp.app.name}" arg2="opengeo-docs"/>
+				<equals arg1="${temp.app.name}" arg2="opengeo docs"/>
+				<!-- not using regular expressions because ant 1.6 doesn't support them -->
+				<equals arg1="${temp.app.name}" arg2="cargo-jetty-deployer"/>
+				<equals arg1="${temp.app.name}" arg2="cargo jetty deployer"/>
+				<equals arg1="${temp.app.name}" arg2="cargo-jetty deployer"/>
+				<equals arg1="${temp.app.name}" arg2="cargo jetty-deployer"/>
+			</or>
+		</condition>
+		<fail message="The application name '${temp.app.name}' is reserved. Please choose a different one." if="app.name.blacklisted"/>
+		<tempfile property="temp.file" destDir="${java.io.tmpdir}" suffix=".properties"/>
+		<echo message="${temp.app.name}" file="${temp.file}"/>
+		<replace file="${temp.file}" token=" " value="-"/>
+		<loadfile property="app.name" srcFile="${temp.file}"/>
+		<!-- <delete file="${temp.file}" failonerror="false" verbose="false"/> -->
+	</target>
+
+	<target name="build" depends="checkpath">
+		<fail message="Directory '${app.fullpath}' doesn't exist." unless="app.exists"/>
+		<echo file="${sdk.logfile}" append="true" message="Building application resources for '${app.fullpath}'.${line.separator}"/>
+		<property name="app.build" location="${sdk.build}/"/>
+		<delete dir="${app.build}" failonerror="false"/>
+		<mkdir dir="${app.build}"/>
+		<copy todir="${app.build}">
+			<fileset dir="${sdk.home}/ringo/src/main/webapp"/>
+			<filterset>
+				<filter token="APP_NAME" value="${app.name}"/>
+			</filterset>
+		</copy>
+		<!-- copy Ext resources -->
+		<copy todir="${app.build}/src/ext">
+			<fileset dir="${app.fullpath}/src/ext"/>
+		</copy>
+		<!-- copy OpenLayers resources -->
+		<copy todir="${app.build}/src/openlayers/theme">
+			<fileset dir="${app.fullpath}/src/openlayers/theme"/>
+		</copy>
+		<!-- copy GeoExt resources -->
+		<copy todir="${app.build}/src/geoext/resources">
+			<fileset dir="${app.fullpath}/src/geoext/resources"/>
+		</copy>
+		<!-- copy gxp resources -->
+		<copy todir="${app.build}/src/gxp/theme">
+			<fileset dir="${app.fullpath}/src/gxp/theme"/>
+		</copy>
+		<copy todir="${app.build}/thirdparty">
+			<fileset dir="${app.fullpath}/thirdparty"/>
+		</copy>
+		<!-- build app js -->
+		<mkdir dir="${app.build}/lib"/>
+		<java classname="org.ringojs.tools.launcher.Main" failonerror="true" fork="true" output="${sdk.logfile}" append="true">
+			<classpath>
+				<fileset dir="${sdk.home}/ringo/lib">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+			<sysproperty key="ringo.home" path="${sdk.home}/ringo/"/>
+			<arg path="${sdk.home}/ringo/lib/buildkit/lib/buildkit/build.js"/>
+			<arg value="-u"/>
+			<arg value="-o"/>
+			<arg path="${app.build}/lib"/>
+			<arg path="${app.fullpath}/buildjs.cfg"/>
+		</java>
+		<!-- copy additional app resources -->
+		<copy todir="${app.build}/theme">
+			<fileset dir="${app.fullpath}/theme"/>
+		</copy>
+		<copy todir="${app.build}">
+			<fileset dir="${app.fullpath}">
+				<include name="*"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>

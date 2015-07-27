@@ -1,0 +1,38 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%= title %></title>
+
+    <link href="thirdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="thirdparty/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <span style="position:absolute; font-size: 15px; left: 10px; top: 5px; font-weight: bold;">
+      <%= title %>
+    </span>
+    <img src="<%= map %>" style="border: 1px solid gray; margin-right: 10px; position:absolute; top: 30px;" />
+    <span style="position:absolute; top: 22px; left: 710px;">
+      <% for(var i=0; i<legends.length; i++) {%>
+        <p>
+          <h6><%= legends[i].label %></h6>
+         <img src="<%= legends[i].url %>" />
+        </p>
+      <% } %>
+    </span>
+    <img style="position: absolute; top: 525px; height: 45px; left: 10px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
+    <span style="top: 533px;left: 176px;position: absolute;font-size: 13px; font-style: italic;">
+      Documento gerado pelo mapa interativo do portal pastagem.org
+      <img style="position: absolute; top: -4px; height: 39px; left: 426px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros.png" />
+    </span>
+    
+    <script src="thirdparty/jquery/jquery.min.js"></script>
+	  <script src="thirdparty/bootstrap/js/bootstrap.min.js"></script>
+	</body>
+</html>
