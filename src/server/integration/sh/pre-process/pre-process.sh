@@ -89,8 +89,8 @@ for dir in $(ls $RUN_DIR); do
 done
 
 if [[ $MODE = 'APPLY' ]]; then
-	echo -e "All the changes was apply, use -dapply to do that.\nI hope you know what you're doing !!!"
+	echo -e "All the changes was apply.\nI hope you know what you're doing !!!"
 else
-	echo -e "No change was made, use -dapply to do that.\nUse with caution !!!"
+	echo -e "No change was made, use -mapply to do that.\nUse with caution !!!"
 
 fi
