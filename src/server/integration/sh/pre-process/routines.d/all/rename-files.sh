@@ -5,5 +5,7 @@ log_same "PROCESSED $FILES_COUNT FILES"
 
 if [ "$filename" != "$new_filename" ]; then
 	log "RENAME: $filename => $new_filename "
-	mv $filepath $new_filepath
+	if [[ $MODE = 'APPLY' ]]; then
+		mv $filepath $new_filepath
+	fi
 fi

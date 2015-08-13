@@ -339,7 +339,8 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   var mapfilePath = getFilePath(layer,'.map')
 
   console.log(mapfilePath);
-  fs.writeFile(mapfilePath, content, callback);
+  fs.writeFileSync(mapfilePath, content);
+  callback();
 
 }
 
@@ -447,7 +448,7 @@ var createMapFile = function(layers, callback) {
         next()
       }
 
-      async.each(layer.fileObj, onEachFileObj, onCompleteFileObj)
+      async.eachSeries(layer.fileObj, onEachFileObj, onCompleteFileObj)
     }
 
   }
@@ -456,15 +457,16 @@ var createMapFile = function(layers, callback) {
     callback(resultLayers);
   }
 
-  async.each(layers, onEach, onComplete);
+  async.eachSeries(layers, onEach, onComplete);
 }
 
 
 var layersDir = "/run/user/1000/gvfs/sftp\:host\=su04\,user\=lapig/data/lapig/TMP/PASTAGEM.ORG/Categorias/"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
-var filepath = '/home/leandro/Tmp/planilha.csv';
+var filepath = '/home/leandro/Tmp/alertas.csv';
 
 parseCsv(filepath, function(layers) {
+  console.log(layers)
   setLayers(layersDir, layers, function(layers) {
     createMapFile(layers, function() {
       console.log('terminou');

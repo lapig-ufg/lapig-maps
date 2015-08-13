@@ -1,1 +1,0 @@
-../../routines.d/all/rename-files.sh

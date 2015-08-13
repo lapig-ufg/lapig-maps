@@ -1,5 +1,10 @@
 #!/bin/bash
 
+usage() { 
+	echo "Usage: $0 [ -m <SHOW (default) | APPLY> ] [ -r <SLINK_ROUNTINE_NAME>] -d DIR_GIS_FILES" 1>&2
+	exit 1 
+}
+
 escape() {
 	echo "$1" | sed 's/\ /\\\ /g'
 }
@@ -19,22 +24,32 @@ INVALID_FILES_DIR="$BASE_DIR/invalid_files"
 
 TITLES_FILE="$BASE_DIR/../alias/title.json"
 
-if [ $# -eq 0 ]; then
-	echo "Inform the GIS files path"
-	exit
+function get_params() {
+	
+	while getopts $SCRIPT_OPTS opt; do
+		if [ $opt = '?' ]; then 
+			echo "Invalid option -$OPTARG"
+			usage
+		else
+			if [ $opt = ':' ]; then
+				eval "$OPTARG=1" &> /dev/null
+			else
+				eval "$opt=$OPTARG" &> /dev/null
+			fi
+		fi
+	done
 
-elif [ $# -eq 1 ]; then
-	ROUTINE_PARAM=""
-	PATH_GIS="$1"
+}
 
-elif [ $# -eq 2 ]; then
-	ROUTINE_PARAM="$1"
-	PATH_GIS="$2"
+SCRIPT_OPTS=":h:d:m:r:"
+get_params $@
 
-	RUN_DIR="$BASE_DIR/routines.d"
-	ALL_DIR="$RUN_DIR/all"
+[[ -z $d ]] && usage
+[[ $h = '1' ]] && usage
+[[ $m != 'show' ]] && MODE=${m^^}
 
-fi
+PATH_GIS="$d"
+ROUTINE_PARAM="$r"
 
 exec_routines() {
 
@@ -72,3 +87,10 @@ for dir in $(ls $RUN_DIR); do
 	echo "ROUTINES ($dir)"
 	exec_routines $dir
 done
+
+if [[ $MODE = 'APPLY' ]]; then
+	echo -e "All the changes was apply, use -dapply to do that.\nI hope you know what you're doing !!!"
+else
+	echo -e "No change was made, use -dapply to do that.\nUse with caution !!!"
+
+fi

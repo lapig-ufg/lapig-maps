@@ -20,11 +20,21 @@ module.exports = function(app) {
 	  else
 	    url += '?'+params;
 
-	  requester(url)
-	  .on('error', function(err) {
-	    response.end();
+
+	  requester({
+	  		uri: url
+	  	,	timeout: config.timeout
+	  }, function(error, proxyResponse, body) {
+	  	
+	  	if(error) {
+	  		console.log(error);
+	  		response.end();	
+	  	} else {
+	  		console.log(proxyResponse.statusCode, url);
+	  	}
+
 	  })
-	  .pipe(response);
+	  .pipe(response)
 
 	}
 
