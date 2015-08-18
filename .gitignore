@@ -1,6 +1,7 @@
 *.log
 *.sublime-project
 *.sublime-workspace
+*.pyc
 node_modules
 ows_runtime.map
 src/client/build/*

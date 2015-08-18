@@ -1,12 +1,12 @@
 from __future__ import print_function
 
 import HagenFilter
+import TimeSeriesEE
 import matplotlib.pyplot as plt
 import datetime
 import matplotlib.pyplot as plt
 
 from matplotlib.dates import MONDAY
-from matplotlib.finance import quotes_historical_yahoo_ochl
 from matplotlib.dates import MonthLocator, WeekdayLocator, DateFormatter
 
 def generateDates(date1, date2, nDays):
@@ -30,26 +30,38 @@ def showChart(series,dates):
 	fig.autofmt_xdate()
 
 	for label, values in series.iteritems():
-		ax.plot_date(dates, values, label = label, ls='-', marker='')
+		ax.plot_date(dates, values, label = label, ls='-', marker='', fmt='')
 
 	ax.legend(loc=4)
 	plt.show()
 
-aEVI2 = map(float, list(open(r'evi2.txt','r')))
-aFLAG = map(int, list(open(r'flag.txt','r')))
+def getValues(lon, lat):
+	pixelValuesEE = TimeSeriesEE.run('MOD13Q1_EVI2', lon, lat, 0);
+	pixelFlagsEE = TimeSeriesEE.run('MOD13Q1_PR', lon, lat, 3);
+
+	pixelValues = [item[1] for item in pixelValuesEE ]
+	pixelFlags = [item[1] for item in pixelFlagsEE ]
+
+	datesArray = [item[0] for item in pixelValuesEE ]
+
+	return [pixelValues, pixelFlags, datesArray]
+	
+pixelValues, pixelFlags, datesArray = getValues(-50.38413889, -14.2583333)
+minDt = min(datesArray).split('-')
+maxDt = max(datesArray).split('-');
+
+startDate = datetime.date(int(minDt[0]), int(minDt[1]), int(minDt[2]))
+endDate = datetime.date(int(maxDt[0]), int(maxDt[1]), int(maxDt[2]))
+temporalResolution = 16
 nComposites = 23
 goodFlags = [0]
 
-startDate = datetime.date(2000, 2, 18);
-endDate = datetime.date(2013, 12, 19);
-temporalResolution = 16
-
-result = HagenFilter.run(aEVI2, aFLAG, nComposites, goodFlags)
-dates = generateDates(startDate, endDate, temporalResolution);
+hagenPixelValues = HagenFilter.run(pixelValues, pixelFlags, nComposites, goodFlags)
+dates = generateDates(startDate, endDate, temporalResolution)
 
 series = {
-		'EVI2 HagenFilter': result
-	,	'EVI2 Original': aEVI2
+		'EVI2 HagenFilter': hagenPixelValues
+	,	'EVI2 Original': pixelValues
 }
 
 showChart(series,  dates)
