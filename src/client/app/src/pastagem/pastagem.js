@@ -109,6 +109,7 @@ var app = new gxp.LapigViewer({
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
 					addActionText: "Camadas",
+					project: [ 'pastagem.org' ]
 			}
 			, {
 					ptype: "gxp_lapigdownload",
@@ -267,7 +268,7 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_pastagens_sintese_fontes_250_2010_lapig",
+										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
 								}

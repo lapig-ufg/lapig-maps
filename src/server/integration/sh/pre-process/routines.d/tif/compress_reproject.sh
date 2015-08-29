@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJ="epsg:4674"
-COMPRESSION_TYPE="deflate"
+COMPRESSION_TYPE="lzw"
 sirgas=$(gdalinfo $filepath | grep -i "SIRGAS 2000\|COMPRESSION=$COMPRESSION_TYPE" | wc -l)
 
 if [ ! $sirgas -eq 2 ]; then

@@ -107,7 +107,8 @@ var app = new gxp.LapigViewer({
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
-					addActionText: "Camadas"
+					addActionText: "Camadas",
+					project: [ 'lapig', 'pastagem.org' ]
 			}
 			, {
 					ptype: "gxp_removelayer",
@@ -250,7 +251,7 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_limite_estadual_250_2013_ibge",
+										name: "pa_br_estados_1000_2014_ibge",
 										type: "VECTOR"
 								}
 				],
