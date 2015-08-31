@@ -80,42 +80,107 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					);
 
 					var boxDate = {
-							xtype:'combo',
-							store: dateStore,
-							anchor:'100%',
-							itemSelector: 'div.year-item',
-							width: 120,
-							displayField:'year',
-							tpl: resultYear,
-							typeAhead: true,
-							triggerAction: 'all',
-							queryParam: 'years',
-							fieldLabel: 'Data',
-							labelStyle: "font-size: 11px; color: #777777",
-							value: layerLastDate,
-							listeners: {
-								select: function(combo, record, index) {
-										
-										var layerConfig = {
-											source: 'ows',
-										  name: record.data.name
+					    xtype: 'compositefield',
+					    labelWidth: 140,
+					    labelStyle: "font-size: 11px; color: #777777",
+					    items: [
+					        {
+					            xtype: 'button',
+					            width: 20,
+					            text: '<',
+					            listeners: {
+					            	click: function(prevBtn) {
+					            		var comboDate = prevBtn.ownerCt.items.itemAt(1);
+					            		var nextBtn = prevBtn.ownerCt.items.itemAt(2);
+
+					            		console.log(comboDate.view)
+					            		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : (comboDate.store.getTotalCount() - 1);
+					            		var newIndex = index - 1
+					            		var record = comboDate.store.getAt(newIndex);
+													comboDate.select(newIndex);
+													comboDate.setValue(record.data.year);
+													comboDate.fireEvent('select', comboDate, record);
+					            		
+					            		if(newIndex == 0) {
+					            			prevBtn.disable();
+					            			nextBtn.enable();
+					            		} else {
+					            			prevBtn.enable();
+					            		}
+
+					            	}
+					            }
+					        },
+					        {
+										wmsLayer: attr.layer,
+										xtype:'combo',
+										store: dateStore,
+										itemSelector: 'div.year-item',
+										width: 100,
+										displayField:'year',
+										tpl: resultYear,
+										typeAhead: false,
+										editable: false,
+										triggerAction: 'all',
+										queryParam: 'years',
+										fieldLabel: 'Data',
+										value: layerLastDate,
+										listeners: {
+											select: function(combo, record, index) {
+
+													var layerConfig = {
+														source: 'ows',
+													  	name: record.data.name
+													}
+
+													instance.target.createLayerRecord(layerConfig, function(newRecord) {
+														layerRecord = instance.target.mapPanel.layers.getByLayer(combo.initialConfig.wmsLayer);
+
+														console.log(layerRecord)
+
+														layerRecord.beginEdit();
+														layerRecord.data.name = newRecord.data.name;
+														layerRecord.data.prefix = newRecord.data.prefix;
+														layerRecord.data.title = newRecord.data.title;
+														layerRecord.data.layer.name = newRecord.data.layer.name
+														layerRecord.data.layer.params = newRecord.data.layer.params
+
+														layerRecord.data.layer.redraw(true);
+
+														layerRecord.endEdit();
+														layerRecord.commit();
+													});
+											}
 										}
+									},
+									{
+					            xtype: 'button',
+					            width: 20,
+					            text: '>',
+					            disabled: true,
+					            listeners: {
+					            	click: function(nextBtn) {
+					            		var comboDate = nextBtn.ownerCt.items.itemAt(1);
+					            		var prevBtn = nextBtn.ownerCt.items.itemAt(0);
 
-										instance.target.createLayerRecord(layerConfig, function(newRecord) {
-											layerRecord.beginEdit();
-											layerRecord.data.name = newRecord.data.name;
-											layerRecord.data.prefix = newRecord.data.prefix;
-											layerRecord.data.title = newRecord.data.title;
-											layerRecord.data.layer.name = newRecord.data.layer.name
-											layerRecord.data.layer.params = newRecord.data.layer.params
+					            		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : (comboDate.store.getTotalCount() - 1);
+					            		var newIndex = index + 1
+					            		var record = comboDate.store.getAt(newIndex);
+													comboDate.select(newIndex);
+													comboDate.setValue(record.data.year);
+													comboDate.fireEvent('select', comboDate, record);
+					            		
+					            		if(newIndex == (comboDate.store.getTotalCount() - 1)) {
+					            			nextBtn.disable();
+					            			prevBtn.enable();
+					            		} else {
+					            			nextBtn.enable();
+					            		}
 
-											layerRecord.data.layer.redraw(true);
-
-											layerRecord.endEdit();
-											layerRecord.commit();
-										});
-								}
-							}
+					            	}
+					            }
+					        },
+					    ]
 					};
 
 					layerOptions = {

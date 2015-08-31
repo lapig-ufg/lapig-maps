@@ -209,7 +209,6 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
             		method:'GET', 
             		waitMsg:'Loading',
             		success: function() {
-            			console.log('opaaaaaaaaaaa', node);
             			node.ui.focus();
             		}
             	});				                		
