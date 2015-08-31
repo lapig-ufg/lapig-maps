@@ -3,6 +3,7 @@ import datetime
 #from scipy.signal import savgol_filter
 from ConfigParser import SafeConfigParser
 import numpy as np
+from sys import argv 
 
 def landsatDate(imgId):
 	year = imgId[9:13]
@@ -143,11 +144,13 @@ def removeDuplicate(eeLockupResult, fillValue):
 	
 	return result;
 
-def lockupEE(timeSeriesID, longitude, latitude):
+def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 
 	ee.Initialize()
 	cp = SafeConfigParser()
-	cp.read('lapig_configparser.ini')
+	
+	cp.read(configurationFile);
+	
 
 	date1 = cp.get(timeSeriesID, 'startDate')
 	date2 = cp.get(timeSeriesID, 'endDate')
@@ -174,9 +177,18 @@ def lockupEE(timeSeriesID, longitude, latitude):
 
 	return result;
 
-def run(timeSeriesID, longitude, latitude, fillValue = None):
+
+def run(timeSeriesID, longitude, latitude, configurationFile, fillValue = None):
+
 	
-	eeLockupResult = lockupEE(timeSeriesID, longitude, latitude);
-	result = removeDuplicate(eeLockupResult, fillValue);
-		
+	eeLockupResult = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
+	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;
+
+	cp = SafeConfigParser();
+	cp.read(configurationFile);
+	
+	result = removeDuplicate(eeLockupResult, fillValue = cp.get(timeSeriesID, 'fillValue'));
 	return result;
+
+resu = run(argv[1], float(argv[2]), float(argv[3]), argv[4])
+print (resu)
