@@ -5,7 +5,7 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot,
 		"hostUrl": 'http://localhost:5000',
-		"ows": "http://localhost:5500",
+		"ows": "http://su03:5500",
 		"clientDir": appRoot + "/../client/build",
 		"mongo": {
 			"host": "localhost",

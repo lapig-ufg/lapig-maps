@@ -2,7 +2,7 @@ var express = require('express')
 , load = require('express-load')
 , path = require('path')
 , util    = require('util')
-, compress = require('compression')()
+, compression = require('compression')
 , requestTimeout = require('express-timeout')
 , responseTime = require('response-time')
 , buffer = require('buffer')
@@ -27,6 +27,7 @@ app.middleware.repository.init(function() {
 
 	app.repository = app.middleware.repository;
 
+	app.use(compression());
 	app.use(express.static(app.config.clientDir));
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
@@ -45,16 +46,15 @@ app.middleware.repository.init(function() {
 	}));
 	
 
-	app.use(compress);
 	app.use(responseTime());
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(multer());
-	app.use(express.methodOverride());
+	//app.use(express.methodOverride());
 	
-	app.use(app.router);
+	//app.use(app.router);
 
-	app.use(express.logger('dev'));
+	//app.use(express.logger('dev'));
 
 	app.use(function(error, request, response, next) {
 		console.log('ServerError: ', error.stack);

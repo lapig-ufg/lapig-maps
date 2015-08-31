@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#export SHAPE_ENCODING="UTF-8"
+export SHAPE_ENCODING="UTF-8"
 SRS_DEF='GEOGCS["SIRGAS 2000",DATUM["D_SIRGAS_2000",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295],AUTHORITY["EPSG","4674"]]'
 
-sirgas=$(cat $filepath | grep -i 'SIRGAS 2000')G
+sirgas=$(cat $filepath | grep -i 'SIRGAS 2000')
 
 if [ -z "$sirgas" ]; then
 	log "ogr2ogr epsg:4674: $filename"

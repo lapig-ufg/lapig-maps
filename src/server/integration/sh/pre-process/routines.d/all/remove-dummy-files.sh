@@ -2,7 +2,7 @@ filename=$(basename $filepath)
 
 log_same "PROCESSED $FILES_COUNT FILES"
 
-if [ -z "$(echo ${filename##*.} | grep 'shp\|shx\|dbf\|prj\|tif\|sld\|map\|kml\|png\|pdf')" ]; then
+if [ -z "$(echo ${filename##*.} | grep 'shp\|shx\|dbf\|prj\|qix\|tif\|tfw\|sld\|map\|kml\|kmz\|png\|jpg\|pdf')" ]; then
 	log "DELETE: $filename"
 	if [[ $MODE = 'APPLY' ]]; then
 		rm -f $filepath

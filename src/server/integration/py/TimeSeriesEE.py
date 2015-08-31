@@ -1,5 +1,6 @@
 import ee
 import datetime
+import traceback
 #from scipy.signal import savgol_filter
 from ConfigParser import SafeConfigParser
 import numpy as np
@@ -13,7 +14,7 @@ def landsatDate(imgId):
 
 def modisDate(imgId):
 	#MOD13Q1_005_2000_02_18
-	
+
 	year = imgId[12:16]
 	month = imgId[17:19]
 	day = imgId[20:22]
@@ -25,12 +26,12 @@ def modisDate(imgId):
 
 def removeDuplicate(eeLockupResult, fillValue):
 	result = []
-	
+
 	for key, value in eeLockupResult.iteritems():
 		if key not in result:
 			value = fillValue if value is None else value
 			result.append([key, value])
-		
+
 	result = sorted(result, key=lambda x: x[0])
 
 	for item in result:
@@ -39,9 +40,9 @@ def removeDuplicate(eeLockupResult, fillValue):
 		mes = ''
 
 		if (ano%4==0) & ((ano%400==0) | (ano%100 != 0)):
-			
+
 			ab = True
-			
+
 			if (juliano >= 1) & (juliano <= 31):
 				dia = juliano
 				mes = '01'
@@ -69,7 +70,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 182) & (juliano <= 213):
 				dia = juliano - 182
 				mes = '07'
-				
+
 			elif (juliano > 213) & (juliano <= 244):
 				dia = juliano - 213
 				mes = '08'
@@ -85,7 +86,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 305) & (juliano <= 335):
 				dia = juliano - 305
 				mes = '11'
-			
+
 			elif (juliano > 335) & (juliano <= 366):
 				dia = juliano - 335
 				mes = '12'
@@ -119,7 +120,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 181) & (juliano <= 212):
 				dia = juliano - 181
 				mes = '07'
-				
+
 			elif (juliano > 212) & (juliano <= 243):
 				dia = juliano - 212
 				mes = '08'
@@ -135,22 +136,23 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 304) & (juliano <= 334):
 				dia = juliano - 304
 				mes = '11'
-			
+
 			elif (juliano > 334) & (juliano <= 365):
 				dia = juliano - 334
 				mes = '12'
-		
+
 		item[0] = str(datetime.date(int(ano),int(mes), dia))
-	
+
 	return result;
 
 def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 
 	ee.Initialize()
 	cp = SafeConfigParser()
+
 	
 	cp.read(configurationFile);
-	
+
 
 	date1 = cp.get(timeSeriesID, 'startDate')
 	date2 = cp.get(timeSeriesID, 'endDate')
@@ -158,7 +160,7 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	collectionId = cp.get(timeSeriesID, 'collectionID')
 	expression = cp.get(timeSeriesID, 'expresion')
 	fnParseDateName = cp.get(timeSeriesID, 'fnParseDate') + "Date"
-	
+
 	fnParseDate = globals()[fnParseDateName];
 
 	def calculateIndex(image):

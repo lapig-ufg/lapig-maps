@@ -5,6 +5,10 @@ import TimeSeriesEE
 import matplotlib.pyplot as plt
 import datetime
 import matplotlib.pyplot as plt
+import string
+import numpy as np
+import random
+
 
 from matplotlib.dates import MONDAY
 from matplotlib.dates import MonthLocator, WeekdayLocator, DateFormatter
@@ -17,7 +21,7 @@ def generateDates(date1, date2, nDays):
 	for year in xrange(firstTuple[0], lastTuple[0] + 1):
 		internalDt1 = datetime.date(year, firstTuple[1], firstTuple[2]) if year == firstTuple[0] else datetime.date(year, 1, 1)
 		internalDt2 = datetime.date(year, lastTuple[1], lastTuple[2] + 1) if year == lastTuple[0] else datetime.date(year, 12, 31)
-		result += range(internalDt1.toordinal(), internalDt2.toordinal(), nDays)	
+		result += range(internalDt1.toordinal(), internalDt2.toordinal(), nDays)
 
 	return result
 
@@ -45,23 +49,83 @@ def getValues(lon, lat):
 	datesArray = [item[0] for item in pixelValuesEE ]
 
 	return [pixelValues, pixelFlags, datesArray]
-	
-pixelValues, pixelFlags, datesArray = getValues(-50.38413889, -14.2583333)
-minDt = min(datesArray).split('-')
-maxDt = max(datesArray).split('-');
 
-startDate = datetime.date(int(minDt[0]), int(minDt[1]), int(minDt[2]))
-endDate = datetime.date(int(maxDt[0]), int(maxDt[1]), int(maxDt[2]))
-temporalResolution = 16
-nComposites = 23
-goodFlags = [0]
+def QAError(aOriginal,aEstimation,lNoisedFlag,ValueMin,ValueMax):
+   aPercError = []
+   deltaMinMax = float(ValueMax) - float(ValueMin)
+   for k in lNoisedFlag:
+     if aOriginal[k] is not None:
+      if aEstimation[k] is not None:
+       pErrorO = (aOriginal[k]-float(ValueMin))/deltaMinMax
+       pErrorE = (aEstimation[k]-float(ValueMin))/deltaMinMax
+       deltaError = pErrorO - pErrorE
+       aPercError.append(deltaError)
 
-hagenPixelValues = HagenFilter.run(pixelValues, pixelFlags, nComposites, goodFlags)
-dates = generateDates(startDate, endDate, temporalResolution)
+   return sum(aPercError)*100.00
 
-series = {
-		'EVI2 HagenFilter': hagenPixelValues
-	,	'EVI2 Original': pixelValues
-}
+def StatisticNoise(ArrayPR,ArrayHG):
+    aArray = np.array(ArrayPR)
+    GoodValues = np.size(np.argwhere(aArray == 0))
+    BadValues = np.size(np.argwhere(aArray > 0))
+    SumValues = np.size(aArray)
+    PercGoodValues = float(GoodValues)/float(SumValues)
+    PercBadValues = float(BadValues)/float(SumValues)
+    aHG = np.array(ArrayHG)
+    NoneValue = 0
+    for i in aHG[np.where(aArray > 0)]:
+       if i  is None:
+         NoneValue +=1
+    PercEstimatioValues = PercBadValues*(float(1)-(float(NoneValue)/float(BadValues)))
+    PercNotEstimatioValues = PercBadValues*((float(NoneValue)/float(BadValues)))
+    QtdNotEst = NoneValue
+    QtdEst = abs(NoneValue - BadValues)
+    return PercGoodValues,PercBadValues,PercEstimatioValues,PercNotEstimatioValues,QtdEst,QtdNotEst
 
-showChart(series,  dates)
+def AddNoise(iArray,nNoise):
+   Array = np.array(iArray)
+   location = np.where(Array == 0)[0]
+   pRandom = random.sample(location,nNoise)
+   Array[pRandom] = 1
+   return list(Array),pRandom
+
+#Abrindo arquivos
+evi2Open = open(r'C:\Users\bernard.oliveira\Documents\TimeSeries-LAPIG\Pontos_Arielle_LAPIG.txt','r')
+ReportFile = open(r'C:\Users\bernard.oliveira\Documents\TimeSeries-LAPIG\Report.txt','w')
+ReportFile.writelines("NM_PONTO;LAT_DD;LONG_DD;CLASS;GOODPIXELS_PERC;BADPIXELS_PERC;SUBSPIXELS_PERC;NOTSUBPIXELS_PERC;DIFSUBPIXELS_PERC"+'\n')
+
+for d in evi2Open.readlines():
+    Values = string.split(d,";")
+    pixelValues, pixelFlags, datesArray = getValues(float(Values[2]),float(Values[1]))
+    minDt = min(datesArray).split('-')
+    maxDt = max(datesArray).split('-');
+
+    startDate = datetime.date(int(minDt[0]), int(minDt[1]), int(minDt[2]))
+    endDate = datetime.date(int(maxDt[0]), int(maxDt[1]), int(maxDt[2]))
+    temporalResolution = 16
+    nComposites = 23
+    goodFlags = [0]
+
+    hagenPixelValues = HagenFilter.run(pixelValues, pixelFlags, nComposites, goodFlags)
+    dates = generateDates(startDate, endDate, temporalResolution)
+    gValue,bValue,gpValue,gpnVlaue,qValues,qnValues = StatisticNoise(pixelFlags,hagenPixelValues)
+
+    Noise,locationNoise = AddNoise(pixelFlags,1)
+    resultNoise = HagenFilter.run(pixelValues, Noise, nComposites, goodFlags)
+    qA = QAError(pixelValues,resultNoise,locationNoise,-1.00,1.00)
+
+
+    series = {
+	   	   'EVI2 HagenFilter': hagenPixelValues
+	   ,   'EVI2 Original': pixelValues
+    }
+
+    delimiter = ";"
+    seq = (Values[0],Values[1],Values[2],Values[3],str(gValue*100),str(bValue*100),str(gpValue*100),str(gpnVlaue*100),str(qA))
+    ReportFile.writelines(delimiter.join(seq))
+    ReportFile.writelines('\n')
+    print ("Ponto:"+str(Values[0])+" processado...")
+
+evi2Open.close()
+ReportFile.close()
+
+#showChart(series,  dates)

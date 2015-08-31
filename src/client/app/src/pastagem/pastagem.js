@@ -66,7 +66,7 @@ var app = new gxp.LapigViewer({
 						id: "westpanel",
 						border: false,
 						region: "west",
-						width: 300,
+						width: 320,
 						split: true,
 						collapsible: true,
 						collapseMode: "mini",
@@ -109,6 +109,7 @@ var app = new gxp.LapigViewer({
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
 					addActionText: "Camadas",
+					project: [ 'pastagem.org' ]
 			}
 			, {
 					ptype: "gxp_lapigdownload",
@@ -247,17 +248,20 @@ var app = new gxp.LapigViewer({
 								,{
 										source: "ows",
 										name: "pa_br_pastagem_ni_2006_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: false
 								}
 								,{
 										source: "ows",
 										name: "pa_br_estados_1000_2014_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: false
 								}
 								,{
 										source: "ows",
 										name: "pa_br_matadouros_e_frigorificos_na_2014_lapig",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: false
 								}
 								,{
 										source: "ows",
@@ -267,7 +271,7 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_pastagens_sintese_fontes_250_2010_lapig",
+										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
 								}

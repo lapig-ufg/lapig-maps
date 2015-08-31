@@ -73,7 +73,9 @@ module.exports = function(app) {
 		
 		var layerCollection = app.repository.collections.layers;
 
-		layerCollection.distinct('subject', function(err,subjects) {
+		var projects = request.param('projects', '').toUpperCase().split(',')
+
+		layerCollection.distinct('subject', { 'project': { $in: projects } }, function(err,subjects) {
 
 			var result = [];
 
@@ -83,7 +85,7 @@ module.exports = function(app) {
 							iconCls: 'task-folder'
 					};
 
-				layerCollection.find({subject : subject}).toArray(function (err, layers){
+				layerCollection.find({ 'subject': subject, 'project': { $in: projects } }).toArray(function (err, layers){
 					
 					var childrens = [];
 					layers.sort(function(a,b) {
@@ -144,9 +146,10 @@ module.exports = function(app) {
 		var skip = request.param('start');
 		var limit = request.param('limit');
 		var search = request.param('search');
+		var projects = request.param('projects', '').toUpperCase().split(',')
 
-		layerCollection.find({search: new RegExp(search, 'i')}).skip(Number(skip)).limit(Number(limit)).toArray(function(err, layers) {
-			layerCollection.find({search: new RegExp(search, 'i')}).count(function(err, totalCount) {
+		layerCollection.find({'project': { $in: projects }, 'search': new RegExp(search, 'i')}).skip(Number(skip)).limit(Number(limit)).toArray(function(err, layers) {
+			layerCollection.find({'project': { $in: projects }, 'search': new RegExp(search, 'i')}).count(function(err, totalCount) {
 
 					var result = {
 				    totalCount: totalCount,
