@@ -4,7 +4,9 @@ import traceback
 #from scipy.signal import savgol_filter
 from ConfigParser import SafeConfigParser
 import numpy as np
-from sys import argv 
+from sys import argv
+from scipy.signal import savgol_filter
+
 
 def landsatDate(imgId):
 	year = imgId[9:13]
@@ -179,6 +181,21 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 
 	return result;
 
+def savitsky(result):
+	
+	values = []
+	for i in result:
+		values.append(i[1])
+
+	idC = savgol_filter(values,5,2);
+
+	for i,j in zip(result,idC):
+		i.append(j);
+
+	return result
+
+
+
 
 def run(timeSeriesID, longitude, latitude, configurationFile, fillValue = None):
 
@@ -190,7 +207,18 @@ def run(timeSeriesID, longitude, latitude, configurationFile, fillValue = None):
 	cp.read(configurationFile);
 	
 	result = removeDuplicate(eeLockupResult, fillValue = cp.get(timeSeriesID, 'fillValue'));
-	return result;
+	
+	result=savitsky(result);
 
-resu = run(argv[1], float(argv[2]), float(argv[3]), argv[4])
-print (resu)
+	return {
+		'info': {
+			'normal': 1
+		,	'savgol': 2
+		},
+		'values': result
+	};
+
+r=run(argv[1], float(argv[2]), float(argv[3]), argv[4])
+
+print(r)
+
