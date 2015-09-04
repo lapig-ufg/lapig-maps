@@ -1,5 +1,6 @@
-var querystring = require('querystring')
-	  requester = require('request')
+var 	querystring = require('querystring')
+	  ,	requester = require('request')
+	  ,	zlib = require('zlib');
 	  ;
 
 module.exports = function(app) {
@@ -20,10 +21,24 @@ module.exports = function(app) {
 	  else
 	    url += '?'+params;
 
+	  console.log({
+	  			'Accept': request.headers['accept']
+	  		,	'User-Agent': request.headers['user-agent']
+	  		,	'X-Requested-With': request.headers['x-requested-with']
+	  		,	'Accept-Language': request.headers['accept-language']
+	  		,	'Accept-Encoding': request.headers['accept-encoding']
+	  	});
 
 	  requester({
 	  		uri: url
 	  	,	timeout: config.timeout
+	  	, headers: {
+	  			'Accept': request.headers['accept']
+	  		,	'User-Agent': request.headers['user-agent']
+	  		,	'X-Requested-With': request.headers['x-requested-with']
+	  		,	'Accept-Language': request.headers['accept-language']
+	  		,	'Accept-Encoding': request.headers['accept-encoding']
+	  	}
 	  }, function(error, proxyResponse, body) {
 	  	
 	  	if(error) {

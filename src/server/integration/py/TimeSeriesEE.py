@@ -1,8 +1,24 @@
+
 import ee
 import datetime
-#from scipy.signal import savgol_filter
+import traceback
 from ConfigParser import SafeConfigParser
 import numpy as np
+from sys import argv
+from scipy.signal import savgol_filter
+import HagenFilter
+
+
+
+cp = SafeConfigParser();
+
+#a verificacao do valor do fillValue deve ser aqui no TimeSeries
+def num(s):
+	if '.' in s:
+		return float(s)
+	else:
+		return int(s)
+  
 
 def landsatDate(imgId):
 	year = imgId[9:13]
@@ -12,7 +28,7 @@ def landsatDate(imgId):
 
 def modisDate(imgId):
 	#MOD13Q1_005_2000_02_18
-	
+
 	year = imgId[12:16]
 	month = imgId[17:19]
 	day = imgId[20:22]
@@ -24,12 +40,12 @@ def modisDate(imgId):
 
 def removeDuplicate(eeLockupResult, fillValue):
 	result = []
-	
+
 	for key, value in eeLockupResult.iteritems():
 		if key not in result:
 			value = fillValue if value is None else value
 			result.append([key, value])
-		
+
 	result = sorted(result, key=lambda x: x[0])
 
 	for item in result:
@@ -38,9 +54,9 @@ def removeDuplicate(eeLockupResult, fillValue):
 		mes = ''
 
 		if (ano%4==0) & ((ano%400==0) | (ano%100 != 0)):
-			
+
 			ab = True
-			
+
 			if (juliano >= 1) & (juliano <= 31):
 				dia = juliano
 				mes = '01'
@@ -68,7 +84,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 182) & (juliano <= 213):
 				dia = juliano - 182
 				mes = '07'
-				
+
 			elif (juliano > 213) & (juliano <= 244):
 				dia = juliano - 213
 				mes = '08'
@@ -84,7 +100,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 305) & (juliano <= 335):
 				dia = juliano - 305
 				mes = '11'
-			
+
 			elif (juliano > 335) & (juliano <= 366):
 				dia = juliano - 335
 				mes = '12'
@@ -118,7 +134,7 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 181) & (juliano <= 212):
 				dia = juliano - 181
 				mes = '07'
-				
+
 			elif (juliano > 212) & (juliano <= 243):
 				dia = juliano - 212
 				mes = '08'
@@ -134,20 +150,20 @@ def removeDuplicate(eeLockupResult, fillValue):
 			elif (juliano > 304) & (juliano <= 334):
 				dia = juliano - 304
 				mes = '11'
-			
+
 			elif (juliano > 334) & (juliano <= 365):
 				dia = juliano - 334
 				mes = '12'
-		
+
 		item[0] = str(datetime.date(int(ano),int(mes), dia))
-	
+
 	return result;
 
-def lockupEE(timeSeriesID, longitude, latitude):
-
-	ee.Initialize()
-	cp = SafeConfigParser()
-	cp.read('lapig_configparser.ini')
+def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
+	#Se o timeSeriesID retornar flagCollection entao deve-se usar o HagenFilter
+	ee.Initialize();
+	
+	cp.read(configurationFile);
 
 	date1 = cp.get(timeSeriesID, 'startDate')
 	date2 = cp.get(timeSeriesID, 'endDate')
@@ -155,7 +171,7 @@ def lockupEE(timeSeriesID, longitude, latitude):
 	collectionId = cp.get(timeSeriesID, 'collectionID')
 	expression = cp.get(timeSeriesID, 'expresion')
 	fnParseDateName = cp.get(timeSeriesID, 'fnParseDate') + "Date"
-	
+
 	fnParseDate = globals()[fnParseDateName];
 
 	def calculateIndex(image):
@@ -172,11 +188,83 @@ def lockupEE(timeSeriesID, longitude, latitude):
 		dateKey = fnParseDate(item[0]);
 		result[dateKey]=item[4]
 
+	result=removeDuplicate(result, fillValue = (num(cp.get(timeSeriesID, 'fillValue'))));
+	
 	return result;
 
-def run(timeSeriesID, longitude, latitude, fillValue = None):
+def oneArray(colo):
+	z = []
+	for i in colo:
+		z.append(i[1])	
+	return z
+
+def joinArray(result, idC):
 	
-	eeLockupResult = lockupEE(timeSeriesID, longitude, latitude);
-	result = removeDuplicate(eeLockupResult, fillValue);
-		
-	return result;
+	for i,j in zip(result,idC):
+		i.append(j);
+
+	return result
+
+
+def savitsky(result):	
+	values = []
+	values = oneArray(result);
+	idC = savgol_filter(values,5,2);	
+	
+	return joinArray(result, idC)
+
+	
+	
+
+def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
+	
+	cp.read(configurationFile);
+	flag = cp.get(timeSeriesID,'flagCollection')
+	collection = [];
+	flagList = [];
+	
+	flagCollection = lockupEE(flag, longitude, latitude, configurationFile);
+
+	collection = oneArray(result)
+
+	flagList = oneArray(flagCollection)
+
+	'''
+	for i in result:
+		collection.append(float(i[1]))
+	
+	for i in flagCollection:
+		flagList.append(int(i[1]))
+	'''	
+	x = HagenFilter.run(collection, flagList, 23, [0])	
+
+	return joinArray(result,x);
+
+
+def run(timeSeriesID, longitude, latitude, configurationFile):
+	cp.read(configurationFile);
+	
+	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
+	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;	
+	
+	result=savitsky(result);
+
+	result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
+
+	
+	return {
+		'info': {
+			'normal': 1
+		,	'savgol': 2
+		,	'HagenFilter': 3
+		},
+		'values': result
+	};
+	
+	
+r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
+
+
+for i in r:
+	print(i)
+
