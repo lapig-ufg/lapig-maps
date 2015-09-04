@@ -21,7 +21,7 @@ case $1 in
 			cd $REPOSITORY_DIR
 			git pull
 			rm -fR $PROD_DIR/*
-			cp -R $REPOSITORY_DIR/codigo/lapig-maps/* $PROD_DIR/
+			cp -R $REPOSITORY_DIR/src/* $PROD_DIR/
 			
 			echo " 2) OWS"
 			cd $PROD_DIR/ows

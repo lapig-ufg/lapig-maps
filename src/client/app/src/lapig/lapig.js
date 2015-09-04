@@ -73,7 +73,7 @@ var app = new gxp.LapigViewer({
 						header: false,
 						autoScroll: true
 					}
-				,	{
+				/*,	{
 						id: "southpanel",
 						border: false,
 						region: "south",
@@ -83,7 +83,7 @@ var app = new gxp.LapigViewer({
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
-					}
+					}*/
 				],
 				bbar: {id: "mybbar"}
 		},
@@ -100,10 +100,10 @@ var app = new gxp.LapigViewer({
 					},
 					outputTarget: "westpanel"
 			}
-			,	{ 
+			/*,	{ 
 				ptype: "gxp_lapigrasterseries",
 				outputTarget: "southpanel"
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
@@ -153,10 +153,10 @@ var app = new gxp.LapigViewer({
 					menuText: "Zoom na camada",
 					actionTarget: {target: "tree.contextMenu", index: 15}
 			}
-			, {
+			/*, {
 					ptype: "gxp_lapigrasterseriesbtn",
 					actionTarget: {target: "map.tbar", index: 19}
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigcoordenadas",
 					actionTarget: {target: "map.tbar", index: 19}

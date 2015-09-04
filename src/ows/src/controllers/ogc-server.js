@@ -28,16 +28,13 @@ module.exports = function(app) {
 	Internal.setHeaders = function(request, response) {
 		var requestType = request.param('REQUEST');
 
-		var headers = { 
-			'Transfer-Encoding' : 'chunked'
-		};
+		var headers = {};
 
 		if(requestType == 'GetCapabilities') {
-			headers['content-type'] = 'application/vnd.ogc.wms_xml';
-			headers['content-disposition'] = 'inline; filename=getcapabilities_1.1.1.xml';
+			headers['content-type'] = 'application/xml';
 		} else if(requestType == 'GetLegendGraphic' || requestType == 'GetMap') {
 			headers['content-type'] = 'image/png';
-			headers['content-disposition'] = 'inline; filename=geoserver-GetLegendGraphic.image';
+			//headers['content-disposition'] = 'inline; filename=geoserver-GetLegendGraphic.image';
 		} else if(requestType == 'GetCoverage') {
 			headers['Content-Description'] = 'coverage data';
 			headers['Content-Transfer-Encoding'] = 'binary';
@@ -53,10 +50,10 @@ module.exports = function(app) {
 	Internal.getCacheKey = function(params) {
 		
 		var requestType = ('REQUEST' in params) ? params['REQUEST'] : '';
+		var prefix = config.cachePrefix;
 		
 		if(requestType == 'GetMap') {
 			
-			var prefix = config.cachePrefix;
 			var layers = params['LAYERS'];
 			var srs = params['SRS'];
 			var bbox = params['BBOX'];
@@ -64,6 +61,13 @@ module.exports = function(app) {
 			var height = params['HEIGHT'];
 			
 			return [prefix, layers, srs, bbox, width, height].join(',');
+		} else if(requestType == 'GetCapabilities') {
+
+			var capPrefix = 'CAPABILITIES'
+			var service = params['SERVICE'];
+			var version = params['VERSION'];
+
+			return [prefix, capPrefix, requestType, service, version].join(',');
 		}
 
 		return undefined;
@@ -97,7 +101,6 @@ module.exports = function(app) {
 
 	Internal.doRequest = function(params, response) {
 		var onData = function(data) {
-			//console.log(data.toString('utf8'), '##########');
 			response.write(data);
 		}
 
@@ -157,6 +160,12 @@ module.exports = function(app) {
 
 	}
 
+	Internal.isWmsGetCap = function(params) {
+		return 	 params['SERVICE'].toUpperCase() == 'WMS' 
+					&& params['REQUEST'].toUpperCase() == 'GETCAPABILITIES' 
+					&& params['VERSION'].toUpperCase() == '1.1.1';
+	}
+
 	Internal.isWfsGetShp = function(params) {
 		return 	 params['SERVICE'].toUpperCase() == 'WFS' 
 					&& params['REQUEST'].toUpperCase() == 'GETFEATURE' 
@@ -183,7 +192,7 @@ module.exports = function(app) {
 			Internal.setHeaders(request, response);
 			var cacheKey = Internal.getCacheKey(params);
 			
-			if(cacheKey && config['cacheEnable']) {
+			if(cacheKey && (config['cacheEnable'] || Internal.isWmsGetCap(params)) ) {
 				Internal.doRequestWithCache(cacheKey, params, response);
 			} else {
 				Internal.doRequest(params, response);

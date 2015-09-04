@@ -19,6 +19,7 @@ module.exports = function(app) {
 
 	if(process.env.NODE_ENV == 'prod') {
 		config["port"] = 3000;
+		config["ows"] =  "http://localhost:5500",
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
 	}
 
