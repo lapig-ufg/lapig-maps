@@ -17,6 +17,7 @@
     "filewalker": "^0.1.2",
     "generic-pool": "~2.0.4",
     "jade": "*",
+    "mongodb": "^2.0.42",
     "mime": "~1.2.11",
     "moment": "~2.6.0",
     "mu2": "~0.5.20",

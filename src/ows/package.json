@@ -12,7 +12,6 @@
     "express-cluster": "0.0.3",
     "express-load": "^1.1.14",
     "express-timeout": "^0.2.1",
-    "mongodb": "^2.0.42",
     "morgan": "^1.6.1",
     "multer": "^0.1.8",
     "redis": "0.8.2",
