@@ -7,17 +7,25 @@ import numpy as np
 from sys import argv
 from scipy.signal import savgol_filter
 import HagenFilter
+from datetime import date
 
 
 
 cp = SafeConfigParser();
 
-#a verificacao do valor do fillValue deve ser aqui no TimeSeries
+
 def num(s):
 	if '.' in s:
 		return float(s)
 	else:
 		return int(s)
+
+def isNow(s):
+	if s == 'NOW':
+		return str(date.fromordinal(date.today().toordinal() - 1))
+	else:
+		return str(s)
+
   
 
 def landsatDate(imgId):
@@ -166,7 +174,9 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	cp.read(configurationFile);
 
 	date1 = cp.get(timeSeriesID, 'startDate')
-	date2 = cp.get(timeSeriesID, 'endDate')
+	date2 = isNow(cp.get(timeSeriesID, 'endDate'))
+
+	
 	pixelResolution = int((cp.get(timeSeriesID, 'pixelResolution')))
 	collectionId = cp.get(timeSeriesID, 'collectionID')
 	expression = cp.get(timeSeriesID, 'expresion')
@@ -191,6 +201,7 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	result=removeDuplicate(result, fillValue = (num(cp.get(timeSeriesID, 'fillValue'))));
 	
 	return result;
+	
 
 def oneArray(colo):
 	z = []
@@ -214,8 +225,6 @@ def savitsky(result):
 	return joinArray(result, idC)
 
 	
-	
-
 def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
 	
 	cp.read(configurationFile);
@@ -229,13 +238,6 @@ def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
 
 	flagList = oneArray(flagCollection)
 
-	'''
-	for i in result:
-		collection.append(float(i[1]))
-	
-	for i in flagCollection:
-		flagList.append(int(i[1]))
-	'''	
 	x = HagenFilter.run(collection, flagList, 23, [0])	
 
 	return joinArray(result,x);
@@ -246,12 +248,21 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 	
 	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
 	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;	
-	
+
 	result=savitsky(result);
 
-	result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
+	#result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
 
-	
+	return {
+		'info': {
+			'normal': 1
+		,	'savgol': 2
+		},
+		'values': result
+	};
+
+
+	'''
 	return {
 		'info': {
 			'normal': 1
@@ -260,11 +271,8 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 		},
 		'values': result
 	};
-	
+	'''
 	
 r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 
-
-for i in r:
-	print(i)
-
+print(r)
