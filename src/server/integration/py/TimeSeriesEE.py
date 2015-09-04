@@ -1,12 +1,24 @@
+
 import ee
 import datetime
 import traceback
-#from scipy.signal import savgol_filter
 from ConfigParser import SafeConfigParser
 import numpy as np
 from sys import argv
 from scipy.signal import savgol_filter
+import HagenFilter
 
+
+
+cp = SafeConfigParser();
+
+#a verificacao do valor do fillValue deve ser aqui no TimeSeries
+def num(s):
+	if '.' in s:
+		return float(s)
+	else:
+		return int(s)
+  
 
 def landsatDate(imgId):
 	year = imgId[9:13]
@@ -148,13 +160,10 @@ def removeDuplicate(eeLockupResult, fillValue):
 	return result;
 
 def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
-
-	ee.Initialize()
-	cp = SafeConfigParser()
-
+	#Se o timeSeriesID retornar flagCollection entao deve-se usar o HagenFilter
+	ee.Initialize();
 	
 	cp.read(configurationFile);
-
 
 	date1 = cp.get(timeSeriesID, 'startDate')
 	date2 = cp.get(timeSeriesID, 'endDate')
@@ -179,46 +188,83 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 		dateKey = fnParseDate(item[0]);
 		result[dateKey]=item[4]
 
+	result=removeDuplicate(result, fillValue = (num(cp.get(timeSeriesID, 'fillValue'))));
+	
 	return result;
 
-def savitsky(result):
+def oneArray(colo):
+	z = []
+	for i in colo:
+		z.append(i[1])	
+	return z
+
+def joinArray(result, idC):
 	
-	values = []
-	for i in result:
-		values.append(i[1])
-
-	idC = savgol_filter(values,5,2);
-
 	for i,j in zip(result,idC):
 		i.append(j);
 
 	return result
 
 
-
-
-def run(timeSeriesID, longitude, latitude, configurationFile, fillValue = None):
+def savitsky(result):	
+	values = []
+	values = oneArray(result);
+	idC = savgol_filter(values,5,2);	
+	
+	return joinArray(result, idC)
 
 	
-	eeLockupResult = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
-	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;
+	
 
-	cp = SafeConfigParser();
+def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
+	
+	cp.read(configurationFile);
+	flag = cp.get(timeSeriesID,'flagCollection')
+	collection = [];
+	flagList = [];
+	
+	flagCollection = lockupEE(flag, longitude, latitude, configurationFile);
+
+	collection = oneArray(result)
+
+	flagList = oneArray(flagCollection)
+
+	'''
+	for i in result:
+		collection.append(float(i[1]))
+	
+	for i in flagCollection:
+		flagList.append(int(i[1]))
+	'''	
+	x = HagenFilter.run(collection, flagList, 23, [0])	
+
+	return joinArray(result,x);
+
+
+def run(timeSeriesID, longitude, latitude, configurationFile):
 	cp.read(configurationFile);
 	
-	result = removeDuplicate(eeLockupResult, fillValue = cp.get(timeSeriesID, 'fillValue'));
+	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
+	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;	
 	
 	result=savitsky(result);
 
+	result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
+
+	
 	return {
 		'info': {
 			'normal': 1
 		,	'savgol': 2
+		,	'HagenFilter': 3
 		},
 		'values': result
 	};
+	
+	
+r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 
-r=run(argv[1], float(argv[2]), float(argv[3]), argv[4])
 
-print(r)
+for i in r:
+	print(i)
 
