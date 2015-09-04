@@ -249,19 +249,19 @@ var app = new gxp.LapigViewer({
 										source: "ows",
 										name: "pa_br_pastagem_ni_2006_ibge",
 										type: "VECTOR",
-										visibility: false
+										visibility: true
 								}
 								,{
 										source: "ows",
 										name: "pa_br_estados_1000_2014_ibge",
 										type: "VECTOR",
-										visibility: false
+										visibility: true
 								}
 								,{
 										source: "ows",
 										name: "pa_br_matadouros_e_frigorificos_na_2014_lapig",
 										type: "VECTOR",
-										visibility: false
+										visibility: true
 								}
 								,{
 										source: "ows",

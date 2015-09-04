@@ -323,7 +323,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 											},
 											{
 												xtype:'textfield',
-												fieldLabel: 'Ano',
+												fieldLabel: 'Data',
 												name: 'year',
 												readOnly: true,
 												anchor:'100%'
