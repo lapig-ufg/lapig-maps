@@ -65,6 +65,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					var url = '/layers/years/'+layerId;
 
 					var dateStore = new Ext.data.Store({
+						autoLoad: true,
 						proxy: new Ext.data.HttpProxy({ url:url, method: 'GET'}),
 				    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
 							{name: 'name', mapping: 'name'},
@@ -79,6 +80,43 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 							'</div></tpl>'
 					);
 
+					var btnNextPrevDate = function(btn) {
+						var comboDate = btn.ownerCt.items.itemAt(1);
+
+        		var lastIndex = (comboDate.store.getTotalCount() - 1);
+        		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : lastIndex;
+        		if(btn.getText() == '<')
+        			var newIndex = index - 1
+        		else
+        			var newIndex = index + 1
+        		
+        		var record = comboDate.store.getAt(newIndex);
+						comboDate.setValue(record.data.year);
+						comboDate.select(newIndex);
+						comboDate.fireEvent('select', comboDate, record);
+					}
+
+					var checkDate = function(ownerCt) {
+						var prevBtn = ownerCt.items.itemAt(0);
+						var comboDate = ownerCt.items.itemAt(1);
+						var nextBtn = ownerCt.items.itemAt(2);
+
+						var lastIndex = (comboDate.store.getTotalCount() - 1);
+        		var index = comboDate.selectedIndex;
+        		console.log(index);
+        		
+        		if(index == 0)
+        			prevBtn.disable();
+        		else
+        			prevBtn.enable();
+
+        		if(index == lastIndex)
+        			nextBtn.disable();
+        		else
+        			nextBtn.enable();
+        			
+					}
+
 					var boxDate = {
 					    xtype: 'compositefield',
 					    labelWidth: 140,
@@ -89,26 +127,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					            width: 20,
 					            text: '<',
 					            listeners: {
-					            	click: function(prevBtn) {
-					            		var comboDate = prevBtn.ownerCt.items.itemAt(1);
-					            		var nextBtn = prevBtn.ownerCt.items.itemAt(2);
-
-					            		console.log(comboDate.view)
-					            		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : (comboDate.store.getTotalCount() - 1);
-					            		var newIndex = index - 1
-					            		var record = comboDate.store.getAt(newIndex);
-													comboDate.select(newIndex);
-													comboDate.setValue(record.data.year);
-													comboDate.fireEvent('select', comboDate, record);
-					            		
-					            		if(newIndex == 0) {
-					            			prevBtn.disable();
-					            			nextBtn.enable();
-					            		} else {
-					            			prevBtn.enable();
-					            		}
-
-					            	}
+					            	click: btnNextPrevDate
 					            }
 					        },
 					        {
@@ -119,12 +138,13 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										width: 100,
 										displayField:'year',
 										tpl: resultYear,
-										typeAhead: false,
+										typeAhead: true,
 										editable: false,
 										triggerAction: 'all',
 										queryParam: 'years',
 										fieldLabel: 'Data',
 										value: layerLastDate,
+										lazyInit: false,
 										listeners: {
 											select: function(combo, record, index) {
 
@@ -149,6 +169,8 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 
 														layerRecord.endEdit();
 														layerRecord.commit();
+
+														checkDate(combo.ownerCt);
 													});
 											}
 										}
@@ -159,25 +181,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					            text: '>',
 					            disabled: true,
 					            listeners: {
-					            	click: function(nextBtn) {
-					            		var comboDate = nextBtn.ownerCt.items.itemAt(1);
-					            		var prevBtn = nextBtn.ownerCt.items.itemAt(0);
-
-					            		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : (comboDate.store.getTotalCount() - 1);
-					            		var newIndex = index + 1
-					            		var record = comboDate.store.getAt(newIndex);
-													comboDate.select(newIndex);
-													comboDate.setValue(record.data.year);
-													comboDate.fireEvent('select', comboDate, record);
-					            		
-					            		if(newIndex == (comboDate.store.getTotalCount() - 1)) {
-					            			nextBtn.disable();
-					            			prevBtn.enable();
-					            		} else {
-					            			nextBtn.enable();
-					            		}
-
-					            	}
+					            	'click': btnNextPrevDate
 					            }
 					        },
 					    ]

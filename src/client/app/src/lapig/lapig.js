@@ -246,12 +246,12 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_bioma_5000_2004_ibge",
+										name: "pa_br_estados_1000_2014_ibge",
 										type: "VECTOR"
 								}
 								,{
 										source: "ows",
-										name: "pa_br_estados_1000_2014_ibge",
+										name: "pa_br_bioma_5000_2004_ibge",
 										type: "VECTOR"
 								}
 				],

@@ -7,7 +7,7 @@ module.exports = function(app) {
 	var Layer = {};
 
 	Layer.attributes = function(request, response) {
-	  response.sendfile(config.appRoot + '/data/alias/attributes.json');
+	  response.sendfile(config.appRoot + '/data/attributes.json');
 	};
 
 	Layer.getYears = function(request, response){

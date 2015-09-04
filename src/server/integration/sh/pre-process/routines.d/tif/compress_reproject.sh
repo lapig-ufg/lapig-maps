@@ -5,11 +5,11 @@ COMPRESSION_TYPE="lzw"
 sirgas=$(gdalinfo $filepath | grep -i "SIRGAS 2000\|COMPRESSION=$COMPRESSION_TYPE" | wc -l)
 
 if [ ! $sirgas -eq 2 ]; then
-	log "gdal_translate $COMPRESSION_TYPE $PROJ: $filename"
+	log "gdalwarp $COMPRESSION_TYPE $PROJ : $filename"
 
 	if [[ $MODE = 'APPLY' ]]; then
 		new_filepath=$filepath_noext-sirgas
-		gdal_translate -co COMPRESS=$COMPRESSION_TYPE -co INTERLEAVE=BAND -co TILED=YES -a_srs $PROJ $filepath_noext.tif $new_filepath.tif
+		gdalwarp -co COMPRESS=$COMPRESSION_TYPE -co INTERLEAVE=BAND -co TILED=YES -t_srs $PROJ $filepath_noext.tif $new_filepath.tif
 		rm $filepath_noext.tif
 		mv $new_filepath.tif $filepath_noext.tif
 	fi
