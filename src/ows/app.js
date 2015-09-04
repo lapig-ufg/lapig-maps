@@ -24,7 +24,7 @@ app.libs.catalog.init(function() {
 	app.use(express.static(app.config['path_static']));
 
 	app.use(requestTimeout({
-		'timeout': 1000 * 60 * 10,
+		'timeout': 1000 * 60 * 30,
 		'callback': function(err, options) {
 			var response = options.res;
 			if (err) {

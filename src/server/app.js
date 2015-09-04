@@ -35,7 +35,7 @@ app.middleware.repository.init(function() {
 	var publicDir = path.join(__dirname, '');
 
 	app.use(requestTimeout({
-		'timeout': 1000 * 60 * 10,
+		'timeout': 1000 * 60 * 30,
 		'callback': function(err, options) {
 			var response = options.res;
 			if (err) {
