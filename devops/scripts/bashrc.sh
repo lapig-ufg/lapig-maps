@@ -7,7 +7,7 @@ DEV_DIR=/data/lapig-maps/dev
 PROD_DIR=/data/lapig-maps/prod
 
 alias update='cd $REPOSITORY_DIR; git pull'
-alias deploy='$REPOSITORY_DIR/devops/lapig-maps/scripts/deploy.sh $@'
+alias deploy='$REPOSITORY_DIR/devops/scripts/deploy.sh $@'
 alias log-dev='tail -f $LOG_DIR/dev.log'
 alias log-prod='tail -f $LOG_DIR/prod.log'
 alias restart-lapig-maps="su -c 'kill $(pgrep -f app.js)'"
