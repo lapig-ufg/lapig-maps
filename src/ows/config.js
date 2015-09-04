@@ -8,7 +8,7 @@ module.exports = function(app) {
 			,	'path_logfile': appRoot + '/log/ows-mapserv.log'
 			,	'path_mapfile': appRoot + '/run/ows_runtime.map'
 			,	'path_undefined_img': appRoot + '/img/undefined.png'
-			, 'path_mapserv': '/usr/libexec/mapserver'
+			, 'path_mapserv': '/usr/lib/cgi-bin/mapserv'
 			,	'path_fonts_list': appRoot + '/data_dir/ows_fonts.list'
 
 			,	'path_projlib': '/usr/share/proj'

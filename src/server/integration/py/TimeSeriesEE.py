@@ -247,9 +247,10 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 	cp.read(configurationFile);
 	
 	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
-	#Aqui vai o arquivo devo usar o arquivo de configuracao para o fillValue;	
+
 
 	result=savitsky(result);
+
 
 	#result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
 
@@ -276,3 +277,4 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 
 print(r)
+

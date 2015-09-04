@@ -20,7 +20,7 @@ module.exports = function(app) {
 		
 		ls = ChildProcess.exec(path, function (error, stdout, stderr) {
 			
-
+				
 		   	stdout=stdout.replace(/\'/g, '"');
 		 	
 		   	var result = JSON.parse(stdout);

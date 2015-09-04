@@ -1,9 +1,11 @@
 var appRoot = require('app-root-path');
 
 module.exports = function(app) {
-
+	//appRoot faz parte da documentação do js
 	var config = {
-		"appRoot": appRoot,
+		"appRoot": appRoot, 
+		"pathTimeSeries":appRoot+"/integration/py/TimeSeriesEE.py",
+		"pathPythonIni":appRoot+"/integration/py/lapig_configparser.ini",
 		"hostUrl": 'http://localhost:5000',
 		"ows": "http://su03:5500",
 		"clientDir": appRoot + "/../client/build",
