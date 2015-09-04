@@ -26,6 +26,17 @@ MAP
   END
 
   OUTPUTFORMAT
+    NAME "png"
+    DRIVER AGG/PNG8
+    MIMETYPE "image/png"
+    IMAGEMODE RGB
+    EXTENSION "png"
+    FORMATOPTION "QUANTIZE_FORCE=on"
+    FORMATOPTION "QUANTIZE_COLORS=256"
+    FORMATOPTION "GAMMA=0.75"
+  END
+
+  OUTPUTFORMAT
     NAME GEOTIFF_F32
     DRIVER "GDAL/GTiff"
     MIMETYPE "image/tiff"
@@ -60,7 +71,7 @@ MAP
   WEB
     FOOTER ""
     HEADER ""
-    TEMPPATH "/mnt/tmpfs"
+    TEMPPATH "{path_tmp}"
     METADATA
       "wms_enable_request"	"*"
       "wfs_enable_request"  "*"

@@ -1,20 +1,12 @@
 var express = require('express')
 , load = require('express-load')
-, path = require('path')
 , util    = require('util')
-, compress = require('compression')()
+, compression = require('compression')
 , requestTimeout = require('express-timeout')
-, responseTime = require('response-time')
-, buffer = require('buffer')
-, events = require('events')
-, archiver = require('archiver')
-, fs    = require('fs')
-, mime = require('mime')
-, async = require('async')
-, timeout = require('connect-timeout')
-, bodyParser = require('body-parser')
 , multer = require('multer')
-, cluster = require('express-cluster');
+, cluster = require('express-cluster')
+, requestParam = require('request-param')
+, morgan = require('morgan')
 ;
 
 var app = express();
@@ -25,14 +17,11 @@ load('libs/utils', { 'verbose': false, cwd: 'src' })
 .into(app);
 
 app.libs.catalog.init(function() {
-	
+
 	app.config = app.config;
 
-	app.use(function (req, res, next) {
-		res.setHeader('Access-Control-Allow-Origin', '*');
-		res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
-		next();
-	});
+	app.use(compression());
+	app.use(express.static(app.config['path_static']));
 
 	app.use(requestTimeout({
 		'timeout': 1000 * 60 * 10,
@@ -44,17 +33,10 @@ app.libs.catalog.init(function() {
 			response.end();
 		}
 	}));
-
-	app.use(compress);
-	app.use(responseTime());
-	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({ extended: true }));
+	
 	app.use(multer());
-	app.use(express.methodOverride());
-
-	app.use(app.router);
-
-	app.use(express.logger('dev'));
+	app.use(requestParam());
+	app.use(morgan('combined'));
 
 	app.use(function(error, request, response, next) {
 		console.log('ServerError: ', error.stack);
@@ -69,6 +51,7 @@ app.libs.catalog.init(function() {
 		console.log('OGC-Server Server @ [port %s] [pid %s]', app.config.port, process.pid.toString());
 	});
 	
+	app.libs.catalog.prefetchWmsCapabilities();
 })
 
 process.on('uncaughtException', function (err) {

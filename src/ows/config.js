@@ -2,13 +2,17 @@ var appRoot = require('app-root-path');
 
 module.exports = function(app) {
 
+	var pathTmp = '/mnt/tmpfs/';
+
 	var config = {
-				'path_basemapfile': appRoot + '/data_dir/ows_base.map'
+			  'path_tmp': pathTmp
+			,	'path_static': appRoot + 'public'
+			,	'path_basemapfile': appRoot + '/data_dir/ows_base.map'
 			,	'path_catalog': appRoot + '/data_dir/catalog/'
 			,	'path_logfile': appRoot + '/log/ows-mapserv.log'
-			,	'path_mapfile': appRoot + '/run/ows_runtime.map'
+			,	'path_mapfile': pathTmp + 'ows_runtime.map'
 			,	'path_undefined_img': appRoot + '/img/undefined.png'
-			, 'path_mapserv': '/usr/libexec/mapserver'
+			, 'path_mapserv': '/usr/lib/cgi-bin/mapserv'
 			,	'path_fonts_list': appRoot + '/data_dir/ows_fonts.list'
 
 			,	'path_projlib': '/usr/share/proj'
