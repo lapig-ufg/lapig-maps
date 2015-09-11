@@ -839,20 +839,83 @@ gxp.plugins.LapigRasterSeries = Ext.extend(gxp.plugins.Tool, {
     },
 
     getEastCmp: function (){
+
+      var myData = [
+        ['Normal','10/01/2001', '1.1'],
+        ['SAV','11/11/2012', '2.3'],
+      ];
+
+      var store = new Ext.data.ArrayStore({
+        fields: [
+           {name: 'serie'},
+           {name: 'data'},
+           {name: 'valor'},
+        ]
+      });
+
+      store.loadData(myData);
+
+      var grid = new Ext.grid.GridPanel({
+        store: store,
+        columns: [
+            {
+                id       :'serie',
+                header   : 'Série', 
+                width    : 70, 
+                sortable : true, 
+                dataIndex: 'serie'
+            },
+            {
+                header   : 'Data', 
+                width    : 70, 
+                sortable : true,  
+                dataIndex: 'data'
+            },
+            {
+                header   : 'Valor', 
+                width    : 70, 
+                sortable : true,  
+                dataIndex: 'valor'
+            },
+        ],
+        stripeRows: true,
+        height: 100,
+        width: 230,
+        //title: 'Mínimo',
+        stateful: true,
+        stateId: 'grid'
+      });
+
       var eastCmp = {
-            border: false,
-            region: 'east',
-            collapsible: true,
-            title:'Estatisticas',
-            split: true,
-            width:225,
-            height:215,
-            minSize: 175,
-            maxSize: 400,
-                items: [{
-                  xtype:'label',
-                html:'Teste'}],
-        }
+        border: false,
+        region: 'east',
+        collapsible: true,
+        title:'Estatisticas',
+        split: true,
+        width:225,
+        height:215,
+        minSize: 175,
+        maxSize: 400,
+        items: [{
+          layout:'vbox',
+          xtype:'form',
+          hideLabel:false,
+          align : 'stretchmax',
+          fieldLabel:'Testando',
+          html:'<center>1</center>',
+          items:[{
+            layout:'vbox',
+            align : 'stretchmax',
+            html:'<center>2</center>',
+            items: [grid],
+          }]
+        },{
+          layout:'vbox',
+          align : 'stretch',
+          html:'Máximo',
+          //items: [grid],
+        }],
+      }
         return eastCmp;
     },
 
