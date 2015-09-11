@@ -42,23 +42,10 @@ module.exports = function(app) {
 		var grep = spawn('grep', ['-a', '-v', '^Content-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*:']);
 		var sed = spawn('sed', ['1,1d']);
 
+		mapserv.stdout.pipe(grep.stdin);
+		grep.stdout.pipe(sed.stdin);
 		sed.stdout.on('data', onDataFn);
 		sed.stdout.on('close', onCloseFn);
-
-		grep.stdout.on('data', function(data) {
-			sed.stdin.write(data);
-		});
-		grep.on('close', function(data) {
-			sed.stdin.end();
-		});
-
-		mapserv.stderr.on('data', onDataFn);
-		mapserv.stdout.on('data', function(data) {
-			grep.stdin.write(data);
-		});
-		mapserv.on('close', function(data) {
-			grep.stdin.end();
-		});
 		
 	}
 	

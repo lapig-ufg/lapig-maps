@@ -6,3 +6,6 @@ node_modules
 ows_runtime.map
 src/client/build/*
 src/ows/data_dir/catalog
+*~
+*#
+*.pyc

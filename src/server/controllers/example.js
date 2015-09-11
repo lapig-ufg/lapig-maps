@@ -7,8 +7,8 @@ module.exports = function(app) {
 	  var layerCollection = app.repository.collections.layers;
 
 		layerCollection.find({}).toArray(function(err, docs) {
-				response.send(docs);
-				response.end('Testando...');
+				//response.send(docs);
+				response.end('Hello World!');
 		});
 
 	};

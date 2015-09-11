@@ -1,19 +1,22 @@
 var fs = require('fs')
 		,	async = require('async')
 	  ,	spawn = require('child_process').spawn
-	  , path = require('path');
+	  , path = require('path')
+	  ,	requester = require('request')
+	  ;
 
 module.exports = function(app) {
 
 	var config = app.config;
 	var utils = app.libs.utils;
+	var cache = app.libs.cache;
 
 	var Internal = {};
 	var Catalog = {};
 
 	Internal.getMapfiles = function(onComplete) {
 		var findCmd = spawn('find'
-			,	[ '-name', config['pattern_mapfile']]
+			,	[ '-maxdepth', '3', '-name', config['pattern_mapfile']]
 			,	{ cwd: config['path_catalog'] }
 		)
 
@@ -80,7 +83,7 @@ module.exports = function(app) {
 
 	Internal.prefetchFile = function(basepath, ext, propertyName, removeExt, onComplete) {
 		var findCmd = spawn('find'
-			,	[ '-name', '*.' + ext]
+			,	[ '-maxdepth', '3', '-name', '*.' + ext]
 			,	{ cwd: basepath }
 		)
 
@@ -150,7 +153,16 @@ module.exports = function(app) {
 		return sldContent;
 	}
 
+	Catalog.prefetchWmsCapabilities = function() {
+		var capUrl = 'http://localhost:' + app.config.port + '/ows?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.1.1'
+		requester(capUrl, function (error, response, body) {})
+	}
+
 	Catalog.init = function(onComplete) {
+		
+		var cacheKeyCapabilities = config['cachePrefix'] + ',CAPABILITIES*'
+		cache.del(cacheKeyCapabilities);
+
 		Internal.createBaseMapfile(function() {
 			async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters],onComplete);
 		});

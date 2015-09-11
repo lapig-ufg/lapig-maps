@@ -61,7 +61,11 @@ def DevNeighborhoodAnual(iArray,iFlag,nComposites,GoodFlags):
            vYear = math.pow(tYear - iArray[j],2)
            aAveregeNA.append(vYear)
 
-    aAveregeTypicalDay = math.sqrt(float(sum(aAveregeNA))/float(len(aAveregeNA)))
+    #Modificado em 27.08.2015 - Bernard
+    if len(aAveregeNA) > 0:
+       aAveregeTypicalDay = math.sqrt(float(sum(aAveregeNA))/float(len(aAveregeNA)))
+    else:
+       aAveregeTypicalDay = None
     return aAveregeTypicalDay
 
 
@@ -100,9 +104,9 @@ def FillGaps(iArray,iFlag,nComposites,iAveregeDOY,iAveregeAnual,iNeighborhoodDay
 
         #print(iFlag[j], iFlag[j] == 1)
         #Flag = 1
-        if(iFlag[j] == 1):
-            numerador += iArray[j] * 1.00/200.00;
-            denominador += 1.00/200.00;
+##        if(iFlag[j] == 1):
+##            numerador += iArray[j] * 1.00/200.00;
+##            denominador += 1.00/200.00;
 
         if denominador > 0.0:
             numerador = numerador/denominador
@@ -125,10 +129,10 @@ def run(pixelValues, flagValues, nComposites, goodFlags):
    D = DevNeighborhoodAnual(pixelValues,flagValues,nComposites,goodFlags)
    E = FillGaps(pixelValues,flagValues,nComposites,A,B,C,D,goodFlags)
 
-   print "Media Anual dos dias: "+str(A)
-   print "Desvio da media Anual em cada dia: "+str(B)
-   print "Desvio entre as vizinhanca da serie temporal: "+str(C)
-   print "Desvio entre as vizinhanca anual da serie temporal: "+str(D)
-   print "FillGaps: "+str(E[0])
-
+##   print "Media Anual dos dias: "+str(A)
+##   print "Desvio da media Anual em cada dia: "+str(B)
+##   print "Desvio entre as vizinhanca da serie temporal: "+str(C)
+##   print "Desvio entre as vizinhanca anual da serie temporal: "+str(D)
+##   print "FillGaps: "+str(E[0])
+   
    return E;

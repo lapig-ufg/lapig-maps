@@ -73,7 +73,7 @@ var app = new gxp.LapigViewer({
 						header: false,
 						autoScroll: true
 					}
-				,	{
+				/*,	{
 						id: "southpanel",
 						border: false,
 						region: "south",
@@ -83,7 +83,7 @@ var app = new gxp.LapigViewer({
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
-					}
+					}*/
 				],
 				bbar: {id: "mybbar"}
 		},
@@ -100,14 +100,15 @@ var app = new gxp.LapigViewer({
 					},
 					outputTarget: "westpanel"
 			}
-			,	{ 
+			/*,	{ 
 				ptype: "gxp_lapigrasterseries",
 				outputTarget: "southpanel"
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
-					addActionText: "Camadas"
+					addActionText: "Camadas",
+					project: [ 'lapig', 'pastagem.org' ]
 			}
 			, {
 					ptype: "gxp_removelayer",
@@ -152,10 +153,10 @@ var app = new gxp.LapigViewer({
 					menuText: "Zoom na camada",
 					actionTarget: {target: "tree.contextMenu", index: 15}
 			}
-			, {
+			/*, {
 					ptype: "gxp_lapigrasterseriesbtn",
 					actionTarget: {target: "map.tbar", index: 19}
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigcoordenadas",
 					actionTarget: {target: "map.tbar", index: 19}
@@ -245,12 +246,12 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_bioma_5000_2004_ibge",
+										name: "pa_br_estados_1000_2014_ibge",
 										type: "VECTOR"
 								}
 								,{
 										source: "ows",
-										name: "pa_br_limite_estadual_250_2013_ibge",
+										name: "pa_br_bioma_5000_2004_ibge",
 										type: "VECTOR"
 								}
 				],

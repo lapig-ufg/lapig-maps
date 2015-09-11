@@ -35,9 +35,10 @@ var parseCsv = function(filepath, callback) {
         "name": col[0],
         "description": col[1],
         "region":regions,
-        "subject":col[3],
-        "basepath":col[4],
-        "search":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4]
+        "subject":col[3].trim(),
+        "basepath":col[4].trim(),
+        "search":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4],
+        "project": col[5].toUpperCase() 
       }
       
       layers.push(objeto);
@@ -81,6 +82,39 @@ var insertLayers = function(dbUrl, layers, callback) {
 
 }
 
+var formatDate = function(date) {
+  if (date=="ni"){
+    return "Nao indicado.";
+  } else if (date=="na"){
+    return "Nao se aplica.";
+  } else if (date.length==7) {
+    
+    if (date[4].toUpperCase() == 'M') {
+      var month = date[5]+date[6];
+      var year = date[0]+date[1]+date[2]+date[3];
+      
+      dateAux = new Date(year, 0);
+      dateAux.setMonth(parseInt(month) - 1);
+
+      return strftime('%Y %b.', dateAux);
+
+    } else {
+      var day = date[4]+date[5]+date[6];
+      var year = date[0]+date[1]+date[2]+date[3];
+      
+      dateAux = new Date(year, 0);
+      dateAux.setDate(day);
+
+      return strftime('%Y %b. %d', dateAux);
+    }
+
+  } else if(date.length==4){
+    return date[0]+date[1]+date[2]+date[3];
+  } else {
+    return date;
+  }
+}
+
 var getLayerMultipleFiles = function(layersDir, layer, callback) {
   var layerBasepath = path.join(layersDir, layer['subject'], layer['basepath']);
 
@@ -95,57 +129,22 @@ var getLayerMultipleFiles = function(layersDir, layer, callback) {
         var nameFile = path.basename(file).split('_');
 
         var name = path.basename(file).split('.');
-          var name = name[0]; 
+        var name = name[0]; 
 
         var date = nameFile[nameFile.length-2];
 
-          if (date=="ni"){
-            date = "Nao indicado.";
-          };
-
-          if (date=="na"){
-            date = "Nao se aplica.";
-          };
-
-          if (date.length==7){
-            
-            if (date[4].toUpperCase() == 'M') {
-              var month = date[5]+date[6];
-              var year = date[0]+date[1]+date[2]+date[3];
-              
-              dateAux = new Date(year, 0);
-              dateAux.setMonth(parseInt(month) - 1);
-
-              date = strftime('%Y %b.', dateAux);
-
-            } else {
-              var day = date[4]+date[5]+date[6];
-              var year = date[0]+date[1]+date[2]+date[3];
-              
-              dateAux = new Date(year, 0);
-              dateAux.setDate(day);
-
-              date = strftime('%Y %b. %d', dateAux);
-            }
-
-          };
-
-          if(date.length==4){
-            date = date[0]+date[1]+date[2]+date[3];
-          };
-
-          if (extension == '.tif'){
-              type = "RASTER"
-            }
-          if (extension == '.shp'){
-              type = "VECTOR"
-            }
+        if (extension == '.tif'){
+            type = "RASTER"
+        } else if (extension == '.shp'){
+            type = "VECTOR"
+        }
           
         var fileObj = { 
-          "date": date, 
+          "date": formatDate(date), 
           "name": name, 
           "type": type 
-                      }
+        }
+        
         files.push(fileObj);
     }
 
@@ -162,7 +161,7 @@ var checkLayerType = function(layersDir, layer, callback) {
   var layerTiffPath = layerBasepath + '.tif';
   var layerShpPath = layerBasepath + '.shp';
 
-  var layerPathPossibles = [layerBasepath, layerTiffPath, layerShpPath];
+  var layerPathPossibles = [layerTiffPath, layerShpPath, layerBasepath];
 
   async.detect(layerPathPossibles, fs.exists, function(result){
     result = ( result === undefined ) ? 'NOT-EXISTS' : path.extname(result);
@@ -194,29 +193,19 @@ var getScale = function(layer) {
     scaleTitle= "Nao se aplica";
   else {
     if (layer.type == 'RASTER')
-      scaleTitle = scaleTitle+"m";
+      scaleTitle = Number(scaleTitle).toString() + " m";
     else if (layer.type == 'VECTOR')
-      scaleTitle="1:"+scaleTitle+".000";
-        };
+      scaleTitle="1:"+(scaleTitle+"000").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+  };
 
   return scaleTitle;
 };
 
 var getYear = function(layer){
   var nameTitle = layer.basepath.split('_');
-  var yearTitle = nameTitle[nameTitle.length - 2];
+  var date = nameTitle[nameTitle.length - 2];
 
-    if(layer.type == 'VECTOR' || layer.type == 'RASTER'){
-            if (yearTitle=="ni"){
-              yearTitle = "Nao informado";
-            };
-
-            if (yearTitle=="na"){
-              yearTitle = "Nao se aplica";
-            };
-       };
-
-  return yearTitle;
+  return formatDate(date);
 };
 
 var getScaleMultiple = function(layer){
@@ -234,7 +223,7 @@ var getScaleMultiple = function(layer){
   else if (type == 'RASTER')
     scale = scale+"m";
   else if (type == 'VECTOR')
-    scale ="1:"+scale+".000";
+    scale="1:"+(scale+"000").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 
   return scale;
 };
@@ -274,22 +263,22 @@ var setLayers = function(layersDir, layers, callback) {
       layer.type = type;
       layer.source = getSource(layer); 
 
-    if(layer.type == 'RASTER' || layer.type == 'VECTOR') {
-      layer.year = getYear(layer);
-      layer.scale = getScale(layer);
-    };
-    
-    if(layer.type == 'MULTIPLE') { 
-      getLayerMultipleFiles(layersDir, layer, function(fileObj) {
+      if(layer.type == 'RASTER' || layer.type == 'VECTOR') {
+        layer.year = getYear(layer);
+        layer.scale = getScale(layer);
+      };
+      
+      if(layer.type == 'MULTIPLE') { 
+        getLayerMultipleFiles(layersDir, layer, function(fileObj) {
 
-        layer.fileObj = fileObj;
-        layer.scale = getScaleMultiple(layer);
-        layer.year = getYearMultiple(layer);
+          layer.fileObj = fileObj;
+          layer.scale = getScaleMultiple(layer);
+          layer.year = getYearMultiple(layer);
 
+          next();
+        });
+      } else {
         next();
-      });
-    } else {
-      next();
       }
     });
   }
@@ -302,6 +291,18 @@ var setLayers = function(layersDir, layers, callback) {
 }
 
 var writeMapFile = function(layer, info, isMultiple, callback) {
+
+  processingScale = '';
+  offsite = '';
+  if (info.values) {
+    processingScale = '  PROCESSING "SCALE='+info.values.min+','+info.values.max+'"\n';
+    if(info.values.bandCount >= 3)
+      offsite = '  OFFSITE 0 0 0\n';
+    
+    delete info.values;
+  }
+
+
   var mapContent =  'LAYER\n'
                   + '  NAME "{name}"\n'
                   + '  DATA "{data}"\n'
@@ -319,6 +320,8 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
                   + '  STATUS ON\n'
                   + '  TYPE {type}\n'
                   + '  TEMPLATE "DUMMY"\n'
+                  + offsite
+                  + processingScale
                   + 'END\n';
   
 
@@ -327,7 +330,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
 
   var params = {
       'name': layer.basepath
-    , 'description': layer.description
+    , 'description': layer.description.replace(/\'/g, "\\'").replace(/\"/g, '\\"')
     , 'data': path.join(layer.subject, layer.basepath + extension)
     , 'title': title
     , 'extent': info.extent
@@ -378,13 +381,25 @@ var getLayerFileInfo = function(layer, callback) {
     callback(info);
   } else if(layer.type == 'RASTER') {
     var layerShpPath = getFilePathRegexSpaces(layer, '.tif');
-    var cmd = printf("gdalinfo -norat {0} | grep -E 'Lower\ Left|Upper\ Right' | cut -d')' -f1 | cut -d'(' -f2", [ layerShpPath ]);
+    var cmd = printf("gdalinfo -stats -norat {0} | grep -E 'Lower\ Left|Upper\ Right|STATISTICS_MAXIMUM|STATISTICS_MINIMUM' | cut -d')' -f1 | cut -d'(' -f2", [ layerShpPath ]);
 
     var output = child_process.execSync(cmd, { encoding: 'utf-8' });
     split = output.split(/\n/);
 
     coord1 = split[0].replace(',', '').trim();
     coord2 = split[1].replace(',', '').trim();
+    max = split[2].split('=')[1].trim();
+    min = split[3].split('=')[1].trim();
+
+    info.values = {};
+    info.values.min = (Number(min) == 0) ? '0.0001' : min;
+    info.values.max = max;
+
+    var cmdBandCount = printf("gdalinfo {0} | grep 'Band ' | wc -l ", [ layerShpPath ]);
+    var bandCount = Number(child_process.execSync(cmdBandCount, { encoding: 'utf-8' }));
+    console.log(bandCount)
+
+    info.values.bandCount = bandCount;
 
     info.type = 'Raster';
     info.extent = printf("{0} {1}", [coord1, coord2]);
@@ -461,12 +476,12 @@ var createMapFile = function(layers, callback) {
 }
 
 
-var layersDir = "/run/user/1000/gvfs/sftp\:host\=su04\,user\=lapig/data/lapig/TMP/PASTAGEM.ORG/Categorias/"
-var dbUrl = 'mongodb://localhost:27017/lapig-maps';
-var filepath = '/home/leandro/Tmp/alertas.csv';
+var layersDir = "/data/lapig/TMP/PASTAGEM.ORG/Categorias/"
+var dbUrl = 'mongodb://10.0.0.50:27017/lapig-maps';
+var filepath = 'layers.csv';
 
 parseCsv(filepath, function(layers) {
-  console.log(layers)
+ //console.log(layers)
   setLayers(layersDir, layers, function(layers) {
     createMapFile(layers, function() {
       console.log('terminou');

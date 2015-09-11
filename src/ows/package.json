@@ -1,28 +1,34 @@
 {
   "name": "lapig-ows",
   "version": "0.0.1",
-  "description": "ERROR: No README.md file found!",
+  "description": "WEBGIS application in accordance with the standards OGC ",
   "main": "importar_dados.js",
   "dependencies": {
     "app-root-path": "^1.0.0",
-    "archiver": "^0.14.4",
+    "archiver": "^0.15.0",
     "async": "~0.2.10",
-    "body-parser": "^1.12.4",
     "compression": "^1.4.3",
-    "connect-timeout": "~1.4.0",
-    "express": "~3.2.0",
+    "express": "~4.12.4",
+    "express-cluster": "0.0.3",
     "express-load": "^1.1.14",
     "express-timeout": "^0.2.1",
-    "mime": "~1.2.11",
+    "morgan": "^1.6.1",
     "multer": "^0.1.8",
     "redis": "0.8.2",
-    "response-time": "^2.3.0"
+    "request": "~2.58.0",
+    "request-param": "^0.2.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "",
-  "author": "",
-  "license": "BSD"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lapig-ufg/lapig-maps"
+  },
+  "author": {
+    "name": "LAPIG/UFG",
+    "email": "http://www.lapig.iesa.ufg.br"
+  },
+  "license": "MIT"
 }

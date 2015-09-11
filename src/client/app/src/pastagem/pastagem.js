@@ -66,14 +66,14 @@ var app = new gxp.LapigViewer({
 						id: "westpanel",
 						border: false,
 						region: "west",
-						width: 300,
+						width: 320,
 						split: true,
 						collapsible: true,
 						collapseMode: "mini",
 						header: false,
 						autoScroll: true
 					}
-				,	{
+				/*,	{
 						id: "southpanel",
 						border: false,
 						region: "south",
@@ -83,7 +83,7 @@ var app = new gxp.LapigViewer({
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
-					}
+					}*/
 				],
 				bbar: {id: "mybbar"}
 		},
@@ -101,14 +101,15 @@ var app = new gxp.LapigViewer({
 					outputTarget: "westpanel",
 					id: 'map-layer-manager'
 			}
-			,	{ 
+			/*,	{ 
 				ptype: "gxp_lapigrasterseries",
 				outputTarget: "southpanel"
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
 					addActionText: "Camadas",
+					project: [ 'pastagem.org' ]
 			}
 			, {
 					ptype: "gxp_lapigdownload",
@@ -153,10 +154,10 @@ var app = new gxp.LapigViewer({
 					ptype: "gxp_navigationhistory",
 					actionTarget: {target: "map.tbar", index: 13}
 			}
-			, {
+			/*, {
 					ptype: "gxp_lapigrasterseriesbtn",
 					actionTarget: {target: "map.tbar", index: 19}
-			}
+			}*/
 			, {
 					ptype: "gxp_lapigcoordenadas",
 					actionTarget: {target: "map.tbar", index: 19}
@@ -247,17 +248,20 @@ var app = new gxp.LapigViewer({
 								,{
 										source: "ows",
 										name: "pa_br_pastagem_ni_2006_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: true
 								}
 								,{
 										source: "ows",
 										name: "pa_br_estados_1000_2014_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: true
 								}
 								,{
 										source: "ows",
 										name: "pa_br_matadouros_e_frigorificos_na_2014_lapig",
-										type: "VECTOR"
+										type: "VECTOR",
+										visibility: true
 								}
 								,{
 										source: "ows",
@@ -267,7 +271,7 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_pastagens_sintese_fontes_250_2010_lapig",
+										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
 								}

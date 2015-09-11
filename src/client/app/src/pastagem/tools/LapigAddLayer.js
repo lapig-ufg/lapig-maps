@@ -83,6 +83,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 						"sourceselected"
 				);
 
+				this.projectsParam = config.project.join(',');
+				this.layersTreeURL = 'layers/tree?projects=' + this.projectsParam;
+				this.layersSearchURL = 'layers/search';
 				this.layerWindow = this.getWindow();
 
 				gxp.plugins.LapigAddLayer.superclass.constructor.apply(this, arguments);        
@@ -92,7 +95,10 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
 			var instance = this;
 			var ds = new Ext.data.Store({
-			    url:'layers/search',
+			    url:this.layersSearchURL,
+			    baseParams: {
+			    	'projects': this.projectsParam
+			    },
 			    reader: new Ext.data.JsonReader({
 			      root: 'layers',
 			      totalProperty: 'totalCount',
@@ -139,6 +145,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			        typeAhead: false,
 			        loadingText: 'Searching...',
 			        anchor:'100%',
+			        minChars: 3,
 			        pageSize:5,
 			        tpl: resultTpl,
 			        queryParam: 'search',
@@ -158,8 +165,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			          		var layerNode = subjectNode.findChild('id', id);
 			          		layerNode.select();
 			          		layerNode.fireEvent('click', layerNode);
-
-			              }
+			            }
 			        }
 				}
 			]};
@@ -181,13 +187,13 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
           text: 'Extensions', 
           draggable:false, 
           id:'ux'
-          }),
-	        dataUrl: 'layers/tree',
-					requestMethod: 'GET',
-					columns:[{
-							header: 'Assuntos',
-							dataIndex: 'task',
-							width: 200
+        }),
+        dataUrl: this.layersTreeURL,
+				requestMethod: 'GET',
+				columns:[{
+						header: 'Assuntos',
+						dataIndex: 'task',
+						width: 200
 				}],
 				listeners: {
           click: function(node, e ) {
@@ -202,6 +208,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
             		url:url, 
             		method:'GET', 
             		waitMsg:'Loading',
+            		success: function() {
+            			node.ui.focus();
+            		}
             	});				                		
           	}
 
@@ -213,7 +222,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				xtype: 'form',
 				id: 'form-layer',
 				labelWidth: 75,
-				url:'save-form.php',
+				url:'',
 				frame:true,
 				region: 'center',
 				title: 'Detalhes da Camada',
@@ -314,7 +323,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 											},
 											{
 												xtype:'textfield',
-												fieldLabel: 'Ano',
+												fieldLabel: 'Data',
 												name: 'year',
 												readOnly: true,
 												anchor:'100%'

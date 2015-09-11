@@ -1,7 +1,14 @@
 NameVirtualHost	*:80
+Timeout 3600
 
 <VirtualHost *:80>
 	ServerName maps.lapig.iesa.ufg.br
+	
+	ProxyPass /custom-pages !
+	ErrorDocument 503 /custom-pages/503.html
+	Alias /custom-pages /etc/apache2/custom-pages
+	AllowEncodedSlashes on
+
         ProxyPreserveHost On
         ProxyPass / http://localhost:3000/
         ProxyPassReverse / http://localhost:3000/

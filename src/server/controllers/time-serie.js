@@ -1,8 +1,38 @@
+var ChildProcess = require('child_process');
+
 module.exports = function(app) {
 
 	var TimeSerie = {};
+	var config = app.config;
 	var rasterTimeSeries = app.libs.rasterTimeSeries;
 
+	TimeSerie.data = function(request, response) {
+		
+	  	var lon = request.param('longitude');
+	  	var lat = request.param('latitude');
+	  	var col = request.param('collection');
+		
+
+		var path ="python "+config.pathTimeSeries+" "+col+" "+lon+" "+lat+" "+config.pathPythonIni;
+		
+
+		console.log(path);
+		
+		ls = ChildProcess.exec(path, function (error, stdout, stderr) {
+			
+				
+		   	stdout=stdout.replace(/\'/g, '"');
+		 	
+		   	var result = JSON.parse(stdout);
+		   	
+		   	response.send(result);		   	
+		   	response.end();
+
+	 	});
+
+	};
+
+	
 	TimeSerie.chart = function(request, response) {
   
 	  response.connection.setTimeout(0);
@@ -75,6 +105,6 @@ module.exports = function(app) {
 	  });
 
 	};
-
+	
 	return TimeSerie;
 }
