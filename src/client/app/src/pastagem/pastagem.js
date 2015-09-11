@@ -78,7 +78,7 @@ var app = new gxp.LapigViewer({
 						border: false,
 						region: "south",
             height: 240,
-            collapsed: true,
+            collapsed: false,
             collapsible: true,
             header: true,
             title: 'Análise de Séries Temporais',
