@@ -1,4 +1,6 @@
-var ChildProcess = require('child_process');
+var 	ChildProcess = 	require('child_process')
+		,	async = require('async')
+		, unidecode = require('unidecode');;
 
 module.exports = function(app) {
 
@@ -10,16 +12,18 @@ module.exports = function(app) {
 		
 	  	var lon = request.param('longitude');
 	  	var lat = request.param('latitude');
-	  	var col = request.param('collection');
+	  	var id = request.param('id');
 		
-
-		var path ="python "+config.pathTimeSeries+" "+col+" "+lon+" "+lat+" "+config.pathPythonIni;
+		var path ="python "+config.pathTimeSeries+" "+id+" "+lon+" "+lat+" "+config.pathPythonIni;
 		
 
 		console.log(path);
 		
 		ls = ChildProcess.exec(path, function (error, stdout, stderr) {
-			
+				
+				if(stderr) {
+					console.log(stderr)
+				}
 				
 		   	stdout=stdout.replace(/\'/g, '"');
 		 	
@@ -32,6 +36,86 @@ module.exports = function(app) {
 
 	};
 
+	TimeSerie.byId = function(request, response){
+
+		var timeSeriesCollection = app.repository.collections.timeSeries;
+
+		var id = request.param('id');
+
+		timeSeriesCollection.findOne({_id : id}, function(err, timeSeries) {
+			response.send(timeSeries);
+			response.end()
+		})
+	};
+
+	TimeSerie.tree = function(request, response) {
+		
+		var timeSeriesCollection = app.repository.collections.timeSeries;
+
+		var projects = request.param('projects', '').toUpperCase().split(',')
+
+		timeSeriesCollection.distinct('subject', { 'project': { $in: projects } }, function(err,subjects) {
+
+			var result = [];
+			console.log(projects)
+			var interate = function(subject, next){
+				var subjectObj = {
+							text:subject,
+							iconCls: 'task-folder'
+					};
+
+				timeSeriesCollection.find({ 'subject': subject, 'project': { $in: projects } }).toArray(function (err, timeSeries){
+					
+					var childrens = [];
+					timeSeries.sort(function(a,b) {
+						var aText = unidecode(a.name);
+						var baText = unidecode(b.name);
+
+						if(aText < baText) return -1;
+				    if(aText > baText) return 1;
+				    return 0;
+					})
+
+					for(i in timeSeries){
+						var layer = timeSeries[i];
+						var children = {
+						     text: layer.name,
+						     id: layer._id,
+						     leaf:true,
+						     iconCls:'task'
+					 }
+
+						childrens.push(children);
+					}
+
+					subjectObj['children'] = childrens;
+
+					result.push(subjectObj);
+					next();
+				});
+
+			}
+
+			var finalize = function(){
+
+				result.sort(function(a,b) {
+					var aText = unidecode(a.text);
+					var baText = unidecode(b.text);
+
+					if(aText < baText) return -1;
+			    if(aText > baText) return 1;
+			    return 0;
+				})
+
+				response.send(result);
+				response.end();
+			}
+
+			async.each(subjects, interate, finalize);
+
+		});
+
+	};
 	
 	TimeSerie.chart = function(request, response) {
   

@@ -1,4 +1,5 @@
 
+import config
 import ee
 import datetime
 import traceback
@@ -9,10 +10,7 @@ from scipy.signal import savgol_filter
 import HagenFilter
 from datetime import date
 
-
-
 cp = SafeConfigParser();
-
 
 def num(s):
 	if '.' in s:
@@ -169,7 +167,8 @@ def removeDuplicate(eeLockupResult, fillValue):
 
 def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	#Se o timeSeriesID retornar flagCollection entao deve-se usar o HagenFilter
-	ee.Initialize();
+	EE_CREDENTIALS = ee.ServiceAccountCredentials(config.EE_ACCOUNT, config.EE_PRIVATE_KEY_FILE)
+	ee.Initialize(EE_CREDENTIALS);
 	
 	cp.read(configurationFile);
 
@@ -248,32 +247,19 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 	
 	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
 
-
 	result=savitsky(result);
 
 
 	#result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
 
 	return {
-		'info': {
-			'normal': 1
-		,	'savgol': 2
-		},
+		'series': [
+			{ 'id': 'original', 'label': 'Valores originais', 'position': 1 },
+			{ 'id': 'savgol', 'label': 'Savitzky Golay', 'position': 2 },
+		],
 		'values': result
 	};
 
-
-	'''
-	return {
-		'info': {
-			'normal': 1
-		,	'savgol': 2
-		,	'HagenFilter': 3
-		},
-		'values': result
-	};
-	'''
-	
 r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 
 print(r)

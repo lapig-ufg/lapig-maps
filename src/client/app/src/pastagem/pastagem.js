@@ -27,8 +27,7 @@
  * @require tools/LapigDownload.js
  * @require tools/LapigMetadata.js
  * @require tools/LapigGoogleSatellite.js
- * @require tools/LapigCoordenadas.js
- * @require tools/LapigPublicacoes.js
+ * @require tools/LapigCoordinates.js
  * @require tools/LapigLayerManager.js
  * @require tools/LapigWMSCSource.js
  * @require tools/LapigZoom.js
@@ -48,6 +47,8 @@ var center = new OpenLayers.LonLat(-45, -15).transform(
 												new OpenLayers.Projection("EPSG:4326"), 
 												new OpenLayers.Projection("EPSG:900913")
 );
+
+var project = [ 'pastagem.org' ];
 
 var app = new gxp.LapigViewer({
 		portalConfig: {
@@ -103,13 +104,14 @@ var app = new gxp.LapigViewer({
 			}
 			,	{ 
 				ptype: "gxp_lapigrasterseries",
-				outputTarget: "southpanel"
+				outputTarget: "southpanel",
+				project: project
 			}
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
 					addActionText: "Camadas",
-					project: [ 'pastagem.org' ]
+					project: project
 			}
 			, {
 					ptype: "gxp_lapigdownload",
@@ -159,7 +161,7 @@ var app = new gxp.LapigViewer({
 					actionTarget: {target: "map.tbar", index: 19}
 			}*/
 			, {
-					ptype: "gxp_lapigcoordenadas",
+					ptype: "gxp_lapigcoordinates",
 					actionTarget: {target: "map.tbar", index: 19}
 			}
 			, {
