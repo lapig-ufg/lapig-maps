@@ -103,9 +103,12 @@ var app = new gxp.LapigViewer({
 					id: 'map-layer-manager'
 			}
 			,	{ 
-				ptype: "gxp_lapigrasterseries",
+				ptype: "lapig_rasterseries",
 				outputTarget: "southpanel",
-				project: project
+				project: project,
+				outputConfig: {
+					height: 215
+				}
 			}
 			, {
 					ptype: "gxp_lapigaddlayer",
@@ -171,7 +174,7 @@ var app = new gxp.LapigViewer({
 		],
 		defaultSourceType: "gxp_lapigwmscsource",
 		sources: {
-				ows: {
+				/*ows: {
 						url: '/ows/', // /ows?SERVICE=WMS&VERSION=1.1.0&request=GetCapabilities
 						title: "LAPIG-OWS"
 				}
@@ -189,7 +192,7 @@ var app = new gxp.LapigViewer({
 				, mapbox: {
 						ptype: "gxp_mapboxsource",
 						title: "Mapas de fundo (MapBox)"
-				}
+				}*/
 		},
 		map: {
 				id: "mymap",
@@ -199,7 +202,7 @@ var app = new gxp.LapigViewer({
 				center: [center.lon,center.lat],
 				zoom: 4,
 				layers: [
-								{
+								/*{
 										source: "mapquest",
 										title: "MapQuest Imagery",
 										name: "naip",
@@ -276,7 +279,7 @@ var app = new gxp.LapigViewer({
 										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
-								}
+								}*/
 				],
 				items: [{
 						xtype: "gx_zoomslider",
