@@ -4,6 +4,6 @@ module.exports = function (app) {
 	
 	app.get('/time-series/tree', timeSerie.tree);
 	app.get('/time-series/:id',timeSerie.byId)
-	app.get('/time-series/:id/values/',timeSerie.data)
+	app.get('/time-series/:id/values',timeSerie.data)
 	
 }
