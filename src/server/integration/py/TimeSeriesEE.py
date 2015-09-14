@@ -8,13 +8,16 @@ from sys import argv
 from scipy.signal import savgol_filter
 import HagenFilter
 from datetime import date
+from subprocess import Popen, PIPE, STDOUT
+import datetime
+from dateutil.relativedelta import relativedelta
 
 
 
 cp = SafeConfigParser();
 
-
 def num(s):
+
 	if '.' in s:
 		return float(s)
 	else:
@@ -203,11 +206,14 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	return result;
 	
 
+
 def oneArray(colo):
 	z = []
 	for i in colo:
 		z.append(i[1])	
 	return z
+
+
 
 def joinArray(result, idC):
 	
@@ -243,17 +249,117 @@ def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
 	return joinArray(result,x);
 
 
-def run(timeSeriesID, longitude, latitude, configurationFile):
-	cp.read(configurationFile);
+def LocalDate2(timeSeriesID, configurationFile):
+
+	cp = SafeConfigParser()
+	cp.read(configurationFile)
+
+
+
+	lista = []
+
+	days = int(cp.get(timeSeriesID, 'temporalResolution'))
+
+
+	startYearVariable = datetime.datetime.strptime(cp.get(timeSeriesID,'startDate'),"%Y-%m-%d").date()
+	endYearVariable = datetime.datetime.strptime(cp.get(timeSeriesID,'endDate'),"%Y-%m-%d").date()
+
+	p = startYearVariable
+
+	while(startYearVariable.year < endYearVariable.year):
+
+		lista.append(str(p))
+
+		p = p + datetime.timedelta(days)
+		
+			
+		if p.year > startYearVariable.year:
+			startYearVariable = startYearVariable + relativedelta(years=1)
+			p = startYearVariable
+
+
+
+	return lista
+
+
+def localDate(startDate, endDate):
+
+	startYear = int(startDate[0:4])
+	endYear = int(endDate[0:4])
+
+	endMouth = int(endDate[5:7])
+
+	lista = []
 	
-	result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);
+	for i in range(startYear,endYear+1):
+
+		for j in range(1,13):
+
+			lista.append(str(i)+'-'+str(j)+'-'+'01');
+			if (str(j) in str(endMouth)) & (str(i) in str(endYear)):
+				break;
+
+	return lista
 
 
-	result=savitsky(result);
+
+def lockupLocal(timeSeriesID, longitude, latitude, configurationFile):
+
+	finalList = []
+
+	if('month' == cp.get(timeSeriesID,'temporalResolutionType')):
+		date = localDate(cp.get(timeSeriesID,'startDate'), cp.get(timeSeriesID,'endDate'))
+	else:
+		date = LocalDate2(timeSeriesID, configurationFile)
+
+	
+	y = cp.get(timeSeriesID,'file')
+
+	cmd = 'gdallocationinfo -valonly -wgs84'+" "+y+" "+str(longitude)+" "+str(latitude)
+
+	p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+	output = p.stdout.read();
+	x = output.split();
+
+	
+	for i,j in zip(x,date):
+		count = []
+		count.append(j)		
+		count.append(float(i))
+		finalList.append(count)
+
+	for i in finalList:
+		print i
+
+	#return finalList
+	
+
+
+
+
+def run(timeSeriesID, longitude, latitude, configurationFile):
+
+	cp.read(configurationFile);
+
+	result = []
+	
+	if('EE' ==  cp.get(timeSeriesID, 'type')):
+		result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);	
+	else:		
+		result = lockupLocal(timeSeriesID, longitude, latitude, configurationFile);
+		
+	
+	
+
+
+	#result=savitsky(result);
+
 
 
 	#result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
 
+
+	'''
 	return {
 		'info': {
 			'normal': 1
@@ -261,7 +367,7 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 		},
 		'values': result
 	};
-
+	'''
 
 	'''
 	return {
@@ -273,8 +379,10 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 		'values': result
 	};
 	'''
-	
-r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 
-print(r)
+
+r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
+	
+#print(r)
+
 
