@@ -187,7 +187,6 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	fnParseDateName = cp.get(timeSeriesID, 'fnParseDate') + "Date"
 
 	
-
 	fnParseDate = globals()[fnParseDateName];
 
 	def calculateIndex(image):
@@ -249,7 +248,7 @@ def hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile):
 
 	flagList = oneArray(flagCollection)
 
-	x = HagenFilter.run(collection, flagList, 23, [0])	
+	x = HagenFilter.run(collection, flagList, 23, [0], timeSeriesID, configurationFile)	
 
 	return joinArray(result,x);
 
@@ -312,12 +311,10 @@ def lockupLocal(timeSeriesID, longitude, latitude, configurationFile):
 
 	finalList = []
 
-	if('month' == cp.get(timeSeriesID,'temporalResolutionType')):
-		'entrou1-2-1'
+	if('month' == cp.get(timeSeriesID,'temporalResolutionType')):		
 		date = localDate(cp.get(timeSeriesID,'startDate'), cp.get(timeSeriesID,'endDate'))
-	else:
-			'entrou1-2-2'
-			date = LocalDate2(timeSeriesID, configurationFile)
+	else:		
+		date = LocalDate2(timeSeriesID, configurationFile)
 
 	
 	y = cp.get(timeSeriesID,'file')
@@ -360,12 +357,13 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 	result=savitsky(result);
 
 	if cp.get(timeSeriesID,'flagCollection') != 'FALSE':
-		result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)	
+		result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
+
 		return {
 			'series': [
 				{ 'id': 'original', 'label': 'Valores originais', 'position': 1 },
 				{ 'id': 'savgol', 'label': 'Savitzky Golay', 'position': 2 },
-				{ 'id': 'savgol', 'label': 'Hagen Filter', 'position': 3 }
+				{ 'id': 'hagen', 'label': 'Hagen Filter', 'position': 3 }
 			],
 			'values': result
 		};
@@ -384,4 +382,4 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 
 r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 	
-print(r)
+print r

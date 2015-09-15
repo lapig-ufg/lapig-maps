@@ -12,6 +12,10 @@
 import numpy
 import math
 
+from ConfigParser import SafeConfigParser
+cp = SafeConfigParser();
+
+
 #Medias dos dias durante o Ano - Finalizado
 def AveregeYearDoy(iArray,iFlag,nComposites,GoodFlags):
    aAveregeYearDay = []
@@ -121,13 +125,27 @@ def FillGaps(iArray,iFlag,nComposites,iAveregeDOY,iAveregeAnual,iNeighborhoodDay
     return FillGaps
 
 
-def run(pixelValues, flagValues, nComposites, goodFlags):
+def removeNone(E, fillValue):
+  result = []
+  
+  
+  for key in E:
 
-   A = AveregeYearDoy(pixelValues,flagValues,nComposites,goodFlags)
-   B = DevAveregeAnual(pixelValues,flagValues,nComposites,A,goodFlags)
-   C = DevNeighborhoodDay(pixelValues,flagValues,goodFlags)
-   D = DevNeighborhoodAnual(pixelValues,flagValues,nComposites,goodFlags)
-   E = FillGaps(pixelValues,flagValues,nComposites,A,B,C,D,goodFlags)
+    if key == None:
+      result.append(fillValue)
+    else:
+      result.append(key)  
+  return result
+
+
+def run(pixelValues, flagValues, nComposites, goodFlags, timeSeriesID, configurationFile):
+  cp.read(configurationFile)
+  A = AveregeYearDoy(pixelValues,flagValues,nComposites,goodFlags)
+  B = DevAveregeAnual(pixelValues,flagValues,nComposites,A,goodFlags)
+  C = DevNeighborhoodDay(pixelValues,flagValues,goodFlags)
+  D = DevNeighborhoodAnual(pixelValues,flagValues,nComposites,goodFlags)
+  E = FillGaps(pixelValues,flagValues,nComposites,A,B,C,D,goodFlags)
+  F = removeNone(E, fillValue = (float(cp.get(timeSeriesID, 'fillValue'))))
 
 ##   print "Media Anual dos dias: "+str(A)
 ##   print "Desvio da media Anual em cada dia: "+str(B)
@@ -135,4 +153,4 @@ def run(pixelValues, flagValues, nComposites, goodFlags):
 ##   print "Desvio entre as vizinhanca anual da serie temporal: "+str(D)
 ##   print "FillGaps: "+str(E[0])
    
-   return E;
+  return F;
