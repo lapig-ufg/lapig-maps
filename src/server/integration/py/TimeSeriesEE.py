@@ -1,4 +1,5 @@
 
+import config
 import ee
 import datetime
 import traceback
@@ -11,8 +12,6 @@ from datetime import date
 from subprocess import Popen, PIPE, STDOUT
 import datetime
 from dateutil.relativedelta import relativedelta
-
-
 
 cp = SafeConfigParser();
 
@@ -172,7 +171,9 @@ def removeDuplicate(eeLockupResult, fillValue):
 
 def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	#Se o timeSeriesID retornar flagCollection entao deve-se usar o HagenFilter
-	ee.Initialize();
+	EE_CREDENTIALS = ee.ServiceAccountCredentials(config.EE_ACCOUNT, config.EE_PRIVATE_KEY_FILE)
+	
+	ee.Initialize(EE_CREDENTIALS);
 	
 	cp.read(configurationFile);
 
@@ -185,16 +186,19 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 	expression = cp.get(timeSeriesID, 'expresion')
 	fnParseDateName = cp.get(timeSeriesID, 'fnParseDate') + "Date"
 
+	
+
 	fnParseDate = globals()[fnParseDateName];
 
 	def calculateIndex(image):
 		 return image.expression(expression);
-
+	
 	point = ee.Geometry.Point([longitude, latitude]);
 	timeSeries = ee.ImageCollection(collectionId).filterDate(date1, date2).map(calculateIndex);
 	eeResult = timeSeries.getRegion(point,pixelResolution).getInfo();
-
+	
 	result={}
+	
 	for item in eeResult:
 		if item[0] == 'id':
 			continue
@@ -203,6 +207,7 @@ def lockupEE(timeSeriesID,longitude,latitude, configurationFile):
 
 	result=removeDuplicate(result, fillValue = (num(cp.get(timeSeriesID, 'fillValue'))));
 	
+	 
 	return result;
 	
 
@@ -308,9 +313,11 @@ def lockupLocal(timeSeriesID, longitude, latitude, configurationFile):
 	finalList = []
 
 	if('month' == cp.get(timeSeriesID,'temporalResolutionType')):
+		'entrou1-2-1'
 		date = localDate(cp.get(timeSeriesID,'startDate'), cp.get(timeSeriesID,'endDate'))
 	else:
-		date = LocalDate2(timeSeriesID, configurationFile)
+			'entrou1-2-2'
+			date = LocalDate2(timeSeriesID, configurationFile)
 
 	
 	y = cp.get(timeSeriesID,'file')
@@ -328,10 +335,9 @@ def lockupLocal(timeSeriesID, longitude, latitude, configurationFile):
 		count.append(float(i))
 		finalList.append(count)
 
-	for i in finalList:
-		print i
+	
 
-	#return finalList
+	return finalList
 	
 
 
@@ -342,47 +348,40 @@ def run(timeSeriesID, longitude, latitude, configurationFile):
 	cp.read(configurationFile);
 
 	result = []
+
 	
 	if('EE' ==  cp.get(timeSeriesID, 'type')):
 		result = lockupEE(timeSeriesID, longitude, latitude, configurationFile);	
-	else:		
+	else:
 		result = lockupLocal(timeSeriesID, longitude, latitude, configurationFile);
-		
-	
 	
 
+	
+	result=savitsky(result);
 
-	#result=savitsky(result);
+	if cp.get(timeSeriesID,'flagCollection') != 'FALSE':
+		result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)	
+		return {
+			'series': [
+				{ 'id': 'original', 'label': 'Valores originais', 'position': 1 },
+				{ 'id': 'savgol', 'label': 'Savitzky Golay', 'position': 2 },
+				{ 'id': 'savgol', 'label': 'Hagen Filter', 'position': 3 }
+			],
+			'values': result
+		};
+	
+	else:
+		''
+		return {
+			'series': [
+				{ 'id': 'original', 'label': 'Valores originais', 'position': 1 },
+				{ 'id': 'savgol', 'label': 'Savitzky Golay', 'position': 2 },
+			],
+			'values': result
+		};
 
-
-
-	#result = hagenFilter(result, timeSeriesID, longitude, latitude, configurationFile)
-
-
-	'''
-	return {
-		'info': {
-			'normal': 1
-		,	'savgol': 2
-		},
-		'values': result
-	};
-	'''
-
-	'''
-	return {
-		'info': {
-			'normal': 1
-		,	'savgol': 2
-		,	'HagenFilter': 3
-		},
-		'values': result
-	};
-	'''
-
+	
 
 r = run(argv[1], float(argv[2]), float(argv[3]), argv[4]);
 	
-#print(r)
-
-
+print(r)

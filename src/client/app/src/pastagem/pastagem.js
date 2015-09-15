@@ -27,8 +27,7 @@
  * @require tools/LapigDownload.js
  * @require tools/LapigMetadata.js
  * @require tools/LapigGoogleSatellite.js
- * @require tools/LapigCoordenadas.js
- * @require tools/LapigPublicacoes.js
+ * @require tools/LapigCoordinates.js
  * @require tools/LapigLayerManager.js
  * @require tools/LapigWMSCSource.js
  * @require tools/LapigZoom.js
@@ -48,6 +47,8 @@ var center = new OpenLayers.LonLat(-45, -15).transform(
 												new OpenLayers.Projection("EPSG:4326"), 
 												new OpenLayers.Projection("EPSG:900913")
 );
+
+var project = [ 'pastagem.org' ];
 
 var app = new gxp.LapigViewer({
 		portalConfig: {
@@ -73,17 +74,17 @@ var app = new gxp.LapigViewer({
 						header: false,
 						autoScroll: true
 					}
-				/*,	{
+				,	{
 						id: "southpanel",
 						border: false,
 						region: "south",
             height: 240,
-            collapsed: true,
+            collapsed: false,
             collapsible: true,
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
-					}*/
+					}
 				],
 				bbar: {id: "mybbar"}
 		},
@@ -101,15 +102,19 @@ var app = new gxp.LapigViewer({
 					outputTarget: "westpanel",
 					id: 'map-layer-manager'
 			}
-			/*,	{ 
-				ptype: "gxp_lapigrasterseries",
-				outputTarget: "southpanel"
-			}*/
+			,	{ 
+				ptype: "lapig_rasterseries",
+				outputTarget: "southpanel",
+				project: project,
+				outputConfig: {
+					height: 215
+				}
+			}
 			, {
 					ptype: "gxp_lapigaddlayer",
 					actionTarget: "tree.tbar",
 					addActionText: "Camadas",
-					project: [ 'pastagem.org' ]
+					project: project
 			}
 			, {
 					ptype: "gxp_lapigdownload",
@@ -159,7 +164,7 @@ var app = new gxp.LapigViewer({
 					actionTarget: {target: "map.tbar", index: 19}
 			}*/
 			, {
-					ptype: "gxp_lapigcoordenadas",
+					ptype: "gxp_lapigcoordinates",
 					actionTarget: {target: "map.tbar", index: 19}
 			}
 			, {
@@ -169,7 +174,7 @@ var app = new gxp.LapigViewer({
 		],
 		defaultSourceType: "gxp_lapigwmscsource",
 		sources: {
-				ows: {
+				/*ows: {
 						url: '/ows/', // /ows?SERVICE=WMS&VERSION=1.1.0&request=GetCapabilities
 						title: "LAPIG-OWS"
 				}
@@ -187,7 +192,7 @@ var app = new gxp.LapigViewer({
 				, mapbox: {
 						ptype: "gxp_mapboxsource",
 						title: "Mapas de fundo (MapBox)"
-				}
+				}*/
 		},
 		map: {
 				id: "mymap",
@@ -197,7 +202,7 @@ var app = new gxp.LapigViewer({
 				center: [center.lon,center.lat],
 				zoom: 4,
 				layers: [
-								{
+								/*{
 										source: "mapquest",
 										title: "MapQuest Imagery",
 										name: "naip",
@@ -274,7 +279,7 @@ var app = new gxp.LapigViewer({
 										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
-								}
+								}*/
 				],
 				items: [{
 						xtype: "gx_zoomslider",

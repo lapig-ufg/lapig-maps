@@ -20,7 +20,7 @@ body {
     padding: 7px 3px 5px 2px;
 }
 
-.olControlLapigCoordenadas {
+.olControlLapigCoordinates {
     cursor : crosshair;
 }
 
@@ -74,7 +74,7 @@ div.olControlMousePosition {
     background-image: url(img/metadata.png);
 }
 
-.x-btn .gxp-icon-lapigpcoordenadas, .x-menu-item .gxp-icon-icon-lapigpcoordenadas, .x-tree-node .gxp-icon-lapigpcoordenadas {
+.x-btn .gxp-icon-lapigcoordinates, .x-menu-item .gxp-icon-icon-lapigcoordinates, .x-tree-node .gxp-icon-lapigcoordinates {
     background-image: url(img/lapig-coordenadas.png); !import
 }
 
@@ -111,7 +111,7 @@ div.olControlMousePosition {
     background-image: url(img/shape_square_add.png); !import
 }
 
-.x-btn .gxp-icon-lapigpcoordenadas, .x-menu-item .gxp-icon-icon-lapigpcoordenadas, .x-tree-node .gxp-icon-lapigpcoordenadas {
+.x-btn .gxp-icon-lapigcoordinates, .x-menu-item .gxp-icon-icon-lapigcoordinates, .x-tree-node .gxp-icon-lapigcoordinates {
     background-image: url(img/shape_square_add.png); !import
 }
 
