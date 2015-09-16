@@ -14,11 +14,11 @@ module.exports = function(app) {
 	  	var lat = request.param('latitude');
 	  	var id = request.param('id');
 		
-		var path ="python "+config.pathTimeSeries+" "+id+" "+lon+" "+lat+" "+config.pathPythonIni;
+		var path ="python "+config.pathTimeSeries+" "+id+" "+lon+" "+lat;
 
 		console.log(path);
 		
-		ls = ChildProcess.exec(path, function (error, stdout, stderr) {
+		ChildProcess.exec(path, function (error, stdout, stderr) {
 			
 			console.log(stderr)	
 				

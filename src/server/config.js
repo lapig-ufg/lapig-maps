@@ -4,8 +4,7 @@ module.exports = function(app) {
 	//appRoot faz parte da documentação do js
 	var config = {
 		"appRoot": appRoot, 
-		"pathTimeSeries":appRoot+"/integration/py/TimeSeriesEE.py",
-		"pathPythonIni":appRoot+"/integration/py/lapig_configparser.ini",
+		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
 		"hostUrl": 'http://localhost:5000',
 		"ows": "http://su03:5500",
 		"clientDir": appRoot + "/../client/build",

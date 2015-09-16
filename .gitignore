@@ -5,6 +5,7 @@
 node_modules
 ows_runtime.map
 src/client/build/*
+src/server/integration/py/time-series/image-db
 src/ows/data_dir/catalog
 *~
 *#
