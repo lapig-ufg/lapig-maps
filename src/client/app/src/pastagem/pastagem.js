@@ -79,6 +79,7 @@ var app = new gxp.LapigViewer({
 						id: "southpanel",
 						border: false,
 						region: "south",
+<<<<<<< HEAD
 			            height: 240,
 			            collapsed: false,
 			            collapsible: true,
@@ -98,6 +99,14 @@ var app = new gxp.LapigViewer({
 			            header: true,
 			            layout:'fit',
 			            title: 'Inteligêcia Territorial',
+=======
+            height: 240,
+            collapsed: true,
+            collapsible: true,
+            header: true,
+            title: 'Análise de Séries Temporais',
+            autoScroll: true
+>>>>>>> d997f1c19ddbdf85bc649ec43f7099940f014318
 					}
 				],
 				bbar: {id: "mybbar"}
@@ -181,10 +190,10 @@ var app = new gxp.LapigViewer({
 					ptype: "gxp_navigationhistory",
 					actionTarget: {target: "map.tbar", index: 13}
 			}
-			/*, {
+			, {
 					ptype: "gxp_lapigrasterseriesbtn",
 					actionTarget: {target: "map.tbar", index: 19}
-			}*/
+			}
 			, {
 					ptype: "gxp_lapigcoordinates",
 					actionTarget: {target: "map.tbar", index: 19}
@@ -196,7 +205,7 @@ var app = new gxp.LapigViewer({
 		],
 		defaultSourceType: "gxp_lapigwmscsource",
 		sources: {
-				/*ows: {
+				ows: {
 						url: '/ows/', // /ows?SERVICE=WMS&VERSION=1.1.0&request=GetCapabilities
 						title: "LAPIG-OWS"
 				}
@@ -214,7 +223,7 @@ var app = new gxp.LapigViewer({
 				, mapbox: {
 						ptype: "gxp_mapboxsource",
 						title: "Mapas de fundo (MapBox)"
-				}*/
+				}
 		},
 		map: {
 				id: "mymap",
@@ -224,7 +233,7 @@ var app = new gxp.LapigViewer({
 				center: [center.lon,center.lat],
 				zoom: 4,
 				layers: [
-								/*{
+								{
 										source: "mapquest",
 										title: "MapQuest Imagery",
 										name: "naip",
@@ -278,12 +287,12 @@ var app = new gxp.LapigViewer({
 										type: "VECTOR",
 										visibility: true
 								}
-								,{
+								/*,{
 										source: "ows",
 										name: "pa_br_estados_1000_2014_ibge",
 										type: "VECTOR",
 										visibility: true
-								}
+								}*/
 								,{
 										source: "ows",
 										name: "pa_br_matadouros_e_frigorificos_na_2014_lapig",
@@ -301,7 +310,7 @@ var app = new gxp.LapigViewer({
 										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
 										visibility: false
-								}*/
+								}
 				],
 				items: [{
 						xtype: "gx_zoomslider",

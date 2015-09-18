@@ -51,7 +51,95 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     };
   },
 
-  populateChart: function(starYear, endYear, interpolationPosition) {
+  groupChartData: function(chartData, groupType, groupOperation) {
+    
+    var groupType = (groupType) ? groupType.toUpperCase() : '';
+
+    var groupedOriginalData = {}
+    var groupedInterpolationData = {}
+
+    var chart = Ext.getCmp('lapig-coordinates-chart');
+
+    var datePos;
+    var defaultDatePattern;
+    if(groupType == 'YEAR') {
+      datePos = 0;
+      defaultDatePattern = "{}/01/01";
+      chart.setXAxis(new Ext.chart.CategoryAxis({}));
+    } else if(groupType == 'MONTH') {
+      datePos = 1;
+      defaultDatePattern = "2000/{}/01";
+      chart.setXAxis(new Ext.chart.CategoryAxis({}));
+    } else if(groupType == 'DAY') {
+      datePos = 2;
+      defaultDatePattern = "2000/01/{}";
+      chart.setXAxis(new Ext.chart.CategoryAxis({}));
+    } else {
+      chart.setXAxis(new Ext.chart.TimeAxis({
+        labelRenderer: function(date) { 
+          return date.format("m.Y"); ; 
+        }
+      }));
+      return chartData;
+    }
+
+    chartData.forEach(function(cData) {
+      var key = cData.dateStr.split('-')[datePos];
+      
+      if(groupedOriginalData[key] && cData.original != null)
+        groupedOriginalData[key].push(cData.original);
+      else
+        groupedOriginalData[key] = [cData.original];
+      
+      if(groupedInterpolationData[key] && cData.interpolation != null)
+        groupedInterpolationData[key].push(cData.interpolation);
+      else
+        groupedInterpolationData[key] = [cData.interpolation];
+
+    })
+
+    var groupedData = [];
+
+    for(var key in groupedOriginalData) {
+      groupedData.push({
+        original: jStat[groupOperation](groupedOriginalData[key]),
+        interpolation: jStat[groupOperation](groupedInterpolationData[key]),
+        date: key
+      });
+    }
+    
+    groupedData = _.sortBy(groupedData, function(gData){ return gData.date; })
+
+    return groupedData;
+  },
+
+  getChartSeries: function(chartDataLength) {
+
+    var markerSize;
+    if(chartDataLength > 300)
+      markerSize = 4;
+    else if(chartDataLength > 100)
+      markerSize = 6;
+    else if(chartDataLength > 50)
+      markerSize = 8;
+    else if(chartDataLength > 0)
+      markerSize = 10;
+
+    // http://yui.github.io/yui2/docs/yui_2.9.0_full/charts/index.html#series
+    return [
+      {
+        color: 0xfc4239,
+        size: markerSize,
+        lineSize: 2
+      }, {
+        color: 0x5057a6,
+        size: 0,
+        lineSize: 2
+      }
+    ];
+  },
+
+  populateChart: function(starYear, endYear, interpolationPosition, groupType, groupOperation) {
     var instance = this;
     var chart = Ext.getCmp('lapig-coordinates-chart');
 
@@ -64,24 +152,28 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       }
     }
 
-    var data = [];
+    var chartData = [];
     instance.chartData.values.forEach(function(values) {
 
+      var dateStr = values[0];
       var dtArray = values[0].split('-');
       var year = dtArray[0];
       var date = new Date(dtArray[0] + "/" + dtArray[1] + "/" + dtArray[2]).getTime();
 
       if(year >= starYear && year <= endYear) {
-        var record = { date: date, original: values[originalPosition], interpolation: null };
+        var record = { date: date, original: values[originalPosition], interpolation: null, dateStr: dateStr };
         if(interpolationPosition > 0 && interpolationPosition != originalPosition)
           record.interpolation = values[interpolationPosition]
 
-        data.push(record)
+        chartData.push(record)
       }
     })
 
+    chartData = instance.groupChartData(chartData, groupType, groupOperation);
+    console.log(chart);
 
-    chart.store.loadData(data);
+    chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+    chart.store.loadData(chartData);
   },
 
   initWdwInfo: function() {
@@ -319,8 +411,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var startYearCmb = Ext.getCmp('lapig-raster-series-cmb-start-year');
       var endYearCmb = Ext.getCmp('lapig-raster-series-cmb-end-year');
       var interpolationCmb = Ext.getCmp('lapig-raster-series-cmb-interpolation');
+      var groupCmb = Ext.getCmp('lapig-raster-series-cmb-group-data');
 
-      instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(), interpolationCmb.getValue())
+      var groupValueSplited = groupCmb.getValue().split("_");
+      var groupType = groupValueSplited[0];
+      var groupOperation = groupValueSplited[1];
+
+      instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(), interpolationCmb.getValue(), groupType, groupOperation)
     }
 
     return {
@@ -332,173 +429,196 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       id: "lapig-coordinates-center-chart",
       items: [
         {
-          layout: 'column',
-          border: false,
-          height:43,
+          layout: 'hbox',
+          layoutConfig: {
+            padding:'4',
+            align:'stretch'
+          },
+          border: true,
+          height:35,
           region:'north',
+          id: 'lapig_rasterseries::pnl-chart-north',
+          defaults: {
+            border:false,
+            margins:'0 5 0 0'
+          },
           items: [
             {
-              columnWidth:.15,
-              layout: 'fit',
-              height:45,
-              border:false,
-              style:{
-                'border-bottom':'2px solid #f0f0f0',
-                'border-right':'2px solid #f0f0f0',
-              },
-              padding:8,
-              items: [
-                {
-                  text: 'Selecionar Dados',
-                  xtype:"button",
-                  listeners: {
-                    click: function(evt) {
-                      var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
-                      wdwInfo.show(this)
-                    }
-                  }
+              flex: 1,
+              text: 'Selecionar Dados',
+              xtype:"button",
+              listeners: {
+                click: function(evt) {
+                  var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
+                  wdwInfo.show(this)
                 }
-              ]
-            },
-            {
-              columnWidth:.25,
-              layout: 'form',
-              disabled: true,
-              id: 'lapig-raster-series-chart-opts1',
-              padding:8,
-              border:false,
-              style:{
-                'border-bottom':'2px solid #f0f0f0',
-                'border-right':'2px solid #f0f0f0',
+              }
+            }, {
+              flex: 8,
+              layout: 'hbox',
+              id: 'lapig_rasterseries::frm-chart-opts',
+              layoutConfig: {
+                padding:'1',
+                align:'middle'
               },
-              labelWidth:50,
+              defaults: {
+                border:false,
+                margins:'0 5 0 0'
+              },
+              disabled: true,
               items: [
                 {
-                  xtype: 'compositefield',
+                  flex: 3,
+                  layout: 'form',
+                  labelWidth:50,
                   items: [
                     {
-                      xtype:'combo',
-                      id: "lapig-raster-series-cmb-start-year",
-                      fieldLabel: 'Período',
-                      border: false,
-                      displayField:'year',
-                      valueField: 'year',
-                      mode: 'local',
-                      typeAhead: true,
-                      editable: false,
-                      triggerAction: 'all',
-                      store: {
-                        xtype: 'arraystore',
-                        fields: [
-                           {name: 'year'},
-                        ]
-                      },
-                      flex:1,
-                      listeners: {
-                        select: filterChartData
-                      }
-                    }, {
-                      xtype:'label',
-                      border: false,
-                      html:'a',
-                      width:10,
-                      margins:{top:3, right:0, bottom:0, left:0},
-                      flex:1
-                    }, {
-                      xtype:'combo',
-                      id: "lapig-raster-series-cmb-end-year",
-                      maxLength:150,
-                      border: false,
-                      typeAhead: true,
-                      editable: false,
-                      triggerAction: 'all',
-                      displayField:'year',
-                      valueField: 'year',
-                      mode: 'local',
-                      store: {
-                        xtype: 'arraystore',
-                        fields: [
-                           {name: 'year'},
-                        ]
-                      },
-                      flex:1,
-                      listeners: {
-                        select: filterChartData
-                      }
+                      xtype: 'compositefield',
+                      items: [
+                        {
+                          xtype:'combo',
+                          id: "lapig-raster-series-cmb-start-year",
+                          fieldLabel: 'Período',
+                          border: false,
+                          displayField:'year',
+                          valueField: 'year',
+                          mode: 'local',
+                          typeAhead: true,
+                          editable: false,
+                          triggerAction: 'all',
+                          store: {
+                            xtype: 'arraystore',
+                            fields: [
+                               {name: 'year'},
+                            ]
+                          },
+                          flex:1,
+                          listeners: {
+                            select: filterChartData
+                          }
+                        }, {
+                          xtype:'label',
+                          border: false,
+                          html:'a',
+                          width:10,
+                          margins:{top:3, right:0, bottom:0, left:0},
+                          flex:1
+                        }, {
+                          xtype:'combo',
+                          id: "lapig-raster-series-cmb-end-year",
+                          maxLength:150,
+                          border: false,
+                          typeAhead: true,
+                          editable: false,
+                          triggerAction: 'all',
+                          displayField:'year',
+                          valueField: 'year',
+                          mode: 'local',
+                          store: {
+                            xtype: 'arraystore',
+                            fields: [
+                               {name: 'year'},
+                            ]
+                          },
+                          flex:1,
+                          listeners: {
+                            select: filterChartData
+                          }
+                        }
+                      ],
                     }
-                  ],
-                }
-              ]
-            },
-            {
-              columnWidth:.4,
-              disabled: true,
-              id: 'lapig-raster-series-chart-opts2',
-              layout: 'form',
-              border:false,
-              labelWidth:75,
-              padding:8,
-              style:{
-                'border-bottom':'2px solid #f0f0f0',
-              },
-              items: [
-                {
-                  xtype: 'compositefield',
+                  ]
+                }, {
+                  flex: 4,
+                  layout: 'form',
+                  border:false,
+                  labelWidth:30,
                   items: [
                     {
-                      xtype:'combo',
-                      id: 'lapig-raster-series-cmb-interpolation',
+                      xtype: 'compositefield',
                       fieldLabel: 'Filtro',
-                      displayField:'label',
-                      valueField: 'position',
-                      mode: 'local',
-                      typeAhead: true,
-                      editable: false,
-                      triggerAction: 'all',
-                      store: {
-                        xtype: 'jsonstore',
-                        fields: [ 'label', 'position' ]
-                      },
-                      flex: 1,
-                      listeners: {
-                        select: filterChartData
-                      }
+                      items: [
+                        {
+                          xtype:'combo',
+                          id: 'lapig-raster-series-cmb-interpolation',
+                          displayField:'label',
+                          valueField: 'position',
+                          mode: 'local',
+                          typeAhead: true,
+                          editable: false,
+                          triggerAction: 'all',
+                          store: {
+                            xtype: 'jsonstore',
+                            fields: [ 'label', 'position' ]
+                          },
+                          flex: 1,
+                          listeners: {
+                            select: filterChartData
+                          }
+                        }
+                      ],
                     }
-                  ],
-                }
-              ]
-            },
-            {
-              columnWidth:.2,
-              layout: 'column',
-              disabled: true,
-              id: 'lapig-raster-series-chart-opts3',
-              height:45,
-              border:false,
-              style:{
-                'border-bottom':'2px solid #f0f0f0',
-                'border-left':'2px solid #f0f0f0',
-              },
-              padding:8,
-              items: [
-                {
-                  columnWidth:.5,
+                  ]
+                }, {
+                  flex: 4,
+                  layout: 'form',
+                  border:false,
+                  labelWidth:70,
+                  items: [
+                    {
+                      xtype: 'compositefield',
+                      fieldLabel: 'Agrupar por',
+                      items: [
+                        {
+                          xtype:'combo',
+                          id: 'lapig-raster-series-cmb-group-data',
+                          displayField:'label',
+                          valueField: 'id',
+                          mode: 'local',
+                          typeAhead: true,
+                          editable: false,
+                          triggerAction: 'all',
+                          store:  new Ext.data.ArrayStore({
+                            fields: [
+                              {name: 'id'}, 
+                              {name: 'label'}
+                            ],
+                            data: [
+                              ['NONE_NONE', 'Nenhum' ],
+                              ['YEAR_mean', 'Ano (média)' ],
+                              ['YEAR_median', 'Ano (mediana)' ],
+                              ['YEAR_sum', 'Ano (somatório)' ],
+                              ['YEAR_stdev', 'Ano (devio padrão)' ],
+                              ['MONTH_mean', 'Mês (média)' ],
+                              ['MONTH_median', 'Mês (mediana)' ],
+                              ['MONTH_sum', 'Mês (somatório)' ],
+                              ['MONTH_stdev', 'Mês (devio padrão)' ],
+                              ['DAY_mean', 'Dia (média)' ],
+                              ['DAY_median', 'Dia (mediana)' ],
+                              ['DAY_sum', 'Dia (somatório)' ],
+                              ['DAY_stdev', 'Dia (devio padrão)' ],
+                            ]
+                          }),
+                          flex: 1,
+                          listeners: {
+                            select: filterChartData
+                          }
+                        }
+                      ],
+                    }
+                  ]
+                }, {
+                  flex: 1,
                   xtype:'button',
                   text: 'CSV',
-                  style:{
-                    'margin-right':'10px',
-                  },
-                  flex:1,
+                  margins:'0 5 10 0',
                 }, {
-                  columnWidth:.5,
+                  flex: 1,
                   xtype:'button',
                   text: 'PNG',
-                  style:{
-                    'margin-left':'10px',
-                  },
-                  flex:1,
+                  margins:'0 5 10 0',
                 }
-              ],
+              ]
             }
           ],
         }, {
@@ -528,7 +648,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   
                 var numberFormat = '0.000'
                 var serie = series.data[index];
-                var date = new Date(serie.date).format("d/m/Y") ;
+
+                var date = serie.date;
+                if(typeof date === 'number')
+                  date = new Date(date).format("d/m/Y") ;
+
                 var originalValue = Ext.util.Format.number(serie.original, numberFormat);
 
 
@@ -561,7 +685,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     minorGridLines: {size: 0.5, color: 0xdddddd}
                 }
               },
-              // http://yui.github.io/yui2/docs/yui_2.9.0_full/charts/index.html#series
               series: [
                 {
                   type:'line',
@@ -582,7 +705,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     lineSize: 2
                   },
                 }
-              ],
+              ]
             }
           ]
         }
@@ -712,13 +835,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       success: function(request) {
         
         var loadMask = instance.loadMask;
-        var chartOpts1 = Ext.getCmp('lapig-raster-series-chart-opts1');
-        var chartOpts2 = Ext.getCmp('lapig-raster-series-chart-opts2');
-        var chartOpts3 = Ext.getCmp('lapig-raster-series-chart-opts3');
         var chartPanel = Ext.getCmp('lapig-raster-series-chart-panel');
         var endYearCmb = Ext.getCmp('lapig-raster-series-cmb-end-year');
         var startYearCmb = Ext.getCmp('lapig-raster-series-cmb-start-year');
         var interpolationCmb = Ext.getCmp('lapig-raster-series-cmb-interpolation');
+        var chartNorth = Ext.getCmp('lapig_rasterseries::pnl-chart-north');
+        var charOpts = Ext.getCmp('lapig_rasterseries::frm-chart-opts');
 
         instance.chartData = JSON.parse(request.responseText);
 
@@ -751,10 +873,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         instance.populateChart(startYear, endYear)
 
-        chartOpts1.setDisabled(false);
-        chartOpts2.setDisabled(false);
-        chartOpts3.setDisabled(false);
-        chartPanel.setDisabled(false);
+        charOpts.setDisabled(false)
+
         loadMask.hide();
       },                                    
     });

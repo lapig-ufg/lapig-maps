@@ -12,6 +12,10 @@
 import numpy
 import math
 
+from ConfigParser import SafeConfigParser
+cp = SafeConfigParser();
+
+
 #Medias dos dias durante o Ano - Finalizado
 def AveregeYearDoy(iArray,iFlag,nComposites,GoodFlags):
    aAveregeYearDay = []
@@ -104,14 +108,14 @@ def FillGaps(iArray,iFlag,nComposites,iAveregeDOY,iAveregeAnual,iNeighborhoodDay
 
         #print(iFlag[j], iFlag[j] == 1)
         #Flag = 1
-##        if(iFlag[j] == 1):
-##            numerador += iArray[j] * 1.00/200.00;
-##            denominador += 1.00/200.00;
+        #if(iFlag[j] == 1):
+        #  numerador += iArray[j] * 1.00/200.00;
+        #  denominador += 1.00/200.00;
 
         if denominador > 0.0:
             numerador = numerador/denominador
         else:
-            numerador = None
+            numerador = iArray[j]
 
         FillGaps[j] = numerador
 
@@ -121,13 +125,25 @@ def FillGaps(iArray,iFlag,nComposites,iAveregeDOY,iAveregeAnual,iNeighborhoodDay
     return FillGaps
 
 
-def run(pixelValues, flagValues, nComposites, goodFlags):
+def removeNone(E, fillValue):
+  result = []
+  
+  for key in E:
 
-   A = AveregeYearDoy(pixelValues,flagValues,nComposites,goodFlags)
-   B = DevAveregeAnual(pixelValues,flagValues,nComposites,A,goodFlags)
-   C = DevNeighborhoodDay(pixelValues,flagValues,goodFlags)
-   D = DevNeighborhoodAnual(pixelValues,flagValues,nComposites,goodFlags)
-   E = FillGaps(pixelValues,flagValues,nComposites,A,B,C,D,goodFlags)
+    if key == None:
+      result.append(fillValue)
+    else:
+      result.append(key)  
+  return result
+
+
+def run(pixelValues, flagValues, nComposites, goodFlags, fillValue = 0):
+  A = AveregeYearDoy(pixelValues,flagValues,nComposites,goodFlags)
+  B = DevAveregeAnual(pixelValues,flagValues,nComposites,A,goodFlags)
+  C = DevNeighborhoodDay(pixelValues,flagValues,goodFlags)
+  D = DevNeighborhoodAnual(pixelValues,flagValues,nComposites,goodFlags)
+  E = FillGaps(pixelValues,flagValues,nComposites,A,B,C,D,goodFlags)
+  F = removeNone(E, fillValue)
 
 ##   print "Media Anual dos dias: "+str(A)
 ##   print "Desvio da media Anual em cada dia: "+str(B)
@@ -135,4 +151,4 @@ def run(pixelValues, flagValues, nComposites, goodFlags):
 ##   print "Desvio entre as vizinhanca anual da serie temporal: "+str(D)
 ##   print "FillGaps: "+str(E[0])
    
-   return E;
+  return F;
