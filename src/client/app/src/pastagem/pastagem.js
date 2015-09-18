@@ -32,6 +32,7 @@
  * @require tools/LapigWMSCSource.js
  * @require tools/LapigZoom.js
  * @require tools/LapigRasterSeries.js
+ * @require tools/LapigSpatialIntelligence.js
  * @require tools/LapigRasterSeriesBtn.js
  * @require tools/LapigWMSGetFeatureInfo.js
  *
@@ -56,12 +57,12 @@ var app = new gxp.LapigViewer({
 				region: "center",
 				items: [
 					{
-							id: "centerpanel",
-							xtype: "panel",
-							layout: "fit",
-							region: "center",
-							border: false,
-							items: ["mymap"]
+						id: "centerpanel",
+						xtype: "panel",
+						layout: "fit",
+						region: "center",
+						border: false,
+						items: ["mymap"]
 					}
 				, {
 						id: "westpanel",
@@ -78,36 +79,57 @@ var app = new gxp.LapigViewer({
 						id: "southpanel",
 						border: false,
 						region: "south",
-            height: 240,
-            collapsed: false,
-            collapsible: true,
-            header: true,
-            title: 'Análise de Séries Temporais',
-            autoScroll: true
+			            height: 240,
+			            collapsed: false,
+			            collapsible: true,
+			            header: true,
+			            title: 'Análise de Séries Temporais',
+			            autoScroll: true
+					}
+				,
+					{
+						id: "eastpanel",
+						border: false,
+						region: "east",
+			            width: 320,
+			            split: true,
+			            collapsed: false,
+			            collapsible: true,
+			            header: true,
+			            layout:'fit',
+			            title: 'Inteligêcia Territorial',
 					}
 				],
 				bbar: {id: "mybbar"}
 		},
 		tools: [
 			{
-					ptype: "gxp_lapiglayermanager",
-					overlayNodeText: "Camadas",
-					baseNodeText: "Mapa Base", 
-					outputConfig: {
-							id: "tree",
-							title: "Camadas",
-							border: false,
-							tbar: []
-					},
-					outputTarget: "westpanel",
-					id: 'map-layer-manager'
+				ptype: "gxp_lapiglayermanager",
+				overlayNodeText: "Camadas",
+				baseNodeText: "Mapa Base", 
+				outputConfig: {
+						id: "tree",
+						title: "Camadas",
+						border: false,
+						tbar: []
+				},
+				outputTarget: "westpanel",
+				id: 'map-layer-manager'
 			}
 			,	{ 
 				ptype: "lapig_rasterseries",
 				outputTarget: "southpanel",
 				project: project,
 				outputConfig: {
-					height: 215
+					height: 215,
+				}
+			}
+			,	{ 
+				ptype: "lapig_spatialintelligence",
+				outputTarget: "eastpanel",
+				project: project,
+				outputConfig: {
+
 				}
 			}
 			, {
