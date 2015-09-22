@@ -41,7 +41,11 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
   createOutputConfig: function() {
     return {
       xtype: "panel",
-      layout: 'vbox',
+      layout: {
+        type:'vbox',
+        padding:'5',
+        align:'stretch'
+      },
       id: 'lapig-spatial-intelligence-pnl-main',
       border: false,
       flex:1,
@@ -49,164 +53,181 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         'margin-top':'10px',
       },
       items: [
-      this.getLatLongCmp(),
-      this.getTreeCmp(),
+        this.getLatLongCmp(),
+        this.getTreeCmp(),
       ]
     };
   },
 
   getLatLongCmp: function(){
-    var getMapCoordBtn = function() {
-      return {
-        columnWidth: .10,
-        rowspan: 2,
-        xtype: 'button',
-        icon: 'theme/app/img/add-latlon-map.png',
-        height: 10,
-        tooltip: 'Clique em uma região do mapa para preencher a Latitude e Longitude.',
-        style: {
-          'margin-right': '10px'
-        },
-        handler: function() {
-          var fn = function(e) {
-            var lonLat = map.getLonLatFromPixel(e.xy)
-                .transform(instance.GOOGLE_PROJ, instance.WGS84_PROJ);
 
-            instance.setDd(lonLat.lon, lonLat.lat);
-            instance.setDms(instance.dd2dms(lonLat.lon, lonLat.lat));
-
-            lonLat = map.getLonLatFromPixel(e.xy);
-
-            var size = new OpenLayers.Size(35, 35);
-            var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-            var icon = new OpenLayers.Icon(instance.iconPathSelect, size, offset);
-
-            var marker = new OpenLayers.Marker(lonLat, icon);
-            instance.vectors.clearMarkers();
-            instance.vectors.addMarker(marker);
-
-            OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigCoordenadas");
-            map.events.unregister("click", map, fn);
-          };
-
-          OpenLayers.Element.addClass(map.viewPortDiv, "olControlLapigCoordenadas");
-          map.events.register("click", map, fn);
-        }
-      }
-    };
-
-    var longLat = {
-      layout: 'column',
+    return {
+      layout: 'form',
       border: false,
       xtype: 'panel',
+      flex: 1, 
       autoScroll:false,
+      labelWidth:130,
+      height: 120,
       items: [
         {
-          xtype: 'compositefield',
-          width:320,
-          style:{
-            'padding':'5px',
-          },
-          items: [
-            getMapCoordBtn(),
-           {
-              //columnWidth: .40,
-              xtype: 'numberfield',
-              emptyText: 'Longitude',
-              decimalPrecision: 4,
-              width:137,
-              name: 'lon',
-              flex:1,
-              style: {
-                  'text-align': 'right'
-              }
-            }, 
-            {
-              //columnWidth: .40,
-              xtype: 'numberfield',
-              emptyText: 'Latitude',
-              decimalPrecision: 4,
-              width:137,
-              name: 'lat',
-              flex:1,
-              style: {
-                  'text-align': 'right'
-              }
-            },
-          ]
-        },
-        {
-          layout: 'form',
-          border:false,
-          padding:5,
-          width:320,
-          border:false,
-          style:{
-            'padding-top':'5px',
-            'border-bottom':'2px solid #f0f0f0',
-            'border-right':'2px solid #f0f0f0',
-          },
-          labelWidth:100,
-          items: [
-            {
-              xtype:'combo',
-              fieldLabel: 'Raio de Análise',
-              border: false,
-              displayField:'year',
-              valueField: 'year',
-              mode: 'local',
-              typeAhead: true,
-              editable: false,
-              triggerAction: 'all',
-              //flex:1,
-            },
-          ],
-        },
-      ],
-    }
-
-  return longLat;
-  },
-
-  getTreeCmp: function (){
-
-    var tree = new Ext.ux.tree.TreeGrid({
-      width: 320,
-      flex:1,
-      border:false,
-      enableDD: true,
-      columns:[
-        {
-          header: 'Variável',
-          dataIndex: 'task',
-          width: 150
-        },
-        {
-          header: 'Valor',
-          width: 85,
-          dataIndex: 'duration',
-          align: 'center',
-          sortType: 'asFloat',
-          tpl: new Ext.XTemplate('{duration:this.formatHours}', {
-            formatHours: function(v) {
-              if(v < 1) {
-                  return Math.round(v * 60) + ' kbfs';
-              } else {
-                  return v + ' kbf' + (v === 1 ? '' : 's');
-              }
-            }
+          xtype:'combo',
+          id: 'lapig_spatialintelligence::cmb-subject',
+          displayField:'label',
+          fieldLabel: 'Informações sobre',
+          valueField: 'id',
+          mode: 'local',
+          typeAhead: true,
+          editable: false,
+          triggerAction: 'all',
+          flex: 1,
+          store:  new Ext.data.ArrayStore({
+            fields: [
+              {name: 'label'}, 
+              {name: 'id'}
+            ],
+            data: [
+              ['Pecuária', 'livestock']
+            ]
           })
         },
         {
-          header: 'Opções',
-          width: 85,
-          dataIndex: 'user',
+          xtype:'combo',
+          displayField:'label',
+          fieldLabel: 'No estado de(o)',
+          id: 'lapig_spatialintelligence::cmb-state',
+          valueField: 'id',
+          mode: 'local',
+          typeAhead: true,
+          editable: false,
+          triggerAction: 'all',
+          flex: 1,
+          store:  new Ext.data.ArrayStore({
+            fields: [
+              {name: 'label'}, 
+              {name: 'id'}
+            ],
+            data: [
+              ['Acre', 'AC'], 
+              ['Alagoas', 'AL'],
+              ['Amapá', 'AP'],
+              ['Amazonas', 'AM'], 
+              ['Bahia', 'BA'],
+              ['Ceará', 'CE'],
+              ['Distrito Federal', 'DF'], 
+              ['Espírito Santo', 'ES'], 
+              ['Goiás', 'GO'],
+              ['Maranhão', 'MA'], 
+              ['Mato Grosso', 'MT'],
+              ['Mato Grosso Do Sul', 'MS'], 
+              ['Minas Gerais', 'MG'], 
+              ['Paraná', 'PR'], 
+              ['Paraíba', 'PB'],
+              ['Pará', 'PA'], 
+              ['Pernambuco', 'PE'], 
+              ['Piauí', 'PI'],
+              ['Rio De Janeiro', 'RJ'], 
+              ['Rio Grande Do Norte', 'RN'],
+              ['Rio Grande Do Sul', 'RS'],
+              ['Rondônia', 'RO'], 
+              ['Roraima', 'RR'],
+              ['Santa Catarina', 'SC'], 
+              ['Sergipe', 'SE'],
+              ['São Paulo', 'SP'],
+              ['Tocantins', 'TO'],
+            ]
+          })
+        },
+        {
+          xtype:'combo',
+          id: 'lapig_spatialintelligence::cmb-sort',
+          displayField:'label',
+          fieldLabel: 'Ordenar munícipios por',
+          valueField: 'id',
+          mode: 'local',
+          typeAhead: true,
+          editable: false,
+          triggerAction: 'all',
+          flex: 1,
+          store:  new Ext.data.ArrayStore({
+            fields: [
+              {name: 'label'}, 
+              {name: 'id'}
+            ],
+            data: [
+              ['Maior relevância', 'value'], 
+              ['Ordem alfabética', 'info'],
+            ]
+          })
         }
+      ],
+      buttons: [
+        {
+          text: 'Consultar',
+          listeners: {
+            click: function(evt) {
+              var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
+              var selectedSubject = Ext.getCmp('lapig_spatialintelligence::cmb-subject').getValue();
+              var selectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+              var selectedSort = Ext.getCmp('lapig_spatialintelligence::cmb-sort').getValue();
+
+              var params = 'state=' + selectedState + '&sort=' + selectedSort
+              gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
+
+              var newNode = new Ext.tree.AsyncTreeNode({text: 'Root'});
+              gridInfo.loader.load(newNode, function(newNode) {
+                gridInfo.setRootNode(newNode);
+                gridInfo.setDisabled(false);
+              });
+            },
+          },
+        }
+      ]
+    }
+  },
+
+  getTreeCmp: function (){
+    
+    var instance = this;
+
+    var tree = new Ext.ux.tree.TreeGrid({
+      id: 'lapig_spatialintelligence::grid-info',
+      flex:1,
+      border:false,
+      enableDD: false,
+      enableSort: false,
+      enableHdMenu: false,
+      disabled: true,
+      columns:[
+        {
+          header: 'Informação',
+          dataIndex: 'info',
+          width: 180,
+        },
+        {
+          header: 'Valor',
+          width: 100,
+          dataIndex: 'value',
+          align: 'right',
+        },
       ],
       autoScroll:true,
       stripeRows: true,
       title: 'Resultados',
-      dataUrl: 'grid/teste'
+      //dataUrl: 'spatial/livestock/query',
+      requestMethod: 'GET',
+      listeners: {
+        'dblclick': function(node) {
+          if(node.attributes.LON && node.attributes.LAT) {
+            var mapPanel = instance.target.mapPanel;
+            var point = new OpenLayers.LonLat(node.attributes.LON, node.attributes.LAT);
+            point = point.transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913'))
+            console.log(point)
+            mapPanel.map.setCenter(point, 8)
+            //mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
+          }
+        }
+      }
     });
 
   return tree;

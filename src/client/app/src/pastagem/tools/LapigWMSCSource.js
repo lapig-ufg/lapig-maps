@@ -152,7 +152,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
             }
         }
-        console.log(record)
+        console.log(config.name, record)
 
         var url = record.data.layer.url;
         var host = url.split("/")[2];

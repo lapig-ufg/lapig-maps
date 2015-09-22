@@ -79,34 +79,26 @@ var app = new gxp.LapigViewer({
 						id: "southpanel",
 						border: false,
 						region: "south",
-<<<<<<< HEAD
-			            height: 240,
-			            collapsed: false,
-			            collapsible: true,
-			            header: true,
-			            title: 'Análise de Séries Temporais',
-			            autoScroll: true
-					}
-				,
-					{
-						id: "eastpanel",
-						border: false,
-						region: "east",
-			            width: 320,
-			            split: true,
-			            collapsed: false,
-			            collapsible: true,
-			            header: true,
-			            layout:'fit',
-			            title: 'Inteligêcia Territorial',
-=======
             height: 240,
             collapsed: true,
             collapsible: true,
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
->>>>>>> d997f1c19ddbdf85bc649ec43f7099940f014318
+					}
+				,
+					{
+						id: "eastpanel",
+						border: false,
+						region: "east",
+            width: 330,
+            split: true,
+            collapsed: false,
+            collapsible: true,
+            collapseMode: "mini",
+            header: true,
+            layout:'fit',
+            title: 'Análise de Informações Territoriais',
 					}
 				],
 				bbar: {id: "mybbar"}
