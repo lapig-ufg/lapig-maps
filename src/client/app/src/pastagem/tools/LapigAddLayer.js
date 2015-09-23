@@ -428,7 +428,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			var instance = this;
 
 			var options = {
-							tooltip : 'teste',
+							tooltip : 'Adicionar novas camadas',
 							text: this.addActionText,
 							menuText: this.addActionMenuText,
 							disabled: true,
