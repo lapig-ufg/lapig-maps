@@ -1,8 +1,11 @@
 import ee
 import os
 import utils
+import time
 import datetime
 from _datasource import Datasource
+from threading import Thread
+import Queue
 
 class EarthEngine(Datasource):
 
@@ -13,10 +16,16 @@ class EarthEngine(Datasource):
 		self.fill_value = utils.num(self.fill_value)
 		self.collection_id = self.collection_id.upper();
 		self.pixel_resolution = utils.num(self.pixel_resolution)
-		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");
+		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
+		self.tredao = int(datasourceParams['threads'])
 		
+
+
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
+
+
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]
@@ -157,17 +166,115 @@ class EarthEngine(Datasource):
 
 		return result;
 
-	def lockup(self, longitude, latitude):
+
+	def split_date(self):
 		
-		ee.Initialize(self.credentials);
+		miniThread = []
+
+		ano1, ano2 = int(self.start_date[0:4]), int(self.end_date[0:4])
+		day1, day2 = self.start_date[8:10], self.end_date[8:10]
+		month1, mont2 = self.start_date[5:7], self.end_date[5:7]
+
+		mult = (ano2+1)-ano1
+		
+		if mult < 5:			
+
+			
+
+			multconj = [[] for i in range(mult)]		
+
+			for i,j in zip(range(ano1,ano2+1,1),multconj):
+				if i == ano1:
+					iday = day1;
+					imonth = month1;
+					fday = '31'
+					fmonth = '12'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i)+'-'+fmonth+'-'+fday
+					j.append(x)
+					j.append(y)
+				elif i == ano2:
+					fday = day2
+					fmonth = mont2
+					iday = '01'
+					imonth = '01'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i)+'-'+fmonth+'-'+fday
+					j.append(x)
+					j.append(y)
+				else:
+					iday = '01'
+					imonth = '01'
+					fmonth = '12'
+					fday = '31'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i)+'-'+fmonth+'-'+fday
+					j.append(x)
+					j.append(y)
+
+				
+
+			for i in multconj:				
+				miniThread.append(i)
+		
+		else:			
+
+			ano_count = (ano2-ano1)/self.tredao			
+			
+			multconj = [[] for i in range(self.tredao)]
+			
+			for i,j in zip(range(ano1,(ano2),ano_count),multconj):
+				
+				if i == ano1:
+					iday = day1;
+					imonth = month1;
+					fday = '31'
+					fmonth = '12'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i+ano_count)+'-'+fmonth+'-'+fday
+					j.append(x)
+					j.append(y)
+				elif i == ano2:
+					fday = day2
+					fmonth = mont2
+					iday = '01'
+					imonth = '01'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i)+'-'+fmonth+'-'+fday					
+					j.append(x)
+					j.append(y)
+				else:
+					iday = '01'
+					imonth = '01'
+					fmonth = '12'
+					fday = '31'
+					x= str(i+1)+'-'+imonth+'-'+iday
+					y= str(i+ano_count)+'-'+fmonth+'-'+fday					
+					j.append(x)
+					j.append(y)
+
+			for i in multconj:
+				miniThread.append(i)
+
+		return miniThread		
+
+
+	def runjob(self, data, longitude, latitude, q):
+		
+		print('comeeeeeecou: ', data)
+
+		ee.Initialize();
+
+		#multthreads(self)
 
 		def calculateIndex(image):
 			return image.expression(self.expression);
-		
+
 		point = ee.Geometry.Point([longitude, latitude]);
-		timeSeries = ee.ImageCollection(self.collection_id).filterDate(self.start_date, self.end_date).map(calculateIndex);
+		timeSeries = ee.ImageCollection(self.collection_id).filterDate(data[0], data[1]).map(calculateIndex);
+
 		eeResult = timeSeries.getRegion(point, self.pixel_resolution).getInfo();
-		
+
 		result={}
 		
 		for item in eeResult:
@@ -178,4 +285,34 @@ class EarthEngine(Datasource):
 
 		result = self.removeDuplicate(result, fillValue = self.fill_value);
 
-		return result
+		q.put(result)
+		
+
+	def lockup(self, longitude, latitude):
+
+		dates = self.split_date()
+		
+		QueaueList = []
+		pseudoResult = []
+		result = []
+		
+		for i in dates:
+			q = Queue.Queue()
+			x=Thread(name='Thread',target=self.runjob, args=[i,longitude,latitude,q])
+			x.start()
+			QueaueList.append(q)
+		
+		for i in QueaueList:
+			pseudoResult.append(i.get())
+
+		for i in pseudoResult:
+			for j in i:
+				result.append(j)
+
+		return result	
+
+		
+				
+
+			
+		

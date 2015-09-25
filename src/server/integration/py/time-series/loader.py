@@ -13,12 +13,13 @@ CONF_FILES = {
 }
 
 def getRunPath():
+		
 	dirname, filename = os.path.split(os.path.abspath(__file__))
+
 	return dirname
 
 def getConfFromSection(filepath, sectionName):
 	cp.read(filepath)
-
 	result = {}
 	if cp.has_section(sectionName):
 		for key, values in cp.items(sectionName):
@@ -26,29 +27,37 @@ def getConfFromSection(filepath, sectionName):
 
 	return result
 
+
 def getFilterParams(filterId):
 	filepath = os.path.join(getRunPath(), CONF_FILES['FILTERS'])
 	return getConfFromSection(filepath, filterId)
+
 
 def getLayerParams(layerId):
 	filepath = os.path.join(getRunPath(), CONF_FILES['LAYERS'])
 	return getConfFromSection(filepath, layerId)
 	
-def getDatasouceParams(datasourceId):
+
+def getDatasouceParams(datasourceId):	
 	filepath = os.path.join(getRunPath(), CONF_FILES['DATASOURCES'])
-	params = getConfFromSection(filepath, datasourceId)
+	params = getConfFromSection(filepath, datasourceId)	
 	params['run_path'] = getRunPath()
 	return params
 
-def getDatasource(layerId):
+
+def getDatasource(layerId):	
+
 	layerParams = getLayerParams(layerId)
 
 	datasourceId = layerParams['type']
+	
 	datasourceClass = getattr(datasources, datasourceId)
 
 	datasouceParams = getDatasouceParams(datasourceId)
-
+	
 	return datasourceClass(layerParams, datasouceParams)
+
+
 
 def hasLayer(layerId):
 	filepath = os.path.join(getRunPath(), CONF_FILES['LAYERS'])
