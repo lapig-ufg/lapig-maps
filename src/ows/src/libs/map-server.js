@@ -11,6 +11,16 @@ module.exports = function(app) {
 	var Internal = {};
 	var Mapserver = {};
 
+	Internal.parseCqlFilter = function(params) {
+		if(params['CQL_FILTER']) {
+			var cqlFilter = params['CQL_FILTER'];
+			cqlFilter = cqlFilter.replace(/\'/g,'"')
+			return cqlFilter
+		} else {
+			return ''
+		}
+	}
+
 	Internal.getSldParam = function(params) {
 		
 		var layers;
@@ -32,6 +42,7 @@ module.exports = function(app) {
 
 		var sldParam = Internal.getSldParam(params);
 		var queryParams = querystring.stringify(params);
+		params['CQL_FILTER'] = Internal.parseCqlFilter(params);
 
 		var cmdParams = "QUERY_STRING=map={0}&{1}{2}";
 		cmdParams = utils.printf(cmdParams, [config['path_mapfile'], queryParams, sldParam]);

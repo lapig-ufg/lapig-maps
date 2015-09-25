@@ -59,8 +59,9 @@ module.exports = function(app) {
 			var bbox = params['BBOX'];
 			var width = params['WIDTH'];
 			var height = params['HEIGHT'];
+			var cqlFilter = params['CQL_FILTER'];
 			
-			return [prefix, layers, srs, bbox, width, height].join(',');
+			return [prefix, layers, srs, bbox, width, height, cqlFilter].join(',');
 		} else if(requestType == 'GetCapabilities') {
 
 			var capPrefix = 'CAPABILITIES'
