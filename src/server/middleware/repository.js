@@ -32,12 +32,13 @@ module.exports = function(app) {
 
 								var forEachOne = function(collection, callback) {
 										var name = collection.name.substr(collection.name.indexOf('\.') + 1);
-										
 										if(name != 'indexes') {
 											Repository.db.collection(name, function(err, repository) {
+												if(err)
+													console.log(err)
 
-													Repository.collections[name] = repository;
-													callback();
+												Repository.collections[name] = repository;
+												callback();
 											});
 										} else {
 											callback();
