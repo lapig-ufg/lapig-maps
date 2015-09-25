@@ -302,6 +302,14 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
     delete info.values;
   }
 
+  var filter = ''
+  if (layer.type == 'VECTOR') {
+    filter =  '  VALIDATION\n'
+            + '    "CQL_FILTER" "."\n'
+            + '    "DEFAULT_CQL_FILTER" \'"TRUE"="TRUE"\'\n'
+            + '  END\n'
+            + '  FILTER (%CQL_FILTER%)\n';
+  }
 
   var mapContent =  'LAYER\n'
                   + '  NAME "{name}"\n'
@@ -320,6 +328,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
                   + '  STATUS ON\n'
                   + '  TYPE {type}\n'
                   + '  TEMPLATE "DUMMY"\n'
+                  + filter
                   + offsite
                   + processingScale
                   + 'END\n';

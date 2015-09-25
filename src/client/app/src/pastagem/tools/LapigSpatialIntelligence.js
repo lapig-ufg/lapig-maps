@@ -59,16 +59,154 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     };
   },
 
+  handleLayer: function(layerName, layerTitle, filter, bbox, setupOthers, type, visibility) {
+    var tool = this;
+    var layerManager = tool._layers;
+    var app = tool.target;
+    var mapPanel = tool.target.mapPanel;
+
+    //instance._layers.remove(type)
+
+    if(layerManager.exists(layerName, type)) {
+      var bounds = layerManager.zoomToExtent(bbox);
+
+      layerManager.update(layerName, layerTitle, filter, type, visibility, bounds)
+      
+    } else {
+          
+      if(setupOthers == true)
+        layerManager.setupOthers()
+
+      var bounds = layerManager.zoomToExtent(bbox);
+
+      layerManager.add(layerName, layerTitle, filter, type, visibility, bounds)
+    }
+
+    
+  },
+  _layers: {
+
+    layerCollection: {},
+
+    exists: function(name, type) {
+      return (this.layerCollection[type] != undefined && this.layerCollection[type][name] != undefined);
+    },
+    zoomToExtent: function(bbox) {
+      var coord = bbox.split(',')
+
+      var bounds = new OpenLayers.Bounds();
+      bounds.extend(new OpenLayers.LonLat(coord[0],coord[1]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
+      bounds.extend(new OpenLayers.LonLat(coord[2],coord[3]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
+      
+      mapPanel.map.zoomToExtent(bounds);
+
+      return bounds;
+    },
+    removeAll: function(type) {
+      for(var name in this.layerCollection[type]) {
+        this.remove(name, type);
+      }
+    },
+    remove: function(name, type) {
+      if(this.layerCollection[type][name]) {
+        mapPanel.layers.remove(this.layerCollection[type][name]);
+        this.layerCollection[type][name] = null;
+      }
+    },
+    update: function(name, title, filter, type, visibility, bounds) {
+      this.layerCollection[type][name].beginEdit();
+      this.layerCollection[type][name].data.layer.name = title;
+      this.layerCollection[type][name].data.layer.params['cql_filter'] = filter;
+
+      this.layerCollection[type][name].data.layer.maxExtent = bounds;
+      this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
+      
+      this.layerCollection[type][name].data.layer.setVisibility(visibility);
+
+      this.layerCollection[type][name].data.layer.redraw(true);
+
+      this.layerCollection[type][name].endEdit();
+      this.layerCollection[type][name].commit();
+    },
+    add: function(name, title, filter, type, visibility, bounds) {
+
+      if( this.layerCollection[type] == undefined )
+        this.layerCollection[type] = {}
+
+      var layerConfig = { 
+        source: 'ows', 
+        cql_filter: filter, 
+        name: name, 
+        title: title,
+        visibility: visibility
+      }
+
+      app.createLayerRecord(layerConfig, function(record) {
+        record.json = {};
+
+        this.layerCollection[type][name] = record;
+        this.layerCollection[type][name].beginEdit();
+        
+        this.layerCollection[type][name].data.layer.maxExtent = bounds;
+        this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
+
+        this.layerCollection[type][name].data.layer.name = layerConfig.title;
+        this.layerCollection[type][name].endEdit();
+        this.layerCollection[type][name].commit();
+
+        mapPanel.layers.add(this.layerCollection[type][name]);
+      }.bind(this) );
+    
+    },
+    setupOthers: function() {
+      mapPanel.layers.each(function(layerRec) {
+        var layer = layerRec.data.layer;
+        
+        if(layer instanceof OpenLayers.Layer.WMS) {
+          layer.setVisibility(false);
+        } else if(layerRec.data.title == "Bing Roads") {
+          layer.setVisibility(true);
+        }
+      });
+    }
+  },
+
   getOptionsCmp: function(){
 
     var instance = this;
 
-    var checkSubmitBtn = function() {
+    var requestMetadata = function(callback) {
+      var metadataUrl = 'spatial/livestock/metadata';
+
+      Ext.Ajax.request({
+      url: metadataUrl,
+      method: 'GET',
+      timeout: 360000,
+      success: function(request) {
+        instance.queryMetadata = JSON.parse(request.responseText);
+        instance.queryMetadata.layers = instance.queryMetadata.layers.reverse();
+        callback()
+      },                                    
+    });
+
+    }
+
+    var checkSubmitBtn = function(obj, record) {
+      
+      if(obj.id == 'lapig_spatialintelligence::cmb-state') {
+        instance.selectedState = record
+      }
+
       var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
       var selectedSubject = Ext.getCmp('lapig_spatialintelligence::cmb-subject').getValue();
       var selectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
       var selectedSort = Ext.getCmp('lapig_spatialintelligence::cmb-sort').getValue();
       var btnSubmit = Ext.getCmp('lapig_spatialintelligence::btn-submit');
+
+      instance._layers.removeAll('city');
+      instance._layers.removeAll('state');
+
+      gridInfo.getRootNode().removeAll();
 
       btnSubmit.setDisabled( !(selectedSubject && selectedState && selectedSort) );
       gridInfo.setDisabled(true);
@@ -84,61 +222,28 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       var loadMask = createLoadDataMask(gridInfoId)
       loadMask.show()
 
-      var params = 'state=' + selectedState + '&sort=' + selectedSort
-      gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
-      instance.csvUrl = 'spatial/' + selectedSubject + '/csv?' + params;
+      requestMetadata(function() {
 
-      var newNode = new Ext.tree.AsyncTreeNode({text: 'Root'});
-      gridInfo.loader.load(newNode, function(newNode) {
-        gridInfo.setRootNode(newNode);
-        loadMask.hide();
-        gridInfo.setDisabled(false);
-       
-        if(! instance.layerWasInserted ) {
+        var params = 'state=' + selectedState + '&sort=' + selectedSort
+        gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
+        instance.csvUrl = 'spatial/' + selectedSubject + '/csv?' + params;
 
-          instance.layerWasInserted = true;
+        var newNode = new Ext.tree.AsyncTreeNode({text: 'Root'});
+        gridInfo.loader.load(newNode, function(newNode) {
+          gridInfo.setRootNode(newNode);
+          loadMask.hide();
+          gridInfo.setDisabled(false);
+          
+          var layerName = instance.queryMetadata.region.layer;
+          var layerTitle = instance.selectedState.data.label + " - " + instance.queryMetadata.region.title;
+          var filter = "'[" + instance.queryMetadata.region.columns.stateAb + "]' = '" + instance.selectedState.data.id + "'";
+          var bbox = instance.selectedState.data.bbox
 
-          Ext.Ajax.request({
-            url: 'layers/5602d9475444e1c047477691',
-            method: 'GET',
-            success: function(request) {
-              layerData = JSON.parse(request.responseText);
+          instance.handleLayer(layerName, layerTitle, filter, bbox, true, 'state', true);
 
-              var filter = "<Filter>"
-                           +  "<PropertyIsEqualTo>"
-                           +  "<PropertyName>NM_MUNICIP</PropertyName>"
-                           +   "<Literal>INHUMAS</Literal>"
-                           +  "</PropertyIsEqualTo>"
-                           + "</Filter>";
-
-              var layerConfig = { source: 'ows', filter: filter }
-
-              if (layerData.type == 'MULTIPLE')
-                layerConfig.name = layerData.last_name;
-              else
-                layerConfig.name = layerData.basepath;
-
-              instance.target.createLayerRecord(layerConfig, function(record) {
-                var mapPanel = instance.target.mapPanel;
-                record.json = layerData;
-                
-                mapPanel.layers.each(function(layerRec) {
-                  var layer = layerRec.data.layer;
-                  
-                  if(layer instanceof OpenLayers.Layer.WMS) {
-                    layer.setVisibility(false);
-                  } else if(layerRec.data.title == "Bing Roads") {
-                    layer.setVisibility(true);
-                  }
-                })
-                
-                mapPanel.layers.add([record]);
-              });
-            },                                    
-          });
-        }
-
-      });
+        });
+        
+      })
 
 
     }
@@ -199,8 +304,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           },
           store:  new Ext.data.ArrayStore({
             fields: [
-              {name: 'label'}, 
-              {name: 'id'},
+              {name: 'id'}, 
+              {name: 'label'},
               {name: 'bbox'}
             ],
             data: [
@@ -217,15 +322,15 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               ['MG', 'Minas Gerais',  '-51.04546754380609,-22.92226694061974,-39.85645274188406,-14.23273478616196'],
               ['MS', 'Mato Grosso Do Sul',  '-58.16704468477753,-24.06790392043327,-50.92265438320943,-17.16619496179095'],
               ['MT', 'Mato Grosso', '-61.63282458549314,-18.04113392716333,-50.22435669088633,-7.348647867021772'],
-              ['PA', 'Pará',  '-58.89713089740838,-9.840743617778214,46.0605348905208,2.591355735126576'],
+              ['PA', 'Pará',  '-58.89713089740838,-9.840743617778214,-46.0605348905208,2.591355735126576'],
               ['PB', 'Paraíba', '-38.76499490088651,-8.302540221840562,-34.79333472998506,-6.025516029553926'],
               ['PE', 'Pernambuco',  '-41.35795780124156,-9.482478264310442,-32.39219016381675,-3.830062812902576'],
               ['PI', 'Piauí', '-45.99387843152558,-10.92833248807644,-40.37014141599888,-2.738941203025053'],
               ['PR', 'Paraná',  '-54.61863413982433,-26.71680856248925,-48.02306675959305,-22.51582628641998'],
-              ['RJ', 'Rio De Janeiro',  '-44.88849349002591,-23.36769836480608,40.9563947928047,-20.76353799938587'],
+              ['RJ', 'Rio De Janeiro',  '-44.88849349002591,-23.36769836480608,-40.9563947928047,-20.76353799938587'],
               ['RN', 'Rio Grande Do Norte', '-38.58118965671923,-6.982330999424829,-34.96821735468426,-4.831325868341867'],
-              ['RO', 'Rondônia',  '-66.80573435974838,-13.6932892296135,59.77383540127021,-7.968911558440769'],
-              ['RR', 'Roraima', '-64.82471613282798,-1.580279010122118,58.8863839458957,5.272155629716081'],
+              ['RO', 'Rondônia',  '-66.80573435974838,-13.6932892296135,-59.77383540127021,-7.968911558440769'],
+              ['RR', 'Roraima', '-64.82471613282798,-1.580279010122118,-58.8863839458957,5.272155629716081'],
               ['RS', 'Rio Grande Do Sul', '-57.6432174962109,-33.75158274659308,-49.69114252468573,-27.08011349617855'],
               ['SC', 'Santa Catarina',  '-53.83584077230005,-29.35093805532915,-48.35831004252309,-25.9555923981206'],
               ['SE', 'Sergipe', '-38.24469318793231,-11.56820208985067,-36.39353085815849,-9.514607787467376'],
@@ -322,17 +427,35 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         listeners: {
           'dblclick': function(node) {
             var attr = node.attributes;
-            if(attr.bbox) {
-              var mapPanel = instance.target.mapPanel;
-              
-              coord = attr.bbox.split(',')
+            var parentAttr = node.parentNode.attributes;
 
-              var bounds = new OpenLayers.Bounds();
-              bounds.extend(new OpenLayers.LonLat(coord[0],coord[1]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
-              bounds.extend(new OpenLayers.LonLat(coord[2],coord[3]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
+            if(attr.bbox) {
+              var bbox = attr.bbox;
+              var layers = instance.queryMetadata.layers;
+              var columnCityCode = instance.queryMetadata.region.columns.cityCode;
               
-              mapPanel.map.zoomToExtent(bounds);
+              instance._layers.removeAll('city');
+              
+              layers.forEach(function(layer) {
+
+                if(layer.visualization) {
+                  var layerName = layer.table;
+                  var layerTitle = attr['info'] + " - " + layer.title;
+                  var filter = "'[" + columnCityCode + "]' = '" + attr['COD_MUN'] + "'";
+                  var bbox = attr.bbox;
+
+                  var visibility = (parentAttr.table == layerName) ? true : false;
+
+                  instance.handleLayer(layerName, layerTitle, filter, bbox, false, 'city', visibility);
+                }
+
+              })
             }
+
+            /*if(attr['layer'] && attr['column'] && attr['title']) {
+              
+            }*/
+
           }
         }
     };

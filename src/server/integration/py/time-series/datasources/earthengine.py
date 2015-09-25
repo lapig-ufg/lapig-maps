@@ -19,10 +19,7 @@ class EarthEngine(Datasource):
 		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
 		self.tredao = int(datasourceParams['threads'])
 		
-
-
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
-
 
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
@@ -259,13 +256,9 @@ class EarthEngine(Datasource):
 		return miniThread		
 
 
-	def runjob(self, data, longitude, latitude, q):
-		
-		print('comeeeeeecou: ', data)
+	def runjob(self, credentials, data, longitude, latitude, q):
 
-		ee.Initialize();
-
-		#multthreads(self)
+		ee.Initialize(credentials);
 
 		def calculateIndex(image):
 			return image.expression(self.expression);
@@ -298,7 +291,7 @@ class EarthEngine(Datasource):
 		
 		for i in dates:
 			q = Queue.Queue()
-			x=Thread(name='Thread',target=self.runjob, args=[i,longitude,latitude,q])
+			x=Thread(name='Thread',target=self.runjob, args=[self.credentials, i, longitude, latitude, q])
 			x.start()
 			QueaueList.append(q)
 		

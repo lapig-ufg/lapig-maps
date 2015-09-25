@@ -44,7 +44,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 								ptype: "gx_treenodecomponent"
 						}]
 				}, this.treeConfig));
-				
+
 				return tree;        
 		},
 		
@@ -53,6 +53,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 				var instance = this;
 
 				gxp.plugins.LapigLayerManager.superclass.configureLayerNode.apply(this, arguments);
+				
 				if (attr.layer instanceof OpenLayers.Layer.WMS) {
 
 					attr.expanded = true;
@@ -63,129 +64,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					layerId = layerRecord.json._id;
 					layerLastDate = layerRecord.json.last_date;
 					var url = '/layers/years/'+layerId;
-
-					var dateStore = new Ext.data.Store({
-						autoLoad: true,
-						proxy: new Ext.data.HttpProxy({ url:url, method: 'GET'}),
-				    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
-							{name: 'name', mapping: 'name'},
-							{name: 'year', mapping: 'year'},
-							{name: 'last_date', mapping: 'last_date'}     
-						])
-					});
-
-					var resultYear = new Ext.XTemplate(
-							'<tpl for="."><div class="year-item">',
-									'<h4>{year}</h4>',
-							'</div></tpl>'
-					);
-
-					var btnNextPrevDate = function(btn) {
-						var comboDate = btn.ownerCt.items.itemAt(1);
-
-        		var lastIndex = (comboDate.store.getTotalCount() - 1);
-        		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : lastIndex;
-        		if(btn.getText() == '<')
-        			var newIndex = index - 1
-        		else
-        			var newIndex = index + 1
-        		
-        		var record = comboDate.store.getAt(newIndex);
-						comboDate.setValue(record.data.year);
-						comboDate.select(newIndex);
-						comboDate.fireEvent('select', comboDate, record);
-					}
-
-					var checkDate = function(ownerCt) {
-						var prevBtn = ownerCt.items.itemAt(0);
-						var comboDate = ownerCt.items.itemAt(1);
-						var nextBtn = ownerCt.items.itemAt(2);
-
-						var lastIndex = (comboDate.store.getTotalCount() - 1);
-        		var index = comboDate.selectedIndex;
-        		console.log(index);
-        		
-        		if(index == 0)
-        			prevBtn.disable();
-        		else
-        			prevBtn.enable();
-
-        		if(index == lastIndex)
-        			nextBtn.disable();
-        		else
-        			nextBtn.enable();
-        			
-					}
-
-					var boxDate = {
-					    xtype: 'compositefield',
-					    labelWidth: 140,
-					    labelStyle: "font-size: 11px; color: #777777",
-					    items: [
-					        {
-					            xtype: 'button',
-					            width: 20,
-					            text: '<',
-					            listeners: {
-					            	click: btnNextPrevDate
-					            }
-					        },
-					        {
-										wmsLayer: attr.layer,
-										xtype:'combo',
-										store: dateStore,
-										itemSelector: 'div.year-item',
-										width: 100,
-										displayField:'year',
-										tpl: resultYear,
-										typeAhead: true,
-										editable: false,
-										triggerAction: 'all',
-										queryParam: 'years',
-										fieldLabel: 'Data',
-										value: layerLastDate,
-										lazyInit: false,
-										listeners: {
-											select: function(combo, record, index) {
-
-													var layerConfig = {
-														source: 'ows',
-													  	name: record.data.name
-													}
-
-													instance.target.createLayerRecord(layerConfig, function(newRecord) {
-														layerRecord = instance.target.mapPanel.layers.getByLayer(combo.initialConfig.wmsLayer);
-
-														console.log(layerRecord)
-
-														layerRecord.beginEdit();
-														layerRecord.data.name = newRecord.data.name;
-														layerRecord.data.prefix = newRecord.data.prefix;
-														layerRecord.data.title = newRecord.data.title;
-														layerRecord.data.layer.name = newRecord.data.layer.name
-														layerRecord.data.layer.params = newRecord.data.layer.params
-
-														layerRecord.data.layer.redraw(true);
-
-														layerRecord.endEdit();
-														layerRecord.commit();
-
-														checkDate(combo.ownerCt);
-													});
-											}
-										}
-									},
-									{
-					            xtype: 'button',
-					            width: 20,
-					            text: '>',
-					            disabled: true,
-					            listeners: {
-					            	'click': btnNextPrevDate
-					            }
-					        },
-					    ]
-					};
 
 					layerOptions = {
 						layout: 'form',
@@ -243,8 +121,129 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						]
 					};
 
-					if (layerRecord.json.type == "MULTIPLE"){
-							layerOptions.items.unshift(boxDate);
+					if (layerRecord.json.type == "MULTIPLE") {
+						var dateStore = new Ext.data.Store({
+							autoLoad: true,
+							proxy: new Ext.data.HttpProxy({ url:url, method: 'GET'}),
+					    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
+								{name: 'name', mapping: 'name'},
+								{name: 'year', mapping: 'year'},
+								{name: 'last_date', mapping: 'last_date'}     
+							])
+						});
+
+						var resultYear = new Ext.XTemplate(
+								'<tpl for="."><div class="year-item">',
+										'<h4>{year}</h4>',
+								'</div></tpl>'
+						);
+
+						var btnNextPrevDate = function(btn) {
+							var comboDate = btn.ownerCt.items.itemAt(1);
+
+	        		var lastIndex = (comboDate.store.getTotalCount() - 1);
+	        		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : lastIndex;
+	        		if(btn.getText() == '<')
+	        			var newIndex = index - 1
+	        		else
+	        			var newIndex = index + 1
+	        		
+	        		var record = comboDate.store.getAt(newIndex);
+							comboDate.setValue(record.data.year);
+							comboDate.select(newIndex);
+							comboDate.fireEvent('select', comboDate, record);
+						}
+
+						var checkDate = function(ownerCt) {
+							var prevBtn = ownerCt.items.itemAt(0);
+							var comboDate = ownerCt.items.itemAt(1);
+							var nextBtn = ownerCt.items.itemAt(2);
+
+							var lastIndex = (comboDate.store.getTotalCount() - 1);
+	        		var index = comboDate.selectedIndex;
+	        		
+	        		if(index == 0)
+	        			prevBtn.disable();
+	        		else
+	        			prevBtn.enable();
+
+	        		if(index == lastIndex)
+	        			nextBtn.disable();
+	        		else
+	        			nextBtn.enable();
+	        			
+						}
+
+						var boxDate = {
+						    xtype: 'compositefield',
+						    labelWidth: 120,
+						    height: 22,
+						    labelStyle: "font-size: 11px; color: #777777",
+						    items: [
+						        {
+						            xtype: 'button',
+						            width: 20,
+						            text: '<',
+						            listeners: {
+						            	click: btnNextPrevDate
+						            }
+						        },
+						        {
+											wmsLayer: attr.layer,
+											xtype:'combo',
+											store: dateStore,
+											//itemSelector: 'div.year-item',
+											width: 100,
+											displayField:'year',
+											tpl: resultYear,
+											typeAhead: true,
+											editable: false,
+											triggerAction: 'all',
+											queryParam: 'years',
+											fieldLabel: 'Data',
+											value: layerLastDate,
+											lazyInit: false,
+											listeners: {
+												select: function(combo, record, index) {
+
+														var layerConfig = {
+															source: 'ows',
+														  	name: record.data.name
+														}
+
+														instance.target.createLayerRecord(layerConfig, function(newRecord) {
+															layerRecord = instance.target.mapPanel.layers.getByLayer(combo.initialConfig.wmsLayer);
+
+															layerRecord.beginEdit();
+															layerRecord.data.name = newRecord.data.name;
+															layerRecord.data.prefix = newRecord.data.prefix;
+															layerRecord.data.title = newRecord.data.title;
+															layerRecord.data.layer.name = newRecord.data.layer.name
+															layerRecord.data.layer.params = newRecord.data.layer.params
+
+															layerRecord.data.layer.redraw(true);
+
+															layerRecord.endEdit();
+															layerRecord.commit();
+
+															checkDate(combo.ownerCt);
+														});
+												}
+											}
+										},
+										{
+						            xtype: 'button',
+						            width: 20,
+						            text: '>',
+						            disabled: true,
+						            listeners: {
+						            	'click': btnNextPrevDate
+						            }
+						        },
+						    ]
+						};
+
+						layerOptions.items.unshift(boxDate);
 					}
 
 					var layerStatusChange = function(target, status) {

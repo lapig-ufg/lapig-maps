@@ -103,7 +103,6 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
              success: function(response, opts) {
                 Ext.getBody().unmask();
                 instance.attributes = JSON.parse(response.responseText);
-                console.log(instance.attributes)
              },
             failure: function(response, opts){
                 Ext.getBody().unmask();
@@ -256,7 +255,6 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 feature = features[i];
 
                 for (var key in feature.attributes) {
-                  console.log(key, this.attributes[key]);
                   if(this.attributes[key]) {
                     var alias = this.attributes[key];
                     

@@ -635,10 +635,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   fields: [ 'date', 'original', 'interpolation' ]
               }),
               xField: 'date',
-              yAxis: new Ext.chart.NumericAxis({
-                  displayName: 'games',
-                  labelRenderer : Ext.util.Format.numberRenderer('0,0')
-              }),
+              yAxis: new Ext.chart.NumericAxis(),
               xAxis: new Ext.chart.TimeAxis({
                 labelRenderer: function(date) { 
                   return date.format("m.Y"); ; 

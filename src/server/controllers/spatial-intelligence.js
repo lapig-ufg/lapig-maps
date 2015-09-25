@@ -8,54 +8,67 @@ module.exports = function(app) {
 	var Internal = {};
 	var Utils = app.libs.utils
 	var config = app.config
-	
-	var writer = csvWriter({
-	  separator: '\t',
-	  newline: '\n',
-	  headers: undefined,
-	  sendHeaders: true
-	});
 
 	var subjects = {
 		'livestock': {
 			'label': 'Pecuária',
-			'table': 'livestock',
-			'descriptors': [
-				{
-						'title': 'Área de Pastagem'
-					,	'column': 'PAST_HA'
-					,	'precision': 2
-					,	'unitMeasure': ' ha'
-				},
+			'region': {
+				'layer': 'cities',
+				'title': 'Municípios',
+				'columns': {
+					'stateAb': 'NM_UF',
+					'cityCode': 'COD_MUN'
+				}
+			},
+			'layers': [
 				{
 						'title': 'Rebanho Bovino (2013)'
 					,	'column': 'REB_2013'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_cattle_heads_2013'
 					,	'precision': 0
 					,	'unitMeasure': ' cbçs'
+					,	'visualization': false
 				},
 				{
-						'title': 'Qtd. matadouros e Frigoríficos'
-					,	'column': 'N_FRIG_MAT'
+						'title': 'Frigoríficos/Matadouros'
+					,	'column': 'PK_UID'
+					,	'operation': 'COUNT'
+					,	'table': 'livestock_slaughterhouse'
 					,	'precision': 0
 					,	'unitMeasure': ''
-				},
-				{
-						'title': 'Área desmatada (2014)'
-					,	'column': 'DE_KM2_14'
-					,	'precision': 2
-					,	'unitMeasure': ' km²'
+					,	'visualization': true
 				},
 				{
 						'title': 'Área queimada (2014)'
-					,	'column': 'QE_KM2_14'
-					,	'precision': 2
-					,	'unitMeasure': ' km²'
-				}
+					,	'column': 'QUEI_HA_14'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_burned_2014'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Área desmatada (2014)'
+					,	'column': 'DESM_HA_14'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_deforestation_2014'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Áreas de Pastagem'
+					,	'column': 'PAST_HA'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_grasslands'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
 			]
 		}
 	}
-
-	var sectionDescriptors = 
 
 	Internal.getSqlForCsv = function(table, columns, state) {
 		return 		"SELECT NOME cidade, " + columns.join(',') 
@@ -64,16 +77,25 @@ module.exports = function(app) {
 						+ " ORDER BY cidade ASC "
 	}
 
-	Internal.getSql = function(table, column, state, sort) {
-		return 		"SELECT NOME info, " + column + " value, "
-						+ " (MbrMinX(Geometry) || ',' || MbrMinY(Geometry) || ',' || MbrMaxX(Geometry) || ',' || MbrMaxY(Geometry)) as bbox "
+	Internal.getSql = function(table, operation, column, state, sort) {
+		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, "
+						+ " (MbrMinX(EXTENT(Geometry)) || ',' || MbrMinY(EXTENT(Geometry)) || ',' || MbrMaxX(EXTENT(Geometry)) || ',' || MbrMaxY(EXTENT(Geometry))) as bbox "
 						+ " FROM " + table
-						+ " WHERE \"UF\" = '" + state + "' AND " + column + " > 0"
+						+ " WHERE \"NM_UF\" = '" + state + "'"
+						+ " GROUP BY info"
 						+ " ORDER BY " + sort + ((sort == 'value') ? " DESC" : " ASC")
 	}
 
 	Internal.getSubject = function(subjectId) {
 		return ( subjects[subjectId] ) ? subjects[subjectId] : null;
+	}
+
+	Spatial.metadata = function(request, response) {
+		var subjectId = request.param('subject', 'livestock');
+
+		var subject = Internal.getSubject(subjectId);
+		response.send(subject)
+		response.end()
 	}
 
 	Spatial.query = function(request, response) {
@@ -85,34 +107,34 @@ module.exports = function(app) {
 		var subject = Internal.getSubject(subjectId);
 
 		if(subject) {
-			var table = subject.table;
-			var descriptors = subject.descriptors;
+			var layers = subject.layers;
 
 		  var spatialIntelligenceDb = new sqlite3.Database(config.spatialIntelligenceDb);
 		  spatialIntelligenceDb.spatialite(function() {
 
 		  	var result = [];
 
-		  	var descEach = function(descriptor, next) {
+		  	var descEach = function(layer, next) {
 		  		var section = {
-			  		info: descriptor.title,
+			  		info: layer.title,
+			  		table: layer.table,
 			  		value: 0,
 			  		iconCls:'task-folder',
 			  		children: []
 			  	};
 		  		
-			  	var sql = Internal.getSql(table, descriptor.column, state, sort);
-
+			  	var sql = Internal.getSql(layer.table, layer.operation, layer.column, state, sort);
+			  	console.log(sql);
 			  	var rowEach = function(err, row) {
 			  		row.leaf = true;
 				   	row.iconCls = 'task';
 				   	section['value'] += row['value'];
-				   	row['value'] = Utils.numberFormat(row['value'], descriptor.precision, '.', ',') + descriptor.unitMeasure;
+				   	row['value'] = Utils.numberFormat(row['value'], layer.precision, '.', ',') + layer.unitMeasure;
 				   	section.children.push(row);
 			  	}
 
 			  	var rowComplete = function() {
-			  		section['value'] = Utils.numberFormat(section['value'], descriptor.precision, '.', ',') + descriptor.unitMeasure;
+			  		section['value'] = Utils.numberFormat(section['value'], layer.precision, '.', ',') + layer.unitMeasure;
 					  result.push(section);
 					  next();
 			  	}
@@ -125,14 +147,13 @@ module.exports = function(app) {
 					response.end()
 		  	}
 
-		  	async.eachSeries(descriptors, descEach, descComplete);
+		  	async.eachSeries(layers, descEach, descComplete);
 
 		  });
 
 		} else {
 			response.end('invalid subject');
 		}
-
 
 	};
 
@@ -140,46 +161,73 @@ module.exports = function(app) {
 
 		var subjectId = request.param('subject', 'livestock');
 		var state = request.param('state', 'GO');
+		var sort = request.param('sort', 'value');
 
 		var subject = Internal.getSubject(subjectId);
 
 		if(subject) {
-			
-			var table = subject.table;
-			var filename = [table, '_br-', state].join('').toLowerCase()
-			var columns = [];
+			var layers = subject.layers;
 
-			subject.descriptors.forEach(function(descriptor) {
-				columns.push(descriptor.column);
-			});
+			var filename = [subject.label, "-", state].join('').toLowerCase()
 
-		  var spatialIntelligenceDb = new sqlite3.Database(config.spatialIntelligenceDb);
-		  spatialIntelligenceDb.spatialite(function() {
+			var spatialIntelligenceDb = new sqlite3.Database(config.spatialIntelligenceDb);
+			spatialIntelligenceDb.spatialite(function() {
 
-		  	var sql = Internal.getSqlForCsv(table, columns, state);
+				var result = {};
 
-		  	response.set('Content-Type', 'text/csv');
-		  	response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
+				console.log(result);
 
-		  	writer.pipe(response)
+				var layerEach = function(layer, next) {
+					
+			  	var sql = Internal.getSql(layer.table, layer.operation, layer.column, state, sort);
+			  	
+			  	var rowEach = function(err, row) {
+			  		var columnName = layer.title + ' -' + layer['unitMeasure'];
 
-		  	var rowEach = function(err, row) {
-					writer.write(row);
-		  	}
+			  		if(result[row['info']] == undefined) {
+			  			result[row['info']] = {};
+			  		}
 
-		  	var rowComplete = function() {
+			  		result[row['info']][subject.region.title] = row['info'];
+						result[row['info']][columnName] = row['value'];
+			  	}
+
+			  	var rowComplete = function() {
+					  next();
+			  	}
+
+			  	spatialIntelligenceDb.each(sql, rowEach, rowComplete)
+				}
+
+				var layerComplete = function() {
+
+					response.set('Content-Type', 'text/csv');
+			  	response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
+
+			  	var writer = csvWriter({
+					  separator: '\t',
+					  newline: '\n',
+					  headers: undefined,
+					  sendHeaders: true
+					});
+
+			  	writer.pipe(response)
+
+					for(info in result) {
+						console.log(result[info])
+						writer.write(result[info])
+					}
+
 					writer.end();
 					response.end();
-		  	}
+				}
 
-		  	spatialIntelligenceDb.each(sql, rowEach, rowComplete)
+				async.eachSeries(layers, layerEach, layerComplete);
 
-		  });
-
+			});
 		} else {
 			response.end('invalid subject');
 		}
-
 
 	}
 
