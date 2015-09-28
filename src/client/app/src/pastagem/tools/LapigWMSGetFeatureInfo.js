@@ -116,7 +116,8 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
      */
     addActions: function() {
         this.popupCache = {};
-        
+        var map = this.target.mapPanel.map;
+
         var actions = gxp.plugins.LapigWMSGetFeatureInfo.superclass.addActions.call(this, [{
             tooltip: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
@@ -125,6 +126,14 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
             enableToggle: true,
             allowDepress: true,
             toggleHandler: function(button, pressed) {
+                
+                if(pressed) {
+                    OpenLayers.Element.addClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
+                } else {
+                    OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
+                    OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigLoading");
+                }
+
                 for (var i = 0, len = info.controls.length; i < len; i++){
                     if (pressed) {
                         info.controls[i].activate();
@@ -173,7 +182,11 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     infoFormat: infoFormat,
                     vendorParams: vendorParams,
                     eventListeners: {
+                        beforegetfeatureinfo: function(evt) {
+                            OpenLayers.Element.addClass(map.viewPortDiv, "olControlLapigLoading");
+                        },
                         getfeatureinfo: function(evt) {
+                            OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigLoading");
                             var title = layer.name;
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);

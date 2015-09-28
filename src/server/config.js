@@ -5,7 +5,7 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": appRoot+"/integration/sqlite/spatial-intelligence.sqlite",
+		"spatialIntelligenceDb": appRoot+"/../ows/data_dir/catalog/Ocultos/spatial-intelligence.sqlite",
 		"hostUrl": 'http://10.0.0.5:5000',
 		"ows": "http://su03:5500",
 		"clientDir": appRoot + "/../client/build",

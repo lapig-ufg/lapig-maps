@@ -33,6 +33,7 @@
  * @require tools/LapigZoom.js
  * @require tools/LapigRasterSeries.js
  * @require tools/LapigSpatialIntelligence.js
+ * @require tools/LapigSpatialIntelligenceBtn.js
  * @require tools/LapigRasterSeriesBtn.js
  * @require tools/LapigWMSGetFeatureInfo.js
  *
@@ -82,6 +83,7 @@ var app = new gxp.LapigViewer({
             height: 240,
             collapsed: true,
             collapsible: true,
+            collapseMode: "mini",
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
@@ -93,7 +95,7 @@ var app = new gxp.LapigViewer({
 						region: "east",
             width: 330,
             split: true,
-            collapsed: false,
+            collapsed: true,
             collapsible: true,
             collapseMode: "mini",
             header: true,
@@ -184,6 +186,10 @@ var app = new gxp.LapigViewer({
 			}
 			, {
 					ptype: "gxp_lapigrasterseriesbtn",
+					actionTarget: {target: "map.tbar", index: 19}
+			}
+			, {
+					ptype: "lapig_spatialintelligencebtn",
 					actionTarget: {target: "map.tbar", index: 19}
 			}
 			, {

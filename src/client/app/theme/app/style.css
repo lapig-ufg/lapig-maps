@@ -24,6 +24,14 @@ body {
     cursor : crosshair;
 }
 
+.olControlLapigWmsGetFeatureInfo {
+    cursor: help;
+}
+
+.olControlLapigLoading {
+    cursor: progress;
+}
+
 .olControlAttribution {
     text-align: right;
     font-size: 9px;
