@@ -1,41 +1,66 @@
 var 	ChildProcess = 	require('child_process')
 		,	async = require('async')
-		, unidecode = require('unidecode');;
+		, unidecode = require('unidecode')
+		,	csvWriter = require('csv-write-stream');
 
 module.exports = function(app) {
 
 	var TimeSerie = {};
+	var Internal = {};
+
+	var cache = app.libs.cache;
 	var config = app.config;
-	var rasterTimeSeries = app.libs.rasterTimeSeries;
+
+	Internal.getCacheKey = function(id, longitude, latitude, callback) {
+		return [id, longitude, latitude].join(',');
+	}
+
+	Internal.getTimeSeries = function(id, longitude, latitude, callback) {
+		var cacheKey = Internal.getCacheKey(id, longitude, latitude);
+
+  	cache.get(cacheKey, function(result) {
+  		if(result) {
+  			callback(result)
+  		} else {
+				Internal.requestTimeSeries(id, longitude, latitude, function(result) {
+					cache.set(cacheKey, result);
+					callback(result)
+				});
+  		}
+  	});
+	}
+
+	Internal.requestTimeSeries = function(id, longitude, latitude, callback) {
+		
+		var params = id + " " + longitude + " " + latitude;
+		var cmd ="python " + config.pathTimeSeries + " " + params;
+		
+		ChildProcess.exec(cmd, function (error, stdout, stderr) {
+				
+			if(stderr)
+				console.log(stderr)
+			
+	   	stdout=stdout.replace(/\'/g, '"');
+	 		console.log(stdout)
+
+	   	var result = JSON.parse(stdout);
+	   	
+	   	callback(result);
+	   	
+	 	});
+	}
 
 	TimeSerie.data = function(request, response) {
 		
-	  	var lon = request.param('longitude');
-	  	var lat = request.param('latitude');
-	  	var id = request.param('id');
+  	var id = request.param('id');
+  	var latitude = request.param('latitude');
+  	var longitude = request.param('longitude');
 		
-		var path ="python "+config.pathTimeSeries+" "+id+" "+lon+" "+lat;
+		Internal.getTimeSeries(id, longitude, latitude, function(result) {
+	  	response.send(result);
+	  	response.end();
+		})
 
-		console.log(path);
-		
-		ChildProcess.exec(path, function (error, stdout, stderr) {
-			
-			console.log(stderr)	
-				
-				if(stderr) {
-					console.log(stderr)
-				}
-				
-		   	stdout=stdout.replace(/\'/g, '"');
-		 	console.log(stdout)
-
-		   	var result = JSON.parse(stdout);
-		   	
-		   	response.send(result);		   	
-		   	response.end();
-
-	 	});
-		
 	};
 
 	TimeSerie.byId = function(request, response){
@@ -59,7 +84,7 @@ module.exports = function(app) {
 		timeSeriesCollection.distinct('subject', { 'project': { $in: projects } }, function(err,subjects) {
 
 			var result = [];
-			console.log(projects)
+			
 			var interate = function(subject, next){
 				var subjectObj = {
 							text:subject,
@@ -119,78 +144,47 @@ module.exports = function(app) {
 
 	};
 	
-	TimeSerie.chart = function(request, response) {
-  
-	  response.connection.setTimeout(0);
+	TimeSerie.csv = function(request, response) {
+		var id = request.param('id');
+  	var latitude = request.param('latitude');
+  	var longitude = request.param('longitude');
+		
+		Internal.getTimeSeries(id, longitude, latitude, function(result) {
 
-	  var lineLayer = request. param('lineLayer', '');
-	  var barLayer = request. param('barLayer', '');
-	  var lat = request. param('lat', -16.4804);
-	  var lon = request. param('lon', -48.8232);
+			var filename = ('time-series-' + id).toLowerCase();
 
-	  var result = {
-	      bar: {},
-	      line: {},
-	      value: {}
-	  };
-	  var data = {};
+			response.set('Content-Type', 'text/csv');
+	  	response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
 
-	  rasterTimeSeries.pixelValue(lineLayer, lat, lon, function(lineResult) {
-	    rasterTimeSeries.pixelValue(barLayer, lat, lon, function(barResult) {
+	  	var headers = ['Data']
 
-	      if(lineResult) {
+	  	result.series.forEach(function(serie) {
+	  		headers.push(serie.label)
+	  	});
 
-	        result.line = {
-	          key: lineResult.key,
-	          name: lineResult.name
-	        };
+	  	headers.push('Longitude')
+	  	headers.push('Latitude')
+	  	
+	  	var writer = csvWriter({
+			  separator: '\t',
+			  newline: '\n',
+			  headers: headers,
+			  sendHeaders: true
+			});
 
-	        for (var strDate in lineResult.values) {
-	            var name = lineResult.name;
+	  	writer.pipe(response)
 
-	            if(!result.value[strDate])
-	              result.value[strDate] = { lon: lon, lat: lat, strDate: strDate};
+	  	result.values.forEach(function(value) {
+	  		value.push(longitude);
+	  		value.push(latitude);
+	  		writer.write(value)
+	  	})
 
-	            result.value[strDate].date = lineResult.values[strDate][0];
-	            result.value[strDate][name] = lineResult.values[strDate][1];
-	        }
+			writer.end();
+			response.end();
+		})
 
-	      }
-
-	      if(barResult) {
-
-	        result.bar = {
-	          key: barResult.key,
-	          name: barResult.name
-	        };
-
-	        for (var strDate in barResult.values) {
-	            var name = barResult.name;
-
-	            if(!result.value[strDate])
-	              result.value[strDate] = { lon: lon, lat: lat, strDate: strDate};
-
-	            result.value[strDate].date = barResult.values[strDate][0];
-	            result.value[strDate][name] = barResult.values[strDate][1];
-	        }
-	      }
-
-	      var valuesArray = [];
-	      for (var i in result.value)
-	        valuesArray.push(result.value[i]);
-
-	      valuesArray.sort(function(a, b ){
-	        return a.date - b.date;
-	      });
-
-	      result.value = valuesArray;
-
-	      response.render('chart-page.ejs', { resultado: result });
-
-	    });
-	  });
-
-	};
+	}
 	
 	return TimeSerie;
 }

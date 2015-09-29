@@ -175,8 +175,6 @@ module.exports = function(app) {
 
 				var result = {};
 
-				console.log(result);
-
 				var layerEach = function(layer, next) {
 					
 			  	var sql = Internal.getSql(layer.table, layer.operation, layer.column, state, sort);
@@ -214,7 +212,6 @@ module.exports = function(app) {
 			  	writer.pipe(response)
 
 					for(info in result) {
-						console.log(result[info])
 						writer.write(result[info])
 					}
 

@@ -276,54 +276,56 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						style: {
 								'margin-top': '10px'
 						},
-						columns: [{
+						columns: [
+							{
 								id: 'nome',
 								header: 'Nome',
 								width: 160,
 								sortable: true,
 								menuDisabled: true,
 								dataIndex: 'nome'
-						}, {
-								header: 'Longitude',
-								width: 65,
-								sortable: true,
-								menuDisabled: true,
-								dataIndex: 'longitude'
-						}, {
-								header: 'Latitude',
-								width: 65,
-								sortable: true,
-								menuDisabled: true,
-								dataIndex: 'latitude'
-						}, {
-								xtype: 'actioncolumn',
-								width: 40,
-								sortable: false,
-								menuDisabled: true,
-								items: [{
-										icon: "theme/app/img/delete.png",
-										tooltip: 'Remove coordenada',
-										handler: function(grid, rowIndex, colIndex) {
-												var rec = instance.store.getAt(rowIndex);
+							}, {
+									header: 'Longitude',
+									width: 65,
+									sortable: true,
+									menuDisabled: true,
+									dataIndex: 'longitude'
+							}, {
+									header: 'Latitude',
+									width: 65,
+									sortable: true,
+									menuDisabled: true,
+									dataIndex: 'latitude'
+							}, {
+									xtype: 'actioncolumn',
+									width: 40,
+									sortable: false,
+									menuDisabled: true,
+									items: [{
+											icon: "theme/app/img/delete.png",
+											tooltip: 'Remove coordenada',
+											handler: function(grid, rowIndex, colIndex) {
+													var rec = instance.store.getAt(rowIndex);
 
-												var idLatLonCrl = rec.get('nome') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
+													var idLatLonCrl = rec.get('nome') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
 
-												instance.vectors.markers.every(function(m) {
-														if(m.idLatLonCrl == idLatLonCrl) {
-																instance.store.removeAt(rowIndex);
-																instance.vectors.removeMarker(m);
-																return false;
-														} else {
-																return true;
-														}
-												})
-										}
-								}]
-						}],
+													instance.vectors.markers.every(function(m) {
+															if(m.idLatLonCrl == idLatLonCrl) {
+																	instance.store.removeAt(rowIndex);
+																	instance.vectors.removeMarker(m);
+																	return false;
+															} else {
+																	return true;
+															}
+													})
+											}
+									}]
+							}
+						],
 						stripeRows: true,
 						autoExpandColumn: 'nome',
-						height: 280,
-						width: "100%",
+						autoHeight: true, //!!!
+						autoWidth : true, //!!!
 						listeners: {
 							'rowclick': instance.checkButtonsState
 						}
@@ -623,7 +625,15 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 											}
 									]
 							},
-							instance.getGrid()
+							{
+								height: 120,
+								border: false,
+								autoScroll: true,
+								items: [
+									instance.getGrid()
+								]	
+							}
+							
 					]
 				};
 

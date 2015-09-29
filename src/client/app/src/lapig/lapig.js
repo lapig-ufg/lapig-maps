@@ -28,11 +28,12 @@
  * @require tools/LapigMetadata.js
  * @require tools/LapigGoogleSatellite.js
  * @require tools/LapigCoordinates.js
- * @require tools/LapigPublicacoes.js
  * @require tools/LapigLayerManager.js
  * @require tools/LapigWMSCSource.js
  * @require tools/LapigZoom.js
  * @require tools/LapigRasterSeries.js
+ * @require tools/LapigSpatialIntelligence.js
+ * @require tools/LapigSpatialIntelligenceBtn.js
  * @require tools/LapigRasterSeriesBtn.js
  * @require tools/LapigWMSGetFeatureInfo.js
  *
@@ -75,17 +76,32 @@ var app = new gxp.LapigViewer({
 						header: false,
 						autoScroll: true
 					}
-				/*,	{
+				,	{
 						id: "southpanel",
 						border: false,
 						region: "south",
             height: 240,
             collapsed: true,
             collapsible: true,
+            collapseMode: "mini",
             header: true,
             title: 'Análise de Séries Temporais',
             autoScroll: true
-					}*/
+					}
+				,
+					{
+						id: "eastpanel",
+						border: false,
+						region: "east",
+            width: 330,
+            split: true,
+            collapsed: true,
+            collapsible: true,
+            collapseMode: "mini",
+            header: true,
+            layout:'fit',
+            title: 'Análise de Informações Territoriais',
+					}
 				],
 				bbar: {id: "mybbar"}
 		},
@@ -103,9 +119,20 @@ var app = new gxp.LapigViewer({
 					outputTarget: "westpanel"
 			}
 			,	{ 
-				ptype: "gxp_lapigrasterseries",
+				ptype: "lapig_rasterseries",
 				outputTarget: "southpanel",
-				project: project
+				project: project,
+				outputConfig: {
+					height: 215,
+				}
+			}
+			,	{ 
+				ptype: "lapig_spatialintelligence",
+				outputTarget: "eastpanel",
+				project: project,
+				outputConfig: {
+
+				}
 			}
 			, {
 					ptype: "gxp_lapigaddlayer",
@@ -156,10 +183,14 @@ var app = new gxp.LapigViewer({
 					menuText: "Zoom na camada",
 					actionTarget: {target: "tree.contextMenu", index: 15}
 			}
-			/*, {
+			, {
 					ptype: "gxp_lapigrasterseriesbtn",
 					actionTarget: {target: "map.tbar", index: 19}
-			}*/
+			}
+			, {
+					ptype: "lapig_spatialintelligencebtn",
+					actionTarget: {target: "map.tbar", index: 19}
+			}
 			, {
 					ptype: "gxp_lapigcoordinates",
 					actionTarget: {target: "map.tbar", index: 19}
@@ -249,12 +280,12 @@ var app = new gxp.LapigViewer({
 								}
 								,{
 										source: "ows",
-										name: "pa_br_estados_1000_2014_ibge",
+										name: "pa_br_bioma_5000_2004_ibge",
 										type: "VECTOR"
 								}
 								,{
 										source: "ows",
-										name: "pa_br_bioma_5000_2004_ibge",
+										name: "pa_br_estados_250_2013_ibge",
 										type: "VECTOR"
 								}
 				],

@@ -14,13 +14,22 @@ module.exports = function(app) {
 			"port": "27017",
 			"dbname": "lapig-maps"
 		},
-		"port": 5000
+		"port": 5000,
+		"redis": {
+			'host': 'localhost',
+			'port': '6379',
+			'expiration': 1800,
+			'prefix': "pastagem.org",
+			'enable': true,
+		}
 	};
 
 	if(process.env.NODE_ENV == 'prod') {
 		config["port"] = 3000;
 		config["ows"] =  "http://localhost:5500",
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
+		config.redis['host'] = '200.137.217.157'
+		config.redis['enable'] = true;
 	}
 
 	return config;

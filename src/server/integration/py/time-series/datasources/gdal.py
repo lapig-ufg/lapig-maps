@@ -45,7 +45,7 @@ class Gdal(Datasource):
 
 			for j in range(1,13):
 
-				result.append(str(i)+'-'+str(j)+'-'+'01');
+				result.append(str(i)+'-'+str(j).zfill(2)+'-'+'01');
 				if (str(j) in str(endMonth)) & (str(i) in str(endYear)):
 					break;
 
