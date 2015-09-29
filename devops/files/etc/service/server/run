@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVER_DIR="/data/lapig-maps/prod/server/"
-NODE_DIR="/home/lapig-server/.nvm/v0.10.25"
+NODE_DIR="/home/lapig-server/.nvm/v0.12.2"
 LOG_FILE="/var/log/lapig-maps/server.log"
 USER="lapig-server"
 

@@ -17,7 +17,7 @@ alias ows-stop="su -c 'svc -d /etc/service/ows/"
 alias ows-log="tail -f /var/log/lapig-maps/ows.log"
 
 alias server-start="su -c 'svc -u /etc/service/server/'"
-alias server-stop="su -c 'svc -d /etc/service/server/"
+alias server-stop="su -c 'svc -d /etc/service/server/'"
 alias server-log="tail -f /var/log/lapig-maps/server.log"
 
 [[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh # This loads NVM
