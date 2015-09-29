@@ -28,7 +28,7 @@ module.exports = function(app) {
 					,	'table': 'livestock_cattle_heads_2013'
 					,	'precision': 0
 					,	'unitMeasure': ' cbçs'
-					,	'visualization': false
+					,	'visualization': true
 				},
 				{
 						'title': 'Frigoríficos/Matadouros'

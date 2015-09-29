@@ -31,6 +31,7 @@ case $1 in
 			echo " 3) Server"
 			cd $PROD_DIR/server
 			npm install
+			ln -s /data/catalog/time-series-db/ integration/py/time-series/image-db
 			
 			echo " 4) Client"
 			cd $PROD_DIR/client
