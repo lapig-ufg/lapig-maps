@@ -48,7 +48,6 @@ def getDatasouceParams(datasourceId):
 def getDatasource(layerId):	
 
 	layerParams = getLayerParams(layerId)
-	print layerParams
 
 	datasourceId = layerParams['type']
 	

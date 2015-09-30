@@ -2,7 +2,7 @@ import ee
 import os
 import utils
 import time
-import datetime
+import datetime 
 from _datasource import Datasource
 from threading import Thread
 import Queue
@@ -19,9 +19,9 @@ class EarthEngine(Datasource):
 		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
 		self.tredao = int(datasourceParams['threads'])
 		
-		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
+		#privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
 
-		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+		#self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 
 	def landsatDate(self, imgId):
@@ -164,10 +164,9 @@ class EarthEngine(Datasource):
 		return result;
 
 
-	def split_date(self):
+	def splitDate(self):
 		
-		miniThread = []
-
+		miniThread = []		
 		ano1, ano2 = int(self.start_date[0:4]), int(self.end_date[0:4])
 		day1, day2 = self.start_date[8:10], self.end_date[8:10]
 		month1, mont2 = self.start_date[5:7], self.end_date[5:7]
@@ -175,8 +174,6 @@ class EarthEngine(Datasource):
 		mult = (ano2+1)-ano1
 		
 		if mult < 5:			
-
-			
 
 			multconj = [[] for i in range(mult)]		
 
@@ -254,11 +251,11 @@ class EarthEngine(Datasource):
 				miniThread.append(i)
 
 		return miniThread		
+		
 
+	def runjob(self, data, longitude, latitude, q):
 
-	def runjob(self, credentials, data, longitude, latitude, q):
-
-		ee.Initialize(credentials);
+		ee.Initialize();
 
 		def calculateIndex(image):
 			return image.expression(self.expression);
@@ -283,7 +280,7 @@ class EarthEngine(Datasource):
 
 	def lockup(self, longitude, latitude):
 
-		dates = self.split_date()
+		dates = self.splitDate()
 		
 		QueaueList = []
 		pseudoResult = []
@@ -291,7 +288,7 @@ class EarthEngine(Datasource):
 		
 		for i in dates:
 			q = Queue.Queue()
-			x=Thread(name='Thread',target=self.runjob, args=[self.credentials, i, longitude, latitude, q])
+			x=Thread(name='Thread',target=self.runjob, args=[i, longitude, latitude, q])
 			x.start()
 			QueaueList.append(q)
 		
@@ -303,7 +300,7 @@ class EarthEngine(Datasource):
 				result.append(j)
 
 		return result	
-
+		
 		
 				
 
