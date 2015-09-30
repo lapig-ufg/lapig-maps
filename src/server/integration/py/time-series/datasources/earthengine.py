@@ -19,10 +19,8 @@ class EarthEngine(Datasource):
 		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
 		self.tredao = int(datasourceParams['threads'])
 		
-		#privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
-
-		#self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
-
+		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
+		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]
@@ -255,7 +253,7 @@ class EarthEngine(Datasource):
 
 	def runjob(self, data, longitude, latitude, q):
 
-		ee.Initialize();
+		ee.Initialize(self.credentials);
 
 		def calculateIndex(image):
 			return image.expression(self.expression);

@@ -192,7 +192,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											wmsLayer: attr.layer,
 											xtype:'combo',
 											store: dateStore,
-											//itemSelector: 'div.year-item',
+											itemSelector: 'div.year-item',
 											width: 100,
 											displayField:'year',
 											tpl: resultYear,

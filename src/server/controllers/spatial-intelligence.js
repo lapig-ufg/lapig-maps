@@ -78,10 +78,9 @@ module.exports = function(app) {
 	}
 
 	Internal.getSql = function(table, operation, column, state, sort) {
-		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, "
-						+ " (MbrMinX(EXTENT(Geometry)) || ',' || MbrMinY(EXTENT(Geometry)) || ',' || MbrMaxX(EXTENT(Geometry)) || ',' || MbrMaxY(EXTENT(Geometry))) as bbox "
+		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, bbox "
 						+ " FROM " + table
-						+ " WHERE \"NM_UF\" = '" + state + "'"
+						+ " WHERE NM_UF = '" + state + "'"
 						+ " GROUP BY info"
 						+ " ORDER BY " + sort + ((sort == 'value') ? " DESC" : " ASC")
 	}
@@ -209,14 +208,17 @@ module.exports = function(app) {
 					  sendHeaders: true
 					});
 
-			  	writer.pipe(response)
+			  	writer.pipe(response, { end: false })
 
 					for(info in result) {
 						writer.write(result[info])
 					}
 
+					writer.on('end', function() {
+						response.end();
+					})
+
 					writer.end();
-					response.end();
 				}
 
 				async.eachSeries(layers, layerEach, layerComplete);

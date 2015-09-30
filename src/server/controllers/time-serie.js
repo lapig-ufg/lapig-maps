@@ -35,6 +35,8 @@ module.exports = function(app) {
 		var params = id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
 		
+		console.log(cmd);
+
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
 			if(stderr)
@@ -172,7 +174,7 @@ module.exports = function(app) {
 			  sendHeaders: true
 			});
 
-	  	writer.pipe(response)
+	  	writer.pipe(response, { end: false })
 
 	  	result.values.forEach(function(value) {
 	  		value.push(longitude);
@@ -180,8 +182,11 @@ module.exports = function(app) {
 	  		writer.write(value)
 	  	})
 
+			writer.on('end', function() {
+				response.end();
+			})
+
 			writer.end();
-			response.end();
 		})
 
 	}
