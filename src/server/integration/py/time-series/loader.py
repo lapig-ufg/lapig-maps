@@ -39,21 +39,22 @@ def getLayerParams(layerId):
 	
 
 def getDatasouceParams(datasourceId):	
-	filepath = os.path.join(getRunPath(), CONF_FILES['DATASOURCES'])
-	params = getConfFromSection(filepath, datasourceId)	
-	params['run_path'] = getRunPath()
+	filepath = os.path.join(getRunPath(), CONF_FILES['DATASOURCES'])	
+	params = getConfFromSection(filepath, datasourceId)
+	params['run_path'] = getRunPath()	
 	return params
 
 
 def getDatasource(layerId):	
 
 	layerParams = getLayerParams(layerId)
+	print layerParams
 
 	datasourceId = layerParams['type']
 	
 	datasourceClass = getattr(datasources, datasourceId)
 
-	datasouceParams = getDatasouceParams(datasourceId)
+	datasouceParams = getDatasouceParams(datasourceId)	
 	
 	return datasourceClass(layerParams, datasouceParams)
 

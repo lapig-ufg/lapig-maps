@@ -5,16 +5,10 @@ from sys import argv
 def run(layerId, longitude, latitude):
 
 	datasourceInstance = loader.getDatasource(layerId)
-
-	#datasourceInstance.split_date()
-	
-	timeserieData = datasourceInstance.lockup(longitude, latitude)
-	
+	'''
+	timeserieData = datasourceInstance.lockup(longitude, latitude)	
 	
 	values = utils.oneArray(timeserieData)
-	
-
-
 	
 	position = 1
 	series = [ { 'id': 'original', 'label': 'Valores originais', 'position': 1 } ];
@@ -31,8 +25,8 @@ def run(layerId, longitude, latitude):
 		'series': series,
 		'values': timeserieData
 	}
-	
+'''	
 
 result = run(argv[1], float(argv[2]), float(argv[3]))
 	
-print result
+#print result
