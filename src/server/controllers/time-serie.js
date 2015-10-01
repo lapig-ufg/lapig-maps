@@ -168,7 +168,7 @@ module.exports = function(app) {
 	  	headers.push('Latitude')
 	  	
 	  	var writer = csvWriter({
-			  separator: '\t',
+			  separator: ';',
 			  newline: '\n',
 			  headers: headers,
 			  sendHeaders: true
@@ -179,6 +179,12 @@ module.exports = function(app) {
 	  	result.values.forEach(function(value) {
 	  		value.push(longitude);
 	  		value.push(latitude);
+	  		for(var i=0; i < value.length; i++) {
+	  			if (String(value[i]).indexOf('.') > 0) {
+	  				value[i] = String(value[i]).replace('.', ',');
+	  			}
+	  		}
+	  		console.log(value)
 	  		writer.write(value)
 	  	})
 

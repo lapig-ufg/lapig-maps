@@ -593,7 +593,25 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 																		var name = Ext.getCmp('form-text-name').getValue();
 
 																		if(!lat || !lon) {
-																				return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
+																				var ddLon = instance.dms2dd(
+																						Ext.getCmp('dms-lon-d-2').getValue(),
+																						Ext.getCmp('dms-lon-m-2').getValue(),
+																						Ext.getCmp('dms-lon-s-2').getValue()
+																				);
+
+																				var ddLat = instance.dms2dd(
+																						Ext.getCmp('dms-lat-d-2').getValue(),
+																						Ext.getCmp('dms-lat-m-2').getValue(),
+																						Ext.getCmp('dms-lat-s-2').getValue()
+																				);
+
+																				instance.setDd(ddLon, ddLat);
+																				lat = Ext.getCmp('form-text-lat-2').getValue();
+																				lon = Ext.getCmp('form-text-lon-2').getValue();
+
+																				if(!lat || !lon) {
+																					return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
+																				}
 																		}
 
 																		var lonLat = new OpenLayers.LonLat(lon, lat)
