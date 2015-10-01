@@ -7,6 +7,7 @@ from _datasource import Datasource
 from threading import Thread
 import Queue
 
+
 class EarthEngine(Datasource):
 
 	def __init__(self, layerParams, datasourceParams):
@@ -19,9 +20,9 @@ class EarthEngine(Datasource):
 		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
 		self.tredao = int(datasourceParams['threads'])
 		
-		#privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
+		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
 
-		#self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 
 	def landsatDate(self, imgId):
@@ -171,70 +172,34 @@ class EarthEngine(Datasource):
 		day1, day2 = self.start_date[8:10], self.end_date[8:10]
 		month1, mont2 = self.start_date[5:7], self.end_date[5:7]
 
-		mult = (ano2+1)-ano1
-		
-		if mult < 5:			
+		difAnos = ano2 - ano1
+		intervalo = difAnos/self.tredao
+	
+		if difAnos > self.tredao:											
+			
+			count = 0
+			threads = [[] for i in range(self.tredao)]
+			
+			for i,j in zip(range(ano1,ano2,intervalo),threads):
+				
+				count = count+ 1
 
-			multconj = [[] for i in range(mult)]		
-
-			for i,j in zip(range(ano1,ano2+1,1),multconj):
 				if i == ano1:
 					iday = day1;
 					imonth = month1;
 					fday = '31'
 					fmonth = '12'
 					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i)+'-'+fmonth+'-'+fday
+					y= str(i+intervalo)+'-'+fmonth+'-'+fday
 					j.append(x)
 					j.append(y)
-				elif i == ano2:
+				elif (i == ano2) | (count == len(threads)):					
 					fday = day2
 					fmonth = mont2
 					iday = '01'
 					imonth = '01'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i)+'-'+fmonth+'-'+fday
-					j.append(x)
-					j.append(y)
-				else:
-					iday = '01'
-					imonth = '01'
-					fmonth = '12'
-					fday = '31'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i)+'-'+fmonth+'-'+fday
-					j.append(x)
-					j.append(y)
-
-				
-
-			for i in multconj:				
-				miniThread.append(i)
-		
-		else:			
-
-			ano_count = (ano2-ano1)/self.tredao			
-			
-			multconj = [[] for i in range(self.tredao)]
-			
-			for i,j in zip(range(ano1,(ano2),ano_count),multconj):
-				
-				if i == ano1:
-					iday = day1;
-					imonth = month1;
-					fday = '31'
-					fmonth = '12'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i+ano_count)+'-'+fmonth+'-'+fday
-					j.append(x)
-					j.append(y)
-				elif i == ano2:
-					fday = day2
-					fmonth = mont2
-					iday = '01'
-					imonth = '01'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i)+'-'+fmonth+'-'+fday					
+					x= str(i+1)+'-'+imonth+'-'+iday
+					y= str(ano2)+'-'+fmonth+'-'+fday					
 					j.append(x)
 					j.append(y)
 				else:
@@ -243,19 +208,65 @@ class EarthEngine(Datasource):
 					fmonth = '12'
 					fday = '31'
 					x= str(i+1)+'-'+imonth+'-'+iday
-					y= str(i+ano_count)+'-'+fmonth+'-'+fday					
+					y= str(i+intervalo)+'-'+fmonth+'-'+fday					
 					j.append(x)
 					j.append(y)
 
-			for i in multconj:
+			for i in threads:		
 				miniThread.append(i)
 
-		return miniThread		
+			return miniThread
 		
+		else:
+			
+			threads = [[] for i in range(difAnos)]
+
+			count = 0
+
+			for i,j in zip(range(ano1,ano2,1),threads):
+				
+				count = count+ 1
+
+				if i == ano1:
+					iday = day1;
+					imonth = month1;
+					fday = '31'
+					fmonth = '12'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(i+intervalo)+'-'+fmonth+'-'+fday
+					j.append(x)
+					j.append(y)
+				elif (i == ano2) | (count == len(threads)):					
+					fday = day2
+					fmonth = mont2
+					iday = '01'
+					imonth = '01'
+					x= str(i)+'-'+imonth+'-'+iday
+					y= str(ano2)+'-'+fmonth+'-'+fday					
+					j.append(x)
+					j.append(y)
+				else:
+					iday = '01'
+					imonth = '01'
+					fmonth = '12'
+					fday = '31'
+					x= str(i+1)+'-'+imonth+'-'+iday
+					y= str(i+intervalo)+'-'+fmonth+'-'+fday					
+					j.append(x)
+					j.append(y)
+			
+			for i in threads:		
+				miniThread.append(i)
+			
+			return miniThread
+
+
+
+		 		
 
 	def runjob(self, data, longitude, latitude, q):
 
-		ee.Initialize();
+		ee.Initialize(self.credentials);
 
 		def calculateIndex(image):
 			return image.expression(self.expression);
@@ -263,7 +274,14 @@ class EarthEngine(Datasource):
 		point = ee.Geometry.Point([longitude, latitude]);
 		timeSeries = ee.ImageCollection(self.collection_id).filterDate(data[0], data[1]).map(calculateIndex);
 
-		eeResult = timeSeries.getRegion(point, self.pixel_resolution).getInfo();
+
+		while(True):
+			try:
+				eeResult = timeSeries.getRegion(point, self.pixel_resolution).getInfo();
+				break;	
+			except ee.ee_exception.EEException:
+				time.sleep(1)
+				print 'tentando novamente'		
 
 		result={}
 		
@@ -278,10 +296,10 @@ class EarthEngine(Datasource):
 		q.put(result)
 		
 
+
 	def lockup(self, longitude, latitude):
 
 		dates = self.splitDate()
-		
 		QueaueList = []
 		pseudoResult = []
 		result = []
@@ -300,6 +318,7 @@ class EarthEngine(Datasource):
 				result.append(j)
 
 		return result	
+		
 		
 		
 				

@@ -7,7 +7,6 @@ def run(layerId, longitude, latitude):
 	datasourceInstance = loader.getDatasource(layerId)	
 
 	timeserieData = datasourceInstance.lockup(longitude, latitude)
-
 	
 	values = utils.oneArray(timeserieData)
 	
@@ -26,7 +25,7 @@ def run(layerId, longitude, latitude):
 		'series': series,
 		'values': timeserieData
 	}
-
+	
 
 result = run(argv[1], float(argv[2]), float(argv[3]))
 
