@@ -21,9 +21,13 @@ class EarthEngine(Datasource):
 		self.tredao = int(datasourceParams['threads'])
 		
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
+<<<<<<< HEAD
 
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
+=======
+		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+>>>>>>> 9e8ca98d9d067866057c3f9af78f9e8aea28d0bb
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]

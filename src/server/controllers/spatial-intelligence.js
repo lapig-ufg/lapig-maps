@@ -1,6 +1,7 @@
 var sqlite3 = require('spatialite').verbose(),
 		async = require('async'),
-		csvWriter = require('csv-write-stream');
+		csvWriter = require('csv-write-stream'),
+		iconv = require('iconv');
 
 module.exports = function(app) {
 
@@ -78,10 +79,9 @@ module.exports = function(app) {
 	}
 
 	Internal.getSql = function(table, operation, column, state, sort) {
-		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, "
-						+ " (MbrMinX(EXTENT(Geometry)) || ',' || MbrMinY(EXTENT(Geometry)) || ',' || MbrMaxX(EXTENT(Geometry)) || ',' || MbrMaxY(EXTENT(Geometry))) as bbox "
+		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, bbox "
 						+ " FROM " + table
-						+ " WHERE \"NM_UF\" = '" + state + "'"
+						+ " WHERE NM_UF = '" + state + "'"
 						+ " GROUP BY info"
 						+ " ORDER BY " + sort + ((sort == 'value') ? " DESC" : " ASC")
 	}
@@ -203,20 +203,27 @@ module.exports = function(app) {
 			  	response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
 
 			  	var writer = csvWriter({
-					  separator: '\t',
+					  separator: ';',
 					  newline: '\n',
 					  headers: undefined,
 					  sendHeaders: true
 					});
 
-			  	writer.pipe(response)
+			  	var encoder = new iconv.Iconv('utf-8', 'latin1');
+
+			  	writer.pipe(encoder, { end: false });
+			  	encoder.pipe(response, { end: false });
 
 					for(info in result) {
 						writer.write(result[info])
 					}
 
+					writer.on('end', function() {
+						encoder.end()
+						response.end();
+					})
+
 					writer.end();
-					response.end();
 				}
 
 				async.eachSeries(layers, layerEach, layerComplete);

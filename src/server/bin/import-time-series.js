@@ -50,7 +50,15 @@ var parseCsv = function(filepath, callback) {
         }
       }
 
-      if(timeSerie.source == 'ee') {
+      if( col[10].split(' ').length > 1 ) {
+        timeSerie.params = {
+          "type": 'Composite',
+          "layers": col[10],
+          "start_date": col[13],
+          "end_date": col[14],
+          "quality_layer": col[16]
+        }
+      } else if(timeSerie.source == 'ee') {
         timeSerie.params.type = 'EarthEngine'
         timeSerie.params.collection_id = col[10]
         timeSerie.params.fn_parsedate = timeSerie.params.collection_id.split('/')[0].toLowerCase();
@@ -58,9 +66,9 @@ var parseCsv = function(filepath, callback) {
         timeSerie.params.type = 'Gdal'
         timeSerie.params.file = col[10]
       }
+    
 
       timeSeries.push(timeSerie);
-  
     }
 
     callback(timeSeries);
@@ -77,7 +85,17 @@ var insertTimeSeries = function(dbUrl, timeSeries, callback) {
         return console.dir(err);
 
       db.collection('timeSeries', function(err, timeSeriesCollection) {
-        timeSeriesCollection.insert(timeSeries, null, function() {
+
+        var filteredTimeSeries = []
+
+        timeSeries.forEach(function(timeSerie) {
+          if(timeSerie.name)
+            filteredTimeSeries.push(timeSerie);
+        })
+
+        console.log(filteredTimeSeries)
+
+        timeSeriesCollection.insert(filteredTimeSeries, null, function() {
           db.close();
           callback();
         });

@@ -35,6 +35,8 @@ module.exports = function(app) {
 		var params = id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
 		
+		console.log(cmd);
+
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
 			if(stderr)
@@ -166,22 +168,31 @@ module.exports = function(app) {
 	  	headers.push('Latitude')
 	  	
 	  	var writer = csvWriter({
-			  separator: '\t',
+			  separator: ';',
 			  newline: '\n',
 			  headers: headers,
 			  sendHeaders: true
 			});
 
-	  	writer.pipe(response)
+	  	writer.pipe(response, { end: false })
 
 	  	result.values.forEach(function(value) {
 	  		value.push(longitude);
 	  		value.push(latitude);
+	  		for(var i=0; i < value.length; i++) {
+	  			if (String(value[i]).indexOf('.') > 0) {
+	  				value[i] = String(value[i]).replace('.', ',');
+	  			}
+	  		}
+	  		console.log(value)
 	  		writer.write(value)
 	  	})
 
+			writer.on('end', function() {
+				response.end();
+			})
+
 			writer.end();
-			response.end();
 		})
 
 	}

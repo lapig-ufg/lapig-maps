@@ -47,7 +47,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         this.target.on("layerselectionchange", function(record) {
             selectedLayer = record;
             removeLayerAction.setDisabled(
-                this.target.mapPanel.layers.getCount() <= 1 || !record
+                this.target.mapPanel.layers.getCount() <= 1 || !(record && record.json && record.json.name)
             );
         }, this);
         var enforceOne = function(store) {

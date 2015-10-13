@@ -112,7 +112,8 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 dimensions: original.data.dimensions,
                 transitionEffect: '',
                 minScale: config.minscale,
-                maxScale: config.maxscale
+                maxScale: config.maxscale,
+                tileSize: new OpenLayers.Size(512,512)
             });
             
             // data for the new record
@@ -162,8 +163,8 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
             record.data.layer.url = [
                     url.replace(host, "m1.lapig.iesa.ufg.br")
                 ,   url.replace(host, "m2.lapig.iesa.ufg.br")
-                ,   url.replace(host, "m3.lapig.iesa.ufg.br")
-                ,   url.replace(host, "m4.lapig.iesa.ufg.br")
+                //,   url.replace(host, "m3.lapig.iesa.ufg.br")
+                //,   url.replace(host, "m4.lapig.iesa.ufg.br")
             ];
         }
 

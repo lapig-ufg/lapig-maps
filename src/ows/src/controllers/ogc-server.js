@@ -116,8 +116,10 @@ module.exports = function(app) {
 
 		filesSize = 0;
 		files.forEach(function(file) {
+			if(fs.existsSync(file)) {
 			 var stats = fs.statSync(file);
-				filesSize += stats["size"];
+			 filesSize += stats["size"];
+			}
 		});
 
 		response.setHeader('Content-type', 'application/zip')
@@ -128,7 +130,9 @@ module.exports = function(app) {
 		zipFile.pipe(response);
 		
 		files.forEach(function(file) {
-			zipFile.file(file, { name: path.basename(file) });
+			if(fs.existsSync(file)) {
+				zipFile.file(file, { name: path.basename(file) });
+			}
 		});
 
 		zipFile.finalize();
