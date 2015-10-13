@@ -7,8 +7,13 @@ class Savgol(Filter):
 	def __init__(self, layerParams, filterParams):
 		Filter.__init__(self, layerParams, filterParams)
 
-		self.window_length = utils.num(filterParams['window_length'])
-		self.polyorder = utils.num(filterParams['polyorder'])
+		try:
+			self.window_length = utils.num(layerParams['window_length'])
+			self.polyorder = utils.num(layerParams['polyorder'])
+		except KeyError:
+			self.window_length = utils.num(filterParams['window_length'])
+			self.polyorder = utils.num(filterParams['polyorder'])	
+
 
 	def run(self, timeserieData, longitude = None, latitude = None):	
 		return savgol_filter(timeserieData, self.window_length, self.polyorder);	
