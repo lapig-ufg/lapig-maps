@@ -29,4 +29,4 @@ def run(layerId, longitude, latitude):
 
 result = run(argv[1], float(argv[2]), float(argv[3]))
 
-#print result
+print result
