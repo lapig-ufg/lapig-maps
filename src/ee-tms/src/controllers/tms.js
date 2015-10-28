@@ -13,9 +13,19 @@ module.exports = function(app) {
 	var cache = app.libs.cache;
 
 	Tms.process = function(request, response) {
+
+		var setLayers = config.layers;
+		console.log("Print");
+		for (var i = 0; i < setLayers.length; i++){
+			console.log(setLayers[i].layer + '_' + setLayers[i].start_date + '_' + setLayers[i].end_date)
+		}
 		
-		response.send('funcionou');
-		response.end()
+
+		
+		var result = config
+
+		response.send(result);
+		response.end();
 	}
 
 	return Tms;
