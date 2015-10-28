@@ -63,16 +63,14 @@ def hasLayer(layerId):
 	filepath = os.path.join(getRunPath(), CONF_FILES['LAYERS'])
 
 	cp.read(filepath)
-	return cp.has_section(layerId)
 
 def getFilters(layerId):
 	layerParams = getLayerParams(layerId)
-
 	result = []
 
 	for className, classType in filters.__dict__.iteritems():
 		if inspect.isclass(classType):
 			filterParams = getFilterParams(className)
-			result.append( classType(layerParams, filterParams) )
+			result.append(classType(layerParams, filterParams))
 	
 	return result
