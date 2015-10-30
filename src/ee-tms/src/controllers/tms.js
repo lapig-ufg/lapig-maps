@@ -5,6 +5,23 @@ var buffer = require('buffer')
 	  async = require('async')
 	  ;
 
+//fazer função para tratar as datas
+
+function toSliceComposite(str){
+
+	str = str.replace(/B/g,'');
+	str = str.replace(/,/g,'');
+	return str
+
+}
+
+function toSLiceStr(str){
+
+	slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
+
+	return slicedStr
+}
+
 module.exports = function(app) {
 
 	var Tms = {};
@@ -16,9 +33,17 @@ module.exports = function(app) {
 
 		var setLayers = config.layers;
 		console.log("Print");
+		
 		for (var i = 0; i < setLayers.length; i++){
-			console.log(setLayers[i].layer + '_' + setLayers[i].start_date + '_' + setLayers[i].end_date)
+			
+			for (var j = 0; j < setLayers[i].composites.length; j++){
+
+				console.log(setLayers[i].layer + '_' + toSLiceStr(setLayers[i].start_date) + '_' + toSLiceStr(setLayers[i].end_date) + '_' + toSliceComposite(setLayers[i].composites[j]));
+
+			}
+
 		}
+		
 		
 
 		
