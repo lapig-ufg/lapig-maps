@@ -8,6 +8,7 @@ module.exports = function(app) {
 			  'redisHost': 'localhost'
 			, 'redisPort': '6379'
 			,	'port': 5000
+			, 'pathXML': appRoot+'/Template/wmts.xml'
 			, 'layers': [
 					{
 				    "layer": "l8",
