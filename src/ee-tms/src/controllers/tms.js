@@ -5,14 +5,6 @@ var buffer = require('buffer')
 	  async = require('async');
 
 
-
-function parsinglayersString(str){
-
-	slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
-	return slicedStr;
-
-}
-
 module.exports = function(app) {
 
 	var Tms = {};
@@ -64,12 +56,44 @@ module.exports = function(app) {
 			
 	}
 
-	Internal.getLayers = function(configLayers){
+	Internal.dateRange = function(startDate, finalDate, temporalResolution, temporalResolutionType){
+
+		var dates = [];
+		dates.push(startDate);
+
+		
+
+		var objectDateStart = new Date(startDate);
+		var objectDateFinal = new Date(finalDate);
+
+		var monthFinal = objectDateFinal.getMonth() +1
+
+		
+		
+		do {
+
+			objectDateStart.setDate(objectDateStart.getDate() + 17);
+
+			var monthInitial = objectDateStart.getMonth() +1
+
+			dates.push(objectDateStart.getFullYear()+'-'+monthInitial+'-'+objectDateStart.getDate());	    
+
+		}while ((objectDateFinal.getFullYear() >= objectDateStart.getFullYear())  && (monthFinal >= monthInitial));
+
+		console.log(dates);
+
+	
+	}
+
+	Internal.getLayers = function(configLayers){				
 
 		var layersList = [];
 			
 		for (var i = 0; i < configLayers.length; i++){
 			
+			x = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
+			//aqui passarei a data inicial e final, temporal_resolution, temporal_resolution_type para uma função que me retornará todas as datas do range entre inicial e final;
+
 			for (var j = 0; j < configLayers[i].composites.length; j++){
 				
 				var layer = {
@@ -97,7 +121,7 @@ module.exports = function(app) {
 
 		fs.readFile(pathXML, 'utf8', function (err, data) {
 
-			result = data.replace('{xml}', xmlLayers);
+			result = data.replace('{xmlLayers}', xmlLayers);
 
 			response.setHeader('content-type', 'application/xml');
 
