@@ -216,7 +216,8 @@ var app = new gxp.LapigViewer({
 						title: "Mapas de fundo (Google)"
 				}
 				, bing: {
-						ptype: "gxp_bingsource"
+						ptype: "gxp_bingsource",
+						apiKey: "AgGtGpUH9SjzBV5Cf6ZSRIDws0e2nSaLxZwPvx3uWSxV5wz43AxMzBHMSa9eiWdx"
 				}
 				, mapbox: {
 						ptype: "gxp_mapboxsource",
@@ -329,7 +330,8 @@ var app = new gxp.LapigViewer({
 				}
 
 				addMapControls();
-				
+
+				//mapPanel.map.zoomIn()
 			}
 		}
 
