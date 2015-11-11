@@ -58,10 +58,7 @@ module.exports = function(app) {
 
 	Internal.dateRange = function(startDate, finalDate, temporalResolution, temporalResolutionType){
 
-		var dates = [];
-		dates.push(startDate);
-
-		
+		var dates = [];		
 
 		var objectDateStart = new Date(startDate);
 		var objectDateFinal = new Date(finalDate);
@@ -78,7 +75,7 @@ module.exports = function(app) {
 
 			dates.push(objectDateStart.getFullYear()+'-'+monthInitial+'-'+objectDateStart.getDate());	    
 
-		}while ((objectDateFinal.getFullYear() >= objectDateStart.getFullYear())  && (monthFinal >= monthInitial));
+		}while ((objectDateFinal.getFullYear() >= objectDateStart.getFullYear())  && (objectDateStart.getDate() >= objectDateFinal.getDate()));
 
 		console.log(dates);
 
