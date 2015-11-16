@@ -68,6 +68,64 @@ module.exports = function(app) {
 					,	'visualization': true
 				},
 			]
+		},
+		'agriculture': {
+			'label': 'Agricultura',
+			'region': {
+				'layer': 'cities',
+				'title': 'Municípios',
+				'columns': {
+					'stateAb': 'NM_UF',
+					'cityCode': 'COD_MUN'
+				}
+			},
+			'layers': [
+				{
+						'title': 'Ocupação por agricultura anual'
+					,	'column': 'CROP_HA'
+					,	'operation': 'SUM'
+					,	'table': 'agriculture_crop'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Ocupação por floresta plantada'
+					,	'column': 'FOREST_HA'
+					,	'operation': 'SUM'
+					,	'table': 'agriculture_forest'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Ocupação por cana-de-açucar'
+					,	'column': 'SUGAR_C_HA'
+					,	'operation': 'SUM'
+					,	'table': 'agriculture_sugar_cane'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Área queimada (2014)'
+					,	'column': 'QUEI_HA_14'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_burned_2014'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+				{
+						'title': 'Área desmatada (2014)'
+					,	'column': 'DESM_HA_14'
+					,	'operation': 'SUM'
+					,	'table': 'livestock_deforestation_2014'
+					,	'precision': 0
+					,	'unitMeasure': ' ha'
+					,	'visualization': true
+				},
+			]
 		}
 	}
 
@@ -78,6 +136,14 @@ module.exports = function(app) {
 						+ " ORDER BY cidade ASC "
 	}
 
+	/* Create bbox column
+		ALTER TABLE agriculture_crop ADD COLUMN bbox char(255);
+		UPDATE agriculture_crop SET bbox = (
+			SELECT ST_MinX(cities.geometry) || ',' || ST_MinY(cities.geometry) || ',' || ST_MaxX(cities.geometry) || ',' || ST_MaxY(cities.geometry)
+			FROM cities
+			WHERE cities.COD_MUN = agriculture_crop.COD_MUN
+		);
+	*/
 	Internal.getSql = function(table, operation, column, state, sort) {
 		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, bbox "
 						+ " FROM " + table

@@ -29,6 +29,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam;
 
     Ext.chart.Chart.CHART_URL = 'src/ext/resources/charts.swf';
+    Ext.Ajax.timeout = 120000;
   },
 
   addOutput: function(config) {
@@ -175,8 +176,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
     var instance = this;
 
-    var requestMetadata = function(callback) {
-      var metadataUrl = 'spatial/livestock/metadata';
+    var requestMetadata = function(subject, callback) {
+      var metadataUrl = 'spatial/' + subject + '/metadata';
 
       Ext.Ajax.request({
       url: metadataUrl,
@@ -219,29 +220,17 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       var selectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
       var selectedSort = Ext.getCmp('lapig_spatialintelligence::cmb-sort').getValue();
 
-      var loadMask = createLoadDataMask(gridInfoId)
-      loadMask.show()
+      instance.loadMask = createLoadDataMask(gridInfoId)
+      instance.loadMask.show()
 
-      requestMetadata(function() {
+      requestMetadata(selectedSubject, function() {
 
         var params = 'state=' + selectedState + '&sort=' + selectedSort
         gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
         instance.csvUrl = 'spatial/' + selectedSubject + '/csv?' + params;
 
         var newNode = new Ext.tree.AsyncTreeNode({text: 'Root'});
-        gridInfo.loader.load(newNode, function(newNode) {
-          gridInfo.setRootNode(newNode);
-          loadMask.hide();
-          gridInfo.setDisabled(false);
-          
-          var layerName = instance.queryMetadata.region.layer;
-          var layerTitle = instance.selectedState.data.label + " - " + instance.queryMetadata.region.title;
-          var filter = "'[" + instance.queryMetadata.region.columns.stateAb + "]' = '" + instance.selectedState.data.id + "'";
-          var bbox = instance.selectedState.data.bbox
-
-          instance.handleLayer(layerName, layerTitle, filter, bbox, true, 'state', true);
-
-        });
+        gridInfo.setRootNode(newNode);
         
       })
 
@@ -284,7 +273,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'id'}
             ],
             data: [
-              ['Pecuária', 'livestock']
+              ['Pecuária', 'livestock'],
+              ['Agricultura', 'agriculture']
             ]
           })
         },
@@ -425,6 +415,21 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         title: 'Resultados',
         requestMethod: 'GET',
         listeners: {
+          'load': function(node) {
+            if(node.text == 'Root') {
+              var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
+
+              instance.loadMask.hide();
+              gridInfo.setDisabled(false);
+              
+              var layerName = instance.queryMetadata.region.layer;
+              var layerTitle = instance.selectedState.data.label + " - " + instance.queryMetadata.region.title;
+              var filter = "'[" + instance.queryMetadata.region.columns.stateAb + "]' = '" + instance.selectedState.data.id + "'";
+              var bbox = instance.selectedState.data.bbox
+
+              instance.handleLayer(layerName, layerTitle, filter, bbox, true, 'state', true);
+            }
+          },
           'dblclick': function(node) {
             var attr = node.attributes;
             var parentAttr = node.parentNode.attributes;
