@@ -40,7 +40,7 @@ module.exports = function(app) {
 					"<ows:LowerCorner>-73.9909 -33.7516</ows:LowerCorner>\n" +
 					"<ows:UpperCorner>-32.3922 5.27216</ows:UpperCorner>\n" +
 					"</ows:WGS84BoundingBox>\n" +
-					"<Style isDefault='true'>\n" +
+					"<Style iStartefault='true'>\n" +
 					"<ows:Identifier>default</ows:Identifier>\n" +
 					"</Style>\n" +
 					"<Format>image/jpeg</Format>\n" +
@@ -58,27 +58,67 @@ module.exports = function(app) {
 
 	Internal.dateRange = function(startDate, finalDate, temporalResolution, temporalResolutionType){
 
-		var dates = [];		
-
-		var objectDateStart = new Date(startDate);
-		var objectDateFinal = new Date(finalDate);
-
-		var monthFinal = objectDateFinal.getMonth() +1
 
 		
+    var dates = [];
+		temporal = parseInt(temporalResolution);
+
+		if(temporalResolutionType == 'day'){
+			
+			var Start = new Date(startDate);
+			var Final = new Date(finalDate);
 		
-		do {
+			var count = Start.getFullYear()
 
-			objectDateStart.setDate(objectDateStart.getDate() + 17);
+			var monthInitial = Start.getMonth() + 1;
+		
 
-			var monthInitial = objectDateStart.getMonth() +1
+			dates.push(Start.getFullYear()+'-'+monthInitial+'-'+Start.getDate());
 
-			dates.push(objectDateStart.getFullYear()+'-'+monthInitial+'-'+objectDateStart.getDate());	    
+			while(Start <= Final){
 
-		}while ((objectDateFinal.getFullYear() >= objectDateStart.getFullYear())  && (objectDateStart.getDate() >= objectDateFinal.getDate()));
+				monthInitial = Start.getMonth() + 1;
+				dates.push(Start.getFullYear()+'-'+monthInitial+'-'+Start.getDate());
+				
+				Start.setDate(Start.getDate() + temporal);
 
-		console.log(dates);
+				if(Start.getFullYear() == count + 1){
+					var Start = new Date(Start.getFullYear()+'-'+1+'-'+1);
+					count = Start.getFullYear()
+				}
 
+			}
+
+			console.log(dates);
+
+		}else{
+
+			var Start = new Date(startDate);
+			var Final = new Date(finalDate);
+
+			var count = Start.getFullYear();
+
+			var monthInitial = Start.getMonth() + 1;
+
+			dates.push(Start.getFullYear()+'-'+monthInitial+'-'+Start.getDate());
+
+			while(Start <= Final){
+
+		
+				dates.push(Start.getFullYear()+'-'+monthInitial+'-'+Start.getDate());
+
+				monthInitial = monthInitial + temporal;
+
+				if(Start.getFullYear() == count + 1){
+					var Start = new Date(Start.getFullYear()+'-'+1+'-'+1);
+					count = Start.getFullYear();
+				}
+
+			}
+
+			console.log(dates);
+
+		}
 	
 	}
 
