@@ -10,4 +10,6 @@ class Decimate(Filter):
 
 
 	def run(self, timeserieData, longitude = None, latitude = None):
+		x = decimate(timeserieData,2);
+		print x
 		return decimate(timeserieData,2); 
