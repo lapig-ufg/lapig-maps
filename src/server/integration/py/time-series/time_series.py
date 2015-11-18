@@ -15,9 +15,9 @@ def run(layerId, longitude, latitude):
 	
 	for filter in loader.getFilters(layerId):
 
-
-
-		filteredValues = filter.run(values, longitude, latitude);		
+		filteredValues = filter.run(values, longitude, latitude);	
+		print len(values), len(filteredValues)
+		print filter
 
 		if len(filteredValues) == len(values):
 			position += 1
