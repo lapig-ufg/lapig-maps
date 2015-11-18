@@ -1,13 +1,12 @@
 var express = require('express')
 , load = require('express-load')
-, util    = require('util')
+, util = require('util')
 , compression = require('compression')
 , requestTimeout = require('express-timeout')
 , multer = require('multer')
 , cluster = require('express-cluster')
 , requestParam = require('request-param')
-, morgan = require('morgan')
-;
+, morgan = require('morgan');
 
 var app = express();
 
