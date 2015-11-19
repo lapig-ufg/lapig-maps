@@ -21,15 +21,12 @@ module.exports = function(app) {
 
 	Internal.parsinglayersString = function(str){
 
-		stri = str.replace(/-/g,'');
-		stri = str.slice(2,4) +'0'+str.slice(6,10);
+		
 
-		console.log(str, stri);		
-
-		//slicedStr = str.slice(7,9) //+ str.slice(5,7) + str.slice(2,4);
-
-		//console.log(slicedStr, str);
-		//return slicedStr;
+		
+		slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
+		
+		return slicedStr;
 
 	}
 
@@ -88,103 +85,86 @@ module.exports = function(app) {
 		var Final = new Date(finalDate);
 
 		var count = 0;
-
-		if(temporalResolutionType == 'day'){
 					
+		while(Start <= Final){
+
+			if(Start.getFullYear() == count + 1){
+				var Start = new Date(Start.getFullYear()+'-'+01+'-'+01);
+				count = Start.getFullYear()
+			}
+
+			monthInitial = Start.getMonth() + 1;
+			dayInitial = Start.getDate();
+			yearInitial = Start.getFullYear();
+
+			strMonthInitial = monthInitial.toString();
+			strDayInitial = dayInitial.toString();
+			strYearInitial = yearInitial.toString();
+
+			if(strMonthInitial.length == 1)
+				strMonthInitial = "0"+strMonthInitial
+
+			if(strDayInitial.length == 1)
+				strDayInitial = "0"+strDayInitial					
 			
-			while(Start <= Final){
+			strDate = strYearInitial+'-'+strMonthInitial+'-'+strDayInitial;
 
-				monthInitial = Start.getMonth() + 1;
+			dates.push(strDate);
+			
+			if(temporalResolutionType == 'day'){
 
-
-				if(monthInitial.toString().length == 1){
-					
-					if(Start.getDate().toString().length == 1){
-
-						dates.push(Start.getFullYear()+'-'+'0'+monthInitial+'-'+'0'+Start.getDate());						
-
-					}else{
-						
-						dates.push(Start.getFullYear()+'-'+'0'+monthInitial+'-'+Start.getDate());						
-
-					}
-
-				}
-				else{
-
-					if(Start.getDate().toString().length == 1){
-
-						dates.push(Start.getFullYear()+'-'+monthInitial+'-'+'0'+Start.getDate());		
-
-					}else{
-						
-						dates.push(Start.getFullYear()+'-'+monthInitial+'-'+Start.getDate());			
-
-					}
-				}
-				
 				Start.setDate(Start.getDate() + temporal);
 
-				if(Start.getFullYear() == count + 1){
-					var Start = new Date(Start.getFullYear()+'-'+01+'-'+01);
-					count = Start.getFullYear()
-				}
+			} else {
+
+				Start.setMonth(Start.getMonth() + temporal);				
 
 			}
 
-		}else{
+		}
 
-			Start.setMonth(Start.getMonth()+1);			
-
-			while(Start <= Final){
-
-				if(Start.getMonth() == 1){					
-					dates.push(Start.getFullYear()+'-'+'0'+(Start.getMonth()+1)+'-'+Start.getDate());	
-				}else
-					dates.push(Start.getFullYear()+'-'+(Start.getMonth()+1)+'-'+Start.getDate());
-				}
-
-				Start.setMonth(Start.getMonth() + temporal);
-
-				if(Start.getFullYear() == count + 1){					
-					var Start = new Date(Start.getFullYear()+'-'+01+'-'+01);
-					count = Start.getFullYear();
-				}
-
-			}
-
-		console.log(dates)
-		return Internal.PairsGenerate(dates);
+		return dates;
 			
 	}
-	
+
 
 
 	Internal.getLayers = function(configLayers){				
 
 		var layersList = [];
 		
-		pairsDates = Internal.dateRange(configLayers[0].start_date, configLayers[0].end_date, configLayers[0].temporal_resolution, configLayers[0].temporal_resolution_type);
+		for (var i = 0; i < configLayers.length; i++){
 
-
-		configLayers[0]['pairsDates'] = pairsDates;
-				
-
-		for (var i = 0; i < configLayers.length; i++){						
+			Dates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
+			configLayers[i]['Dates'] = Dates;
 			
-				for (var j = 0; j < configLayers[i].composites.length; j++){
 
-					var layer = {
-												'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.removeBComma(configLayers[i].composites[j])
-											};
-
-					layersList.push(layer);
-
+			for(var j = 0; j < configLayers[i].Dates.length; j++){
+				
+				if(configLayers[i].Dates[j+1]==undefined){
+						break;
 				}
 
-			}	
+				var x = Internal.parsinglayersString(configLayers[i].Dates[j]);
+				var y = Internal.parsinglayersString(configLayers[i].Dates[j+1]);
+				
+
+				for(var k = 0; k < configLayers[i].composites.length; k++){	
+
+					var layer = {
+												'id':configLayers[i].layer + '_' + x + '_' + y + '_' + Internal.removeBComma(configLayers[i].composites[k])
+											};
+
+					layersList.push(layer);					
+
+				}
+			
+			}
+		
+		}
 
 		return layersList;
+
 
 	}
 
@@ -214,3 +194,11 @@ module.exports = function(app) {
 
 	return Tms;
 }
+
+/**
+var layer = {
+												'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.removeBComma(configLayers[i].composites[j])
+											};
+
+					layersList.push(layer);
+**/
