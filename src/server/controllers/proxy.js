@@ -9,14 +9,14 @@ module.exports = function(app) {
 
 	var Proxy = {};
 
-	Proxy.ows = function(request, response) {
+	Proxy.ows = function(req, response) {
 
-		var requestType = request.param('REQUEST');  
+		var requestType = req.params('REQUEST');  
 
 	  var url     = config.ows + request.path;
 	  var params  = querystring.stringify(request.query);
 	  
-	  if(request.param('url'))
+	  if(req.params('url'))
 	    url = request.param('url');
 	  else
 	    url += '?'+params;

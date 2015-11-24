@@ -13,8 +13,7 @@ var express = require('express')
 , async = require('async')
 , timeout = require('connect-timeout')
 , bodyParser = require('body-parser')
-, multer = require('multer')
-;
+, multer = require('multer');
 
 var app = express();
 

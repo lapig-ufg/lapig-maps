@@ -43,13 +43,14 @@ module.exports = function(app) {
 				console.log(stderr)
 			
 	   	stdout=stdout.replace(/\'/g, '"');
-	 		console.log(stdout)
+	 		console.log(stdout);
 
 	   	var result = JSON.parse(stdout);
 	   	
 	   	callback(result);
 	   	
 	 	});
+
 	}
 
 	TimeSerie.data = function(request, response) {

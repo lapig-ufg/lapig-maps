@@ -194,11 +194,3 @@ module.exports = function(app) {
 
 	return Tms;
 }
-
-/**
-var layer = {
-												'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.parsinglayersString(configLayers[i].pairsDates[pairs]) + '_' + Internal.removeBComma(configLayers[i].composites[j])
-											};
-
-					layersList.push(layer);
-**/

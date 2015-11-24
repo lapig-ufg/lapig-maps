@@ -16,9 +16,6 @@ def run(layerId, longitude, latitude):
 	for filter in loader.getFilters(layerId):
 
 		filteredValues = filter.run(values, longitude, latitude);	
-		print len(values), len(filteredValues)
-		print filter
-
 		if len(filteredValues) == len(values):
 			position += 1
 			series.append({ 'id': filter.id, 'label': filter.label, 'position': position })
@@ -32,4 +29,4 @@ def run(layerId, longitude, latitude):
 
 result = run(argv[1], float(argv[2]), float(argv[3]))
 
-#print result
+print result

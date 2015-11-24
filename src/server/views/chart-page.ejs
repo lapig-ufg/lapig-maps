@@ -42,6 +42,7 @@ var result = JSON.parse('<%-JSON.stringify(resultado)%>');
 var csv = '';
 var csvSchema = ['lat', 'lon', 'strDate'];
 
+
 if(result.bar.name) csvSchema.push(result.bar.name);
 if(result.line.name) csvSchema.push(result.line.name);
 
