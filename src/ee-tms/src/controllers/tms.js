@@ -132,7 +132,25 @@ module.exports = function(app) {
 	Internal.getLayers = function(configLayers){				
 
 		var layersList = [];
-		
+
+		console.log(configLayers);
+
+		ChildProcess.exec(cmd, function (error, stdout, stderr) {
+				
+			if(stderr){
+				console.log(stderr)
+			}
+			
+	   		stdout=stdout.replace(/\'/g, '"');
+	 		console.log(stdout);
+
+	   		var result = JSON.parse(stdout);
+	   	
+	   		callback(result);
+	   	
+	 	});
+
+		/*
 		for (var i = 0; i < configLayers.length; i++){
 
 			Dates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
@@ -155,7 +173,7 @@ module.exports = function(app) {
 												'id':configLayers[i].layer + '_' + x + '_' + y + '_' + Internal.removeBComma(configLayers[i].composites[k])
 											};
 
-					layersList.push(layer);					
+					layersList.push(layer);				
 
 				}
 			
@@ -164,7 +182,7 @@ module.exports = function(app) {
 		}
 
 		return layersList;
-
+		*/
 
 	}
 
