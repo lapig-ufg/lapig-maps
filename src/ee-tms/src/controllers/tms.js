@@ -3,6 +3,7 @@ var buffer = require('buffer')
 	  path = require('path')
 	  fs = require('fs')
 	  async = require('async');
+	  ChildProcess = require("child_process")
 
 
 module.exports = function(app) {
@@ -131,25 +132,67 @@ module.exports = function(app) {
 
 	Internal.getLayers = function(configLayers){				
 
+		async.each(configLayers, function(file, callback){
+
+			console.log(file);
+			callback(file);
+
+		});
+
+		/*
 		var layersList = [];
 
 		console.log(configLayers);
 
+		var cmd = 'python '+ 'create_mapid.py'+' '+configLayers[0].collection_id+' '+configLayers[0].end_date+' '+configLayers[0].start_date+' '+configLayers[0].composites;
+		console.log(cmd);
+
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
 			if(stderr){
-				console.log(stderr)
-			}
-			
-	   		stdout=stdout.replace(/\'/g, '"');
-	 		console.log(stdout);
 
-	   		var result = JSON.parse(stdout);
-	   	
-	   		callback(result);
+				console.log(stderr);
+
+			}
+
+			for (var i = 0; i < configLayers.length; i++){
+
+				Dates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
+				configLayers[i]['Dates'] = Dates;
+			
+
+				for(var j = 0; j < configLayers[i].Dates.length; j++){
+					
+					if(configLayers[i].Dates[j+1]==undefined){
+							break;
+					}
+
+					var x = Internal.parsinglayersString(configLayers[i].Dates[j]);
+					var y = Internal.parsinglayersString(configLayers[i].Dates[j+1]);
+					
+
+					for(var k = 0; k < configLayers[i].composites.length; k++){	
+
+						var layer = {
+													'id':configLayers[i].layer + '_' + x + '_' + y + '_' + Internal.removeBComma(configLayers[i].composites[k])
+												};
+
+						layersList.push(layer);				
+
+					}
+				
+				}
+		
+			}		
+			
+	   	stdout=stdout.replace(/\'/g, '"');
+	 		console.log(stdout);
+	   	var result = JSON.parse(stdout);	   	
+	   	callback(result);
+
 	   	
 	 	});
-
+		*/
 		/*
 		for (var i = 0; i < configLayers.length; i++){
 
@@ -190,9 +233,17 @@ module.exports = function(app) {
 	Tms.process = function(request, response) {
 
 		pathXML = config.pathXML;
-	
-		var layers = Internal.getLayers(config.layers);
+		//config.layers
 
+		arrayTeste = [1,2,3,4,5,6,7,7,8,9,19]
+		var layers = Internal.getLayers(arrayTeste);
+
+		console.log('oi');
+
+
+
+
+		/*
 		var xmlLayers = Internal.xmlGenerator(layers);	
 
 		fs.readFile(pathXML, 'utf8', function (err, data) {
@@ -204,10 +255,11 @@ module.exports = function(app) {
 			response.send(result);
 
 			response.end();
-
+	
 
 		});
-		
+		*/
+		response.end();
 	}
 
 	return Tms;
