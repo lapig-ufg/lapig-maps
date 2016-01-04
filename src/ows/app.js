@@ -6,8 +6,7 @@ var express = require('express')
 , multer = require('multer')
 , cluster = require('express-cluster')
 , requestParam = require('request-param')
-, morgan = require('morgan')
-;
+, morgan = require('morgan');
 
 var app = express();
 
@@ -15,6 +14,9 @@ load('config.js', {'verbose': false}).into(app);
 load('libs/utils', { 'verbose': false, cwd: 'src' })
 .then('libs')
 .into(app);
+
+console.log('oi')
+console.log(app.libs);
 
 app.libs.catalog.init(function() {
 
@@ -52,7 +54,7 @@ app.libs.catalog.init(function() {
 	});
 	
 	app.libs.catalog.prefetchWmsCapabilities();
-})
+});
 
 process.on('uncaughtException', function (err) {
 	console.error(err.stack);

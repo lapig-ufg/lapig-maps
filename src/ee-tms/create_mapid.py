@@ -11,9 +11,19 @@ ee.Initialize(EE_CREDENTIALS)
 
 def run(collection, enDate, startDate, composites):
 
-	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterDate('2014-06-01', '2014-07-01').max();
-	mapId = img.getMapId({ "bands": 'B6, B5, B4'});
+	idDict = {};
 
-	print(mapId);
+	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterDate(enDate, startDate).max();
+	mapId = img.getMapId({ "bands": composites});
+
+	for i in mapId:
+		
+		if(i == u'token'):
+			idDict["token"] = str(mapId.get(i));
+		elif (i == u'mapid'):
+			idDict["mapid"] = str(mapId.get(i));
+	
+
+	print idDict
 
 result = run(argv[1], argv[2], argv[3], argv[4])

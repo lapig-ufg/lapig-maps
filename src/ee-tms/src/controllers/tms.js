@@ -22,23 +22,23 @@ module.exports = function(app) {
 
 	Internal.parsinglayersString = function(str){
 
-		
-
-		
 		slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
-		
+				
 		return slicedStr;
 
 	}
 
 	Internal.PairsGenerate = function(list){
+
 		var listReturn = [];
 
 		for (var i = 0; i < list.length; i++){
 			if (list[i+1] == undefined){
 				break;
-			}else{				
-				listReturn.push(list[i], list[i+1]);	
+			}else{
+				var temporarieList = []
+				temporarieList.push(list[i], list[i+1]);
+				listReturn.push(temporarieList)
 			}
 			
 		}
@@ -68,7 +68,7 @@ module.exports = function(app) {
 					"<TileMatrixSetLink>\n" +
 					"<TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>\n" +
 					"</TileMatrixSetLink>\n" +
-					"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/b4d983aebb7871d900ecac80bc6eeba8/{TileMatrix}/{TileCol}/{TileRow}?token=ca7028b854b65d592842e953197189a0'/>\n" +
+					"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"/>\n" +
 					"</layers>";
 		
 			}
@@ -79,7 +79,7 @@ module.exports = function(app) {
 
 	Internal.dateRange = function(startDate, finalDate, temporalResolution, temporalResolutionType){
 		
-    var dates = [];
+	  var dates = [];
 		temporal = parseInt(temporalResolution);
 
 		var Start = new Date(startDate);
@@ -124,143 +124,115 @@ module.exports = function(app) {
 
 		}
 
+		dates = Internal.PairsGenerate(dates);
+
 		return dates;
-			
+		
 	}
 
 
 
-	Internal.getLayers = function(configLayers){				
+	Internal.getLayers = function(configLayers){		
 
-		async.each(configLayers, function(file, callback){
-
-			console.log(file);
-			callback(file);
-
-		});
-
-		/*
 		var layersList = [];
-
-		console.log(configLayers);
-
-		var cmd = 'python '+ 'create_mapid.py'+' '+configLayers[0].collection_id+' '+configLayers[0].end_date+' '+configLayers[0].start_date+' '+configLayers[0].composites;
-		console.log(cmd);
-
-		ChildProcess.exec(cmd, function (error, stdout, stderr) {
-				
-			if(stderr){
-
-				console.log(stderr);
-
-			}
-
-			for (var i = 0; i < configLayers.length; i++){
-
-				Dates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
-				configLayers[i]['Dates'] = Dates;
-			
-
-				for(var j = 0; j < configLayers[i].Dates.length; j++){
-					
-					if(configLayers[i].Dates[j+1]==undefined){
-							break;
-					}
-
-					var x = Internal.parsinglayersString(configLayers[i].Dates[j]);
-					var y = Internal.parsinglayersString(configLayers[i].Dates[j+1]);
-					
-
-					for(var k = 0; k < configLayers[i].composites.length; k++){	
-
-						var layer = {
-													'id':configLayers[i].layer + '_' + x + '_' + y + '_' + Internal.removeBComma(configLayers[i].composites[k])
-												};
-
-						layersList.push(layer);				
-
-					}
-				
-				}
 		
-			}		
-			
-	   	stdout=stdout.replace(/\'/g, '"');
-	 		console.log(stdout);
-	   	var result = JSON.parse(stdout);	   	
-	   	callback(result);
-
-	   	
-	 	});
-		*/
-		/*
 		for (var i = 0; i < configLayers.length; i++){
 
-			Dates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
-			configLayers[i]['Dates'] = Dates;
+			PairDates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
+			configLayers[i]['Dates'] = PairDates;
 			
-
-			for(var j = 0; j < configLayers[i].Dates.length; j++){
-				
-				if(configLayers[i].Dates[j+1]==undefined){
-						break;
-				}
-
-				var x = Internal.parsinglayersString(configLayers[i].Dates[j]);
-				var y = Internal.parsinglayersString(configLayers[i].Dates[j+1]);
-				
+			for(var j = 0; j < configLayers[i].Dates.length; j++){										
 
 				for(var k = 0; k < configLayers[i].composites.length; k++){	
 
-					var layer = {
-												'id':configLayers[i].layer + '_' + x + '_' + y + '_' + Internal.removeBComma(configLayers[i].composites[k])
-											};
+						if(configLayers[i].Dates[j+1] == undefined){
+							break;
+						}
 
-					layersList.push(layer);				
+						var layer = {
+													'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].Dates[j][0]) + '_' + Internal.parsinglayersString(configLayers[i].Dates[j][1]) + '_' + Internal.removeBComma(configLayers[i].composites[k]),
+													'collection': configLayers[i].collection_id,
+													'startDate': configLayers[i].Dates[j][0],
+													'enDate':configLayers[i].Dates[j][1],
+													'composite': configLayers[i].composites[k]
+												};
+
+						layersList.push(layer);					
 
 				}
 			
 			}
+			
 		
 		}
 
 		return layersList;
-		*/
+		
+	}
+
+	Internal.EEAccess = function(layers, callback){
+
+		var layerWithToken = [];
+
+		finalize = function(){
+			console.log('fim dos layers')
+			callback(layerWithToken);
+		}
+
+		overLayer = function(layer, nextLayer){
+
+			cmd = "python"+" "+"/home/jose/Documentos/github/lapig-maps/src/ee-tms/create_mapid.py"+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite;
+			
+			ChildProcess.exec(cmd, function(err, stdout, stderr){
+
+				if(stderr){					
+						console.log(stderr);
+				}
+				
+				stdout=stdout.replace(/'/g, '"');				
+				stdout=JSON.parse(stdout);
+				layer["token"] = stdout.token;
+				layer["mapid"] = stdout.mapid;
+				layerWithToken.push(layer);
+
+				nextLayer();
+
+			});
+
+		}
+
+		async.eachSeries(layers,overLayer,finalize);
 
 	}
 
 
 	Tms.process = function(request, response) {
 
-		pathXML = config.pathXML;
-		//config.layers
+		pathXML = app.config.pathXML;
 
-		arrayTeste = [1,2,3,4,5,6,7,7,8,9,19]
-		var layers = Internal.getLayers(arrayTeste);
+		var config = app.config.layers;
 
-		console.log('oi');
+		var layers = Internal.getLayers(config);
 
+		Internal.EEAccess(layers, function(layerWithToken){
+			
+			xml = Internal.xmlGenerator(layerWithToken);
 
+			fs.readFile(pathXML, 'utf8', function (err, data) {
+				
+				result = data.replace('{xmlLayers}', xml);
 
-
-		/*
-		var xmlLayers = Internal.xmlGenerator(layers);	
-
-		fs.readFile(pathXML, 'utf8', function (err, data) {
-
-			result = data.replace('{xmlLayers}', xmlLayers);
-
-			response.setHeader('content-type', 'application/xml');
-
-			response.send(result);
-
-			response.end();
-	
+				response.setHeader('content-type', 'application/xml');
+				response.send(result);
+				response.end();
+		
+			});
 
 		});
-		*/
-		response.end();
+
+		
 	}
 
 	return Tms;
+
 }

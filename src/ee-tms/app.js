@@ -13,9 +13,9 @@ var app = express();
 load('config.js', {'verbose': false}).into(app);
 load('libs', { 'verbose': false, cwd: 'src' }).into(app);
 
-app.config = app.config;
-
 app.use(compression());
+
+console.log(app.libs);
 
 app.use(requestTimeout({
 	'timeout': 1000 * 60 * 30,
