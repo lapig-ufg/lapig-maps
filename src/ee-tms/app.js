@@ -13,38 +13,42 @@ var app = express();
 load('config.js', {'verbose': false}).into(app);
 load('libs', { 'verbose': false, cwd: 'src' }).into(app);
 
-app.use(compression());
+console.log(app.libs.init.initApp);
 
-console.log(app.libs);
 
-app.use(requestTimeout({
-	'timeout': 1000 * 60 * 30,
-	'callback': function(err, options) {
-		var response = options.res;
-		if (err) {
-			util.log('Timeout: ' + err);
+app.libs.init.initApp(function(){
+	
+	app.use(compression());
+
+	console.log(app.libs);
+
+	app.use(requestTimeout({
+		'timeout': 1000 * 60 * 30,
+		'callback': function(err, options) {
+			var response = options.res;
+			if (err) {
+				util.log('Timeout: ' + err);
+			}
+			response.end();
 		}
-		response.end();
-	}
-}));
+	}));
 
-app.use(multer());
-app.use(requestParam());
-app.use(morgan('combined'));
+	app.use(multer());
+	app.use(requestParam());
+	app.use(morgan('combined'));
 
-app.use(function(error, request, response, next) {
-	console.log('ServerError: ', error.stack);
-	next();
+	app.use(function(error, request, response, next) {
+		console.log('ServerError: ', error.stack);
+		next();
+	});
+
+	app.listen(app.config.port, function() {
+		console.log('OGC-Server Server @ [port %s] [pid %s]', app.config.port, process.pid.toString());
+	});
+
+	process.on('uncaughtException', function (err) {
+		console.error(err.stack);
+	});
+
 });
 
-load('controllers', { 'verbose': false, cwd: 'src' })
-	.then('routes')
-	.into(app);
-
-app.listen(app.config.port, function() {
-	console.log('OGC-Server Server @ [port %s] [pid %s]', app.config.port, process.pid.toString());
-});
-
-process.on('uncaughtException', function (err) {
-	console.error(err.stack);
-}); 

@@ -40,7 +40,7 @@ module.exports = function(app) {
 				temporarieList.push(list[i], list[i+1]);
 				listReturn.push(temporarieList)
 			}
-			
+			 
 		}
 
 		return listReturn;
