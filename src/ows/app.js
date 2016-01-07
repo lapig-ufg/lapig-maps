@@ -15,8 +15,6 @@ load('libs/utils', { 'verbose': false, cwd: 'src' })
 .then('libs')
 .into(app);
 
-console.log('oi')
-console.log(app.libs);
 
 app.libs.catalog.init(function() {
 

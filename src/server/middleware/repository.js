@@ -23,6 +23,7 @@ module.exports = function(app) {
 		};
 
 		Repository.init = function(callback) {
+				
 				Repository.db.open(function(err) {
 						if (err) {
 								return callback(err);

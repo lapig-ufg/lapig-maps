@@ -12,15 +12,12 @@ var app = express();
 
 load('config.js', {'verbose': false}).into(app);
 load('libs', { 'verbose': false, cwd: 'src' }).into(app);
+load('controllers', { 'verbose': false, cwd: 'src' }).into(app);
 
-console.log(app.libs.init.initApp);
 
-
-app.libs.init.initApp(function(){
+app.libs.init.init(function(){
 	
 	app.use(compression());
-
-	console.log(app.libs);
 
 	app.use(requestTimeout({
 		'timeout': 1000 * 60 * 30,
@@ -32,7 +29,6 @@ app.libs.init.initApp(function(){
 			response.end();
 		}
 	}));
-
 	app.use(multer());
 	app.use(requestParam());
 	app.use(morgan('combined'));
@@ -41,6 +37,11 @@ app.libs.init.initApp(function(){
 		console.log('ServerError: ', error.stack);
 		next();
 	});
+
+	load('controllers', { 'verbose': false, cwd: 'src' })
+		.then('routes')
+		.into(app);
+
 
 	app.listen(app.config.port, function() {
 		console.log('OGC-Server Server @ [port %s] [pid %s]', app.config.port, process.pid.toString());

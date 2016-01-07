@@ -1,7 +1,6 @@
 var spawn = require('child_process').spawn
 	  ,	querystring = require('querystring')
-	  ,	fs = require('fs')
-		;
+	  ,	fs = require('fs');
 
 module.exports = function(app) {
 
