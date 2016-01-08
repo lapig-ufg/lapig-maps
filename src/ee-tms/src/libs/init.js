@@ -123,7 +123,8 @@ module.exports = function(app){
 													'collection': configLayers[i].collection_id,
 													'startDate': configLayers[i].Dates[j][0],
 													'enDate':configLayers[i].Dates[j][1],
-													'composite': configLayers[i].composites[k]
+													'composite': configLayers[i].composites[k],
+													'b_box': configLayers[i].b_box
 												};
 
 						layersList.push(layer);					
@@ -151,7 +152,7 @@ module.exports = function(app){
 
 		overLayer = function(layer, nextLayer){
 
-			cmd = "python"+" "+"/home/jose/Documentos/github/lapig-maps/src/ee-tms/create_mapid.py"+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite;
+			cmd = "python"+" "+"/home/jose/Documentos/github/lapig-maps/src/ee-tms/create_mapid.py"+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
 			
 			ChildProcess.exec(cmd, function(err, stdout, stderr){
 
@@ -164,7 +165,6 @@ module.exports = function(app){
 				layer["token"] = stdout.token;
 				layer["mapid"] = stdout.mapid;
 				layerWithToken.push(layer);
-				console.log(cmd)
 				nextLayer();
 
 			});

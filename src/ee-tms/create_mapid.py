@@ -9,11 +9,22 @@ EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
 
 ee.Initialize(EE_CREDENTIALS)
 
-def run(collection, enDate, startDate, composites):
+
+def setCoordinates(rectangle):
+	rct = [];
+	for i in rectangle.split(',',3):
+		rct.append(float(i))
+
+	return rct;
+
+
+def run(collection, enDate, startDate, composites, rectangleSides):
 
 	idDict = {};
 
-	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterDate(enDate, startDate).max();
+	coordinates = setCoordinates(rectangleSides);
+
+	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(enDate, startDate).max();
 	mapId = img.getMapId({ "bands": composites});
 
 	for i in mapId:
@@ -26,4 +37,4 @@ def run(collection, enDate, startDate, composites):
 
 	print idDict
 
-result = run(argv[1], argv[2], argv[3], argv[4])
+result = run(argv[1], argv[2], argv[3], argv[4], argv[5])
