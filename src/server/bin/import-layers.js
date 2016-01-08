@@ -38,7 +38,8 @@ var parseCsv = function(filepath, callback) {
         "subject":col[3].trim(),
         "basepath":col[4].trim(),
         "search":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4],
-        "project": col[5].toUpperCase() 
+        "project": col[5].toUpperCase(),
+        "metadata": col[6]
       }
       
       layers.push(objeto);
@@ -150,6 +151,14 @@ var getLayerMultipleFiles = function(layersDir, layer, callback) {
 
     })
     .on('done', function() {
+      files.sort(function(a,b) {
+        var aDate = a.date;
+        var bDate = b.date;
+
+        if(aDate < bDate) return -1;
+        if(aDate > bDate) return 1;
+        return 0;
+      });
       callback(files);
     })
   .walk();
@@ -296,6 +305,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   offsite = '';
   if (info.values) {
     processingScale = '  PROCESSING "SCALE='+info.values.min+','+info.values.max+'"\n';
+    console.log(processingScale)
     if(info.values.bandCount >= 3)
       offsite = '  OFFSITE 0 0 0\n';
     
@@ -303,13 +313,13 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   }
 
   var filter = ''
-  if (layer.type == 'VECTOR') {
+  /*if (layer.type == 'VECTOR') {
     filter =  '  VALIDATION\n'
             + '    "CQL_FILTER" "."\n'
             + '    "DEFAULT_CQL_FILTER" \'"TRUE"="TRUE"\'\n'
             + '  END\n'
             + '  FILTER (%CQL_FILTER%)\n';
-  }
+  }*/
 
   var mapContent =  'LAYER\n'
                   + '  NAME "{name}"\n'
@@ -389,8 +399,9 @@ var getLayerFileInfo = function(layer, callback) {
 
     callback(info);
   } else if(layer.type == 'RASTER') {
-    var layerShpPath = getFilePathRegexSpaces(layer, '.tif');
-    var cmd = printf("gdalinfo -stats -norat {0} | grep -E 'Lower\ Left|Upper\ Right|STATISTICS_MAXIMUM|STATISTICS_MINIMUM' | cut -d')' -f1 | cut -d'(' -f2", [ layerShpPath ]);
+    var layerTifPath = getFilePathRegexSpaces(layer, '.tif');
+
+    var cmd = printf("gdalinfo -stats -norat {0} | grep -E 'Lower\ Left|Upper\ Right|STATISTICS_MAXIMUM|STATISTICS_MINIMUM' | cut -d')' -f1 | cut -d'(' -f2", [ layerTifPath ]);
 
     var output = child_process.execSync(cmd, { encoding: 'utf-8' });
     split = output.split(/\n/);
@@ -404,9 +415,11 @@ var getLayerFileInfo = function(layer, callback) {
     info.values.min = (Number(min) == 0) ? '0.0001' : min;
     info.values.max = max;
 
-    var cmdBandCount = printf("gdalinfo {0} | grep 'Band ' | wc -l ", [ layerShpPath ]);
+    info.values.min = info.values.min.replace(',','.')
+    info.values.max = info.values.max.replace(',','.')
+
+    var cmdBandCount = printf("gdalinfo {0} | grep 'Band ' | wc -l ", [ layerTifPath ]);
     var bandCount = Number(child_process.execSync(cmdBandCount, { encoding: 'utf-8' }));
-    console.log(bandCount)
 
     info.values.bandCount = bandCount;
 
@@ -485,15 +498,14 @@ var createMapFile = function(layers, callback) {
 }
 
 
-var layersDir = "/data/lapig/TMP/PASTAGEM.ORG/Categorias/"
-var dbUrl = 'mongodb://10.0.0.50:27017/lapig-maps';
+var layersDir = "/run/user/1000/gvfs/smb-share\:server\=su04\,share\=geo\,user\=leandro.leal/REPOSITÓRIO\ DE\ DADOS/DADOS\ DO\ PORTAL/"
+var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 var filepath = 'layers.csv';
 
 parseCsv(filepath, function(layers) {
- //console.log(layers)
+ console.log(layers)
   setLayers(layersDir, layers, function(layers) {
     createMapFile(layers, function() {
-      console.log('terminou');
       insertLayers(dbUrl, layers, function() {});
     });
   })

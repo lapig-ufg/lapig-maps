@@ -4,6 +4,8 @@ var async = require('async')
 module.exports = function(app) {
 
 	var config = app.config;
+	var layerModel = app.models.layer;
+	
 	var Layer = {};
 
 	Layer.attributes = function(request, response) {
@@ -12,71 +14,46 @@ module.exports = function(app) {
 
 	Layer.getYears = function(request, response){
 
-		var layerCollection = app.repository.collections.layers;
-
 		var year = [];
-
 		var id = request.param('id');
 
-			layerCollection.findOne({_id : app.repository.id(id)}, {"fileObj.date":1,"fileObj.name":1}, function(err, layer) {
-				if (layer.fileObj != undefined){
+		layerModel.findById(id, function(layer) {
+			if (layer.fileObj != undefined){
 				layer.fileObj.forEach(function(yearDate){
-
 					year.push({
 						'name':yearDate.name,
 						'year':yearDate.date
-						});
-			});
-
+					});
+				});
 			};
+			
 			result = { years: year };
 
 			response.send(result);
-			response.end()
-		});
-};
+			response.end();
+		});	
+	};
 
 	Layer.byId = function(request, response){
 
-		var layerCollection = app.repository.collections.layers;
-
 		var id = request.param('id');
 
-		layerCollection.findOne({_id : app.repository.id(id)}, function(err, layer) {
-			if (layer.type == 'MULTIPLE'){
-				var maior;
-				var objeto;
-
-			  	layer.fileObj.forEach(function(dateMultiple){
-
-				    if (maior === undefined)
-				      	maior=dateMultiple.date;
-				    else if (dateMultiple.date>maior)
-				      	maior=dateMultiple.date;
-				  		objName = dateMultiple.name;
-				  		objDate = dateMultiple.date;
-				  		objType = dateMultiple.type;
-				    });
-
-			  layer.last_type = objType;
-				layer.last_name = objName;
-				layer.last_date = objDate;
-				delete layer.fileObj;
-			}
+		layerModel.findById(id, function(layer) {
+			
+			delete layer.fileObj;
 
 			response.send(layer);
-			response.end()
-		})
+			response.end();
+		});
 	};
 
 	Layer.tree = function(request, response) {
-		
-		var layerCollection = app.repository.collections.layers;
 
-		var projects = request.param('projects', '').toUpperCase().split(',')
+		var projects = request.param('projects', '');
+		projects = projects.toUpperCase().split(',');
 
-		layerCollection.distinct('subject', { 'project': { $in: projects } }, function(err,subjects) {
-
+		layerModel.listAllSubjects(projects, function(subjects) {
+			
 			var result = [];
 
 			var interate = function(subject, next){
@@ -85,15 +62,15 @@ module.exports = function(app) {
 							iconCls: 'task-folder'
 					};
 
-				layerCollection.find({ 'subject': subject, 'project': { $in: projects } }).toArray(function (err, layers){
+				layerModel.findBySubject(subject, projects, function(layers) {
 					
 					var childrens = [];
 					layers.sort(function(a,b) {
-						var aText = unidecode(a.name);
-						var baText = unidecode(b.name);
+						var aName = unidecode(a.name);
+						var bName = unidecode(b.name);
 
-						if(aText < baText) return -1;
-				    if(aText > baText) return 1;
+						if(aName < bName) return -1;
+				    if(aName > bName) return 1;
 				    return 0;
 					})
 
@@ -114,17 +91,16 @@ module.exports = function(app) {
 					result.push(subjectObj);
 					next();
 				});
-
 			}
 
 			var finalize = function(){
 
 				result.sort(function(a,b) {
 					var aText = unidecode(a.text);
-					var baText = unidecode(b.text);
+					var bText = unidecode(b.text);
 
-					if(aText < baText) return -1;
-			    if(aText > baText) return 1;
+					if(aText < bText) return -1;
+			    if(aText > bText) return 1;
 			    return 0;
 				})
 
@@ -135,30 +111,23 @@ module.exports = function(app) {
 			async.each(subjects, interate, finalize);
 
 		});
-
 	};
 
-
 	Layer.search = function(request, response){
-
-		var layerCollection = app.repository.collections.layers;
 
 		var skip = request.param('start');
 		var limit = request.param('limit');
 		var search = request.param('search');
 		var projects = request.param('projects', '').toUpperCase().split(',')
 
-		layerCollection.find({'project': { $in: projects }, 'search': new RegExp(search, 'i')}).skip(Number(skip)).limit(Number(limit)).toArray(function(err, layers) {
-			layerCollection.find({'project': { $in: projects }, 'search': new RegExp(search, 'i')}).count(function(err, totalCount) {
+		layerModel.findByRegexWithPagination(search, projects, skip, limit, function(totalCount, layers) {
+			var result = {
+		    totalCount: totalCount,
+		    layers: layers
+			}
 
-					var result = {
-				    totalCount: totalCount,
-				    layers: layers
-					}
-
-					response.send(result);
-					response.end();
-			});
+			response.send(result);
+			response.end();
 		});
 	};
 

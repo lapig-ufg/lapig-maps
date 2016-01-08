@@ -32,6 +32,7 @@
     "simple-grep": "0.0.2",
     "spatialite": "0.0.5",
     "sqlite3": "^3.1.0",
+    "stream-concat": "^0.1.0",
     "temp": "~0.8.1",
     "underscore": "~1.6.0",
     "unidecode": "^0.1.7",

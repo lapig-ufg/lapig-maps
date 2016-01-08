@@ -284,31 +284,29 @@ var app = new gxp.LapigViewer({
 										source: "ows",
 										name: "pa_br_pastagem_ni_2006_ibge",
 										type: "VECTOR",
+										metadata: "ibge",
 										visibility: true
 								}
-								/*,{
-										source: "ows",
-										name: "pa_br_estados_1000_2014_ibge",
-										type: "VECTOR",
-										visibility: true
-								}*/
 								,{
 										source: "ows",
 										name: "pa_br_matadouros_e_frigorificos_na_2014_lapig",
 										type: "VECTOR",
+										metadata: "matadouros_frigoríficos",
 										visibility: true
 								}
 								,{
 										source: "ows",
 										name: "pa_br_base_fundiaria_ni_2015_incra",
 										type: "VECTOR",
-										visibility: false
+										visibility: false,
+										metadata : "incra"
 								}
 								,{
 										source: "ows",
 										name: "pa_br_areas_pastagens_250_2010_lapig",
 										type: "VECTOR",
-										visibility: false
+										visibility: false,
+										metadata: "area_past_lapig"
 								}
 				],
 				items: [{

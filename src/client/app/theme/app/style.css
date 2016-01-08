@@ -98,6 +98,10 @@ div.olControlMousePosition {
     background-image: url(img/file-xls.png); !import
 }
 
+.lapig-icon-metadata {
+    background-image: url(img/metadata.png); !import
+}
+
 .gxp-icon-lapigpublicacoes {
     background-image: url(img/publicacoes.png); !import
     height:16px; !import

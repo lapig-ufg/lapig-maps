@@ -63,11 +63,11 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
-    download: function(layerName, layerType) {
+    download: function(layerName, layerType, metadata) {
         var params = [];
 
         if (layerType == 'VECTOR') {
-            var params = [
+            params = [
                     'REQUEST=GetFeature'
                 ,   'SERVICE=wfs'
                 ,   'VERSION=1.0.0'
@@ -76,21 +76,25 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
             ];
 
         } else if (layerType == 'RASTER') {
-            var params = [
+            params = [
                     'REQUEST=GetCoverage'
                 ,   'SERVICE=WCS'
                 ,   'VERSION=2.0.0'
                 ,   'COVERAGEID=' + layerName
-                ,   'FORMAT=image/tiff'
+                ,   'FORMAT=tiff-zip'
             ];
 
         }
 
         if(params.length > 0) {
+            if(metadata){
+                params.push('METADATA=' + metadata)
+            }
+
             var iframe = Ext.DomHelper.append(Ext.getBody(),{
-                tag : 'iframe'
-                ,src: '/ows?' + params.join('&')
-                ,cls: 'x-hidden'
+                    tag : 'iframe'
+                    ,src: '/ows?' + params.join('&')
+                    ,cls: 'x-hidden'
             });
             
         } else {
@@ -106,6 +110,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         if(selectedLayer.json && selectedLayer.data.name && selectedLayer.json.type) {
 
             var layerName   = selectedLayer.data.name;
+            var metadata   = selectedLayer.json.metadata;
             var layerType   = (selectedLayer.json.type == 'MULTIPLE' ) ? selectedLayer.json.last_type : selectedLayer.json.type;
             var title       = 'Download - '+selectedLayer.data.title;
 
@@ -170,7 +175,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     listeners: {
                         click: function(evt) {
-                            instance.download(layerName, layerType);
+                            instance.download(layerName, layerType, metadata);
                             w.hide();
                         }
                     }

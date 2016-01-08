@@ -1,0 +1,24 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Download - <%= label %></title>
+
+    <link href="thirdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="thirdparty/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <ul>
+    <% for(var i=0; i<layers.length; i++) {%>
+      <li><a href="<%= layers[i]['url'] %>"><%= layers[i]['label'] %></a></li>
+    <% } %>
+    </ul>
+    <script src="thirdparty/jquery/jquery.min.js"></script>
+	  <script src="thirdparty/bootstrap/js/bootstrap.min.js"></script>
+	</body>
+</html>
