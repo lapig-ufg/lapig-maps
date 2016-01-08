@@ -4,12 +4,12 @@ module.exports = function(app) {
 
 	Example.test = function(request, response) {
 	  
-	  var layerCollection = app.repository.collections.layers;
+	  //var layerCollection = app.repository.collections.layers;
 
-		layerCollection.find({}).toArray(function(err, docs) {
+		//layerCollection.find({}).toArray(function(err, docs) {
 				//response.send(docs);
 				response.end('Hello World!');
-		});
+		//});
 
 	};
 

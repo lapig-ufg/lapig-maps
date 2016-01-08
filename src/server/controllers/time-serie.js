@@ -34,8 +34,6 @@ module.exports = function(app) {
 		
 		var params = id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
-		
-		console.log(cmd);
 
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
