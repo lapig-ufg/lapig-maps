@@ -18,14 +18,14 @@ def setCoordinates(rectangle):
 	return rct;
 
 
-def run(collection, enDate, startDate, composites, rectangleSides):
+def run(collection, startDate, endDate, composites, rectangleSides):
 
 	idDict = {};
 
 	coordinates = setCoordinates(rectangleSides);
 
-	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(enDate, startDate).max();
-	mapId = img.getMapId({ "bands": composites});
+	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(startDate, endDate).max();
+	mapId = img.getMapId({ "bands": composites });
 
 	for i in mapId:
 		
@@ -38,3 +38,4 @@ def run(collection, enDate, startDate, composites, rectangleSides):
 	print idDict
 
 result = run(argv[1], argv[2], argv[3], argv[4], argv[5])
+

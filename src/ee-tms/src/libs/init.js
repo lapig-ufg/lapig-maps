@@ -21,29 +21,28 @@ module.exports = function(app){
 
 	Internal.parsinglayersString = function(str){
 
-		slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
+		slicedStr = str.slice(2,4) + str.slice(5,7) + str.slice(8,10);
 				
 		return slicedStr;
 
 	}
 
-	Internal.PairsGenerate = function(list){
+	Internal.strDate = function(dt, sep) {
+		monthInitial = dt.getMonth() + 1;
+		dayInitial = dt.getDate();
+		yearInitial = dt.getFullYear();
 
-		var listReturn = [];
+		strMonthInitial = monthInitial.toString();
+		strDayInitial = dayInitial.toString();
+		strYearInitial = yearInitial.toString();
 
-		for (var i = 0; i < list.length; i++){
-			if (list[i+1] == undefined){
-				break;
-			}else{
-				var temporarieList = []
-				temporarieList.push(list[i], list[i+1]);
-				listReturn.push(temporarieList)
-			}
-			 
-		}
+		if(strMonthInitial.length == 1)
+			strMonthInitial = "0"+strMonthInitial
 
-		return listReturn;
-
+		if(strDayInitial.length == 1)
+			strDayInitial = "0"+strDayInitial					
+		
+		return strYearInitial + sep + strMonthInitial + sep + strDayInitial;
 	}
 
 	Internal.dateRange = function(startDate, finalDate, temporalResolution, temporalResolutionType){
@@ -53,47 +52,34 @@ module.exports = function(app){
 
 		var Start = new Date(startDate);
 		var Final = new Date(finalDate);
-
-		var count = 0;
 					
 		while(Start <= Final){
 
-			if(Start.getFullYear() == count + 1){
-				var Start = new Date(Start.getFullYear()+'-'+01+'-'+01);
-				count = Start.getFullYear()
+			if(Internal.strDate(Start, '/') != startDate) {
+				Start.setDate(Start.getDate() + 1 );
 			}
 
-			monthInitial = Start.getMonth() + 1;
-			dayInitial = Start.getDate();
-			yearInitial = Start.getFullYear();
-
-			strMonthInitial = monthInitial.toString();
-			strDayInitial = dayInitial.toString();
-			strYearInitial = yearInitial.toString();
-
-			if(strMonthInitial.length == 1)
-				strMonthInitial = "0"+strMonthInitial
-
-			if(strDayInitial.length == 1)
-				strDayInitial = "0"+strDayInitial					
+			dt1 = Internal.strDate(Start, '-')
 			
-			strDate = strYearInitial+'-'+strMonthInitial+'-'+strDayInitial;
+			dt1Year = Start.getFullYear();
 
-			dates.push(strDate);
-			
 			if(temporalResolutionType == 'day'){
-
-				Start.setDate(Start.getDate() + temporal);
-
+				Start.setDate(Start.getDate() + (temporal-1) );
 			} else {
-
 				Start.setMonth(Start.getMonth() + temporal);				
-
 			}
+
+			dt2Year = Start.getFullYear();
+
+			if(dt1Year != dt2Year) {
+				Start = new Date(dt1Year+'/12/31');
+			}
+
+			dt2 = Internal.strDate(Start, '-')
+
+			dates.push([dt1, dt2])
 
 		}
-
-		dates = Internal.PairsGenerate(dates);
 
 		return dates;
 		
@@ -108,23 +94,19 @@ module.exports = function(app){
 		for (var i = 0; i < configLayers.length; i++){
 
 			PairDates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
-			configLayers[i]['Dates'] = PairDates;
 			
-			for(var j = 0; j < configLayers[i].Dates.length; j++){										
+			for(var j = 0; j < PairDates	.length; j++){										
 
 				for(var k = 0; k < configLayers[i].composites.length; k++){	
 
-						if(configLayers[i].Dates[j+1] == undefined){
-							break;
-						}
-
 						var layer = {
-													'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].Dates[j][0]) + '_' + Internal.parsinglayersString(configLayers[i].Dates[j][1]) + '_' + Internal.removeBComma(configLayers[i].composites[k]),
+													'id':configLayers[i].layer + '_' + Internal.parsinglayersString(PairDates[j][0]) + '_' + Internal.parsinglayersString(PairDates[j][1]) + '_' + Internal.removeBComma(configLayers[i].composites[k]),
 													'collection': configLayers[i].collection_id,
-													'startDate': configLayers[i].Dates[j][0],
-													'enDate':configLayers[i].Dates[j][1],
+													'startDate': PairDates[j][0],
+													'enDate':PairDates[j][1],
 													'composite': configLayers[i].composites[k],
-													'b_box': configLayers[i].b_box
+													'b_box': configLayers[i].b_box,
+													'satellite': configLayers[i].satellite
 												};
 
 						layersList.push(layer);					
@@ -153,8 +135,8 @@ module.exports = function(app){
 		overLayer = function(layer, nextLayer){
 
 			cmd = "python"+" "+"/home/jose/Documentos/github/lapig-maps/src/ee-tms/create_mapid.py"+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
-			
-			ChildProcess.exec(cmd, function(err, stdout, stderr){
+			console.log(cmd);
+			ChildProcess.exec(cmd, function(err, stdout, stderr){	
 
 				if(stderr){					
 						console.log(stderr);
@@ -188,6 +170,7 @@ module.exports = function(app){
 		Internal.EEAccess(layers, function(layerWithToken){
 			
 			Init.layers = layerWithToken;
+
 			functionApp();
 
 		});

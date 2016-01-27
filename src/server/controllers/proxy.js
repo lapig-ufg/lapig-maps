@@ -11,9 +11,9 @@ module.exports = function(app) {
 
 	Proxy.ows = function(request, response) {
 
-		var requestType = request          .param('REQUEST');  
+		var requestType = request.param('REQUEST');  
 
-	  var url     = config.ows + request.path;
+	  var url = config.ows + request.path;
 	  var params  = querystring.stringify(request.query);
 	  
 	  if(request.param('url'))
