@@ -62,6 +62,7 @@ module.exports = function(app) {
 		Internal.generateEmailMsg(id, function(layerLabel, html) {
 			var title = 'Download - ' + layerLabel;
 			email.send(emailTo, title, html, function(err, info) {
+				console.log(err)
 				response.send({ "result": ( err == null ) });
 				response.end();
 			})
