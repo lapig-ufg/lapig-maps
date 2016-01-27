@@ -32,12 +32,9 @@
     "response-time": "^2.3.0",
     "simple-grep": "0.0.2",
     "spatialite": "0.0.5",
-<<<<<<< HEAD
-=======
     "sqlite3": "^3.1.0",
     "stream-concat": "^0.1.0",
     "strftime": "^0.9.2",
->>>>>>> 8cb6855c5dfa71d078c5d4a3f53ad78e00192206
     "temp": "~0.8.1",
     "underscore": "~1.6.0",
     "unidecode": "^0.1.7",
