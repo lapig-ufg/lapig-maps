@@ -47,6 +47,24 @@ module.exports = function(app) {
 		});
 	};
 
+	Layer.byBasepaths = function(request, response){
+
+		var basepaths = request.param('basepaths');
+
+		layerModel.findByBasepaths(basepaths, function(layers) {
+
+			var result = []
+
+			layers.forEach(function(layer) {
+				delete layer.fileObj;
+				result.push(layer);
+			})
+
+			response.send(result);
+			response.end();
+		});
+	};
+
 	Layer.tree = function(request, response) {
 
 		var projects = request.param('projects', '');

@@ -2,17 +2,20 @@ var 	fs = require('fs')
 		,	requester = require('request')
 		,	StreamConcat = require('stream-concat')
 		,	archiver = require('archiver')
+		,	nodemailer = require('nodemailer')
+		,	ejs = require('ejs')
 		;
 
 module.exports = function(app) {
 
 	var config = app.config
+	var email = app.libs.email;
 	var layerModel = app.models.layer;
+	
 	var Download = {};
+	var Internal = {};
 
-	Download.allLayers = function(request, response) {
-
-		var id = request.param('id');
+	Internal.generateEmailMsg = function(id, callback) {
 		layerModel.findById(id, function(layer) {
 			
 			var layers = []
@@ -46,11 +49,25 @@ module.exports = function(app) {
 
 			});
 
-			response.render('download-all.ejs', { label: layerLabel, layers: layers });
+			ejs.renderFile(__dirname + '/../views/download-all.ejs', { label: layerLabel, layers: layers }, function(err, html) {
+				callback(layerLabel, html)
+			});
 
 		});
+	}
 
-	};
+	Download.requestAllLayer = function(request, response) {
+		var id = request.param('id');
+		var emailTo = request.param('email');
+		Internal.generateEmailMsg(id, function(layerLabel, html) {
+			var title = 'Download - ' + layerLabel;
+			email.send(emailTo, title, html, function(err, info) {
+				response.send({ "result": ( err == null ) });
+				response.end();
+			})
+		})
+
+	}
 
 	return Download;
 

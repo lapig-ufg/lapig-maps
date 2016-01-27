@@ -13,6 +13,9 @@
   </head>
 
   <body>
+    <p>
+      Segue abaixo os links para download de toda série temporal de <%= label %>:
+    </p>
     <ul>
     <% for(var i=0; i<layers.length; i++) {%>
       <li><a href="<%= layers[i]['url'] %>"><%= layers[i]['label'] %></a></li>

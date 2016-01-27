@@ -6,31 +6,57 @@ module.exports = function(app) {
 	var config = app.config;
 	var layerCollection = app.repository.collections.layers;
 
+	var Internal = {};
 	var Layer = {};
+
+	Internal.processMultipleLayer = function(layer) {
+		if (layer.type == 'MULTIPLE') {
+			var endDate;
+
+	  	layer.fileObj.forEach(function(dateMultiple){
+		    
+		    if (endDate === undefined)
+		      endDate = dateMultiple.date;
+		    else if (dateMultiple.date > endDate)
+		      endDate = dateMultiple.date;
+
+	  		lastName = dateMultiple.name;
+	  		lastDate = dateMultiple.date;
+	  		lastType = dateMultiple.type;
+	    });
+
+		  layer.last_type = lastType;
+			layer.last_name = lastName;
+			layer.last_date = lastDate;
+
+		}
+
+		return layer;
+	}
+
+	Layer.findByBasepaths = function(basepaths, callback){
+		
+		var query = { 
+	    "$or": [ 
+        { "basepath": { "$in": basepaths } },
+        { "fileObj.name": { "$in": basepaths } }
+	    ]
+		}
+
+		layerCollection.find(query).toArray(function (err, layers){
+			var result = []
+			if(layers) {
+				layers.forEach(function(layer) {
+					result.push(Internal.processMultipleLayer(layer));
+				})
+			}
+			callback(result);
+		});
+	}
 
 	Layer.findById = function(id, callback){
 		layerCollection.findOne({_id : app.repository.id(id)}, {}, function(err, layer) {
-
-			if (layer.type == 'MULTIPLE') {
-				var endDate;
-
-		  	layer.fileObj.forEach(function(dateMultiple){
-			    
-			    if (endDate === undefined)
-			      endDate = dateMultiple.date;
-			    else if (dateMultiple.date > endDate)
-			      endDate = dateMultiple.date;
-
-		  		lastName = dateMultiple.name;
-		  		lastDate = dateMultiple.date;
-		  		lastType = dateMultiple.type;
-		    });
-
-			  layer.last_type = lastType;
-				layer.last_name = lastName;
-				layer.last_date = lastDate;
-
-			}
+			layer = Internal.processMultipleLayer(layer);
 			callback(layer);
 		});
 	}

@@ -12,7 +12,7 @@ module.exports = function(app) {
 			, 'layers': [
 					{
 				    "layer": "l8",
-					"temporal_resolution": "16",
+						"temporal_resolution": "16",
 				    "temporal_resolution_type": "day",
 				    "start_date": "2013-04-11",
 				    "end_date": "2013-07-31",
