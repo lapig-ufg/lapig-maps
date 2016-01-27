@@ -8,5 +8,6 @@ module.exports = function (app) {
 	
 	app.get('/layers/years/:id',layer.getYears);
 	app.get('/layers/:id',layer.byId)
+	app.post('/layers',layer.byBasepaths)
 
 }

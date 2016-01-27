@@ -15,7 +15,7 @@ def run(layerId, longitude, latitude):
 	
 	for filter in loader.getFilters(layerId):
 
-		filteredValues = filter.run(values, longitude, latitude);		
+		filteredValues = filter.run(values, longitude, latitude);	
 		if len(filteredValues) == len(values):
 			position += 1
 			series.append({ 'id': filter.id, 'label': filter.label, 'position': position })

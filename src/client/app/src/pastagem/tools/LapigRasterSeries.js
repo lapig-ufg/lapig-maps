@@ -67,6 +67,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       datePos = 0;
       defaultDatePattern = "{}/01/01";
       chart.setXAxis(new Ext.chart.CategoryAxis({}));
+    } else if(groupType == 'NPP') {
+      datePos = 0;
+      defaultDatePattern = "{}/01/01";
+      chart.setXAxis(new Ext.chart.CategoryAxis({}));
     } else if(groupType == 'MONTH') {
       datePos = 1;
       defaultDatePattern = "2000/{}/01";
@@ -89,20 +93,41 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       return chartData;
     }
 
-    chartData.forEach(function(cData) {
-      var key = cData.dateStr.split('-')[datePos];
-      
-      if(groupedOriginalData[key] == undefined)
-        groupedOriginalData[key] = [];
-      if(cData.original != null)
-        groupedOriginalData[key].push(cData.original)
+    if(groupType == 'NPP') {
+      chartData.forEach(function(cData) {
+        var key = cData.dateStr.split('-')[datePos];
+        var month = cData.dateStr.split('-')[1];
+        
+        if (Number(month) >= 10 || Number(month) <= 4) {
+          if(groupedOriginalData[key] == undefined)
+            groupedOriginalData[key] = [];
+          if(cData.original != null)
+            groupedOriginalData[key].push(cData.original)
 
-      if(groupedInterpolationData[key] == undefined)
-        groupedInterpolationData[key] = [];
-      if(cData.interpolation != null)
-        groupedInterpolationData[key].push(cData.interpolation)
+          if(groupedInterpolationData[key] == undefined)
+            groupedInterpolationData[key] = [];
+          if(cData.interpolation != null)
+            groupedInterpolationData[key].push(cData.interpolation)
+        }
 
-    })
+
+      })
+    } else {
+      chartData.forEach(function(cData) {
+        var key = cData.dateStr.split('-')[datePos];
+        
+        if(groupedOriginalData[key] == undefined)
+          groupedOriginalData[key] = [];
+        if(cData.original != null)
+          groupedOriginalData[key].push(cData.original)
+
+        if(groupedInterpolationData[key] == undefined)
+          groupedInterpolationData[key] = [];
+        if(cData.interpolation != null)
+          groupedInterpolationData[key].push(cData.interpolation)
+
+      })
+    }
 
     var groupedData = [];
 
@@ -122,11 +147,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     maximum = (Number(maximum) + (Number(maximum) * axisPercent)).toFixed(2);
     minimum = (Number(minimum) - (Number(minimum) * axisPercent)).toFixed(2);
 
-    if(groupType == 'YEAR') {
-      chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
-    } else if(groupType == 'MONTH') {
-      chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
-    } else if(groupType == 'DAY') {
+    if(groupType) {
       chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
     }
 
@@ -599,6 +620,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               ['NONE_NONE', 'Nenhum' ],
               ['YEAR_mean', 'Ano (média)' ],
               ['YEAR_sum', 'Ano (somatório)' ],
+              ['NPP_mean', 'Out-Abr (média)' ],
+              ['NPP_sum', 'Out-Abr (somatório)' ],
               ['MONTH_mean', 'Mês (média)' ],
               ['MONTH_sum', 'Mês (somatório)' ],
               ['DAY_mean', 'Dia (média)' ],

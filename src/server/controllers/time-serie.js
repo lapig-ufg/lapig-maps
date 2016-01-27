@@ -34,8 +34,6 @@ module.exports = function(app) {
 		
 		var params = id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
-		
-		console.log(cmd);
 
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
@@ -43,13 +41,14 @@ module.exports = function(app) {
 				console.log(stderr)
 			
 	   	stdout=stdout.replace(/\'/g, '"');
-	 		console.log(stdout)
+	 		console.log(stdout);
 
 	   	var result = JSON.parse(stdout);
 	   	
 	   	callback(result);
 	   	
 	 	});
+
 	}
 
 	TimeSerie.data = function(request, response) {

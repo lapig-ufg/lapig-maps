@@ -9,9 +9,12 @@ class Savgol(Filter):
 
 		try:
 			self.window_length = utils.num(layerParams['window_length'])
-			self.polyorder = utils.num(layerParams['polyorder'])
 		except KeyError:
 			self.window_length = utils.num(filterParams['window_length'])
+		
+		try:
+			self.polyorder = utils.num(layerParams['polyorder'])
+		except KeyError:
 			self.polyorder = utils.num(filterParams['polyorder'])	
 
 

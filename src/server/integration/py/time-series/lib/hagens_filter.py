@@ -130,7 +130,7 @@ def FillGaps(iArray,iFlag,nComposites,iAveregeDOY,iAveregeAnual,iNeighborhoodDay
 						print(numerador,denominador)
 					"""
 				else:
-					numerador = None
+					numerador = iArray[j]
 
 				FillGaps[j] = numerador
 

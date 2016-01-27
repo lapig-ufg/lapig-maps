@@ -1,39 +1,17 @@
-var buffer = require('buffer')
-	  archiver = require('archiver')
-	  path = require('path')
-	  fs = require('fs')
+var buffer = require('buffer');
+	  archiver = require('archiver');
+	  path = require('path');
+	  fs = require('fs');
 	  async = require('async');
-
-
-
-function parsinglayersString(str){
-
-	slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
-	return slicedStr;
-
-}
+	  ChildProcess = require("child_process");
 
 module.exports = function(app) {
 
 	var Tms = {};
 	var Internal = {};
 
-	var config = app.config;
-	var cache = app.libs.cache;
-
-	Internal.removeBComma = function(str){
-		str = str.replace(/B/g,'');
-		str = str.replace(/,/g,'');
-		return str
-	}
-
-	Internal.parsinglayersString = function(str){
-
-		slicedStr = str.slice(8,10) + str.slice(5,7) + str.slice(2,4);
-		return slicedStr;
-
-	}
-
+	var init = app.libs.init;
+	var pathXML = app.config.pathXML;
 
 	Internal.xmlGenerator = function(layers){
 
@@ -41,22 +19,22 @@ module.exports = function(app) {
 		
 			for (var i = 0; i < layers.length; i++){
 					
-				xml +="<layers>\n" +
-					"<ows:Title>"+layers[i].id+"</ows:Title>\n" +
-					"<ows:Identifier>nasa</ows:Identifier>\n" +
-					"<ows:WGS84BoundingBox crs='urn:ogc:def:crs:OGC:2:84'>\n" +
-					"<ows:LowerCorner>-73.9909 -33.7516</ows:LowerCorner>\n" +
-					"<ows:UpperCorner>-32.3922 5.27216</ows:UpperCorner>\n" +
-					"</ows:WGS84BoundingBox>\n" +
-					"<Style isDefault='true'>\n" +
-					"<ows:Identifier>default</ows:Identifier>\n" +
-					"</Style>\n" +
-					"<Format>image/jpeg</Format>\n" +
+				xml+="<Layer>\n"+
+					"<ows:Title>"+layers[i].id+"</ows:Title>\n"+
+					"<ows:Identifier>nasa</ows:Identifier>\n"+
+					"<ows:WGS84BoundingBox crs='urn:ogc:def:crs:OGC:2:84'>\n"+
+					"<ows:LowerCorner>"+layers[i].b_box[0]+" "+layers[i].b_box[1]+"</ows:LowerCorner>\n"+
+					"<ows:UpperCorner>"+layers[i].b_box[2]+" "+layers[i].b_box[3]+"</ows:UpperCorner>\n"+
+					"</ows:WGS84BoundingBox>\n"+
+					"<Style isDefault='true'>\n"+
+					"<ows:Identifier>default</ows:Identifier>\n"+
+					"</Style>\n"+
+					"<Format>image/jpeg</Format>\n"+
 					"<TileMatrixSetLink>\n" +
 					"<TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>\n" +
 					"</TileMatrixSetLink>\n" +
-					"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/b4d983aebb7871d900ecac80bc6eeba8/{TileMatrix}/{TileCol}/{TileRow}?token=ca7028b854b65d592842e953197189a0'/>\n" +
-					"</layers>";
+					"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"'"+"/>\n" +
+					"</Layer>";
 		
 			}
 		
@@ -64,51 +42,22 @@ module.exports = function(app) {
 			
 	}
 
-	Internal.getLayers = function(configLayers){
-
-		var layersList = [];
-			
-		for (var i = 0; i < configLayers.length; i++){
-			
-			for (var j = 0; j < configLayers[i].composites.length; j++){
-				
-				var layer = {
-											'id':configLayers[i].layer + '_' + Internal.parsinglayersString(configLayers[i].start_date) + '_' + Internal.parsinglayersString(configLayers[i].end_date) + '_' + Internal.removeBComma(configLayers[i].composites[j])
-										};
-
-				layersList.push(layer);
-
-			}
-
-		}
-
-		return layersList;
-
-	}
-
-
 	Tms.process = function(request, response) {
 
-		pathXML = config.pathXML;
-	
-		var layers = Internal.getLayers(config.layers);
-
-		var xmlLayers = Internal.xmlGenerator(layers);	
+		var xml = Internal.xmlGenerator(init.layers);
 
 		fs.readFile(pathXML, 'utf8', function (err, data) {
+				
+				result = data.replace('{xmlLayers}', xml);
 
-			result = data.replace('{xml}', xmlLayers);
-
-			response.setHeader('content-type', 'application/xml');
-
-			response.send(result);
-
-			response.end();
-
-
-		});
+				response.setHeader('content-type', 'application/xml');
+				response.send(result);
+				response.end();
+		
+			});
 		
 	}
 
 	return Tms;
+
 }

@@ -20,40 +20,36 @@
  */
 Ext.namespace("gxp.plugins");
 
-gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.LapigDownloadAll = Ext.extend(gxp.plugins.Tool, {
     
-    ptype: "gxp_lapigdownload",
+    ptype: "gxp_lapigdownloadall",
     
     menuText: "Download",
 
-    removeActionTip: "Download da camada",
+    actionTip: "Download de toda série temporal",
     
     addActions: function() {
         var selectedLayer;
-        var actions = gxp.plugins.LapigDownload.superclass.addActions.apply(this, [{
+        var actions = gxp.plugins.LapigDownloadAll.superclass.addActions.apply(this, [{
             menuText: this.menuText,
             text: this.menuText,
-            iconCls: "gxp-icon-asyncdownloadlayer",
+            iconCls: "gxp-icon-downloadmany",
             disabled: true,
-            tooltip: this.removeActionTip,
+            tooltip: this.actionTip,
             handler: function() {
                 this.removeOutput();
                 this.addOutput(selectedLayer);
             },
             scope: this
         }]);
-        var removeLayerAction = actions[0];
+        var action = actions[0];
 
         this.target.on("layerselectionchange", function(record) {
             selectedLayer = record;
-            removeLayerAction.setDisabled(
-                this.target.mapPanel.layers.getCount() <= 1 || !(record && record.json && record.json.name)
-            );
+            action.setDisabled( !(record.json.type == "MULTIPLE") );
         }, this);
         var enforceOne = function(store) {
-            removeLayerAction.setDisabled(
-                !selectedLayer || store.getCount() <= 1
-            );
+            action.setDisabled(!selectedLayer || store.getCount() <= 1);
         };
         this.target.mapPanel.layers.on({
             "add": enforceOne,
@@ -63,44 +59,46 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
-    download: function(layerName, layerType, metadata) {
-        var params = [];
+    sendEmailRequest: function(layerJson, email) {
+        var id = layerJson._id;
+        var url = '/download/time-series';
 
-        if (layerType == 'VECTOR') {
-            params = [
-                    'REQUEST=GetFeature'
-                ,   'SERVICE=wfs'
-                ,   'VERSION=1.0.0'
-                ,   'TYPENAME=' + layerName
-                ,   'OUTPUTFORMAT=shape-zip'
-            ];
+        Ext.MessageBox.show({
+           title: 'Requisição de download',
+           msg: 'Enviando email para ' + email + '...',
+           width:300,
+           progress:false,
+           closable:false,
+           animEl: 'mb6'
+       });
 
-        } else if (layerType == 'RASTER') {
-            params = [
-                    'REQUEST=GetCoverage'
-                ,   'SERVICE=WCS'
-                ,   'VERSION=2.0.0'
-                ,   'COVERAGEID=' + layerName
-                ,   'FORMAT=tiff-zip'
-            ];
-
-        }
-
-        if(params.length > 0) {
-            if(metadata){
-                params.push('METADATA=' + metadata)
+        Ext.Ajax.request({
+           url: url,
+           success: function(response) {
+            var responseJson = JSON.parse(response.responseText);
+            
+            if(responseJson.result) {
+                var msg = 'Enviamos um email para ' + email + ' contendo<br> instruções para download.';
+                var icon = 'ext-mb-info';
+            } else {
+                var msg = 'Nos desculpe, estamos com problemas para enviar email.<br>Por favor tente mais tarde.';
+                var icon = 'ext-mb-warning';
             }
 
-            var iframe = Ext.DomHelper.append(Ext.getBody(),{
-                    tag : 'iframe'
-                    ,src: '/ows?' + params.join('&')
-                    ,cls: 'x-hidden'
+            Ext.MessageBox.show({
+               title: 'Requisição de download',
+               msg: msg,
+               buttons: Ext.MessageBox.OK,
+               animEl: 'mb9',
+               icon: icon
             });
-            
-        } else {
-            alert("Dados inválidos para download. Entre em contato com a equipe de administração do sistema.")
-        }
 
+           },
+           jsonData: {
+            "id": id,
+            "email": email
+           }
+        });
     },
 
     addOutput: function(selectedLayer) {
@@ -155,7 +153,29 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
                 ]
             });
 
-            var w = new Ext.Window({
+            var w2 = new Ext.Window({
+                layout: 'fit',
+                height: 250,
+                height: 250,
+                items:[
+                    {
+                        xtype:'form',
+                        defaultType: 'textfield',
+                        items: [
+                            {
+                                fieldLabel: 'Email',
+                                name: 'email',
+                                vtype:'email'
+                            }
+                        ]
+                    }
+                ],
+                buttons: [{
+                    text: 'Continuar'
+                }]
+            });
+
+            var w1 = new Ext.Window({
                 title: title,
                 collapsible: false,
                 maximizable: false,
@@ -175,15 +195,31 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     listeners: {
                         click: function(evt) {
-                            instance.download(layerName, layerType, metadata);
-                            w.hide();
+                            w1.hide();
+
+                            var title = 'Requisição de download'
+                            var msg = 'Digite seu email:';
+                            var checkEmail = function(btn, text) {
+                                
+                                if(btn == 'ok') {
+                                    var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                                    if (emailRegex.test(text)) {
+                                        instance.sendEmailRequest(selectedLayer.json, text);
+                                    } else {
+                                        msg = 'Email inválido. Por favor digite um email válido:'
+                                        Ext.MessageBox.prompt(title, msg, checkEmail);
+                                    }
+                                }
+                            }
+
+                            Ext.MessageBox.prompt(title, msg, checkEmail);
                         }
                     }
                 }]
             });
-            w.show()
+            w1.show()
 
-            return w;
+            return w1;
         }
 
         return null;
@@ -191,4 +227,4 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         
 });
 
-Ext.preg(gxp.plugins.LapigDownload.prototype.ptype, gxp.plugins.LapigDownload);
+Ext.preg(gxp.plugins.LapigDownloadAll.prototype.ptype, gxp.plugins.LapigDownloadAll);

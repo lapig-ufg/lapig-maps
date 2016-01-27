@@ -15,9 +15,10 @@ module.exports = function(app) {
 						"temporal_resolution": "16",
 				    "temporal_resolution_type": "day",
 				    "start_date": "2013-04-11",
-				    "end_date": "2013-04-27",
+				    "end_date": "2013-07-31",
 				    "collection_id": "LANDSAT/LC8_L1T_TOA",
-				    "composites": ["B6,B5,B4","B5,B4,B3","B6,B5,B4"]
+				    "composites": ["B6,B5,B4","B5,B4,B3","B4,B3,B2"],
+				    "b_box": ["-76.60","-35.06","-33.43","5.13"]
 					}]
 					
 	}

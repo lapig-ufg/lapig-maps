@@ -79,8 +79,9 @@ div.olControlMousePosition {
 }
 
 .x-btn .gxp-icon-downloadmany, .x-menu-item .gxp-icon-downloadmany, .x-tree-node .gxp-icon-downloadmany {
-    background-image: url(img/save-many.png);
+    background-image: url(img/save-multi.png);
 }
+
 
 /* gxp_metadataLapiglayer */
 .x-btn .gxp-icon-metadatalayer, .x-menu-item .gxp-icon-metadatalayer, .x-tree-node .gxp-icon-metadatalayer {
@@ -107,8 +108,8 @@ div.olControlMousePosition {
     background-image: url(img/file-xls.png); !import
 }
 
-.lapig-icon-mapa {
-    background-image: url(img/mapa.png); !import
+.lapig-icon-metadata {
+    background-image: url(img/metadata.png); !import
 }
 
 .gxp-icon-lapigpublicacoes {
