@@ -123,16 +123,14 @@ var app = new gxp.LapigViewer({
 				outputTarget: "southpanel",
 				project: project,
 				outputConfig: {
-					height: 215,
+					height: 215
 				}
 			}
 			,	{ 
 				ptype: "lapig_spatialintelligence",
 				outputTarget: "eastpanel",
 				project: project,
-				outputConfig: {
-
-				}
+				outputConfig: {}
 			}
 			, {
 					ptype: "gxp_lapigaddlayer",
@@ -231,63 +229,18 @@ var app = new gxp.LapigViewer({
 				center: [center.lon,center.lat],
 				zoom: 4,
 				layers: [
-								{
-										source: "mapquest",
-										title: "MapQuest Imagery",
-										name: "naip",
-										group: "background"
-								}
-								,{
-										source: "mapbox",
-										title: "Natural Earth |",
-										name: "natural-earth-1",
-										group: "background"
-								}
-								,{
-										source: "mapbox",
-										title: "Natural Earth ||",
-										name: "natural-earth-2",
-										group: "background"
-								}
-								,{
-										source: "google",
-										title: "Google Terrain",
-										name: "TERRAIN",
-										group: "background"
-								}
-								,{
-										source: "google",
-										title: "Google Satellite",
-										name: "SATELLITE",
-										group: "background"
-								}
-								,{
-										source: "google",
-										title: "Google Roadmap",
-										name: "ROADMAP",
-										group: "background"
-								}
-								,{
-										source: "bing",
-										title: "Bing Roads",
-										name: "Road",
-										group: "background"
-								}
-								,{
-										source: "bing",
-										title: "Bing Satellite",
-										name: "Aerial",
-										group: "background"
-								}
+								
 								,{
 										source: "ows",
 										name: "pa_br_bioma_5000_2004_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										metadata: "ibge"
 								}
 								,{
 										source: "ows",
 										name: "pa_br_estados_250_2013_ibge",
-										type: "VECTOR"
+										type: "VECTOR",
+										metadata: "ibge_malha_digital"
 								}
 				],
 				items: [{

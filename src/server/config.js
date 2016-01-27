@@ -1,13 +1,14 @@
 var appRoot = require('app-root-path');
+var passwords = require(appRoot + '/passwords.json')
 
 module.exports = function(app) {
 	//appRoot faz parte da documentação do js
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": appRoot+"/../ows/data_dir/catalog/Ocultos/spatial-intelligence.sqlite",
-		"hostUrl": 'http://10.0.0.5:5000',
-		"ows": "http://su03:5500",
+		"spatialIntelligenceDb": "/home/leandro/Tmp/spatial-intelligence.sqlite",
+		"hostUrl": 'http://localhost:5000',
+		"ows": "http://localhost:5500",
 		"clientDir": appRoot + "/../client/build",
 		"mongo": {
 			"host": "localhost",
@@ -21,6 +22,11 @@ module.exports = function(app) {
 			'expiration': 1800,
 			'prefix': "pastagem.org",
 			'enable': true,
+		},
+		"email": {
+			'gmailUser': passwords.gmailUser,
+			'gmailPassword': passwords.gmailPassword,
+			'replyTo': 'contato@pastagem.org'
 		}
 	};
 
@@ -30,6 +36,7 @@ module.exports = function(app) {
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
 		config.redis['host'] = '200.137.217.157'
 		config.redis['enable'] = true;
+		config["spatialIntelligenceDb"] = "/data/catalog/Ocultos/spatial-intelligence.sqlite"
 	}
 
 	return config;

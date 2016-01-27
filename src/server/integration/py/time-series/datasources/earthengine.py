@@ -3,6 +3,8 @@ import os
 import utils
 import time
 import datetime 
+import traceback
+import math
 from _datasource import Datasource
 from threading import Thread
 import Queue
@@ -18,7 +20,7 @@ class EarthEngine(Datasource):
 		self.collection_id = self.collection_id.upper();
 		self.pixel_resolution = utils.num(self.pixel_resolution)
 		self.fn_parsedate = getattr(self, self.fn_parsedate + "Date");		
-		self.tredao = int(datasourceParams['threads'])
+		self.nThreads = int(datasourceParams['threads'])
 		
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
 
@@ -167,103 +169,36 @@ class EarthEngine(Datasource):
 
 
 	def splitDate(self):
-		
-		miniThread = []		
-		ano1, ano2 = int(self.start_date[0:4]), int(self.end_date[0:4])
+				
+		year1, year2 = int(self.start_date[0:4]), int(self.end_date[0:4])
 		day1, day2 = self.start_date[8:10], self.end_date[8:10]
-		month1, mont2 = self.start_date[5:7], self.end_date[5:7]
+		month1, month2 = self.start_date[5:7], self.end_date[5:7]
 
-		difAnos = ano2 - ano1
-		intervalo = difAnos/self.tredao
-	
-		if difAnos > self.tredao:											
-			
-			count = 0
-			threads = [[] for i in range(self.tredao)]
-			
-			for i,j in zip(range(ano1,ano2,intervalo),threads):
-				
-				count = count+ 1
+		yearInc = int(math.floor( (year2 - year1) / self.nThreads ))
+		if yearInc == 0:
+			yearInc = 1
 
-				if i == ano1:
-					iday = day1;
-					imonth = month1;
-					fday = '31'
-					fmonth = '12'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i+intervalo)+'-'+fmonth+'-'+fday
-					j.append(x)
-					j.append(y)
-				elif (i == ano2) | (count == len(threads)):					
-					fday = day2
-					fmonth = mont2
-					iday = '01'
-					imonth = '01'
-					x= str(i+1)+'-'+imonth+'-'+iday
-					y= str(ano2)+'-'+fmonth+'-'+fday					
-					j.append(x)
-					j.append(y)
-				else:
-					iday = '01'
-					imonth = '01'
-					fmonth = '12'
-					fday = '31'
-					x= str(i+1)+'-'+imonth+'-'+iday
-					y= str(i+intervalo)+'-'+fmonth+'-'+fday					
-					j.append(x)
-					j.append(y)
-
-			for i in threads:		
-				miniThread.append(i)
-
-			return miniThread
+		result = []
 		
-		else:
+		for i in xrange(year1, year2, yearInc):
 			
-			threads = [[] for i in range(difAnos)]
+			startDay, startMonth = '01','01'
+			endDay, endMonth = '31','12'
 
-			count = 0
+			endYear = i + (yearInc - 1)
 
-			for i,j in zip(range(ano1,ano2,1),threads):
-				
-				count = count+ 1
+			if(year1 == i):
+				startDay, startMonth = day1, month1
+			if(endYear >= (year2 - 1)):
+				endDay, endMonth = day2, month2
+				endYear = year2
 
-				if i == ano1:
-					iday = day1;
-					imonth = month1;
-					fday = '31'
-					fmonth = '12'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(i+intervalo)+'-'+fmonth+'-'+fday
-					j.append(x)
-					j.append(y)
-				elif (i == ano2) | (count == len(threads)):					
-					fday = day2
-					fmonth = mont2
-					iday = '01'
-					imonth = '01'
-					x= str(i)+'-'+imonth+'-'+iday
-					y= str(ano2)+'-'+fmonth+'-'+fday					
-					j.append(x)
-					j.append(y)
-				else:
-					iday = '01'
-					imonth = '01'
-					fmonth = '12'
-					fday = '31'
-					x= str(i+1)+'-'+imonth+'-'+iday
-					y= str(i+intervalo)+'-'+fmonth+'-'+fday					
-					j.append(x)
-					j.append(y)
-			
-			for i in threads:		
-				miniThread.append(i)
-			
-			return miniThread
+			startDate = str(i)+'-'+str(startMonth)+'-'+str(startDay)
+			endDate = str(endYear)+'-'+str(endMonth)+'-'+str(endDay)
 
+			result.append([ startDate, endDate ])
 
-
-		 		
+		return result
 
 	def runjob(self, data, longitude, latitude, q):
 
@@ -274,15 +209,16 @@ class EarthEngine(Datasource):
 
 		point = ee.Geometry.Point([longitude, latitude]);
 		timeSeries = ee.ImageCollection(self.collection_id).filterDate(data[0], data[1]).map(calculateIndex);
-
+		#print(data[0], data[1])
 
 		while(True):
 			try:
 				eeResult = timeSeries.getRegion(point, self.pixel_resolution).getInfo();
 				break;	
 			except ee.ee_exception.EEException:
+				#traceback.print_exc()
 				time.sleep(1)
-				print 'tentando novamente'		
+				#print 'tentando novamente'		
 
 		result={}
 		

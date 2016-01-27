@@ -43,24 +43,19 @@ app.middleware.repository.init(function() {
 			response.end();
 		}
 	}));
-	
 
 	app.use(responseTime());
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(multer());
-	//app.use(express.methodOverride());
-	
-	//app.use(app.router);
-
-	//app.use(express.logger('dev'));
 
 	app.use(function(error, request, response, next) {
 		console.log('ServerError: ', error.stack);
 		next();
 	});
 
-	load('controllers', {'verbose': false})
+	load('models', {'verbose': false})
+	.then('controllers')
 	.then('routes')
 	.into(app);
 

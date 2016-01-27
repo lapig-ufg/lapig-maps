@@ -371,7 +371,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
   getGridCmp: function (){
     
     var instance = this;
-    
+
     return {
         xtype: 'treegrid',
         id: 'lapig_spatialintelligence::grid-info',
@@ -381,6 +381,43 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             text: 'Clique duas vezes no município para localizá-lo'
           },
           '->',
+          {
+            xtype: 'button',
+            iconCls: 'lapig-icon-metadata',
+            listeners: {
+              click: function() {
+                var text = ''
+                instance.queryMetadata.layers.reverse().forEach(function(layer) {
+                  if(layer.title && layer.metadata) {
+                    text += '* ' + layer.title + ": " + layer.metadata + "\n\n";
+                  }
+                })
+                
+                var textArea = new Ext.form.TextArea({
+                  width: 600,
+                  height: 360,
+                  value: text,
+                  readOnly: true
+                });
+
+                var metadataWin = new Ext.Window({
+                    title: "Metadados",
+                    collapsible: false,
+                    maximizable: false,
+                    width: 350,
+                    height: 350,
+                    layout: 'fit',
+                    plain: true,
+                    modal: true,
+                    bodyStyle: 'padding:5px;',
+                    buttonAlign: 'center',
+                    items: textArea
+                });
+
+                metadataWin.show();
+              }
+            }
+          },
           {
             xtype: 'button',
             iconCls: 'lapig-icon-csv',

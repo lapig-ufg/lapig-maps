@@ -20,6 +20,11 @@ body {
     padding: 7px 3px 5px 2px;
 }
 
+.x-header-legends {
+    background: white !important;
+    border-bottom: 0px !important;
+}
+
 .olControlLapigCoordinates {
     cursor : crosshair;
 }
@@ -74,8 +79,9 @@ div.olControlMousePosition {
 }
 
 .x-btn .gxp-icon-downloadmany, .x-menu-item .gxp-icon-downloadmany, .x-tree-node .gxp-icon-downloadmany {
-    background-image: url(img/save-many.png);
+    background-image: url(img/save-multi.png);
 }
+
 
 /* gxp_metadataLapiglayer */
 .x-btn .gxp-icon-metadatalayer, .x-menu-item .gxp-icon-metadatalayer, .x-tree-node .gxp-icon-metadatalayer {
@@ -94,8 +100,16 @@ div.olControlMousePosition {
     background-image: url(img/add-2.png); !import
 }
 
+.lapig-icon-seta {
+    background-image: url(img/seta.png); !import
+}
+
 .lapig-icon-csv {
     background-image: url(img/file-xls.png); !import
+}
+
+.lapig-icon-metadata {
+    background-image: url(img/metadata.png); !import
 }
 
 .gxp-icon-lapigpublicacoes {

@@ -17,15 +17,16 @@ module.exports = function(app) {
 		var labels = request.param('labels', '');
 		var bbox = request.param('bbox', '');
 		var size = request.param('size', '');
-		var title = request.param('title', 'Mapa exportado de Pastagem.org');
+		var title = request.param('title', 'Fernanda');
+		var description = request.param('description', 'Descrição...');
 
 		if(size) {
 			var sizeSplit = size.split(',');
 			var h = sizeSplit[0];
 			var w = sizeSplit[1];
 
-			var mapHeight = 490;
-			var mapWidth = 700;
+			var mapHeight = h;
+			var mapWidth = w;
 
 			var bboxSplit = bbox.split(',');
 			var left = Number(bboxSplit[0]);
@@ -40,6 +41,7 @@ module.exports = function(app) {
 			      + (left + xOffset) + ',' + (bottom + yOffset);
 		}
 
+
 		var map = url  + '?SERVICE=WMS'
 		            + '&LAYERS=' + layers.split(';;').join(',')
 		            + '&FORMAT=image%2Fpng'
@@ -50,7 +52,9 @@ module.exports = function(app) {
 		            + '&SRS=' + srs
 		            + '&BBOX=' + bbox
 		            + '&WIDTH=700'
-		            + '&HEIGHT=490';
+		            + '&HEIGHT=490'
+		            + '&title='
+			          + '&description=';
 
 		var legends = [];
 
@@ -58,6 +62,7 @@ module.exports = function(app) {
 		var labelsSplit = labels.split(';;');
 
 		for(var i=0; i < split.length; i++) {
+
 			var layer = split[i];
 			var label = unescape(labelsSplit[i]);
 
@@ -72,10 +77,11 @@ module.exports = function(app) {
 			                + '&layer=' + layer
 			                + '&format=image/png'
 			                + '&SCALE=34942571.6116478'
+			                
 			});
 		}
 
-		response.render('print-map.ejs', { title: title, map: map, legends: legends });
+		response.render('print-map.ejs', { title: title, map: map, legends: legends, description: description });
 	};
 
 	Print.mapPdf = function(request, response) {
@@ -83,7 +89,7 @@ module.exports = function(app) {
 		var params  = querystring.stringify(request.query);
 		var url = config.hostUrl + '/print?' + params;
 
-		console.log(url);
+		console.log('url: ', url);
 
 		temp.open('map', function(err, info) {
 			console.log(info.path);

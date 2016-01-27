@@ -140,12 +140,36 @@ module.exports = function(app) {
 
 	Internal.downloadShp = function(params, response) {
 		var typeName = params['TYPENAME'];
+		var metadata = params['METADATA'];
 
 		catalog.vectorFilepath(typeName, function(files) {
-			if(files.length > 0 )
+			if(files.length > 0 ) {
+				if(metadata) {
+					metadataFile = path.join(config['path_metadata'], metadata);
+					files.push(metadataFile);
+				}
 				Internal.streamFilesToZip(typeName, files, response);
-			else
+			} else {
 				response.end();
+			}
+		})
+
+	}
+
+	Internal.downloadZipTif = function(params, response) {
+		var coverageId = params['COVERAGEID'];
+		var metadata = params['METADATA'];
+
+		catalog.rasterFilepath(coverageId, function(files) {
+			if(files.length > 0 ) {
+				if(metadata) {
+					metadataFile = path.join(config['path_metadata'], metadata)
+					files.push(metadataFile);
+				}
+				Internal.streamFilesToZip(typeName, files, response);
+			} else {
+				response.end();
+			}
 		})
 
 	}
@@ -183,6 +207,12 @@ module.exports = function(app) {
 					&& params['FORMAT'].toUpperCase() == 'IMAGE/TIFF';
 	}
 
+	Internal.isWcsGetTifZip = function(params) {
+		return 	 params['SERVICE'].toUpperCase() == 'WCS' 
+					&& params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
+					&& params['FORMAT'].toUpperCase() == 'TIFF-ZIP';
+	}
+
 	OgcServer.ows = function(request, response) {
 		var params = Internal.getParams(request);
 
@@ -192,6 +222,8 @@ module.exports = function(app) {
 			Internal.downloadShp(params, response);
 		} else if ( Internal.isWcsGetTif(params) ) {
 			Internal.downloadTif(params, response);
+		} else if ( Internal.isWcsGetTifZip(params) ) {
+			Internal.downloadZipTif(params, response);
 		} else {
 			
 			Internal.setHeaders(request, response);

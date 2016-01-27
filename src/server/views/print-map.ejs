@@ -14,23 +14,23 @@
   </head>
 
   <body>
-    <span style="position:absolute; font-size: 15px; left: 10px; top: 5px; font-weight: bold;">
-      <%= title %>
-    </span>
-    <img src="<%= map %>" style="border: 1px solid gray; margin-right: 10px; position:absolute; top: 30px;" />
-    <span style="position:absolute; top: 22px; left: 710px;">
+    <img style="position: absolute; top: -3px; height: 40px; left: 0px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
+    <span style="position:absolute; font-size: 15px; left: 120px; top: 15px; right: 200px; font-weight: bold; text-align: center; height: 25px; overflow: hidden;"><%= title %></span>
+
+    <img src="<%= map %>" style="border: 1px solid gray; margin-right: 10px; position:absolute; top: 40px;" />
+
+    <span style="position:absolute; border: 1px solid gray; padding: 5px 10px 5px 10px; top: 40px; left: 710px; height: 490px; overflow: hidden;">
+      <h4 style = "font-color:gray; font-weight: bold; font-size: 15px">Legendas: </h4>
       <% for(var i=0; i<legends.length; i++) {%>
+          <span style="padding-bottom:5px; font-size: 12px"><%= legends[i].label %></span>
         <p>
-          <h6><%= legends[i].label %></h6>
          <img src="<%= legends[i].url %>" />
         </p>
       <% } %>
     </span>
-    <img style="position: absolute; top: 525px; height: 45px; left: 10px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
-    <span style="top: 533px;left: 176px;position: absolute;font-size: 13px; font-style: italic;">
-      Documento gerado pelo mapa interativo do portal pastagem.org
-      <img style="position: absolute; top: -4px; height: 39px; left: 426px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros.png" />
-    </span>
+
+    <span style="top: 535px;left: 0px;position: absolute;font-size: 13px; font-style: italic; width:580px; height: 40px; overflow: hidden;"><%= description %></span>
+    <img style="position: absolute; top: 535px; height: 40px; left: 598;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros.png" />
     
     <script src="thirdparty/jquery/jquery.min.js"></script>
 	  <script src="thirdparty/bootstrap/js/bootstrap.min.js"></script>

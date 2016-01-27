@@ -1,0 +1,1 @@
+sudo sshfs -o allow_other lapig@10.0.0.14:/data/lapig/GEO/REPOSITÓRIO\ DE\ DADOS/DADOS\ DO\ PORTAL/ /home/fernanda/Documentos/Projeto/lapig-maps/src/ows/data_dir/catalog
