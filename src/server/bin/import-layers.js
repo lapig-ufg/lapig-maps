@@ -485,8 +485,8 @@ var createMapFile = function(layers, callback) {
 }
 
 
-var layersDir = "/data/lapig/TMP/PASTAGEM.ORG/Categorias/"
-var dbUrl = 'mongodb://10.0.0.50:27017/lapig-maps';
+var layersDir = "/home/fernanda/Documentos/Projeto/shp/"
+var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 var filepath = 'layers.csv';
 
 parseCsv(filepath, function(layers) {

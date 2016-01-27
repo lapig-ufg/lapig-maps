@@ -13,7 +13,6 @@
  * @require plugins/GoogleGeocoder.js
  * @require plugins/ZoomToLayerExtent.js
  * @require plugins/WMSGetFeatureInfo.js
- *
  * @require plugins/MapBoxSource.js
  * @require plugins/MapQuestSource.js
  * @require plugins/BingSource.js
@@ -51,6 +50,8 @@ var center = new OpenLayers.LonLat(-45, -15).transform(
 );
 
 var project = [ 'pastagem.org' ];
+
+ 
 
 var app = new gxp.LapigViewer({
 		portalConfig: {
@@ -236,18 +237,6 @@ var app = new gxp.LapigViewer({
 										source: "mapquest",
 										title: "MapQuest Imagery",
 										name: "naip",
-										group: "background"
-								}
-								,{
-										source: "mapbox",
-										title: "Natural Earth |",
-										name: "natural-earth-1",
-										group: "background"
-								}
-								,{
-										source: "mapbox",
-										title: "Natural Earth ||",
-										name: "natural-earth-2",
 										group: "background"
 								}
 								,{

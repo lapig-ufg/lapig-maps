@@ -20,6 +20,11 @@ body {
     padding: 7px 3px 5px 2px;
 }
 
+.x-header-legends {
+    background: white !important;
+    border-bottom: 0px !important;
+}
+
 .olControlLapigCoordinates {
     cursor : crosshair;
 }
@@ -94,8 +99,16 @@ div.olControlMousePosition {
     background-image: url(img/add-2.png); !import
 }
 
+.lapig-icon-seta {
+    background-image: url(img/seta.png); !import
+}
+
 .lapig-icon-csv {
     background-image: url(img/file-xls.png); !import
+}
+
+.lapig-icon-mapa {
+    background-image: url(img/mapa.png); !import
 }
 
 .gxp-icon-lapigpublicacoes {
