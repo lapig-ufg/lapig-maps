@@ -10,6 +10,7 @@ module.exports = function(app) {
 	var Internal = {};
 
 	Internal.addPrefix = function(cacheKey) {
+
 		return app.config.redis.prefix + cacheKey;
 	}
 
@@ -17,10 +18,7 @@ module.exports = function(app) {
 		if(app.config.redis.enable) {
 			cacheKey = Internal.addPrefix(cacheKey);
 
-			console.log(cacheKey)
-
 			redisClient.get(cacheKey, function(err, data) {
-				console.log(err, data)
 				if(!err && data) {
 			    	var cachedData = JSON.parse(data);;
 			    	callback(cachedData);
@@ -34,8 +32,10 @@ module.exports = function(app) {
 	};
 
 	Cache.set = function(cacheKey, data){
+
 		if(app.config.redis.enable) {
 			var strData = JSON.stringify(data);
+
 			cacheKey = Internal.addPrefix(cacheKey);
 
 			redisClient.set(cacheKey, strData, function(){});

@@ -9,7 +9,7 @@ module.exports = function(app){
 	
 	var Init = {};
 	var Main = {};
-	var config = app.config;
+	var db = app.libs.db;
 	var Internal = {};
 
 	Internal.removeBComma = function(str){
@@ -157,28 +157,59 @@ module.exports = function(app){
 
 	}
 
+	Internal.inspectionDb = function(layers, callback){
+
+		var missLayer = [];
+
+		finishLoop = function(){
+			callback(missLayer);
+		}
+
+		overLayer = function(layer, nextLayer){
+
+			db.get(layer.id, function(recebi){
+				console.log(recebi);
+				
+				if(recebi == undefined){
+					missLayer.push(layer);
+				}
+
+				nextLayer();
+
+			});
+
+		}
+		async.eachSeries(layers, overLayer, finishLoop);
+	}
 
 
 	Init.init = function(functionApp){
-
+		//antes de obter dados do EE, verificar no redis se existe os layers
 		var pathXML = app.config.pathXML;
-
 		var config = app.config.layers;
-
+			
 		var layers = Internal.getLayers(config);
 
-		Internal.EEAccess(layers, function(layerWithToken){
+		Internal.inspectionDb(layers, function(missLayer){
 			
-			Init.layers = layerWithToken;
+			if(missLayer != []){
 
-			functionApp();
-
+				Internal.EEAccess(layers, function(layerWithToken){		
+					for (i in layerWithToken){
+						db.set(layerWithToken[i].id, layerWithToken[i]);	
+					}
+					console.log('oi')					
+					Init.layers = layerWithToken;
+					functionApp();
+				});
+			}else{
+				Init.layers;
+				functionApp();
+			}
+			
 		});
 
 	}
-
-	return Init
 	
-
+	return Init;
 }
-

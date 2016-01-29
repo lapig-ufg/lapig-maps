@@ -6,7 +6,6 @@ module.exports = function(app) {
 
 	var config = {
 			  'redisHost': 'localhost'
-			, 'redisPort': '6379'
 			,	'port': 5000
 			, 'pathXML': appRoot+'/Template/wmts.xml'
 			, 'eeTms': "https://earthengine.googleapis.com"
@@ -22,6 +21,13 @@ module.exports = function(app) {
 				    "b_box": ["-76.60","-35.06","-33.43","5.13"],
 				    "satellite":"Landsat 8"
 					}]
+			, "redis": {
+				'host': 'localhost',
+				'port': '6379',
+				'expiration': 1800,
+				'prefix': "pastagem.org",
+				'enable': true,
+		}
 					
 	}
 			
