@@ -47,6 +47,7 @@ module.exports = function(app) {
 	Tms.process = function(request, response) {
 
 		var xml = Internal.xmlGenerator(init.layers);
+		console.log(init.layers);
 
 		fs.readFile(pathXML, 'utf8', function (err, data) {
 				result = data.replace('{xmlLayers}', xml);

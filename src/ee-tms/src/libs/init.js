@@ -160,18 +160,20 @@ module.exports = function(app){
 	Internal.inspectionDb = function(layers, callback){
 
 		var missLayer = [];
+		var fullLayer = [];
 
 		finishLoop = function(){
-			callback(missLayer);
+			callback(missLayer, fullLayer);
 		}
 
 		overLayer = function(layer, nextLayer){
 
 			db.get(layer.id, function(recebi){
-				console.log(recebi);
 				
 				if(recebi == undefined){
 					missLayer.push(layer);
+				}else{
+					fullLayer.push(layer);
 				}
 
 				nextLayer();
@@ -184,32 +186,35 @@ module.exports = function(app){
 
 
 	Init.init = function(functionApp){
-		//antes de obter dados do EE, verificar no redis se existe os layers
 		var pathXML = app.config.pathXML;
 		var config = app.config.layers;
 			
 		var layers = Internal.getLayers(config);
+		// layers com 12 layer
+		Internal.inspectionDb(layers, function(missLayer, fullLayer){
+			var allLayer = [];
 
-		Internal.inspectionDb(layers, function(missLayer){
-			
-			if(missLayer != []){
-
-				Internal.EEAccess(layers, function(layerWithToken){		
+			if(missLayer.length > 0){	
+				Internal.EEAccess(missLayer, function(layerWithToken){		
 					for (i in layerWithToken){
 						db.set(layerWithToken[i].id, layerWithToken[i]);	
 					}
-					console.log('oi')					
-					Init.layers = layerWithToken;
+					allLayer.push(missLayer)
+					allLayer.push(fullLayer)
+					Init.layers = allLayer;
+					//layers com 12 layer
 					functionApp();
 				});
-			}else{
-				Init.layers;
+			}else{				
+				Init.layers = layers;
 				functionApp();
 			}
 			
 		});
 
 	}
+
+
 	
 	return Init;
 }
