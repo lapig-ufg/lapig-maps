@@ -498,8 +498,7 @@ var createMapFile = function(layers, callback) {
 }
 
 
-var layersDir = "/run/user/1000/gvfs/smb-share\:server\=su04\,share\=geo\,user\=leandro.leal/REPOSITÓRIO\ DE\ DADOS/DADOS\ DO\ PORTAL/"
-
+var layersDir = "/home/leandro/Projetos/Github/lapig-maps/src/ows/data_dir/catalog/"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 var filepath = 'layers.csv';
 
