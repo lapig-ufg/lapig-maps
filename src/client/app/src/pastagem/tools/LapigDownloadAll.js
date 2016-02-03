@@ -46,7 +46,9 @@ gxp.plugins.LapigDownloadAll = Ext.extend(gxp.plugins.Tool, {
 
         this.target.on("layerselectionchange", function(record) {
             selectedLayer = record;
-            action.setDisabled( !(record.json.type == "MULTIPLE") );
+            if(selectedLayer) {
+                action.setDisabled( !(selectedLayer.json.type == "MULTIPLE") );
+            }
         }, this);
         var enforceOne = function(store) {
             action.setDisabled(!selectedLayer || store.getCount() <= 1);
