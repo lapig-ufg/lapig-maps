@@ -17,7 +17,7 @@ module.exports = function(app) {
 						"temporal_resolution": "16",
 				    "temporal_resolution_type": "day",
 				    "start_date": "2014/01/01",
-				    "end_date": "2014/04/01",
+				    "end_date": "2014/03/01",
 				    "collection_id": "LANDSAT/LC8_L1T_TOA",
 				    "composites": ["B6,B5,B4"],
 				    "b_box": ["-76.60","-35.06","-33.43","5.13"],
@@ -27,7 +27,7 @@ module.exports = function(app) {
 				'host': 'localhost',
 				'port': '6379',
 				'expiration': 1800,
-				'prefix': "pastagem.org",
+				//'prefix': "pastagem.org",
 				'enable': true,
 		}
 					

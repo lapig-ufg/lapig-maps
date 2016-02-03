@@ -89,7 +89,7 @@ module.exports = function(app){
 
 
 
-	Internal.getLayers = function(configLayers){		
+	Internal.getXmlLayers = function(configLayers){		
 
 		var layersList = [];
 		
@@ -119,7 +119,7 @@ module.exports = function(app){
 			
 		
 		}
-
+ 
 		return layersList;
 		
 	}
@@ -159,75 +159,87 @@ module.exports = function(app){
 
 	}
 
-	Internal.inspectionDb = function(layers, callback){
 
-		var layerFound = [];
-		var layerNotFound = [];
+	Internal.inspectionRedis = function(xmlLayer, callback){
+		
+		var xmlLayerFound = [];
+		var xmlLayerNotFound = [];
+
+		
 
 		finishLoop = function(){
-			callback(layerNotFound, layerFound);
+			callback(xmlLayerNotFound, xmlLayerFound);
 		}
+		
 
-		overLayers = function(layer, nextLayer){
 
-			db.get(layer.id, function(recebi){
-				
-				if(recebi == undefined){
-					console.log('faltando no banco')
-					layerNotFound.push(layer);
-				}else{
-					console.log('no banco')
-					layerFound.push(layer);
-				}
-
-				nextLayer();
-
-			});
-
-		}
-		async.eachSeries(layers, overLayers, finishLoop);
+		overXmlLayers = function(xmlLayer, nextLayer){				
+				db.getAll('*', function(redisXmlId){
+					nextLayer();
+				});
+		}		
+		
+		async.eachSeries(xmlLayer, overXmlLayers, finishLoop);
+		
 	}
 
+	//Internal.redis
 
 	Init.init = function(functionApp){
 
 		var pathXML = app.config.pathXML;
 		var config = app.config.layers;			
-		var layers = Internal.getLayers(config);
+		var xmlLayers = Internal.getXmlLayers(config);
 
+		for(var i = 0;i< xmlLayers.length;i++){
+
+			db.set(xmlLayers[i].id, xmlLayers[i]);
+			console.log(xmlLayers[i]);
+
+		}
+
+
+		Internal.inspectionRedis(xmlLayers, function(xmlLayerNotFound, xmlLayerFound){
+
+		});
 		
-		Internal.inspectionDb(layers, function(layerNotFound, layerFound){
 
-			console.log(layerNotFound.length, layerFound.length);
+		/*
+		Internal.inspectionRedis(xmlLayers, function(xmlLayerNotFound, xmlLayerFound){
 
-			if(layerNotFound.length > 0){
+			console.log(xmlLayerNotFound.length, xmlLayerFound.length);
+
+			if(xmlLayerNotFound.length > 0){
 				console.log('entrou no if');
 
-				Internal.EEAccess(layerNotFound, function(layerWithToken){		
-					for (i in layerWithToken){
-						db.set(layerWithToken[i].id, layerWithToken[i]);	
+				Internal.EEAccess(xmlLayerNotFound, function(xmlLayerWithToken){		
+					for (i in xmlLayerWithToken){
+						db.set(xmlLayerWithToken[i].id, xmlLayerWithToken[i]);	
 					}
-					for(var i=0; i< layerWithToken.length;i++){
-						layerFound.push(layerWithToken[i]);
+					for(var i=0; i< xmlLayerWithToken.length;i++){
+						xmlLayerFound.push(xmlLayerWithToken[i]);
 					}				
 
-					console.log('layerFound',layerFound);
-					Init.layers = layerFound;
-					
+					console.log('xmlLayerFound',xmlLayerFound);
+					Init.layers = xmlLayerFound;
+					console.log('fui')
 					functionApp();
 				});
 
 			}else {
 				console.log('nao fez nada');
-				Init.layers = layerFound;
+				Init.layers = xmlLayerFound;
 				functionApp();
 			}
 			
 		});
+	
+	}
+	*/
+		Init.layers = xmlLayers
 
 	}
 
-
-	
 	return Init;
+
 }

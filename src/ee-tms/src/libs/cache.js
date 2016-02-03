@@ -32,7 +32,7 @@ module.exports = function(app) {
 			})
 		});
 	}
-
+	
 	return Cache;
 	
 }; 
