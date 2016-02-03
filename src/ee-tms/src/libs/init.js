@@ -12,6 +12,8 @@ module.exports = function(app){
 	var db = app.libs.db;
 	var Internal = {};
 
+	var pathMapID = app.config.pathCreateMapID
+
 	Internal.removeBComma = function(str){
 		str = str.replace(/B/g,'');
 		str = str.replace(/,/g,'');
@@ -126,7 +128,7 @@ module.exports = function(app){
 
 		var layerWithToken = [];
 
-		finalize = function(){
+		finishLayers = function(){
 
 			callback(layerWithToken);
 			
@@ -134,7 +136,7 @@ module.exports = function(app){
 
 		overLayer = function(layer, nextLayer){
 
-			cmd = "python"+" "+"/home/jose/Documentos/github/lapig-maps/src/ee-tms/create_mapid.py"+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
+			cmd = "python"+" "+pathMapID+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
 			console.log(cmd);
 			ChildProcess.exec(cmd, function(err, stdout, stderr){	
 
@@ -153,27 +155,29 @@ module.exports = function(app){
 
 		}
 
-		async.eachSeries(layers,overLayer,finalize);
+		async.eachSeries(layers,overLayer,finishLayers);
 
 	}
 
 	Internal.inspectionDb = function(layers, callback){
 
-		var missLayer = [];
-		var fullLayer = [];
+		var layerFound = [];
+		var layerNotFound = [];
 
 		finishLoop = function(){
-			callback(missLayer, fullLayer);
+			callback(layerNotFound, layerFound);
 		}
 
-		overLayer = function(layer, nextLayer){
+		overLayers = function(layer, nextLayer){
 
 			db.get(layer.id, function(recebi){
 				
 				if(recebi == undefined){
-					missLayer.push(layer);
+					console.log('faltando no banco')
+					layerNotFound.push(layer);
 				}else{
-					fullLayer.push(layer);
+					console.log('no banco')
+					layerFound.push(layer);
 				}
 
 				nextLayer();
@@ -181,32 +185,41 @@ module.exports = function(app){
 			});
 
 		}
-		async.eachSeries(layers, overLayer, finishLoop);
+		async.eachSeries(layers, overLayers, finishLoop);
 	}
 
 
 	Init.init = function(functionApp){
-		var pathXML = app.config.pathXML;
-		var config = app.config.layers;
-			
-		var layers = Internal.getLayers(config);
-		// layers com 12 layer
-		Internal.inspectionDb(layers, function(missLayer, fullLayer){
-			var allLayer = [];
 
-			if(missLayer.length > 0){	
-				Internal.EEAccess(missLayer, function(layerWithToken){		
+		var pathXML = app.config.pathXML;
+		var config = app.config.layers;			
+		var layers = Internal.getLayers(config);
+
+		
+		Internal.inspectionDb(layers, function(layerNotFound, layerFound){
+
+			console.log(layerNotFound.length, layerFound.length);
+
+			if(layerNotFound.length > 0){
+				console.log('entrou no if');
+
+				Internal.EEAccess(layerNotFound, function(layerWithToken){		
 					for (i in layerWithToken){
 						db.set(layerWithToken[i].id, layerWithToken[i]);	
 					}
-					allLayer.push(missLayer)
-					allLayer.push(fullLayer)
-					Init.layers = allLayer;
-					//layers com 12 layer
+					for(var i=0; i< layerWithToken.length;i++){
+						layerFound.push(layerWithToken[i]);
+					}				
+
+					console.log('layerFound',layerFound);
+					Init.layers = layerFound;
+					
 					functionApp();
 				});
-			}else{				
-				Init.layers = layers;
+
+			}else {
+				console.log('nao fez nada');
+				Init.layers = layerFound;
 				functionApp();
 			}
 			
