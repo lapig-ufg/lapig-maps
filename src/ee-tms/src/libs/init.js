@@ -159,47 +159,79 @@ module.exports = function(app){
 
 	}
 
+	Internal.valuesToDelete = function(xmlLayer, redisXmlId){
 
+		var distinct = 0;
+		var notInConfFile = [];
+
+		for(var i = 0; i < redisXmlId.length;i++){
+
+			for(var j=0; j < xmlLayer.length; j++){
+			
+				if(redisXmlId[i] == xmlLayer[j].id){
+					break;
+				}
+				distinct++;
+				
+			}
+
+			if(distinct == xmlLayer.length){
+				notInConfFile.push(redisXmlId[i]);
+				distinct = 0;
+			}else{
+				distinct = 0;
+			}
+
+			
+
+		}
+
+		return notInConfFile;
+
+
+	}
+
+	
 	Internal.inspectionRedis = function(xmlLayer, callback){
-		
+
 		var xmlLayerFound = [];
 		var xmlLayerNotFound = [];
 
-		
+		db.getAll('*', function(redisXmlId){
+			
+			if(Internal.valuesToDelete(xmlLayer, redisXmlId).length > 0){
+				console.log('oi');
+			}else{
+				console.log('hello');
+			}
 
-		finishLoop = function(){
-			callback(xmlLayerNotFound, xmlLayerFound);
-		}
-		
+			callback();			
 
-
-		overXmlLayers = function(xmlLayer, nextLayer){				
-				db.getAll('*', function(redisXmlId){
-					nextLayer();
-				});
-		}		
-		
-		async.eachSeries(xmlLayer, overXmlLayers, finishLoop);
+		});
 		
 	}
-
-	//Internal.redis
-
+	
 	Init.init = function(functionApp){
 
 		var pathXML = app.config.pathXML;
 		var config = app.config.layers;			
 		var xmlLayers = Internal.getXmlLayers(config);
+		
 
+		/*
 		for(var i = 0;i< xmlLayers.length;i++){
 
 			db.set(xmlLayers[i].id, xmlLayers[i]);
-			console.log(xmlLayers[i]);
 
 		}
-
+		*/
+			
 
 		Internal.inspectionRedis(xmlLayers, function(xmlLayerNotFound, xmlLayerFound){
+
+			
+
+
 
 		});
 		

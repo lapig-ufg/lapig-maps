@@ -61,7 +61,7 @@ module.exports = function(app) {
 	Cache.getAll = function(id, callback){
 		redisClient.keys(id, function(err, obj){
 			
-			callback();
+			callback(obj);
 		});
 	}
 
