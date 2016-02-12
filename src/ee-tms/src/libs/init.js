@@ -159,53 +159,62 @@ module.exports = function(app){
 
 	}
 
-	Internal.valuesToDelete = function(xmlLayer, redisXmlId){
+	
+	Internal.idObjectGenerator = function(xmlLayer){
 
-		var distinct = 0;
-		var notInConfFile = [];
+		var idObject = {};
 
-		for(var i = 0; i < redisXmlId.length;i++){
-
-			for(var j=0; j < xmlLayer.length; j++){
-			
-				if(redisXmlId[i] == xmlLayer[j].id){
-					break;
-				}
-				distinct++;
-				
-			}
-
-			if(distinct == xmlLayer.length){
-				notInConfFile.push(redisXmlId[i]);
-				distinct = 0;
-			}else{
-				distinct = 0;
-			}
-
-			
-
+		for(var i = 0; i < xmlLayer.length; i++){
+			idObject[xmlLayer[i].id] = true;
 		}
 
-		return notInConfFile;
+
+		return idObject;
 
 
 	}
+	
 
 	
 	Internal.inspectionRedis = function(xmlLayer, callback){
 
-		var xmlLayerFound = [];
-		var xmlLayerNotFound = [];
+		idNotFound = [];
+
+		var idObject = {};
+
+		for(var i = 0; i < xmlLayer.length; i++){
+			idObject[xmlLayer[i].id] = true;
+		}
+
+
+		
+
 
 		db.getAll('*', function(redisXmlId){
 			
-			if(Internal.valuesToDelete(xmlLayer, redisXmlId).length > 0){
-				console.log('oi');
-			}else{
-				console.log('hello');
+			console.log('redis',redisXmlId)
+			for(i in redisXmlId){
+
+				if(!idObject[redisXmlId[i]]){
+					db.del(idObject[redisXmlId[i]]);
+				}else{
+					delete idObject[redisXmlId[i]]
+				}			
+
 			}
 
-			callback();			
+			console.log(idObject);
+
+
+			for(key in xmlLayer){
+				if(idObject[xmlLayer[key].id]){
+					idNotFound.push(xmlLayer[key]);
+				}
+				
+
+			}
+
+			callback(idNotFound);
 
 		});
 		
@@ -213,38 +222,29 @@ module.exports = function(app){
 	
 	Init.init = function(functionApp){
 
+
 		var pathXML = app.config.pathXML;
 		var config = app.config.layers;			
-		var xmlLayers = Internal.getXmlLayers(config);
-		
+		var xmlLayer = Internal.getXmlLayers(config);
 
 		/*
-		for(var i = 0;i< xmlLayers.length;i++){
+		for(var i = 0;i< xmlLayer.length;i++){
 
-			db.set(xmlLayers[i].id, xmlLayers[i]);
+			db.set(xmlLayer[i].id, xmlLayer[i]);
 
 		}
 		*/
-			
-
-		Internal.inspectionRedis(xmlLayers, function(xmlLayerNotFound, xmlLayerFound){
-
-			
-
-
-
-		});
+		
 		
 
-		/*
-		Internal.inspectionRedis(xmlLayers, function(xmlLayerNotFound, xmlLayerFound){
+		Internal.inspectionRedis(xmlLayer, function(idNotFound){
 
-			console.log(xmlLayerNotFound.length, xmlLayerFound.length);
-
-			if(xmlLayerNotFound.length > 0){
+			var xmlLayerFound = [];
+			
+			if(idNotFound.length > 0){
 				console.log('entrou no if');
 
-				Internal.EEAccess(xmlLayerNotFound, function(xmlLayerWithToken){		
+				Internal.EEAccess(idNotFound, function(xmlLayerWithToken){		
 					for (i in xmlLayerWithToken){
 						db.set(xmlLayerWithToken[i].id, xmlLayerWithToken[i]);	
 					}
@@ -263,12 +263,11 @@ module.exports = function(app){
 				Init.layers = xmlLayerFound;
 				functionApp();
 			}
-			
-		});
 	
-	}
-	*/
-		Init.layers = xmlLayers
+		});
+		
+	
+		Init.layers = xmlLayer
 
 	}
 

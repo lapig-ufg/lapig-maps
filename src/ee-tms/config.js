@@ -16,7 +16,7 @@ module.exports = function(app) {
 				    "layer": "l8",
 						"temporal_resolution": "16",
 				    "temporal_resolution_type": "day",
-				    "start_date": "2015/02/01",
+				    "start_date": "2015/01/01",
 				    "end_date": "2015/04/01",
 				    "collection_id": "LANDSAT/LC8_L1T_TOA",
 				    "composites": ["B6,B5,B4"],
