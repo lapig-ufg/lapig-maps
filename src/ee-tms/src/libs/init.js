@@ -89,7 +89,7 @@ module.exports = function(app){
 
 
 
-	Internal.getXmlLayers = function(configLayers){		
+	Internal.getLayerForWmts = function(configLayers){		
 
 		var layersList = [];
 		
@@ -108,7 +108,7 @@ module.exports = function(app){
 													'enDate':PairDates[j][1],
 													'composite': configLayers[i].composites[k],
 													'b_box': configLayers[i].b_box,
-													'satellite': configLayers[i].satellite
+													'satellite': configLayers[i].satellite													
 												};
 
 						layersList.push(layer);					
@@ -160,114 +160,120 @@ module.exports = function(app){
 	}
 
 	
-	Internal.idObjectGenerator = function(xmlLayer){
+	Internal.layerWmtsIdObjectGenerator = function(layerWmts){
 
-		var idObject = {};
+		var layerWmtslayerWmtsIdObject = {};
 
-		for(var i = 0; i < xmlLayer.length; i++){
-			idObject[xmlLayer[i].id] = true;
+		for(var i = 0; i < layerWmts.length; i++){
+			layerWmtslayerWmtsIdObject[layerWmts[i].id] = true;
 		}
 
 
-		return idObject;
+		return layerWmtslayerWmtsIdObject;
 
+
+	}
+
+	Internal.notLayerInsideRedis = function(layerWmts, layerWmtsIdObject){
+
+		var layerWmtsNotFound = [];
+
+		for(key in layerWmts){
+
+			console.log(layerWmts[key]);
+
+			if(layerWmtsIdObject[layerWmts[key].id]){
+
+				layerWmtsNotFound.push(layerWmts[key]);
+
+			}
+
+		}		
+
+		return layerWmtsNotFound;
 
 	}
 	
 
 	
-	Internal.inspectionRedis = function(xmlLayer, callback){
+	Internal.inspectionRedis = function(layerWmts, callback){
 
-		idNotFound = [];
+		layerWmtsNotFound = [];
 
-		var idObject = {};
+		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);		
 
-		for(var i = 0; i < xmlLayer.length; i++){
-			idObject[xmlLayer[i].id] = true;
-		}
-
-
-		
-
-
-		db.getAll('*', function(redisXmlId){
+		db.getAll('*', function(redisWmtsId){			
 			
-			console.log('redis',redisXmlId)
-			for(i in redisXmlId){
-
-				if(!idObject[redisXmlId[i]]){
-					db.del(idObject[redisXmlId[i]]);
+			for(i in redisWmtsId){
+				if(!layerWmtsIdObject[redisWmtsId[i]]){
+					db.del(layerWmtsIdObject[redisWmtsId[i]]);
 				}else{
-					delete idObject[redisXmlId[i]]
-				}			
-
+					delete layerWmtsIdObject[redisWmtsId[i]]
+				}				
 			}
 
-			console.log(idObject);
+			var notLayerInsideRedis = Internal.notLayerInsideRedis(layerWmts, layerWmtsIdObject);
 
-
-			for(key in xmlLayer){
-				if(idObject[xmlLayer[key].id]){
-					idNotFound.push(xmlLayer[key]);
-				}
-				
-
-			}
-
-			callback(idNotFound);
+			callback(redisWmtsId, notLayerInsideRedis);
 
 		});
 		
 	}
 	
 	Init.init = function(functionApp){
-
-
-		var pathXML = app.config.pathXML;
-		var config = app.config.layers;			
-		var xmlLayer = Internal.getXmlLayers(config);
+		
+		var configLayer = app.config.layers;			
+		var layerWmts = Internal.getLayerForWmts(configLayer);
 
 		/*
-		for(var i = 0;i< xmlLayer.length;i++){
+		for(var i = 0;i< layerWmts.length;i++){
 
-			db.set(xmlLayer[i].id, xmlLayer[i]);
+			db.set(layerWmts[i].id, layerWmts[i]);
 
 		}
 		*/
 		
 		
 
-		Internal.inspectionRedis(xmlLayer, function(idNotFound){
+		Internal.inspectionRedis(layerWmts, function(redisWmtsId, layerWmtsNotFound){
 
-			var xmlLayerFound = [];
+			var layerWmtsDownloadedEE = [];
+
+			console.log('redisWmtsId', redisWmtsId);
+			console.log('layerWmtsNotFound', layerWmtsNotFound);
 			
-			if(idNotFound.length > 0){
+			if(layerWmtsNotFound.length > 0){
+
 				console.log('entrou no if');
 
-				Internal.EEAccess(idNotFound, function(xmlLayerWithToken){		
-					for (i in xmlLayerWithToken){
-						db.set(xmlLayerWithToken[i].id, xmlLayerWithToken[i]);	
-					}
-					for(var i=0; i< xmlLayerWithToken.length;i++){
-						xmlLayerFound.push(xmlLayerWithToken[i]);
-					}				
+				Internal.EEAccess(layerWmtsNotFound, function(layerWmtsWithToken){		
 
-					console.log('xmlLayerFound',xmlLayerFound);
-					Init.layers = xmlLayerFound;
-					console.log('fui')
+					for (i in layerWmtsWithToken){
+						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
+					}
+
+					for(var i=0; i< layerWmtsWithToken.length;i++){
+						layerWmtsDownloadedEE.push(layerWmtsWithToken[i]);
+					}
+					
+					Init.layers = layerWmtsDownloadedEE;
+					
 					functionApp();
+
 				});
 
-			}else {
-				console.log('nao fez nada');
-				Init.layers = xmlLayerFound;
-				functionApp();
+			}else{
+
+				console.log('entrou no else');
+				Init.layers = layerWmtsDownloadedEE;
+				functionApp();				
+
 			}
 	
 		});
 		
 	
-		Init.layers = xmlLayer
+		Init.layers = layerWmts
 
 	}
 

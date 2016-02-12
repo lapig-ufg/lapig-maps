@@ -11,7 +11,7 @@ module.exports = function(app) {
 	var Internal = {};
 
 	var init = app.libs.init;
-	var pathXML = app.config.pathXML;
+	var pathWmts = app.config.pathWmts;
 
 	Internal.xmlGenerator = function(layers){		
 
@@ -49,7 +49,9 @@ module.exports = function(app) {
 
 		var xml = Internal.xmlGenerator(init.layers);
 
-		fs.readFile(pathXML, 'utf8', function (err, data) {
+		console.log(pathWmts)
+
+		fs.readFile(pathWmts, 'utf8', function (err, data) {
 				result = data.replace('{xmlLayers}', xml);
 
 				response.setHeader('content-type', 'application/xml');
