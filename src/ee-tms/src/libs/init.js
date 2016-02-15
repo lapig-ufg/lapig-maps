@@ -180,8 +180,6 @@ module.exports = function(app){
 
 		for(key in layerWmts){
 
-			console.log(layerWmts[key]);
-
 			if(layerWmtsIdObject[layerWmts[key].id]){
 
 				layerWmtsNotFound.push(layerWmts[key]);
@@ -202,22 +200,45 @@ module.exports = function(app){
 
 		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);		
 
-		db.getAll('*', function(redisWmtsId){			
+		db.getAll("EE_KEYS:*", function(redisWmtsIds){			
 			
-			for(i in redisWmtsId){
-				if(!layerWmtsIdObject[redisWmtsId[i]]){
-					db.del(layerWmtsIdObject[redisWmtsId[i]]);
+			for(i in redisWmtsIds){
+				if(!layerWmtsIdObject[redisWmtsIds[i]]){
+					db.del(layerWmtsIdObject[redisWmtsIds[i]]);
 				}else{
-					delete layerWmtsIdObject[redisWmtsId[i]]
+					delete layerWmtsIdObject[redisWmtsIds[i]]
 				}				
 			}
 
 			var notLayerInsideRedis = Internal.notLayerInsideRedis(layerWmts, layerWmtsIdObject);
 
-			callback(redisWmtsId, notLayerInsideRedis);
+			callback(redisWmtsIds, notLayerInsideRedis);
 
 		});
 		
+	}
+
+	Internal.redisWmtsIdsIterator = function(redisWmtsIds, callback){
+
+		var redisWmtsLayers = [];
+
+		finishRedisWmtsIds = function(){
+			callback(redisWmtsLayers);
+		}
+
+
+		overRedisWmtsIds = function(redisWmtsId, nextId){
+			db.get(redisWmtsId, function(data){
+				console.log(redisWmtsId, data);
+
+				redisWmtsLayers.push(data);
+				nextId();						
+			});
+
+		}
+
+		async.eachSeries(redisWmtsIds,overRedisWmtsIds,finishRedisWmtsIds);
+
 	}
 	
 	Init.init = function(functionApp){
@@ -235,16 +256,39 @@ module.exports = function(app){
 		
 		
 
-		Internal.inspectionRedis(layerWmts, function(redisWmtsId, layerWmtsNotFound){
+		Internal.inspectionRedis(layerWmts, function(redisWmtsIds, layerWmtsNotFound){
 
 			var layerWmtsDownloadedEE = [];
 
-			console.log('redisWmtsId', redisWmtsId);
+			console.log('redisWmtsIds', redisWmtsIds);
 			console.log('layerWmtsNotFound', layerWmtsNotFound);
 			
-			if(layerWmtsNotFound.length > 0){
+			if(layerWmtsNotFound.length > 0 && redisWmtsIds == 0){
 
 				console.log('entrou no if');
+
+				Internal.EEAccess(layerWmtsNotFound, function(layerWmtsWithToken){		
+
+					for (i in layerWmtsWithToken){
+
+						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
+
+					}
+
+					for(var i=0; i< layerWmtsWithToken.length;i++){
+						layerWmtsDownloadedEE.push(layerWmtsWithToken[i]);
+					}
+					
+					
+					Init.layers = layerWmtsDownloadedEE;
+					
+					functionApp();
+
+				});
+
+			}else if(layerWmtsNotFound.length > 0 && redisWmtsIds.length > 0){
+
+				console.log('entrou no else1');
 
 				Internal.EEAccess(layerWmtsNotFound, function(layerWmtsWithToken){		
 
@@ -255,18 +299,34 @@ module.exports = function(app){
 					for(var i=0; i< layerWmtsWithToken.length;i++){
 						layerWmtsDownloadedEE.push(layerWmtsWithToken[i]);
 					}
+
+					Internal.redisWmtsIdsIterator(redisWmtsIds, function(redisWmtsLayers){
+
+						console.log('r',redisWmtsLayers);
+
+						for(var i = 0; i < redisWmtsLayers; i++){
+
+							layerWmtsDownloadedEE.push(redisWmtsLayers[i]);
+
+						}
 					
-					Init.layers = layerWmtsDownloadedEE;
+						Init.layers = layerWmtsDownloadedEE;
 					
-					functionApp();
+						functionApp();
+
+					
+					});
+					
+									
 
 				});
 
-			}else{
 
-				console.log('entrou no else');
-				Init.layers = layerWmtsDownloadedEE;
-				functionApp();				
+								
+
+			}else if(layerWmtsNotFound.length == 0 && redisWmtsIds.length > 0){
+
+				Init.layers = redisWmtsIds;
 
 			}
 	

@@ -19,7 +19,7 @@ module.exports = function(app) {
 	Cache.get = function(cacheKey, callback) {
 		if(app.config.redis.enable) {
 			cacheKey = Internal.addPrefix(cacheKey);
-
+			console.log('get: ', cacheKey);
 			redisClient.get(cacheKey, function(err, data) {
 				console.log(data);
 				if(!err && data) {
@@ -48,7 +48,7 @@ module.exports = function(app) {
 		}
 	}
 
-	Cache.del = function(keyPattern, data) {
+	Cache.del = function(keyPattern) {
 		if(app.config.redis.enable) {
 			redisClient.keys(keyPattern, function(err, keys) {
 				keys.forEach(function(key) {

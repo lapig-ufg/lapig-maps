@@ -9,15 +9,15 @@ module.exports = function(app) {
 			,	'pathCreateMapID':appRoot+'/integration/py/create_mapid.py'
 			, 'redisHost': 'localhost'
 			,	'port': 5000
-			, 'pathXML': appRoot+'/Template/wmts.xml'
+			, 'pathWmts': appRoot+'/Template/wmts.xml'
 			, 'eeTms': "https://earthengine.googleapis.com"
 			, 'layers': [
 					{
-				    "layer": "l8",
+				    "layer": "EE_KEYS:l8",
 						"temporal_resolution": "16",
 				    "temporal_resolution_type": "day",
 				    "start_date": "2015/01/01",
-				    "end_date": "2015/04/01",
+				    "end_date": "2015/03/01",
 				    "collection_id": "LANDSAT/LC8_L1T_TOA",
 				    "composites": ["B6,B5,B4"],
 				    "b_box": ["-76.60","-35.06","-33.43","5.13"],
