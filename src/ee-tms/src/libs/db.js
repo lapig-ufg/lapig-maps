@@ -18,10 +18,10 @@ module.exports = function(app) {
 
 	Cache.get = function(cacheKey, callback) {
 		if(app.config.redis.enable) {
-			cacheKey = Internal.addPrefix(cacheKey);
-			console.log('get: ', cacheKey);
+			//cacheKey = Internal.addPrefix(cacheKey);
+			//console.log('get: ', cacheKey);
 			redisClient.get(cacheKey, function(err, data) {
-				console.log(data);
+				//console.log(data);
 				if(!err && data) {
 			    	var cachedData = JSON.parse(data);;
 			    	callback(cachedData);

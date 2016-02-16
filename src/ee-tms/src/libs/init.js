@@ -22,11 +22,8 @@ module.exports = function(app){
 	
 
 	Internal.parsinglayersString = function(str){
-
-		slicedStr = str.slice(2,4) + str.slice(5,7) + str.slice(8,10);
-				
+		slicedStr = str.slice(2,4) + str.slice(5,7) + str.slice(8,10);				
 		return slicedStr;
-
 	}
 
 	Internal.strDate = function(dt, sep) {
@@ -87,20 +84,13 @@ module.exports = function(app){
 		
 	}
 
-
-
 	Internal.getLayerForWmts = function(configLayers){		
-
 		var layersList = [];
 		
 		for (var i = 0; i < configLayers.length; i++){
-
-			PairDates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);
-			
+			PairDates = Internal.dateRange(configLayers[i].start_date, configLayers[i].end_date, configLayers[i].temporal_resolution, configLayers[i].temporal_resolution_type);			
 			for(var j = 0; j < PairDates	.length; j++){										
-
 				for(var k = 0; k < configLayers[i].composites.length; k++){	
-
 						var layer = {
 													'id':configLayers[i].layer + '_' + Internal.parsinglayersString(PairDates[j][0]) + '_' + Internal.parsinglayersString(PairDates[j][1]) + '_' + Internal.removeBComma(configLayers[i].composites[k]),
 													'collection': configLayers[i].collection_id,
@@ -110,49 +100,36 @@ module.exports = function(app){
 													'b_box': configLayers[i].b_box,
 													'satellite': configLayers[i].satellite													
 												};
-
 						layersList.push(layer);					
-
-				}
-			
-			}
-			
-		
-		}
- 
-		return layersList;
-		
+				}			
+			}		
+		} 
+		return layersList;		
 	}
 
 	Internal.EEAccess = function(layers, callback){
-
 		var layerWithToken = [];
 
 		finishLayers = function(){
-
-			callback(layerWithToken);
-			
+			callback(layerWithToken);			
 		}
 
 		overLayer = function(layer, nextLayer){
-
 			cmd = "python"+" "+pathMapID+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
-			console.log(cmd);
-			ChildProcess.exec(cmd, function(err, stdout, stderr){	
 
+			console.log(cmd);
+
+			ChildProcess.exec(cmd, function(err, stdout, stderr){	
 				if(stderr){					
 						console.log(stderr);
-				}
-				
+				}				
 				stdout=stdout.replace(/'/g, '"');				
 				stdout=JSON.parse(stdout);
 				layer["token"] = stdout.token;
 				layer["mapid"] = stdout.mapid;
 				layerWithToken.push(layer);
 				nextLayer();
-
 			});
-
 		}
 
 		async.eachSeries(layers,overLayer,finishLayers);
@@ -161,182 +138,165 @@ module.exports = function(app){
 
 	
 	Internal.layerWmtsIdObjectGenerator = function(layerWmts){
-
 		var layerWmtslayerWmtsIdObject = {};
 
 		for(var i = 0; i < layerWmts.length; i++){
 			layerWmtslayerWmtsIdObject[layerWmts[i].id] = true;
 		}
-
-
 		return layerWmtslayerWmtsIdObject;
 
+	}
+
+
+	Internal.getRedisLayers = function(layersFoundRedis, callback){
+		
+		var layersFromRedis = [];
+
+
+		finishlayersFoundRedis = function(){
+			callback(layersFromRedis);
+		}
+
+		overlayersFoundRedis = function(redisWmtsId, nextId){
+			db.get(redisWmtsId, function(data){
+				layersFromRedis.push(data);
+				nextId();						
+			});
+		}
+
+		async.eachSeries(layersFoundRedis,overlayersFoundRedis,finishlayersFoundRedis);
 
 	}
 
-	Internal.notLayerInsideRedis = function(layerWmts, layerWmtsIdObject){
-
-		var layerWmtsNotFound = [];
+	Internal.layersNotFoundRedis = function(layerWmts, layerWmtsIdObject){
+		var layersNotFoundRedis = [];
 
 		for(key in layerWmts){
-
 			if(layerWmtsIdObject[layerWmts[key].id]){
-
-				layerWmtsNotFound.push(layerWmts[key]);
-
+				layersNotFoundRedis.push(layerWmts[key]);
 			}
+		}
+		
+		return layersNotFoundRedis;
 
-		}		
+	}
 
-		return layerWmtsNotFound;
+	Internal.Conciditional = function(layersNotFoundRedis, layersFoundRedis, callback){
+
+		var capabilities = [];
+
+
+		if(layersNotFoundRedis.length > 0 && layersFoundRedis == 0){
+
+			Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
+				
+				for (i in layerWmtsWithToken){
+					db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
+					console.log(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);
+				}
+
+				for(var i=0; i< layerWmtsWithToken.length;i++){
+					capabilities.push(layerWmtsWithToken[i]);
+				}				
+				
+				callback(capabilities);
+
+			});
+		}
+		else if(layersNotFoundRedis.length > 0 && layersFoundRedis.length > 0){
+
+				console.log('entrou no else1');
+
+				Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
+
+					for (i in layerWmtsWithToken){
+						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
+					}
+
+					for(var i=0; i< layerWmtsWithToken.length;i++){
+						capabilities.push(layerWmtsWithToken[i]);
+					}
+
+					Internal.getRedisLayers(layersFoundRedis, function(layersWithTokenRedis){
+
+						var count = layersWithTokenRedis.length - 1;						
+
+						while(count >= 0){
+							capabilities.push(layersWithTokenRedis[count]);
+							count--;
+						}
+
+						callback(capabilities);
+
+					});
+
+				});
+
+		}else if(layersNotFoundRedis.length == 0 && layersFoundRedis.length > 0){
+
+				console.log('aqui');
+
+				Internal.getRedisLayers(layersFoundRedis, function(layersWithTokenRedis){					
+
+					var count = layersWithTokenRedis.length - 1;					
+
+					while(count >= 0){
+						capabilities.push(layersWithTokenRedis[count]);
+						count--;
+
+					}					
+				
+					callback(capabilities);
+				
+				});			
+
+			}	
 
 	}
 	
+	Internal.inspectionRedis = function(layerWmts, inspectionRedisCallback){
 
-	
-	Internal.inspectionRedis = function(layerWmts, callback){
-
-		layerWmtsNotFound = [];
-
+		var layersNotFoundRedis = [];
+		var layersFoundRedis = [];
 		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);		
 
-		db.getAll("EE_KEYS:*", function(redisWmtsIds){			
-			
-			for(i in redisWmtsIds){
-				if(!layerWmtsIdObject[redisWmtsIds[i]]){
-					db.del(layerWmtsIdObject[redisWmtsIds[i]]);
+		db.getAll("EE_KEYS:*", function(data){
+
+			for(var i = 0; i < data.length; i++){
+				layersFoundRedis.push(data[i]);
+			}
+
+			for(i in layersFoundRedis){
+				if(!layerWmtsIdObject[layersFoundRedis[i]]){
+					db.del(layerWmtsIdObject[layersFoundRedis[i]]);
 				}else{
-					delete layerWmtsIdObject[redisWmtsIds[i]]
+					delete layerWmtsIdObject[layersFoundRedis[i]];
 				}				
 			}
 
-			var notLayerInsideRedis = Internal.notLayerInsideRedis(layerWmts, layerWmtsIdObject);
+			layersNotFoundRedis = Internal.layersNotFoundRedis(layerWmts, layerWmtsIdObject);
 
-			callback(redisWmtsIds, notLayerInsideRedis);
-
-		});
+			Internal.Conciditional(layersNotFoundRedis, layersFoundRedis, function(capabilities){
+				inspectionRedisCallback(capabilities);
+			});
+		});					
 		
 	}
+		
 
-	Internal.redisWmtsIdsIterator = function(redisWmtsIds, callback){
-
-		var redisWmtsLayers = [];
-
-		finishRedisWmtsIds = function(){
-			callback(redisWmtsLayers);
-		}
-
-
-		overRedisWmtsIds = function(redisWmtsId, nextId){
-			db.get(redisWmtsId, function(data){
-				console.log(redisWmtsId, data);
-
-				redisWmtsLayers.push(data);
-				nextId();						
-			});
-
-		}
-
-		async.eachSeries(redisWmtsIds,overRedisWmtsIds,finishRedisWmtsIds);
-
-	}
-	
 	Init.init = function(functionApp){
 		
 		var configLayer = app.config.layers;			
 		var layerWmts = Internal.getLayerForWmts(configLayer);
 
-		/*
-		for(var i = 0;i< layerWmts.length;i++){
-
-			db.set(layerWmts[i].id, layerWmts[i]);
-
-		}
-		*/
-		
-		
-
-		Internal.inspectionRedis(layerWmts, function(redisWmtsIds, layerWmtsNotFound){
-
-			var layerWmtsDownloadedEE = [];
-
-			console.log('redisWmtsIds', redisWmtsIds);
-			console.log('layerWmtsNotFound', layerWmtsNotFound);
-			
-			if(layerWmtsNotFound.length > 0 && redisWmtsIds == 0){
-
-				console.log('entrou no if');
-
-				Internal.EEAccess(layerWmtsNotFound, function(layerWmtsWithToken){		
-
-					for (i in layerWmtsWithToken){
-
-						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
-
-					}
-
-					for(var i=0; i< layerWmtsWithToken.length;i++){
-						layerWmtsDownloadedEE.push(layerWmtsWithToken[i]);
-					}
-					
-					
-					Init.layers = layerWmtsDownloadedEE;
-					
-					functionApp();
-
-				});
-
-			}else if(layerWmtsNotFound.length > 0 && redisWmtsIds.length > 0){
-
-				console.log('entrou no else1');
-
-				Internal.EEAccess(layerWmtsNotFound, function(layerWmtsWithToken){		
-
-					for (i in layerWmtsWithToken){
-						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
-					}
-
-					for(var i=0; i< layerWmtsWithToken.length;i++){
-						layerWmtsDownloadedEE.push(layerWmtsWithToken[i]);
-					}
-
-					Internal.redisWmtsIdsIterator(redisWmtsIds, function(redisWmtsLayers){
-
-						console.log('r',redisWmtsLayers);
-
-						for(var i = 0; i < redisWmtsLayers; i++){
-
-							layerWmtsDownloadedEE.push(redisWmtsLayers[i]);
-
-						}
-					
-						Init.layers = layerWmtsDownloadedEE;
-					
-						functionApp();
-
-					
-					});
-					
-									
-
-				});
-
-
-								
-
-			}else if(layerWmtsNotFound.length == 0 && redisWmtsIds.length > 0){
-
-				Init.layers = redisWmtsIds;
-
-			}
+		Internal.inspectionRedis(layerWmts, function(capabilities){
+			console.log(capabilities)
+		});		
 	
-		});
-		
-	
-		Init.layers = layerWmts
-
-	}
+	}		
 
 	return Init;
 
-}
+}	
+	
+	

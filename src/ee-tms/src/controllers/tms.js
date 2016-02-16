@@ -13,14 +13,13 @@ module.exports = function(app) {
 	var init = app.libs.init;
 	var pathWmts = app.config.pathWmts;
 
-	Internal.xmlGenerator = function(layers){		
+	Internal.Capabilities = function(layers){		
 
 		var xml = "";
 
 		console.log(layers);
 		
-		for (var i = 0; i < layers.length; i++){
-				
+		for (var i = 0; i < layers.length; i++){				
 			xml+="<Layer>\n"+
 				"<ows:Title>"+layers[i].satellite+" "+layers[i].startDate+" "+"("+layers[i].composite+")"+"</ows:Title>\n"+
 				"<ows:Identifier>"+layers[i].id+"</ows:Identifier>\n"+
@@ -37,8 +36,7 @@ module.exports = function(app) {
 				"</TileMatrixSetLink>\n" +
 				//<ResourceURL format='image/jpeg' resourceType='tile' template='https:localhost:5000/map/"+layers[i].mapid+"/"+layers[i].token+"'/>\n" +
 				"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"'"+"/>\n" +
-				"</Layer>";
-	
+				"</Layer>";	
 		}
 	
 		return xml;
@@ -46,19 +44,14 @@ module.exports = function(app) {
 	}
 
 	Tms.process = function(request, response) {
-
-		var xml = Internal.xmlGenerator(init.layers);
-
-		console.log(pathWmts)
+		var xml = Internal.Capabilities(init.layers);
 
 		fs.readFile(pathWmts, 'utf8', function (err, data) {
-				result = data.replace('{xmlLayers}', xml);
-
-				response.setHeader('content-type', 'application/xml');
-				response.send(result);
-				response.end();
-		
-			});
+			result = data.replace('{xmlLayers}', xml);
+			response.setHeader('content-type', 'application/xml');
+			response.send(result);
+			response.end();		
+		});
 		
 	}
 
