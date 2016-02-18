@@ -132,6 +132,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
             
             // add additional fields
             var fields = [
+                {name: "_id", type: "string"},
                 {name: "source", type: "string"}, 
                 {name: "group", type: "string"},
                 {name: "properties", type: "string"},

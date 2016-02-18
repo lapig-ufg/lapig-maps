@@ -8,8 +8,9 @@ module.exports = function(app) {
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
 		"spatialIntelligenceDb": "/home/leandro/Tmp/spatial-intelligence.sqlite",
 		"hostUrl": 'http://localhost:5000',
-		"ows": "http://localhost:5500",
+		"ows": "http://maps.lapig.iesa.ufg.br/",
 		"clientDir": appRoot + "/../client/build",
+		"langDir": appRoot + "/lang",
 		"mongo": {
 			"host": "localhost",
 			"port": "27017",

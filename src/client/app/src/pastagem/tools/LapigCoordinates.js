@@ -53,7 +53,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				var instance = this;
 
 				var actions = gxp.plugins.LapigCoordinates.superclass.addActions.apply(this, [{
-						tooltip: 'Adicionar Coordenadas',
+						tooltip: this.tooltip,
 						iconCls: "gxp-icon-lapigcoordinates",
 						handler: function(scope, evt, buttons) {
 								instance.addOutput(buttons);
@@ -269,7 +269,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						id: 'lapig-coordinates-grid',
 						xtype: "grid",
 						viewConfig: {
-							emptyText: "Adiciona uma coordenada geográfica utilizando as opções acima.",
+							emptyText: i18n.LAPIGCOORDINATES_INSTR_EMPTYTXTGRID,
 							deferEmptyText: false
 						},
 						header: false,
@@ -279,19 +279,19 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						columns: [
 							{
 								id: 'nome',
-								header: 'Nome',
+								header: i18n.LAPIGCOORDINATES_TTLCOL_NAME,
 								width: 160,
 								sortable: true,
 								menuDisabled: true,
 								dataIndex: 'nome'
 							}, {
-									header: 'Longitude',
+									header: i18n.LAPIGCOORDINATES_TTLCOL_LONG,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
 									dataIndex: 'longitude'
 							}, {
-									header: 'Latitude',
+									header: i18n.LAPIGCOORDINATES_TTLCOL_LAT,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
@@ -303,7 +303,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									menuDisabled: true,
 									items: [{
 											icon: "theme/app/img/delete.png",
-											tooltip: 'Remove coordenada',
+											tooltip: i18n.LAPIGCOORDINATES_BTNREMOVE_TLTP,
 											handler: function(grid, rowIndex, colIndex) {
 													var rec = instance.store.getAt(rowIndex);
 
@@ -344,7 +344,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								xtype: 'button',
 								icon: 'theme/app/img/lapig-coordenadas-add.png',
 								height: 10,
-								tooltip: 'Clique em uma região do mapa para preencher a Latitude e Longitude.',
+								tooltip: i18n.LAPIGCOORDINATES_BTNMAPCOORD_TLTP,
 								style: {
 										'margin-right': '10px'
 								},
@@ -391,7 +391,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					items: [
 							{
 									xtype: 'fieldset',
-									title: 'Coordenadas Geográficas',
+									title: i18n.LAPIGCOORDINATES_TTLVBOX_COORD,
 									id: 'teste',
 									layout: {
 										type:'vbox',
@@ -438,7 +438,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 													}
 												, {
 														name: 'graus',
-														boxLabel: 'Graus Minutos Seg.',
+														boxLabel: i18n.LAPIGCOORDINATES_BOXLBL_GMINSE,
 														inputValue: 'DMS',
 														listeners: {
 															check: function(evt, checked) {
@@ -473,7 +473,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 														,	{
 																	xtype: 'numberfield',
 																	id: 'form-text-lon-2',
-																	emptyText: 'Longitude',
+																	emptyText: i18n.LAPIGCOORDINATES_NBFIELD_EMPTYTXTLON,
 																	decimalPrecision: 4,
 																	flex: 1,
 																	name: 'lon',
@@ -484,7 +484,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 														, {
 																xtype: 'numberfield',
 																id: 'form-text-lat-2',
-																emptyText: 'Latitude',
+																emptyText: i18n.LAPIGCOORDINATES_NBFIELD_EMPTYTXTLAT,
 																decimalPrecision: 4,
 																flex: 1,
 																style: {
@@ -573,7 +573,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 												items: [
 														{
 															xtype: "label",
-															text: 'Nome/Descrição:',
+															text: i18n.LAPIGCOORDINATES_FIELDLBL_NAMEDESC,
 															width: 90,
 															style: {
 																'margin-top': '4px'
@@ -661,7 +661,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		getWindow: function(buttons) {
 				return new Ext.Window({
 						id: 'lapig-coordinates-window',
-						title: 'Coordenadas no Mapa ',
+						title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
 						width: 320,
 						height: 320,
 						layout: 'fit',

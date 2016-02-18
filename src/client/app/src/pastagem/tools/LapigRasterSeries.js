@@ -231,7 +231,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       height:440,
       closeAction:'hide',
       plain: true,
-      title: 'Dados Temporais',
+      title: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
       items:[
         {
           region: 'center',
@@ -242,7 +242,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           border:false,
           items: [
             {
-              title: 'Categorias',
+              title: i18n.LAPIGRASTERSERIES_TTLAREA_CAT,
               region: 'west',
               xtype: 'treepanel',
               border: false,
@@ -284,7 +284,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               }
             },
             {
-              title: 'Detalhes',
+              title: i18n.LAPIGRASTERSERIES_TTLAREA_DETAILS,
               border:false,
               frame:true,
               region: 'center',
@@ -315,7 +315,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype: 'textfield',
                   hideLabel: false,
                   anchor:'100%',
-                  fieldLabel:'Nome',
+                  fieldLabel:i18n.LAPIGRASTERSERIES_FIELDLBL_NAME,
                   name: "name",
                   width:350,
                   height:20,
@@ -325,7 +325,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype: 'textarea',
                   hideLabel: false,
                   anchor:'100%',
-                  fieldLabel:'Descrição',
+                  fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_DESCRIPTION,
                   name: "description",
                   padding: "0px 0px 0px 0px",
                   width:350,
@@ -348,7 +348,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       items: [
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Satélite',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SATELLITE,
                           name: "satelite",
                           height: 20,
                           readOnly: true,
@@ -360,7 +360,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             id: 'lapig_rasterseries::frm-info-source',
                             html: "",
                             height: 69,
-                            fieldLabel: 'Fonte',
+                            fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SOURCE,
                             readOnly: true,
                             border: false,
                             cls: 'form-logo-field'
@@ -377,7 +377,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       items: [
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Período',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_PERIOD,
                           name: 'date',
                           height: 20,
                           width: 165,
@@ -386,7 +386,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         },
                         {
                             xtype:'textfield',
-                            fieldLabel: 'Escala',
+                            fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SCALE,
                             name: 'scale',
                             height: 20,
                             width: 165,
@@ -395,7 +395,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         },
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Unidade de Medida',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_UNIMEASURE,
                           name: 'pixelMeasure',
                           height: 20,
                           width: 165,
@@ -408,7 +408,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 },
               ],
               buttons: [{
-                text: 'Selecionar',
+                text: i18n.LAPIGRASTERSERIES_BTNTXT_SELECT,
                 listeners: {
                   click: function(evt) {
                     var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
@@ -470,7 +470,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       id: "lapig-coordinates-center-chart",
       tbar: [
         {
-          text: 'Dados Temporais',
+          text: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
           iconCls: 'lapig-icon-add-2',
           xtype:"button",
           listeners: {
@@ -481,7 +481,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           }
         },
         '->',
-        'Período:',
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
         {
           xtype:'combo',
           id: "lapig-raster-series-cmb-start-year",
@@ -505,7 +505,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             select: filterChartData
           }
         }, 
-        'a'
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_A
         , {
           xtype:'combo',
           id: "lapig-raster-series-cmb-end-year",
@@ -530,7 +530,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           }
         },
         '-',
-        'Valores de:',
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_VALUES,
         {
           xtype:'combo',
           id: "lapig-raster-series-cmb-start-value",
@@ -553,7 +553,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             select: filterChartData
           }
         }, 
-        'a'
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_A
         , {
           xtype:'combo',
           id: "lapig-raster-series-cmb-end-value",
@@ -578,7 +578,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           }
         },
         '-',
-        'Filtro:'
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_FILTER
         ,{
           xtype:'combo',
           id: 'lapig-raster-series-cmb-interpolation',
@@ -599,7 +599,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           }
         },
         '-',
-        'Agupar por:',
+        i18n.LAPIGRASTERSERIES_FIELDLBLCB_GROUP,
         {
           xtype:'combo',
           id: 'lapig-raster-series-cmb-group-data',

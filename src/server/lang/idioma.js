@@ -1,0 +1,1 @@
+'idioma' = navigator.language;

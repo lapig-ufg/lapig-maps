@@ -2,7 +2,7 @@ module.exports = function (app) {
 
 	var layer = app.controllers.layer;
 
-	app.get('/layers/tree', layer.tree);
+	app.get('/layers/tree', layer.tree, layer.translate);
 	app.post('/layers/search', layer.search);
 	app.get('/layers/attributes', layer.attributes);
 	

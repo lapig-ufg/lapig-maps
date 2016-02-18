@@ -5,6 +5,7 @@ module.exports = function(app) {
 
 	var config = app.config;
 	var layerCollection = app.repository.collections.layers;
+	var layerCollectionEn = app.repository.collections.en_layers;
 
 	var Internal = {};
 	var Layer = {};
@@ -34,12 +35,12 @@ module.exports = function(app) {
 		return layer;
 	}
 
-	Layer.findByBasepaths = function(basepaths, callback){
+	Layer.findByBasepaths = function(_id, callback){
 		
 		var query = { 
 	    "$or": [ 
-        { "basepath": { "$in": basepaths } },
-        { "fileObj.name": { "$in": basepaths } }
+        { "_id": { "$in": _id } },
+        { "fileObj.name": { "$in": _id } }
 	    ]
 		}
 
@@ -54,8 +55,8 @@ module.exports = function(app) {
 		});
 	}
 
-	Layer.findById = function(id, callback){
-		layerCollection.findOne({_id : app.repository.id(id)}, {}, function(err, layer) {
+	Layer.findById = function(_id, callback){
+		layerCollection.findOne({_id : _id}, {}, function(err, layer) {
 			layer = Internal.processMultipleLayer(layer);
 			callback(layer);
 		});

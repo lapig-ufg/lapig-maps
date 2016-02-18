@@ -35,7 +35,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
     addActions: function() {
         var actions = gxp.plugins.LapigPrint.superclass.addActions.apply(this, [{
-            tooltip: 'Imprimir mapa',
+            tooltip: this.tooltip,
             iconCls: "gxp-icon-lapigprint",
             handler: function() {
                 this.addSelectedPrint();
@@ -147,7 +147,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         var appMap = this.target.mapPanel.map;
 
         instance.internalMap = new GeoExt.MapPanel({
-            title: "Personalizaçao do Mapa",
+            title: i18n.LAPIGPRINT_TTLAREA_MAPS,
             map: {
                 projection: "EPSG:900913"
             },
@@ -161,7 +161,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         })
 
         var nav = new Ext.Panel({
-            title: 'Manipule o Mapa',
+            title: i18n.LAPIGPRINT_TTLAREA_MNPMAP,
             border:false,
             region: 'east',
             split: true,
@@ -175,27 +175,12 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                     fontSize:'12px',
                     paddingTop:'45px',
                     },
-                    html: [
-                        '<h1>Seja bem vindo á Ferramenta de Impressão de Mapas!</h1>',
-                            '<br>',
-                        '<p>Serão 3 passos simples e rápidos, veja:</p>',
-                            '<br>',
-                        '<ul>',
-                            '<li><b>Passo 1</b> - Ajuste a região do mapa a ser impressa;</li>',
-                            '<li><b>Passo 2</b> - Escolha as legendas que serão descritas no mapa;</li>',
-                            '<li><b>Passo 3</b> - Finalize, personalizando o título e descrição de seu mapa!</li>',
-                        '</ul>',
-                            '<br>',
-                        '<p>Vamos começar com o primeiro passo:</p>',
-                        '<p>Para escolher a área do mapa a ser impressa, basta utilizar o Mouse ou Touchpad de seu computador, para reduzir, ampliar e arrastar a área do mapa! </p>',
-                            '<br>',
-                        '<p><b>O mapa Bing estará visível apenas para localização, não sendo permitida a sua impressão de acordo com os termos de uso da Microsoft Corporation.</b><br> Saiba mais em, <a href="http://www.microsoft.com/maps/product/terms.html" target="_blank">termos de uso</a>.</p>',
-                    ],
+                    html: i18n.LAPIGPRINT_TXTHTML_WELCOME,
                 },
             ],
             buttons: [
                 {
-                    text: 'Proximo Passo',
+                    text: i18n.LAPIGPRINT_BTN_NEXT,
                     style: {
                         paddingLeft: '10px',
                         paddingRight:'10px',
@@ -259,7 +244,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                 paddingTop:'10px',
                 },
                 html: [
-                    '<h2>Legendas:</h2>',
+                    i18n.LAPIGPRINT_TTLAREAMAP_LEGENDAS,
                 ],
             });
             pnlLegendImg.add(titleLegends);
@@ -301,9 +286,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                 fontSize:'12px',
                 paddingTop:'10px',
                 },
-                html: [
-                    '<h3>Escolha as legendas que aparecerão na impressão do mapa, para movê-las, utilize o botão verde com uma seta indicada:</h3>',
-                ],
+                html: i18n.LAPIGPRINT_TXTHTML_SELECTLEG,
             });
             pnlLegend.add(pnlLabel);
 
@@ -448,7 +431,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         });
 
         var mapLegend = new Ext.Panel({
-            title:'Preview',
+            title:i18n.LAPIGPRINT_TTLAREA_PREVIEW,
             layout: "border",
             border:false,
             region: "center",
@@ -475,7 +458,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         });
 
         var selctionLegend = new Ext.Panel({
-            title: 'Selecione as Legendas',
+            title: i18n.LAPIGPRINT_TTLAREA_SELECTLEG,
             border:false,
             region: "east",
             split: true,
@@ -483,7 +466,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
             items:[checkLegend],
 
             buttons: [{
-                text: 'Proximo Passo',
+                text: i18n.LAPIGPRINT_BTN_NEXT,
                 style: {
                     paddingLeft: '10px',
                     paddingRight:'10px',
@@ -544,7 +527,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                 paddingTop:'10px',
                 },
                 html: [
-                    '<h2>Legendas:</h2>',
+                    i18n.LAPIGPRINT_TTLAREAMAP_LEGENDAS,
                 ],
             });
             pnlLegendImg.add(titleLegends);
@@ -714,7 +697,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         });
 
         var mapLegend = new Ext.Panel({
-            title:'Preview',
+            title: i18n.LAPIGPRINT_TTLAREA_PREVIEW,
             layout: "border",
             border:false,
             region: "center",
@@ -727,7 +710,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         });
 
         var pnlTituloeDescricao = new Ext.Panel({
-            title: 'Personalização do Título e Descrição',
+            title: i18n.LAPIGPRINT_TTLAREA_TTLDESC,
             layout: "border",
             border:false,
             region: "east",
@@ -747,7 +730,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                     },
                     items: [{
                         xtype:'textarea',
-                        fieldLabel: 'Digite o Título',
+                        fieldLabel: i18n.LAPIGPRINT_FIELDLBL_TTL,
                         name: 'titulo',
                         autoScroll: false,
                         height:100,
@@ -764,7 +747,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                         },
                     }, {
                         xtype:'textarea',
-                        fieldLabel: 'Digite a Descrição',
+                        fieldLabel: i18n.LAPIGPRINT_FIELDLBL_DESC,
                         name: 'descricao',
                         autoScroll: false,
                         height:220,
@@ -783,7 +766,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                 }],
             }],
             buttons: [{
-                text: 'Gerar PDF',
+                text: i18n.LAPIGPRINT_BTN_PDF,
                 style: {
                     paddingLeft: '10px',
                     paddingRight:'10px',
@@ -830,17 +813,17 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
                 }
             },
             items:[{
-                title: '1) Regiao',
+                title: i18n.LAPIGPRINT_TTLABA_REGION,
                 id: 'gxp_lapigprint::tab-section1',
                 disabled:false,
                 items: [ instance.getContentItem1() ],
             },{
-                title: '2) Legenda',
+                title: i18n.LAPIGPRINT_TTLABA_LEGEND,
                 id: 'gxp_lapigprint::tab-section2',
                 disabled:true,
                 items: [ instance.getContentItem2() ]
             },{
-                title: '3) Titulo e Descriçao',
+                title: i18n.LAPIGPRINT_TTLABA_TTLDESC,
                 id: 'gxp_lapigprint::tab-section3',
                 disabled:true,
                 items: [ instance.getContentItem3() ]
@@ -851,7 +834,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
         
 
         var win = new Ext.Window({
-            title: 'Siga o passo a passo para impressao do mapa',
+            title: i18n.LAPIGPRINT_TTL_WINDOW,
             closable:true,
             width:1030,
             height:650,

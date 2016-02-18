@@ -46,18 +46,31 @@ module.exports = function(app) {
 			response.end();
 		});
 	};
-
+	
 	Layer.byBasepaths = function(request, response){
 
 		var basepaths = request.param('basepaths');
+		console.log(basepaths);
+		var language = request.param('language').toLowerCase();
+		var fs = require('fs');
+
+		if(fs.existsSync(config.langDir + '/'+language+'.json')==true){
+				var lang = require(config.langDir + '/'+language+'.json');
+		}
+		else{
+				var lang = require(config.langDir + '/en-us.json');
+		}
 
 		layerModel.findByBasepaths(basepaths, function(layers) {
 
-			var result = []
+			var result = {
+				layers: [],
+				lang: lang
+			}
 
 			layers.forEach(function(layer) {
 				delete layer.fileObj;
-				result.push(layer);
+				result.layers.push(layer);
 			})
 
 			response.send(result);
@@ -65,7 +78,7 @@ module.exports = function(app) {
 		});
 	};
 
-	Layer.tree = function(request, response) {
+	Layer.tree = function(request, response, next) {
 
 		var projects = request.param('projects', '');
 		projects = projects.toUpperCase().split(',');
@@ -109,7 +122,7 @@ module.exports = function(app) {
 					result.push(subjectObj);
 					next();
 				});
-			}
+			};
 
 			var finalize = function(){
 
@@ -121,9 +134,8 @@ module.exports = function(app) {
 			    if(aText > bText) return 1;
 			    return 0;
 				})
-
-				response.send(result);
-				response.end();
+				request.finalizeResultTree = result;
+				next();
 			}
 
 			async.each(subjects, interate, finalize);
@@ -147,6 +159,25 @@ module.exports = function(app) {
 			response.send(result);
 			response.end();
 		});
+	};
+
+	Layer.translate = function(request, response){
+		if(response){
+				var result = request.finalizeResultTree
+				var resultLayers = [];
+
+				result.forEach(function(layer) {
+						NomeCategoria = layer.text;
+						resultLayers.push({'Categoria': NomeCategoria});
+
+						for(i=0; i<layer.children.length; i++){
+								NomeCamada = layer.children[i].text
+								resultLayers.push({'Camada': NomeCamada})
+						}
+				})
+		    response.send(result);
+		    response.end()
+    }
 	};
 
 	return Layer;

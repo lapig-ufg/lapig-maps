@@ -83,8 +83,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 						"sourceselected"
 				);
 
+
 				this.projectsParam = config.project.join(',');
-				this.layersTreeURL = 'layers/tree?projects=' + this.projectsParam;
+				this.layersTreeURL = 'layers/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
 				this.layersSearchURL = 'layers/search';
 				this.layerWindow = this.getWindow();
 
@@ -97,7 +98,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			var ds = new Ext.data.Store({
 			    url:this.layersSearchURL,
 			    baseParams: {
-			    	'projects': this.projectsParam
+			    	'projects': this.projectsParam,
 			    },
 			    reader: new Ext.data.JsonReader({
 			      root: 'layers',
@@ -137,7 +138,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				height: 40,
 				items: [
 				   {
-			   		fieldLabel: 'Pesquisar Por',
+			   		fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SEARCH,
 			   		xtype: 'combo',
 			   		id: 'form-layer-name',
 			        store: ds,
@@ -182,7 +183,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				height: 300,
 				width: 250,
 				region: 'west',
-				title: 'Categorias de Informação',
+				title: i18n.LAPIGADDLAYER_TTLTREEPNL,
         root: new Ext.tree.AsyncTreeNode({
           text: 'Extensions', 
           draggable:false, 
@@ -200,7 +201,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
           	if(node.leaf) {
             	var id = node.attributes.id;
-            	var url = 'layers/'+ id;
+            	var url = 'layers/'+ id + '?lang='+i18n.lang;
 
             	var formLayer = Ext.getCmp('form-layer');
 
@@ -225,7 +226,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				url:'',
 				frame:true,
 				region: 'center',
-				title: 'Detalhes da Camada',
+				title: i18n.LAPIGADDLAYER_TTLFORMDETAILS,
 				bodyStyle:'padding:5px 5px 0',
 				width: 350,
 				defaultType: 'textfield',
@@ -235,6 +236,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				    idProperty: '_id',
 				    root: '',
 				    fields: [
+				    		{ name:'_id', mapping: '_id'},
 								{ name:'name', mapping:'name' },
 								{ name:'description', mapping:'description' },
 								{ name:'source', mapping:'source' },
@@ -251,7 +253,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				}),
 				items: [
 						{
-							fieldLabel: 'Nome',
+							fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_NAME,
 							name: 'name',
 							width: '95%',
 							readOnly: true,
@@ -278,7 +280,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 												height: 204,
 												width: '95%',
 												border: true,
-												fieldLabel: 'Preview',
+												fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_PREVIEW,
 												cls: 'form-preview-field',
 												style:{
 													marginBottom: '3px',
@@ -290,7 +292,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 													id: 'field-layer-source',
 													html: "",
 													height: 69,
-													fieldLabel: 'Fonte',
+													fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SOURCE,
 													readOnly: true,
 													border: true,
 													cls: 'form-logo-field'
@@ -309,28 +311,28 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 												padding: "0px 0px 0px 0px",
 												width: '95%',
 												readOnly: true,
-												fieldLabel: 'Descrição',
+												fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_DESCRIPTION,
 												name: 'description',
 												anchor:'100%'
 
 											},
 											{
 													xtype:'textfield',
-													fieldLabel: 'Região',
+													fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_REGION,
 													readOnly: true,
 													name: 'region',
 													anchor:'100%'
 											},
 											{
 												xtype:'textfield',
-												fieldLabel: 'Data',
+												fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_YEAR,
 												name: 'year',
 												readOnly: true,
 												anchor:'100%'
 											},
 											{
 												xtype:'textfield',
-												fieldLabel: 'Escala',
+												fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SCALE,
 												name: 'scale',
 												readOnly: true,
 												anchor:'100%'
@@ -341,7 +343,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 						}
 				],
 				buttons: [{
-						text: 'Visualizar',
+						text: i18n.LAPIGADDLAYER_BTNTXT_TOVIEW,
 						listeners: {
 							'click': function() {
 
@@ -353,7 +355,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                 if (layerData.type == 'MULTIPLE')
                 	layerConfig.name = layerData.last_name;
       					else
-      						layerConfig.name = layerData.basepath;
+      						layerConfig.name = layerData._id;
 
       					instance.target.createLayerRecord(layerConfig, function(record) {
       						var mapPanel = instance.target.mapPanel;
@@ -379,8 +381,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
           	var layer = actionLayer.result.data;
 
-          	layerName = (layer.type == 'MULTIPLE') ? layer.last_name : layer.basepath
-
+          	layerName = (layer.type == 'MULTIPLE') ? layer.last_name : layer._id
           	var urlPreview = 'ows?LAYERS=' + layerName
 				          	+ '&FORMAT=image/png'
 				          	+ '&TRANSPARENT=TRUE'
@@ -404,7 +405,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			};
 
 			return new Ext.Window({
-					title: 'Camadas',
+					title: i18n.LAPIGADDLAYER_TTLAREA,
 					closable:true,
 					width:700,
 					height:500,
@@ -428,9 +429,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 			var instance = this;
 
 			var options = {
-							tooltip : 'Adicionar novas camadas',
-							text: this.addActionText,
-							menuText: this.addActionMenuText,
+							tooltip : this.tooltip,
+							text: this.text,
+							menuText: this.text,
 							disabled: true,
 							iconCls: "gxp-icon-addlayers",
 							handler: function() {
