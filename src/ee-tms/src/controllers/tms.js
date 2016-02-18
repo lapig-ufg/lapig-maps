@@ -34,8 +34,8 @@ module.exports = function(app) {
 				"<TileMatrixSetLink>\n" +
 				"<TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>\n" +
 				"</TileMatrixSetLink>\n" +
-				//<ResourceURL format='image/jpeg' resourceType='tile' template='https:localhost:5000/map/"+layers[i].mapid+"/"+layers[i].token+"'/>\n" +
-				"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"'"+"/>\n" +
+				"<ResourceURL format='image/jpeg' resourceType='tile' template='http://localhost:5000/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}'/>\n" +
+				//"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"'"+"/>\n" +
 				"</Layer>";	
 		}
 	

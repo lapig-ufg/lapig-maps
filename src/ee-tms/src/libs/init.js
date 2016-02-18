@@ -183,106 +183,48 @@ module.exports = function(app){
 
 	Internal.Conciditional = function(layersNotFoundRedis, layersFoundRedis, callback){
 
-		var capabilities = [];
+		var result = layersFoundRedis;
 
+		Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
+			
+			for (i in layerWmtsWithToken){
+				db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);
+				result.push(layerWmtsWithToken[i]);
+			}
+			
+			callback(result);
 
-		if(layersNotFoundRedis.length > 0 && layersFoundRedis == 0){
-
-			Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
-				
-				for (i in layerWmtsWithToken){
-					db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
-					console.log(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);
-				}
-
-				for(var i=0; i< layerWmtsWithToken.length;i++){
-					capabilities.push(layerWmtsWithToken[i]);
-				}				
-				
-				callback(capabilities);
-
-			});
-		}
-		else if(layersNotFoundRedis.length > 0 && layersFoundRedis.length > 0){
-
-				console.log('entrou no else1');
-
-				Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
-
-					for (i in layerWmtsWithToken){
-						db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);	
-					}
-
-					for(var i=0; i< layerWmtsWithToken.length;i++){
-						capabilities.push(layerWmtsWithToken[i]);
-					}
-
-					Internal.getRedisLayers(layersFoundRedis, function(layersWithTokenRedis){
-
-						var count = layersWithTokenRedis.length - 1;						
-
-						while(count >= 0){
-							capabilities.push(layersWithTokenRedis[count]);
-							count--;
-						}
-
-						callback(capabilities);
-
-					});
-
-				});
-
-		}else if(layersNotFoundRedis.length == 0 && layersFoundRedis.length > 0){
-
-				console.log('aqui');
-
-				Internal.getRedisLayers(layersFoundRedis, function(layersWithTokenRedis){					
-
-					var count = layersWithTokenRedis.length - 1;					
-
-					while(count >= 0){
-						capabilities.push(layersWithTokenRedis[count]);
-						count--;
-
-					}					
-				
-					callback(capabilities);
-				
-				});			
-
-			}	
+		});			
 
 	}
 	
 	Internal.inspectionRedis = function(layerWmts, inspectionRedisCallback){
-
 		var layersNotFoundRedis = [];
-		var layersFoundRedis = [];
 		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);		
 
-		db.getAll("EE_KEYS:*", function(data){
+		db.getAll("EE_KEYS:*", function(keysFoundRedis){
 
-			for(var i = 0; i < data.length; i++){
-				layersFoundRedis.push(data[i]);
-			}
-
-			for(i in layersFoundRedis){
-				if(!layerWmtsIdObject[layersFoundRedis[i]]){
-					db.del(layerWmtsIdObject[layersFoundRedis[i]]);
+			for(i in keysFoundRedis){
+				if(!layerWmtsIdObject[keysFoundRedis[i]]){
+					db.del(layerWmtsIdObject[keysFoundRedis[i]]);
 				}else{
-					delete layerWmtsIdObject[layersFoundRedis[i]];
+					delete layerWmtsIdObject[keysFoundRedis[i]];
 				}				
 			}
 
 			layersNotFoundRedis = Internal.layersNotFoundRedis(layerWmts, layerWmtsIdObject);
+			
+			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
 
-			Internal.Conciditional(layersNotFoundRedis, layersFoundRedis, function(capabilities){
-				inspectionRedisCallback(capabilities);
+				Internal.Conciditional(layersNotFoundRedis, layersFoundRedis, function(capabilities){
+					inspectionRedisCallback(capabilities);
+
+				});
 			});
+
 		});					
 		
 	}
-		
 
 	Init.init = function(functionApp){
 		
@@ -290,7 +232,9 @@ module.exports = function(app){
 		var layerWmts = Internal.getLayerForWmts(configLayer);
 
 		Internal.inspectionRedis(layerWmts, function(capabilities){
-			console.log(capabilities)
+			console.log(capabilities);
+			Init.layers = capabilities;
+			functionApp();
 		});		
 	
 	}		
