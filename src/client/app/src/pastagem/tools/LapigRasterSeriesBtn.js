@@ -47,6 +47,7 @@ gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
             icon   : 'theme/app/img/chart_xy.png',
             handler: function() {
                 Ext.getCmp('southpanel').expand(true);
+                Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
             },
             scope: this
         }]);

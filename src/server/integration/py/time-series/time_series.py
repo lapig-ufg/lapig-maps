@@ -18,7 +18,8 @@ def run(layerId, longitude, latitude):
 		filteredValues = filter.run(values, longitude, latitude);	
 		if len(filteredValues) == len(values):
 			position += 1
-			series.append({ 'id': filter.id, 'label': filter.label, 'position': position })
+			series.append({ 'id': filter.id, 'label': filter.label, 'position': position ,
+				'type': 'trends' if filter.id == 'Bfast' else 'filter'})
 			utils.joinArray(timeserieData, filteredValues)
 
 	return {

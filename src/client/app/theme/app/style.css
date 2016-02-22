@@ -108,6 +108,10 @@ div.olControlMousePosition {
     background-image: url(img/file-xls.png); !import
 }
 
+.lapig-icon-refresh {
+    background-image: url(img/refresh.png); !import
+}
+
 .lapig-icon-metadata {
     background-image: url(img/metadata.png); !import
 }
