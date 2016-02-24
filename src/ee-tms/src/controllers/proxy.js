@@ -11,51 +11,57 @@ module.exports = function(app){
 	Internal.layerMapIdObjectGenerator = function(layers){
 		var layerMapIdObject = {};
 
-		console.log(layers)
-
 		for(var i = 0; i < layers.length; i++){
 			layerMapIdObject[layers[i].mapid] = true;
 		}
-
-		console.log(layerMapIdObject);
 
 		return layerMapIdObject;
 
 	}
 
+	Internal.getMapId = function(pathWithOutSlash, layersKeys){
+		var mapid;
+
+		for(var i = 0;i < pathWithOutSlash.length; i++){
+	  	if(layersKeys[pathWithOutSlash[i]]){
+	  		mapid = pathWithOutSlash[i];
+	  	}
+	  }
+
+
+	  return mapid;
+
+
+	}
+
+	Internal.getToken = function(mapid){
+		var token;
+		for(var i = 0; i < layers.length; i++){
+			if(layers[i].mapid == mapid){
+				token = layers[i].token;
+			}
+		}
+
+		return token;
+	}
 
 
 	Proxy.process = function(request, response) {
 
-	  var path = request.path;
-	  
-	  pathWithoutSlash = path.split('/');
-	  console.log(path);
-	  var x=Internal.layerMapIdObjectGenerator(layers);
-
-
-	  
-	  for(var i = 0; i<pathWithoutSlash.length; i++){
-	  	console.log('aqui', path+"/?token="+x[i]);
-	  	if(path[x[i]]){
-				var path2 = path+"/token="+x[i];
-				console.log(path2);
-	  	}
-	  }
-	  
-
-		
+	  var path = request.path;	  
+	  var pathWithOutSlash = path.split('/');	  
+	  var layersKeys = Internal.layerMapIdObjectGenerator(layers);
+	  var mapid = Internal.getMapId(pathWithOutSlash, layersKeys);
+	  var token = Internal.getToken(mapid);
 		var url = eetms + request.path;
 	  var params = querystring.stringify(request.query);
-
-
 	  
 
 
 	  if(request.param('url'))
 	    url = request.param('url');
 	  else
-	    url += '?'+params;
+	    url += "?token=" + token;
 	  
 	  console.log("path=",request.path)
 	  console.log("params=",params)

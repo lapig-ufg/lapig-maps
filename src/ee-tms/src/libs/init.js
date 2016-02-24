@@ -232,7 +232,6 @@ module.exports = function(app){
 		var layerWmts = Internal.getLayerForWmts(configLayer);
 
 		Internal.inspectionRedis(layerWmts, function(capabilities){
-			console.log(capabilities);
 			Init.layers = capabilities;
 			functionApp();
 		});		
