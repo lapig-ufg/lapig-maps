@@ -220,10 +220,19 @@ module.exports = function(app){
 					inspectionRedisCallback(capabilities);
 
 				});
+
 			});
 
 		});					
 		
+	}
+
+	Init.getAllLayers = function(callback) {
+		db.getAll("EE_KEYS:*", function(keysFoundRedis){
+			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
+				callback(layersFoundRedis)
+			})
+		});
 	}
 
 	Init.init = function(functionApp){

@@ -10,7 +10,7 @@ module.exports = function(app) {
 	var Tms = {};
 	var Internal = {};
 
-	var init = app.libs.init;
+	var layers = app.libs.init.getAllLayers;
 	var pathWmts = app.config.pathWmts;
 
 	Internal.Capabilities = function(layers){		
@@ -44,14 +44,20 @@ module.exports = function(app) {
 	}
 
 	Tms.process = function(request, response) {
-		var xml = Internal.Capabilities(init.layers);
 
-		fs.readFile(pathWmts, 'utf8', function (err, data) {
-			result = data.replace('{xmlLayers}', xml);
-			response.setHeader('content-type', 'application/xml');
-			response.send(result);
-			response.end();		
+		layers(function(layers){
+			
+			var xml = Internal.Capabilities(layers);
+
+			fs.readFile(pathWmts, 'utf8', function (err, data) {
+				result = data.replace('{xmlLayers}', xml);
+				response.setHeader('content-type', 'application/xml');
+				response.send(result);
+				response.end();						
+			});
+
 		});
+		
 		
 	}
 

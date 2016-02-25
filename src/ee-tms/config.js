@@ -26,7 +26,7 @@ module.exports = function(app) {
 			, "redis": {
 				'host': 'localhost',
 				'port': '6379',
-				'expiration': 1800,
+				'expiration': 0,
 				//'prefix': "pastagem.org",
 				'enable': true,
 		}
