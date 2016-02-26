@@ -11,6 +11,7 @@ module.exports = function(app) {
 			,	'port': 5000
 			, 'pathWmts': appRoot+'/Template/wmts.xml'
 			, 'eeTms': "https://earthengine.googleapis.com"
+			, 'hostName':'http://localhost:5000'
 			, 'layers': [
 					{
 				    "layer": "EE_KEYS:l8",

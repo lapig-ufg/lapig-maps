@@ -4,7 +4,7 @@ var querystring = require('querystring');
 module.exports = function(app){
 	var eetms = app.config.eeTms;	
 	var Proxy = {};
-	var layers = app.libs.init.getAllLayers;
+	var layerFunction = app.libs.init.getLayer;
 	var Internal = {};
 
 
@@ -27,11 +27,7 @@ module.exports = function(app){
 	  		mapid = pathWithOutSlash[i];
 	  	}
 	  }
-
-
 	  return mapid;
-
-
 	}
 
 	Internal.getToken = function(layers, mapid){
@@ -41,7 +37,6 @@ module.exports = function(app){
 				token = layers[i].token;
 			}
 		}
-
 		return token;
 	}
 
@@ -49,17 +44,15 @@ module.exports = function(app){
 	Proxy.process = function(request, response) {
 
 	  var path = request.path;	  
-	  var pathWithOutSlash = path.split('/');
+	  var pathWithOutSlash = path.split('/');  
+	  var id = pathWithOutSlash[2];
 
-	  layers(function(layers){  	
-	  	  
-		  var layersKeys = Internal.layerMapIdObjectGenerator(layers);
-		  var mapid = Internal.getMapId(pathWithOutSlash, layersKeys);
-		  var token = Internal.getToken(layers, mapid);
+	  layerFunction(id, function(layer){
+
+		  var token = layer.token;
+			var mapid = layer.mapid;
 			var url = eetms + request.path;
 		  var params = querystring.stringify(request.query);
-		  
-
 
 		  if(request.param('url'))
 		    url = request.param('url');

@@ -10,14 +10,13 @@ module.exports = function(app) {
 	var Tms = {};
 	var Internal = {};
 
-	var layers = app.libs.init.getAllLayers;
+	var Functionlayers = app.libs.init.getAllLayers;
 	var pathWmts = app.config.pathWmts;
+	var hostName = app.config.hostName;
 
 	Internal.Capabilities = function(layers){		
 
 		var xml = "";
-
-		console.log(layers);
 		
 		for (var i = 0; i < layers.length; i++){				
 			xml+="<Layer>\n"+
@@ -34,7 +33,7 @@ module.exports = function(app) {
 				"<TileMatrixSetLink>\n" +
 				"<TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>\n" +
 				"</TileMatrixSetLink>\n" +
-				"<ResourceURL format='image/jpeg' resourceType='tile' template='http://localhost:5000/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}'/>\n" +
+				"<ResourceURL format='image/jpeg' resourceType='tile' template='"+hostName+"/map/"+layers[i].id+"/{TileMatrix}/{TileCol}/{TileRow}'/>\n" +
 				//"<ResourceURL format='image/jpeg' resourceType='tile' template='https://earthengine.googleapis.com/map/"+layers[i].mapid+"/{TileMatrix}/{TileCol}/{TileRow}?token="+layers[i].token+"'"+"/>\n" +
 				"</Layer>";	
 		}
@@ -45,7 +44,7 @@ module.exports = function(app) {
 
 	Tms.process = function(request, response) {
 
-		layers(function(layers){
+		Functionlayers(function(layers){
 			
 			var xml = Internal.Capabilities(layers);
 

@@ -230,8 +230,21 @@ module.exports = function(app){
 	Init.getAllLayers = function(callback) {
 		db.getAll("EE_KEYS:*", function(keysFoundRedis){
 			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
-				callback(layersFoundRedis)
-			})
+				for(var i = 0; i < layersFoundRedis.length; i++){
+					layersFoundRedis[i].id = layersFoundRedis[i].id.replace("EE_KEYS:",'')
+				}
+				console.log(layersFoundRedis);
+				callback(layersFoundRedis);
+			});
+		});
+	}
+
+	Init.getLayer = function(id, callback){
+		var layer;
+		Internal.getRedisLayers(["EE_KEYS:"+id], function(layerFoundRedis){
+			layer = layerFoundRedis;
+			callback(layer);
+		
 		});
 	}
 
@@ -241,7 +254,6 @@ module.exports = function(app){
 		var layerWmts = Internal.getLayerForWmts(configLayer);
 
 		Internal.inspectionRedis(layerWmts, function(capabilities){
-			Init.layers = capabilities;
 			functionApp();
 		});		
 	
