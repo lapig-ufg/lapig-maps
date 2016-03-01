@@ -8,31 +8,11 @@ module.exports = function(app) {
 	var TimeSerie = {};
 	var Internal = {};
 
-	var cache = app.libs.cache;
 	var config = app.config;
-
-	Internal.getCacheKey = function(id, longitude, latitude, callback) {
-		return [id, longitude, latitude].join(',');
-	}
-
-	Internal.getTimeSeries = function(id, longitude, latitude, callback) {
-		var cacheKey = Internal.getCacheKey(id, longitude, latitude);
-
-  	cache.get(cacheKey, function(result) {
-  		if(result) {
-  			callback(result)
-  		} else {
-				Internal.requestTimeSeries(id, longitude, latitude, function(result) {
-					cache.set(cacheKey, result);
-					callback(result)
-				});
-  		}
-  	});
-	}
 
 	Internal.requestTimeSeries = function(id, longitude, latitude, callback) {
 		
-		var params = id + " " + longitude + " " + latitude;
+		var params = "TS " + id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
 
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
@@ -53,13 +33,13 @@ module.exports = function(app) {
 
 	TimeSerie.data = function(request, response) {
 		
-  	var id = request.param('id');
-  	var latitude = request.param('latitude');
-  	var longitude = request.param('longitude');
-		
-		Internal.getTimeSeries(id, longitude, latitude, function(result) {
-	  	response.send(result);
-	  	response.end();
+	  	var id = request.param('id');
+	  	var latitude = request.param('latitude');
+	  	var longitude = request.param('longitude');
+			
+		Internal.requestTimeSeries(id, longitude, latitude, function(result) {
+	  		response.send(result);
+	  		response.end();
 		})
 
 	};
@@ -107,11 +87,11 @@ module.exports = function(app) {
 					for(i in timeSeries){
 						var layer = timeSeries[i];
 						var children = {
-						     text: layer.name,
-						     id: layer._id,
-						     leaf:true,
-						     iconCls:'task'
-					 }
+							text: layer.name,
+							id: layer._id,
+							leaf:true,
+							iconCls:'task'
+						}
 
 						childrens.push(children);
 					}

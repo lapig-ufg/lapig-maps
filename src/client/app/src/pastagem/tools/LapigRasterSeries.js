@@ -895,7 +895,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype:'combo',
                   id: 'lapig-raster-series-tab-trend-cmb-interpolation',
                   displayField:'label',
-                  valueField: 'position',
+                  valueField: 'id',
                   mode: 'local',
                   typeAhead: true,
                   editable: false,
@@ -904,7 +904,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   triggerAction: 'all',
                   store: {
                     xtype: 'jsonstore',
-                    fields: [ 'label', 'position' ]
+                    idProperty: 'id',
+                    fields: [ 'label', 'position', 'id' ]
                   }
                 },
                 '-',
@@ -1098,12 +1099,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     var startYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-start-year').getValue();
     var endYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue();
-    var interpolation = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getId();
+    var interpolation = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue();
     var groupData = Ext.getCmp('lapig-raster-series-tab-trend-cmb-group-data').getValue();
     var timeChange = Ext.getCmp('lapig-raster-series-tab-trend-num-time-change').getValue();
     var timeChangeUnits = Ext.getCmp('lapig-raster-series-tab-trend-cmb-time-change-units').getValue();
 
-    var trendDataUrl = 'time-series/' + instance.seriesProperties.timeseriesId + '/trend/values';
+    var trendDataUrl = 'time-series/' + instance.seriesProperties.timeseriesId + '/trend';
 
     instance.setSeriesActiveTabDisabled(true);
 
@@ -1116,12 +1117,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       method: 'GET',
       timeout: 360000,
       params: {
-          startYear: startYear,
-          endYear: endYear,
-          interpolation: interpolation,
-          groupData: groupData,
-          timeChange: timeChange,
-          timeChangeUnits: timeChangeUnits
+        layerId: instance.seriesProperties.timeseriesId,
+        longitude: instance.seriesProperties.longitude,
+        latitude: instance.seriesProperties.latitude,
+        startYear: startYear,
+        endYear: endYear,
+        interpolation: interpolation,
+        groupData: groupData,
+        timeChange: timeChange,
+        timeChangeUnits: timeChangeUnits
       },
       success: function(request){
 
@@ -1129,7 +1133,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         instance.trendData = JSON.parse(request.responseText);
 
-        instance.populateChart(startYear, endYear, startValue, endValue)
+        instance.drawTrend(instance.trendData);
 
         instance.setSeriesActiveTabDisabled(false);
 
@@ -1203,9 +1207,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
   requestChartData: function(timeseriesId, longitude, latitude) {
     var instance = this;
-
-    longitude = -55;
-    latitude = -8;
     
     var activeTab = instance.getSeriesActiveTab();
 

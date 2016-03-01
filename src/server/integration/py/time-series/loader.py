@@ -9,13 +9,12 @@ cp = SafeConfigParser()
 CONF_FILES = {
 	'FILTERS': 'conf/filters.ini',
 	'LAYERS': 'conf/layers.ini',
-	'DATASOURCES': 'conf/datasources.ini'
+	'DATASOURCES': 'conf/datasources.ini',
+	'CACHE': 'conf/cache.ini'
 }
 
 def getRunPath():
-		
 	dirname, filename = os.path.split(os.path.abspath(__file__))
-
 	return dirname
 
 def getConfFromSection(filepath, sectionName):
@@ -44,16 +43,20 @@ def getDatasouceParams(datasourceId):
 	params['run_path'] = getRunPath()	
 	return params
 
+def getCacheParams(cacheId):
+	filepath = os.path.join(getRunPath(), CONF_FILES['CACHE'])
+	params = getConfFromSection(filepath, cacheId)
+	return params
+
 
 def getDatasource(layerId):	
 
 	layerParams = getLayerParams(layerId)
+	layerParams['layer_id'] = layerId
 
 	datasourceId = layerParams['type']
-	
 	datasourceClass = getattr(datasources, datasourceId)
-
-	datasouceParams = getDatasouceParams(datasourceId)	
+	datasouceParams = getDatasouceParams(datasourceId)
 	
 	return datasourceClass(layerParams, datasouceParams)
 
@@ -61,7 +64,6 @@ def getDatasource(layerId):
 
 def hasLayer(layerId):
 	filepath = os.path.join(getRunPath(), CONF_FILES['LAYERS'])
-
 	cp.read(filepath)
 	return cp.has_section(layerId)
 

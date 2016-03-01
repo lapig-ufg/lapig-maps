@@ -8,6 +8,8 @@ import math
 from _datasource import Datasource
 from threading import Thread
 import Queue
+from cache import Cache
+import ast
 
 
 class EarthEngine(Datasource):
@@ -27,6 +29,9 @@ class EarthEngine(Datasource):
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+
+		self.cache = Cache()
+
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]
@@ -167,7 +172,6 @@ class EarthEngine(Datasource):
 
 		return result;
 
-
 	def splitDate(self):
 				
 		year1, year2 = int(self.start_date[0:4]), int(self.end_date[0:4])
@@ -231,32 +235,40 @@ class EarthEngine(Datasource):
 		result = self.removeDuplicate(result, fillValue = self.fill_value);
 
 		q.put(result)
-		
-
 
 	def lockup(self, longitude, latitude):
 
-		dates = self.splitDate()
-		QueaueList = []
-		pseudoResult = []
-		result = []
-		
-		for i in dates:
-			q = Queue.Queue()
-			x=Thread(name='Thread',target=self.runjob, args=[i, longitude, latitude, q])
-			x.start()
-			QueaueList.append(q)
-		
-		for i in QueaueList:
-			pseudoResult.append(i.get())
+		cacheKey = ','.join((self.layer_id, str(longitude), str(latitude)))
 
-		for i in pseudoResult:
-			for j in i:
-				result.append(j)
+		cacheResult = self.cache.get(cacheKey)
+		if cacheResult is not None:
+			
+			result = ast.literal_eval(cacheResult)
 
-		return result	
-		
-		
+			return result
+		else:
+
+			dates = self.splitDate()
+			QueaueList = []
+			pseudoResult = []
+			result = []
+			
+			for i in dates:
+				q = Queue.Queue()
+				x=Thread(name='Thread',target=self.runjob, args=[i, longitude, latitude, q])
+				x.start()
+				QueaueList.append(q)
+			
+			for i in QueaueList:
+				pseudoResult.append(i.get())
+
+			for i in pseudoResult:
+				for j in i:
+					result.append(j)
+
+			self.cache.set(cacheKey, result)
+
+			return result	
 		
 				
 
