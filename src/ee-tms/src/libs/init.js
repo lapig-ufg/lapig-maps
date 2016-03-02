@@ -4,6 +4,7 @@ var async = require('async');
 var ChildProcess = require("child_process");
 var path = require('path');
 var fs = require('fs');
+var schedule = require('node-schedule');
 
 module.exports = function(app){
 	
@@ -14,11 +15,13 @@ module.exports = function(app){
 
 	var pathMapID = app.config.pathCreateMapID
 
+	
 	Internal.removeBComma = function(str){
 		str = str.replace(/B/g,'');
 		str = str.replace(/,/g,'');
 		return str
 	}
+
 	
 
 	Internal.parsinglayersString = function(str){
@@ -106,6 +109,7 @@ module.exports = function(app){
 		} 
 		return layersList;		
 	}
+	
 
 	Internal.EEAccess = function(layers, callback){
 		var layerWithToken = [];
@@ -183,24 +187,23 @@ module.exports = function(app){
 
 	Internal.Conciditional = function(layersNotFoundRedis, layersFoundRedis, callback){
 
-		var result = layersFoundRedis;
-
+		var result = layersFoundRedis;	
+		
 		Internal.EEAccess(layersNotFoundRedis, function(layerWmtsWithToken){		
 			
 			for (i in layerWmtsWithToken){
 				db.set(layerWmtsWithToken[i].id, layerWmtsWithToken[i]);
 				result.push(layerWmtsWithToken[i]);
-			}
-			
+			}				
 			callback(result);
 
-		});			
+		});
 
 	}
 	
 	Internal.inspectionRedis = function(layerWmts, inspectionRedisCallback){
 		var layersNotFoundRedis = [];
-		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);		
+		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);	
 
 		db.getAll("EE_KEYS:*", function(keysFoundRedis){
 
@@ -216,7 +219,9 @@ module.exports = function(app){
 			
 			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
 
+				
 				Internal.Conciditional(layersNotFoundRedis, layersFoundRedis, function(capabilities){
+
 					inspectionRedisCallback(capabilities);
 
 				});
@@ -230,10 +235,6 @@ module.exports = function(app){
 	Init.getAllLayers = function(callback) {
 		db.getAll("EE_KEYS:*", function(keysFoundRedis){
 			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
-				for(var i = 0; i < layersFoundRedis.length; i++){
-					layersFoundRedis[i].id = layersFoundRedis[i].id.replace("EE_KEYS:",'')
-				}
-				console.log(layersFoundRedis);
 				callback(layersFoundRedis);
 			});
 		});
@@ -241,8 +242,8 @@ module.exports = function(app){
 
 	Init.getLayer = function(id, callback){
 		var layer;
-		Internal.getRedisLayers(["EE_KEYS:"+id], function(layerFoundRedis){
-			layer = layerFoundRedis;
+		Internal.getRedisLayers(["EE_KEYS:"+id], function(layerFoundRedis){			
+			layer = layerFoundRedis[0];
 			callback(layer);
 		
 		});
@@ -251,8 +252,8 @@ module.exports = function(app){
 	Init.init = function(functionApp){
 		
 		var configLayer = app.config.layers;			
-		var layerWmts = Internal.getLayerForWmts(configLayer);
-
+		var layerWmts = Internal.getLayerForWmts(configLayer);			
+		
 		Internal.inspectionRedis(layerWmts, function(capabilities){
 			functionApp();
 		});		

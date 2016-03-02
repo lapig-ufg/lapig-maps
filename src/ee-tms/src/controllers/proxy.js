@@ -10,18 +10,14 @@ module.exports = function(app){
 
 	Internal.layerMapIdObjectGenerator = function(layers){
 		var layerMapIdObject = {};
-
 		for(var i = 0; i < layers.length; i++){
 			layerMapIdObject[layers[i].mapid] = true;
 		}
-
 		return layerMapIdObject;
-
 	}
 
 	Internal.getMapId = function(pathWithOutSlash, layersKeys){
 		var mapid;
-
 		for(var i = 0;i < pathWithOutSlash.length; i++){
 	  	if(layersKeys[pathWithOutSlash[i]]){
 	  		mapid = pathWithOutSlash[i];
@@ -44,7 +40,7 @@ module.exports = function(app){
 	Proxy.process = function(request, response) {
 
 	  var path = request.path;	  
-	  var pathWithOutSlash = path.split('/');  
+	  var pathWithOutSlash = path.split('/'); 
 	  var id = pathWithOutSlash[2];
 
 	  layerFunction(id, function(layer){
@@ -58,11 +54,10 @@ module.exports = function(app){
 		    url = request.param('url');
 		  else
 		    url += "?token=" + token;
-		  
-		  console.log("path=",request.path)
-		  console.log("params=",params)
 
-		  console.log(url)
+		  url = url.replace(id,mapid);
+
+		  console.log(url);
 
 			requester({
 		  		uri: url

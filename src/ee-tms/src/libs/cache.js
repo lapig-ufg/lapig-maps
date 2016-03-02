@@ -1,5 +1,5 @@
 var util  = require('util')
-	,redis = require('redis');
+,redis = require('redis');
 
 module.exports = function(app) {
 
@@ -16,7 +16,6 @@ module.exports = function(app) {
 		    } else {
 		    	callback(undefined);
 		    }
-
 	  });
 	};
 

@@ -10,13 +10,19 @@ module.exports = function(app) {
 	var Tms = {};
 	var Internal = {};
 
-	var Functionlayers = app.libs.init.getAllLayers;
+	var getAllLayers = app.libs.init.getAllLayers;
 	var pathWmts = app.config.pathWmts;
 	var hostName = app.config.hostName;
 
 	Internal.Capabilities = function(layers){		
 
 		var xml = "";
+
+		for(var i = 0; i < layers.length; i++){
+			console.log('sdfsadf')
+			layers[i].id = layers[i].id.replace("EE_KEYS:",'')
+		}
+
 		
 		for (var i = 0; i < layers.length; i++){				
 			xml+="<Layer>\n"+
@@ -44,7 +50,7 @@ module.exports = function(app) {
 
 	Tms.process = function(request, response) {
 
-		Functionlayers(function(layers){
+		getAllLayers(function(layers){
 			
 			var xml = Internal.Capabilities(layers);
 
@@ -52,11 +58,10 @@ module.exports = function(app) {
 				result = data.replace('{xmlLayers}', xml);
 				response.setHeader('content-type', 'application/xml');
 				response.send(result);
-				response.end();						
+				response.end();										
 			});
 
-		});
-		
+		});		
 		
 	}
 

@@ -12,6 +12,7 @@ module.exports = function(app) {
 			, 'pathWmts': appRoot+'/Template/wmts.xml'
 			, 'eeTms': "https://earthengine.googleapis.com"
 			, 'hostName':'http://localhost:5000'
+			, 'midNight':'20 53 16 * * *'
 			, 'layers': [
 					{
 				    "layer": "EE_KEYS:l8",
