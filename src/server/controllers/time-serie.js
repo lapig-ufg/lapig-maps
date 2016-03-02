@@ -28,20 +28,35 @@ module.exports = function(app) {
 	   	callback(result);
 	   	
 	 	});
+	}
 
+	Internal.requestTrend = function (bfastParams, callback) {
+		var params = "BFAST " + bfastParams.join(" ");
+		var cmd = "python " + config.pathTimeSeries + " " + params;
+
+		ChildProcess.exec(cmd, function (error, stdout, stderr){
+			if(stderr)
+				console.log(stderr);
+
+			stdout = stdout.replace(/\'/g, '"');
+			console.log(stdout);
+
+			var result = JSON.parse(stdout);
+
+			callback(result);
+		});
 	}
 
 	TimeSerie.data = function(request, response) {
 		
-	  	var id = request.param('id');
-	  	var latitude = request.param('latitude');
-	  	var longitude = request.param('longitude');
-			
+  	var id = request.param('id');
+  	var latitude = request.param('latitude');
+  	var longitude = request.param('longitude');
+
 		Internal.requestTimeSeries(id, longitude, latitude, function(result) {
 	  		response.send(result);
 	  		response.end();
 		})
-
 	};
 
 	TimeSerie.byId = function(request, response){
@@ -122,7 +137,6 @@ module.exports = function(app) {
 			async.each(subjects, interate, finalize);
 
 		});
-
 	};
 	
 	TimeSerie.csv = function(request, response) {
@@ -173,7 +187,25 @@ module.exports = function(app) {
 
 			writer.end();
 		})
+	}
 
+	TimeSerie.trend = function(request, response){
+
+		var bfastParams = [];
+		bfastParams.push(request.param('id'));
+  	bfastParams.push(request.param('longitude'));
+		bfastParams.push(request.param('latitude'));
+  	bfastParams.push(request.param('startYear'));
+    bfastParams.push(request.param('endYear'));
+    bfastParams.push(request.param('interpolation'));
+    bfastParams.push(request.param('groupData'));
+    bfastParams.push(request.param('timeChange'));
+    bfastParams.push(request.param('timeChangeUnits'));
+
+    Internal.requestTrend(bfastParams, function(result){
+    	response.send(result);
+			response.end();
+    });
 	}
 	
 	return TimeSerie;

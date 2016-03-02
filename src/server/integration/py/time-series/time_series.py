@@ -1,6 +1,7 @@
 import utils
 import loader
 from sys import argv
+from datetime import datetime
 
 def time_series(layerId, longitude, latitude):
 
@@ -29,27 +30,57 @@ def time_series(layerId, longitude, latitude):
 	
 def trend(layerId, longitude, latitude, startYear, endYear, interpolation, groupData, timeChange, timeChangeUnits):
 	
+	#Obtem a serie
 	datasourceInstance = loader.getDatasource(layerId)
-
 	timeserieData = datasourceInstance.lockup(longitude, latitude)
 
-	values = utils.oneArray(timeserieData)
+	#Obtem as datas
+	dates = utils.oneArray(timeserieData, 0)
+	dates = [datetime.strptime(x, "%Y-%m-%d") for x in dates]
 
-	
+	#Pega apenas os valores entre startYear e endYear
+	startYearDt = datetime.strptime(str(startYear)+"-01-01", "%Y-%m-%d")
+	startYearIndex = utils.findIndex(dates, startYearDt)
+	endYearDt = datetime.strptime(str(endYear)+"-12-31", "%Y-%m-%d")
+	endYearIndex = utils.findIndex(dates, endYearDt)
 
-	return None
+	values = utils.oneArray(timeserieData[startYearIndex:endYearIndex])
+
+	#Calcula o valor do parametro h(minimal segment size) para o bfast
+	days = 0
+	if timeChangeUnits.lower() == 'meses':
+		days = timeChange * 30
+	elif timeChangeUnits.lower() == 'anos':
+		days = timeChange * 365
+
+	minimalSegmentSize = days/16.0/len(values)
+
+	filters = loader.getFilters(layerId)
+
+	#Encontra o indice do filtro bfast
+	bfastIndex = next((i for i, item in enumerate(filters) if item.id.lower() == 'bfast'), -1)
+
+	result = filters[bfastIndex].run(values, longitude, latitude, minimalSegmentSize)
+
+	return {
+			'Algorithm': 'BFAST',
+			'values': result
+	}
 
 result = []
 
 if argv[1] == 'TS':
-	result = time_series(argv[2], float(argv[3]), float(argv[4]))
+	result = time_series(argv[2], utils.num(argv[3]), utils.num(argv[4]))
 elif argv[1] == 'BFAST':
+	# id
+	# longitude
+	# latitude
 	# startYear: startYear,
  	# endYear: endYear,
  	# interpolation: interpolation,
  	# groupData: groupData,
  	# timeChange: timeChange,
  	# timeChangeUnits: timeChangeUnits
-	result = trend(int(argv[2]), int(argv[3]), argv[4], argv[5], int(argv[6]), argv[7], argv[8], arg[9], argv[10])
+	result = trend(argv[2], utils.num(argv[3]), utils.num(argv[4]), utils.num(argv[5]), utils.num(argv[6]), argv[7], argv[8], utils.num(argv[9]), argv[10])
 
 print result

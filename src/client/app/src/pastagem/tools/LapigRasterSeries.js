@@ -1108,7 +1108,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     instance.setSeriesActiveTabDisabled(true);
 
-    instance.trendData = undefined;
+    instance.chartData[activeTab.index] = undefined;
 
     instance.initLoadChartDataMask();
 
@@ -1117,7 +1117,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       method: 'GET',
       timeout: 360000,
       params: {
-        layerId: instance.seriesProperties.timeseriesId,
         longitude: instance.seriesProperties.longitude,
         latitude: instance.seriesProperties.latitude,
         startYear: startYear,
@@ -1131,9 +1130,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         var loadMask = instance.loadMask;
 
-        instance.trendData = JSON.parse(request.responseText);
+        instance.chartData[activeTab.index] = JSON.parse(request.responseText);
 
-        instance.drawTrend(instance.trendData);
+        instance.drawTrend(instance.chartData[activeTab.index]);
 
         instance.setSeriesActiveTabDisabled(false);
 
