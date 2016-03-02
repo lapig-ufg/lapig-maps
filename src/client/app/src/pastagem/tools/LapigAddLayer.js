@@ -94,27 +94,29 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 		
 		getWindow: function() {
 
-			var instance = this;
-			var ds = new Ext.data.Store({
-			    url:this.layersSearchURL,
-			    baseParams: {
-			    	'projects': this.projectsParam,
-			    },
-			    reader: new Ext.data.JsonReader({
-			      root: 'layers',
-			      totalProperty: 'totalCount',
-			      id: 'post_id'
-			    }, [
-			      {name:'_id', mapping:'_id'},
-			    	{name: 'name', mapping: 'name'},
-			      {name: 'year', mapping: 'year'},
-			      {name: 'scale', mapping: 'scale'},
-			      {name: 'source', mapping: 'source'},
-			      {name: 'search', mapping: 'search'},
-			      {name: 'subject', mapping: 'subject'},
-			      {name: 'description', mapping: 'description'}
-			    ])
-			});
+				var instance = this;
+				var ds = new Ext.data.Store({
+				    url:this.layersSearchURL,
+				    baseParams: {
+					    	'projects': this.projectsParam,
+					    	'lang': i18n.lang
+				    },
+				    reader: new Ext.data.JsonReader({
+					      root: 'layers',
+					      totalProperty: 'totalCount',
+					      id: 'post_id'
+				    }, [
+					      {name:'_id', mapping:'_id'},
+					    	{name: 'name', mapping: 'name'},
+					      {name: 'year', mapping: 'year'},
+					      {name: 'scale', mapping: 'scale'},
+					      {name: 'source', mapping: 'source'},
+					      {name: 'search', mapping: 'search'},
+					      {name: 'searchEnglish', mapping: 'searchEnglish'},
+					      {name: 'subject', mapping: 'subject'},
+					      {name: 'description', mapping: 'description'}
+				    	])
+				});
 
 
 			var resultTpl = new Ext.XTemplate(
@@ -349,13 +351,17 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
     						var formLayer = Ext.getCmp('form-layer');
     						var layerData = formLayer.getForm().reader.jsonData;
-
     						var layerConfig = { source: 'ows' }
 
-                if (layerData.type == 'MULTIPLE')
+                if (layerData.type == 'MULTIPLE'){
+                	layerConfig.oldName = layerData.name;
+                	layerConfig.oldDescription = layerData.description;
                 	layerConfig.name = layerData.last_name;
-      					else
+      					}else{
+      						layerConfig.oldName = layerData.name;
+      						layerConfig.oldDescription = layerData.description;
       						layerConfig.name = layerData._id;
+      					}
 
       					instance.target.createLayerRecord(layerConfig, function(record) {
       						var mapPanel = instance.target.mapPanel;

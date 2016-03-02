@@ -505,9 +505,6 @@ var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 
 parseCsv(filepath, function(layers) {
-  setLayers(layersDir, layers, function(layers) {
-    createMapFile(layers, function(layers) {
-      insertLayers(dbUrl, layerCollectionName, layers, function() {});
-    });
-  })
+  console.log('estamos aqui:', filepath)
+      //insertLayers(dbUrl, layerCollectionName, layers, function() {});
 });

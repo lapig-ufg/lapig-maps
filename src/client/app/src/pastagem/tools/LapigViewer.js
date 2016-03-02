@@ -76,7 +76,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           gxp.LapigViewer.superclass.constructor.apply(instance, [config]);
         }
       });
-      console.log('Este: ', userLayers)
     },
 
     createLapigConfig: function(userLayers, lon, lat, zoomLevel, project) {
@@ -134,8 +133,10 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
       for (i in userLayers) {
         userLayers[i].source = 'ows';
         if(userLayers[i].last_name) {
+          userLayers[i].oldName = userLayers[i].name;
           userLayers[i].name = userLayers[i].last_name;
         } else {
+          userLayers[i].oldName = userLayers[i].name;
           userLayers[i].name = userLayers[i]._id;
         }
       }

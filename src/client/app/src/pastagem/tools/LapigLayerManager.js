@@ -200,7 +200,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											editable: false,
 											triggerAction: 'all',
 											queryParam: 'years',
-											fieldLabel: 'Data',
+											fieldLabel: i18n.LAPIGADDLAYER_SLIDER_DATE,
 											value: layerLastDate,
 											lazyInit: false,
 											listeners: {
