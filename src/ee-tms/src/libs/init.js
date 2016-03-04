@@ -120,7 +120,6 @@ module.exports = function(app){
 
 		overLayer = function(layer, nextLayer){
 			cmd = "python"+" "+pathMapID+" "+layer.collection+" "+layer.startDate+" "+layer.enDate+" "+layer.composite+" "+layer.b_box;
-
 			console.log(cmd);
 
 			ChildProcess.exec(cmd, function(err, stdout, stderr){	

@@ -15,16 +15,28 @@ module.exports = function(app) {
 			, 'midNight':'20 53 16 * * *'
 			, 'layers': [
 					{
-				    "layer": "EE_KEYS:l8",
+					    "layer": "EE_KEYS:l8",
 						"temporal_resolution": "16",
-				    "temporal_resolution_type": "day",
-				    "start_date": "2014/01/01",
-				    "end_date": "2014/02/01",
-				    "collection_id": "LANDSAT/LC8_L1T_TOA",
-				    "composites": ["B6,B5,B4"],
-				    "b_box": ["-76.60","-35.06","-33.43","5.13"],
-				    "satellite":"Landsat 8"
-					}]
+					    "temporal_resolution_type": "day",
+					    "start_date": "2014/08/01",
+					    "end_date": "2014/09/01",
+					    "collection_id": "LANDSAT/LC8_L1T_TOA",
+					    "composites": ["B6,B5,B4"],
+					    "b_box": ["-76.60","-35.06","-33.43","5.13"],
+					    "satellite":"Landsat 8"
+					},
+					{
+					    "layer": "EE_KEYS:l5",
+						"temporal_resolution": "16",
+					    "temporal_resolution_type": "day",
+					    "start_date": "2003/08/01",
+					    "end_date": "2003/09/01",
+					    "collection_id": "LANDSAT/LT5_L1T_TOA",
+					    "composites": ["B5,B4,B3"],
+					    "b_box": ["-76.60","-35.06","-33.43","5.13"],
+					    "satellite":"Landsat 5"
+					}
+			  ]
 			, "redis": {
 				'host': 'localhost',
 				'port': '6379',
