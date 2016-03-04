@@ -13,7 +13,7 @@ module.exports = function(app) {
 
 		var requestType = request.param('REQUEST');  
 
-	  var url     = config.ows + request.path;
+	  var url = config.ows + request.path;
 	  var params  = querystring.stringify(request.query);
 	  
 	  if(request.param('url'))

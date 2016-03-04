@@ -80,7 +80,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.add(layerName, layerTitle, filter, type, visibility, bounds)
+      layerManager.add(app, layerName, layerTitle, filter, type, visibility, bounds)
     }
 
     
@@ -129,7 +129,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       this.layerCollection[type][name].endEdit();
       this.layerCollection[type][name].commit();
     },
-    add: function(name, title, filter, type, visibility, bounds) {
+    add: function(app, name, title, filter, type, visibility, bounds) {
 
       if( this.layerCollection[type] == undefined )
         this.layerCollection[type] = {}

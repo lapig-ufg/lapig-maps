@@ -1,6 +1,5 @@
 var util  = require('util')
-	, redis = require('redis')
-	;
+	, redis = require('redis');
 
 module.exports = function(app) {
 

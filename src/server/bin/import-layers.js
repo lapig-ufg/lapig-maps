@@ -498,8 +498,8 @@ var createMapFile = function(layers, callback) {
 }
 
 
-var layersDir = "/home/fernanda/Documentos/Projeto/shp/"
 
+var layersDir = "/home/fernanda/Documentos/Projeto/shp/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
