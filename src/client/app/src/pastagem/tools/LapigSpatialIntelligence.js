@@ -26,7 +26,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     lapig.tools.SpatialIntelligence.superclass.constructor.apply(this, arguments);
 
     this.projectsParam = config.project.join(',');
-    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam;
+    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
 
     Ext.chart.Chart.CHART_URL = 'src/ext/resources/charts.swf';
     Ext.Ajax.timeout = 120000;
@@ -183,6 +183,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       url: metadataUrl,
       method: 'GET',
       timeout: 360000,
+      params: {
+        'lang': i18n.lang,
+      },
       success: function(request) {
         instance.queryMetadata = JSON.parse(request.responseText);
         instance.queryMetadata.layers = instance.queryMetadata.layers.reverse();
@@ -225,7 +228,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       requestMetadata(selectedSubject, function() {
 
-        var params = 'state=' + selectedState + '&sort=' + selectedSort
+        var params = 'state=' + selectedState + '&sort=' + selectedSort + '&lang='+i18n.lang; 
         gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
         instance.csvUrl = 'spatial/' + selectedSubject + '/csv?' + params;
 
@@ -273,8 +276,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'id'}
             ],
             data: [
-              ['Pecuária', 'livestock'],
-              ['Agricultura', 'agriculture']
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTLIVESTOCK, 'livestock'],
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTAGRICULTURE, 'agriculture']
             ]
           })
         },
@@ -349,8 +352,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'id'}
             ],
             data: [
-              ['Maior relevância', 'value'], 
-              ['Ordem alfabética', 'info'],
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTMOSTRELEVANT, 'value'], 
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTALPHAORDER, 'info'],
             ]
           })
         }
@@ -397,7 +400,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                   width: 600,
                   height: 360,
                   value: text,
-                  readOnly: true
+                  readOnly: true,
                 });
 
                 var metadataWin = new Ext.Window({
