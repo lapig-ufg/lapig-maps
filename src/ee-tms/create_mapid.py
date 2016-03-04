@@ -24,7 +24,7 @@ def run(collection, startDate, endDate, composites, rectangleSides):
 
 	coordinates = setCoordinates(rectangleSides);
 
-	img = ee.ImageCollection('LANDSAT/LC8_L1T_TOA').filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(startDate, endDate).max();
+	img = ee.ImageCollection(collection).filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(startDate, endDate).max();
 	mapId = img.getMapId({ "bands": composites, "min":"0.1,0,0", "max":"0.7,0.55,0.6", "gamma": "1.3,0.9,1.3" });
 
 	for i in mapId:
