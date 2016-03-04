@@ -6,6 +6,7 @@ module.exports = function(app){
 	var Proxy = {};
 	var layerFunction = app.libs.init.getLayer;
 	var Internal = {};
+	var cache = app.libs.cache;
 
 
 	Internal.layerMapIdObjectGenerator = function(layers){
@@ -36,10 +37,11 @@ module.exports = function(app){
 		return token;
 	}
 
+	console.log("PRRROOOXXYY")
 
 	Proxy.process = function(request, response) {
 
-	  var path = request.path;	  
+	  var path = request.path;  
 	  var pathWithOutSlash = path.split('/'); 
 	  var id = pathWithOutSlash[2];
 
@@ -59,27 +61,41 @@ module.exports = function(app){
 
 		  console.log(url);
 
-			requester({
-		  		uri: url
-		  	, headers: {
-		  			'Accept': request.headers['accept']
-		  		,	'User-Agent': request.headers['user-agent']
-		  		,	'X-Requested-With': request.headers['x-requested-with']
-		  		,	'Accept-Language': request.headers['accept-language']
-		  		,	'Accept-Encoding': request.headers['accept-encoding']
-		  	}
-		  }, function(error, proxyResponse, body) {
-		  	
-		  	if(error) {
-		  		console.log('error',error);
-		  		response.end();	
-		  	} else {
-		  		console.log('aqui',proxyResponse.statusCode, url);
-		  	}
+		 	cache.get(path, function(data){
+		 		console.log('data',data);
+		 		
+		 		if(data){
+		 			console.log('aqui11111');
+					response.write(data);
+					response.end();	 			
+		 		}
+		 		else{
+		 			requester({
+			  		uri: url
+			  	, headers: {
+			  			'Accept': request.headers['accept']
+			  		,	'User-Agent': request.headers['user-agent']
+			  		,	'X-Requested-With': request.headers['x-requested-with']
+			  		,	'Accept-Language': request.headers['accept-language']
+			  		,	'Accept-Encoding': request.headers['accept-encoding']
+			  		}
+				  }, function(error, proxyResponse, body) {
 
-		  })
-		  .pipe(response)
+				  	cache.set(path, body);
+				  	
+				  	if(error) {
+				  		console.log('error',error);
+				  		response.end();	
+				  	} else {
+				  		console.log('aqui',proxyResponse.statusCode, url);
+				  	}
+
+				  })
+				  .pipe(response)
+		 		}
 		
+			});
+
 		});
 
 	}

@@ -202,13 +202,15 @@ module.exports = function(app){
 	
 	Internal.inspectionRedis = function(layerWmts, inspectionRedisCallback){
 		var layersNotFoundRedis = [];
-		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);	
+		var layerWmtsIdObject = Internal.layerWmtsIdObjectGenerator(layerWmts);
+		console.log('layerWmtsIdObject',layerWmtsIdObject);	
 
 		db.getAll("EE_KEYS:*", function(keysFoundRedis){
-
+			console.log('keysFoundRedis',keysFoundRedis)
 			for(i in keysFoundRedis){
 				if(!layerWmtsIdObject[keysFoundRedis[i]]){
-					db.del(layerWmtsIdObject[keysFoundRedis[i]]);
+					console.log('layerWmtsIdObject[keysFoundRedis[i]]', layerWmtsIdObject[keysFoundRedis[i]])
+					db.del(keysFoundRedis[i]);
 				}else{
 					delete layerWmtsIdObject[keysFoundRedis[i]];
 				}				

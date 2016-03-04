@@ -19,7 +19,6 @@ module.exports = function(app) {
 		var xml = "";
 
 		for(var i = 0; i < layers.length; i++){
-			console.log('sdfsadf')
 			layers[i].id = layers[i].id.replace("EE_KEYS:",'')
 		}
 

@@ -6,7 +6,7 @@ module.exports = function(app) {
 	var config = app.config;
 
 	var redisClient = redis.createClient(config.redis.port, config.redis.host);
-	var Cache = {};
+	var Redis = {};
 	var Internal = {};
 
 
@@ -16,7 +16,7 @@ module.exports = function(app) {
 	}
 	
 
-	Cache.get = function(cacheKey, callback) {
+	Redis.get = function(cacheKey, callback) {
 		if(app.config.redis.enable) {
 			//cacheKey = Internal.addPrefix(cacheKey);
 			//console.log('get: ', cacheKey);
@@ -34,7 +34,7 @@ module.exports = function(app) {
 		}
 	};
 
-	Cache.set = function(cacheKey, data){
+	Redis.set = function(cacheKey, data){
 
 		if(app.config.redis.enable) {
 			var strData = JSON.stringify(data);
@@ -48,7 +48,7 @@ module.exports = function(app) {
 		}
 	}
 
-	Cache.del = function(keyPattern) {
+	Redis.del = function(keyPattern) {
 		if(app.config.redis.enable) {
 			redisClient.keys(keyPattern, function(err, keys) {
 				keys.forEach(function(key) {
@@ -58,7 +58,7 @@ module.exports = function(app) {
 		}
 	}
 
-	Cache.getAll = function(id, callback){
+	Redis.getAll = function(id, callback){
 		redisClient.keys(id, function(err, obj){
 			
 			callback(obj);
@@ -66,6 +66,6 @@ module.exports = function(app) {
 	}
 
 
-	return Cache;
+	return Redis;
 	
 };
