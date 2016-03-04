@@ -5,26 +5,38 @@ module.exports = function(app) {
 	var pathTmp = '/mnt/tmpfs/';
 
 	var config = {
-				'appRoot': appRoot
-			,	'pathCreateMapID':appRoot+'/integration/py/create_mapid.py'
+			  'appRoot': appRoot
+			, 'pathCreateMapID':appRoot+'/create_mapid.py'
 			, 'redisHost': 'localhost'
-			,	'port': 5000
+			, 'port': 5000
 			, 'pathWmts': appRoot+'/Template/wmts.xml'
 			, 'eeTms': "https://earthengine.googleapis.com"
-			, 'hostName':'http://localhost:5000'
+			, 'hostName':'http://10.0.0.14:5000'
 			, 'midNight':'20 53 16 * * *'
 			, 'layers': [
 					{
-				    "layer": "EE_KEYS:l8",
+					    "layer": "EE_KEYS:l8",
 						"temporal_resolution": "16",
-				    "temporal_resolution_type": "day",
-				    "start_date": "2014/01/01",
-				    "end_date": "2014/02/01",
-				    "collection_id": "LANDSAT/LC8_L1T_TOA",
-				    "composites": ["B6,B5,B4"],
-				    "b_box": ["-76.60","-35.06","-33.43","5.13"],
-				    "satellite":"Landsat 8"
-					}]
+					    "temporal_resolution_type": "day",
+					    "start_date": "2014/08/01",
+					    "end_date": "2014/09/01",
+					    "collection_id": "LANDSAT/LC8_L1T_TOA",
+					    "composites": ["B5,B6,B4"],
+					    "b_box": ["-76.60","-35.06","-33.43","5.13"],
+					    "satellite":"Landsat 8"
+					},
+					{
+					    "layer": "EE_KEYS:l5",
+						"temporal_resolution": "16",
+					    "temporal_resolution_type": "day",
+					    "start_date": "2003/08/01",
+					    "end_date": "2003/09/01",
+					    "collection_id": "LANDSAT/LT5_L1T_TOA",
+					    "composites": ["B4,B5,B3"],
+					    "b_box": ["-76.60","-35.06","-33.43","5.13"],
+					    "satellite":"Landsat 5"
+					}
+			  ]
 			, "redis": {
 				'host': 'localhost',
 				'port': '6379',
