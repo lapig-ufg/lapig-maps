@@ -1,0 +1,86 @@
+{
+	"subjects": {
+		"Água": "Water",
+		"Vegetação": "Vegetation",
+		"Reflectância": "Reflectance",
+		"Temperatura ": "Temperature"
+	},
+	"layers": {
+		"MOD16_EVAPOTRANSPIRATION": {
+			"name": "Real evapotranspiration",
+			"description": "Corresponds to actual evapotranspiration in millimeters of water. It is the amount of water that a vegetated surface transfers to the atmosphere. Water may or may not have restriction on the ground."
+		},
+		"MOD16_POT_EVAPOTRANSPIRATION": {
+			"name": "Potential evapotranspiration",
+			"description": "The amount of water transferred to the atmosphere of a grassed surface ideal in which there is no hydric restriction of water in the soil and its value depends only on the weather conditions (radiation etc.)."
+		},
+		"MOD16_NOR_EVAPOTRANSPIRATION": {
+			"name": "Evapotranspiration Normalized",
+			"description": "Actual evapotranspiration divided by potential evapotranspiration, use to normalize the values ET (actual evapotranspiration) to compare two similar types of vegetation located in different places on different weather conditions, ie it is to reduce the locational effect."
+		},
+		"MOD13Q1_NDVI": {
+			"name": "Vegetation Index - MODIS",
+			"description": "Vegetation index (NDVI) of MOD13Q1 product"
+		},
+		"MOD13Q1_EVI": {
+			"name": "Index Enhanced vegetation - MODIS",
+			"description": "Index Enhanced vegetation - MODIS"
+		},
+		"MOD13Q1_EVI2": {
+			"name": "v2 Vegetation Index - MODIS",
+			"description": "Vegetation Index Improved v2 (EVI 2), generated with two bands (Near Infrared and Red) of MOD13Q1 product"
+		},
+		"MOD13Q1_PR": {
+			"name": "MOD13Q1 - Pixel of quality",
+			"description": "PIXEL RELIABILITY (quality control) of MOD13Q1 product"
+		},
+		"MOD09Q1_B01": {
+			"name": "MOD09Q1 - Red",
+			"description": "Surface reflectance on Red (B01)"
+		},
+		"MOD09Q1_B02": {
+			"name": "MOD09Q1 - Near Infrared",
+			"description": "Surface Reflectance on Near Infrared (B02)"
+		},
+		"MOD13Q1_B01": {
+			"name": "MOD13Q1 - Red",
+			"description": "Reflectance on Red (B01)"
+		},
+		"MOD13Q1_B02": {
+			"name": "MOD13Q1 - Near Infrared",
+			"description": "Reflectancia Near Infrared (B02)"
+		},
+		"MOD13Q1_B07": {
+			"name": "MOD13Q1 - Average Infrared",
+			"description": "Avarage Infrared reflectance (B07)"
+		},
+		"MOD11A2_LST": {
+			"name": "Surface Temperature",
+			"description": "Surface Temperature (LST) of the product MOD11A2"
+		},
+		"TRMM_PRECIPITATION": {
+			"name": "Rainfall",
+			"description": "rainfall images with a spatial resolution of about 30 km, available throughout Brazil, monthly, from 2000 to 2014."
+		},
+		"LANDSAT_NDWI": {
+			"name": "Index of Water Stress - Landsat",
+			"description": "Hydric stress Index (NDVI) generated with two bands (Short Wave Infrared and Near Infrared) referring to the Landsat series history from 1984 to the present day. In the period between 01/01/1984 and 11/11/2011 are consulted Landsat 5 images The Landsat 7 images are used for the entr Short period and 12/11/2011 and 10/04/2013. Since day 04/11/2014 the LANSAT 8 images are now used."
+		},
+		"LANDSAT_EVI": {
+			"name": "Index Enhanced vegetation - Landsat",
+			"description": "Enhanced Vegetation Index (EVI), generated with three bands (Near Infrared, Red and Blue) referring to the Landsat series history from 1984 to the present day. In the period between 01/01/1984 and 11/11/2011 are consulted LANDSAT 5. Landsat 7 images are used to being the period 12/11/2011 and 10/04/2013. Starting on 04/11/2014 the LANSAT 8 images are now used."
+		},
+		"LANDSAT_NDVI": {
+			"name": "Vegetation Index - Landsat",
+			"description": "Vegetation Index with Normalized Difference (NDVI) generated with two bands (Near Infrared and Red) referring to the Landsat series history from 1984 to the present day. In the period between 01/01/1984 and 11/11/2011 are consulted LANDSAT 5. Landsat 7 images are used to being the period 12/11/2011 and 10/04/2013. Starting on 04/11/2014 the LANSAT 8 images are now used."
+		},
+		"LANDSAT_NCI": {
+			"name": "Cellulose Index - Landsat",
+			"description": "Cellulose Index (NCI), generated with two bands (Short and Green Wave Infrared) referring to the Landsat series history from 1984 to the present day. In the period between 01/01/1984 and 11/11/2011 are consulted LANDSAT 5. Landsat 7 images are used to being the period 12/11/2011 and 10/04/2013. Starting on 04/11/2014 the LANSAT 8 images are now used."
+		},
+		"LANDSAT_EVI2": {
+			"name": "Vegetation Index Improved v2 - Landsat",
+			"description": "Vegetation Index Improved v2 (EVI 2), generated with two bands (Near Infrared and Red) referring to the Landsat series history from 1984 to the present day. In the period between 01/01/1984 and 11/11/2011 are consulted LANDSAT 5. Landsat 7 images are used to being the period 12/11/2011 and 10/04/2013. Starting on 04/11/2014 the LANSAT 8 images are now used."
+		}
+	}
+}

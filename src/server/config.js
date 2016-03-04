@@ -6,7 +6,7 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": "/home/leandro/Tmp/spatial-intelligence.sqlite",
+		"spatialIntelligenceDb": "/home/fernanda/Documentos/Projeto/lapig-maps/spatial-intelligence.sqlite",
 		"hostUrl": 'http://localhost:5000',
 		"ows": "http://maps.lapig.iesa.ufg.br/",
 		"clientDir": appRoot + "/../client/build",

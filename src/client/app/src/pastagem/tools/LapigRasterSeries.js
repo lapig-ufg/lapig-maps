@@ -26,7 +26,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     lapig.tools.RasterSeries.superclass.constructor.apply(this, arguments);
 
     this.projectsParam = config.project.join(',');
-    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam;
+    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
 
     Ext.chart.Chart.CHART_URL = 'src/ext/resources/charts.swf';
   },
@@ -297,6 +297,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               id: 'lapig_rasterseries::frm-info',
               waitMsgTarget: 'lapig_rasterseries::frm-info',
               disabled: true,
+              baseParams: {
+                'projects': this.projectsParam,
+                'lang': i18n.lang
+              },
               reader:  new Ext.data.JsonReader({
                 idProperty: '_id',
                 root: '',
@@ -617,15 +621,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               {name: 'label'}
             ],
             data: [
-              ['NONE_NONE', 'Nenhum' ],
-              ['YEAR_mean', 'Ano (média)' ],
-              ['YEAR_sum', 'Ano (somatório)' ],
-              ['NPP_mean', 'Out-Abr (média)' ],
-              ['NPP_sum', 'Out-Abr (somatório)' ],
-              ['MONTH_mean', 'Mês (média)' ],
-              ['MONTH_sum', 'Mês (somatório)' ],
-              ['DAY_mean', 'Dia (média)' ],
-              ['DAY_sum', 'Dia (somatório)' ],
+              ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE ],
+              ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE ],
+              ['YEAR_sum', i18n.LAPIGRASTERSERIES_GROUPCB_YEARSUM ],
+              ['NPP_mean', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRAVER ],
+              ['NPP_sum', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRSUM ],
+              ['MONTH_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHAVER ],
+              ['MONTH_sum', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHSUM ],
+              ['DAY_mean', i18n.LAPIGRASTERSERIES_GROUPCB_DAYAVER ],
+              ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM ],
             ]
           }),
           listeners: {
