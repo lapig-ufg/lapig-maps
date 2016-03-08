@@ -9,9 +9,14 @@ class Bfast(Filter):
 		Filter.__init__(self, layerParams, filterParams)
 
 		try:
-			self.h = layerParams['h']
+			self.time_change = utils.num(layerParams['time_change'])
 		except KeyError:
-			self.h = filterParams['h']
+			self.time_change = utils.num(filterParams['time_change'])
+
+		try:
+			self.units = layerParams['units']
+		except KeyError:
+			self.units = filterParams['units']
 		
 		try:
 			self.season = layerParams['season']
@@ -30,6 +35,17 @@ class Bfast(Filter):
 
 	def run(self, timeserieData, longitude = None, latitude = None, h = None):
 		
+		if self.time_change is not None and self.units is not None:
+			days = 0
+			if self.units == 'year':
+				days = self.time_change * 365
+			elif self.units == 'month':
+				days = self.time_change * 30
+			else:
+				days = self.time_change
+
+			self.h = str(days/16.0/len(timeserieData))
+
 		h = str(h) if h else self.h
 
 		# Must be in the following order: h, season, start_date, end_date, timeseriesData

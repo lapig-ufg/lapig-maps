@@ -15,6 +15,8 @@ module.exports = function(app) {
 		var params = "TS " + id + " " + longitude + " " + latitude;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
 
+		console.log(cmd)
+
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
 			if(stderr)
@@ -34,9 +36,19 @@ module.exports = function(app) {
 		var params = "BFAST " + bfastParams.join(" ");
 		var cmd = "python " + config.pathTimeSeries + " " + params;
 
+		console.log(cmd)
+
 		ChildProcess.exec(cmd, function (error, stdout, stderr){
-			if(stderr)
-				console.log(stderr);
+			if(stderr){
+				if(stderr.indexOf("minimum segment size error") == -1){
+					console.log(stderr)
+				}else{
+					callback({
+						error: 'Tempo em que ocorre mudanças deve ser menor que metade da série temporal.'
+					});
+					return;
+				}
+			}
 
 			stdout = stdout.replace(/\'/g, '"');
 			console.log(stdout);

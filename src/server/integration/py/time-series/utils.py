@@ -26,7 +26,8 @@ def joinArray(dataArray1, dataArray2):
 
 def findIndex(data, value):
 	index = bisect_left(data, value)
-	if index != len(data):
-		return index
-	else:
-		return index-1
+	return index
+
+def findIndexByAttribute(collection, attr, value):
+	index = next((i for i, item in enumerate(collection) if getattr(item, attr) == value), -1)
+	return index
