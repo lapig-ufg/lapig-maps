@@ -41,7 +41,6 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 	clippedValues = bfast_utils.clipValuesByYear(startYear, endYear, timeserieData, datesStr)
 
 	values = clippedValues['values']
-	datesStr = clippedValues['datesStr']
 	dates = clippedValues['dates']
 
 	#Encontra o indice do filtro e do bfast
@@ -58,18 +57,21 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 	else:
 		series.append({'id':'original', 'label':'Valores Originais', 'position':2})
 
-	values = bfast_utils.groupData(dates, values, groupData)
+	groupedData = bfast_utils.groupData(dates, values, groupData)
+	values = groupedData['values']
+	frequency = groupedData['frequency']
+	dates = groupedData['dates']
 	
 	#Calcula o valor do parametro h(minimal segment size) para o bfast
-	minimalSegmentSize = bfast_utils.calculateMinimalSegmentSize(len(values), timeChange, timeChangeUnits)
+	minimalSegmentSize = bfast_utils.calculateMinimalSegmentSize(len(values), timeChange, timeChangeUnits, frequency)
 
 	result = []
 	if bfastIndex != -1:
-		result = filters[bfastIndex].run(values, longitude, latitude, minimalSegmentSize)
+		result = filters[bfastIndex].run(values, longitude, latitude, minimalSegmentSize, frequency)
 	else:
 		raise IndexError("Bfast filter could not be found.")
 
-	datesList = [[i] for i in datesStr]
+	datesList = [[i] for i in dates]
 
 	utils.joinArray(datesList, result)
 	result = datesList

@@ -2,9 +2,15 @@ import utils
 from datetime import datetime
 from itertools import groupby
 from operator import itemgetter
+from math import ceil
 
-def calculateMinimalSegmentSize(values_length, timeChange, units):
+def calculateMinimalSegmentSize(values_length, timeChange, units, frequency=None):
 	days = 0
+	period = 16.0
+
+	if frequency:
+		period = ceil(365.0/frequency)
+
 	if units.lower() == 'month':
 		days = timeChange * 30
 	elif units.lower() == 'year':
@@ -12,7 +18,7 @@ def calculateMinimalSegmentSize(values_length, timeChange, units):
 	else:
 		days = timeChange
 
-	minimalSegmentSize = days/16.0/values_length
+	minimalSegmentSize = days/period/values_length
 	if minimalSegmentSize > 0.5:
 		raise ValueError("minimum segment size error")
 
@@ -30,39 +36,59 @@ def clipValuesByYear(startYear, endYear, timeserieData, datesStr):
 
 	return {
 		'values': utils.oneArray(timeserieData[startYearIndex:endYearIndex]),
-		'datesStr': datesStr[startYearIndex:endYearIndex],
-		'dates': dates
+		'dates': dates[startYearIndex:endYearIndex]
 	}
 
 def groupData(dates, values, groupBy):
 	
-	split = groupBy.split('_')
-	gtype = split[0]
-	goperation = split[1]
+	gsplit = groupBy.split('_')
+	gtype = gsplit[0]
+	goperation = gsplit[1]
+	
 	groupValues = []
+	new_dates = []
+	frequency = 0
 
 	if gtype == 'NONE':
-		return values
-	elif gtype == 'YEAR':
-		yearsIndexes = [(dt.year, index) for index, dt in enumerate(dates)]
+		return {
+			'values': values,
+			'frequency': 23,
+			'dates': dates
+		}
+	else:
+		gtypeIndexes = []
+		gtypeFormat = ''
+		groupDates = []
+
+		if gtype == 'YEAR':
+			frequency = 1
+			gtypeIndexes = [(str(dt.year), index) for index, dt in enumerate(dates)]
+			gtypeFormat = '%Y'
+		elif gtype == 'MONTH-YEAR':
+			frequency = 12
+			gtypeIndexes = [(str(dt.year)+'-'+str(dt.month), index) for index, dt in enumerate(dates)]
+			gtypeFormat = '%Y-%m'
+		else:
+			raise ValueError('"' + gtype + '" is not a valid group type')
 
 		get_item = itemgetter(0)
-		groupDates = [list(group) for key, group in groupby(sorted(yearsIndexes, key=get_item), get_item)]
+		for key, group in groupby(sorted(gtypeIndexes, key=get_item), get_item):
+			groupDates.append(list(group))
+			# new_dates.append(datetime.strptime(key, gtypeFormat))
+			new_dates.append(key)
+			
 		groupValues = [[values[tup[1]] for tup in item_list] for item_list in groupDates]
-	elif gtype == 'MONTH-YEAR':
-		monthyearIndexes = [(int(str(dt.month)+str(dt.year)), index) for index, dt in enumerate(dates)]
-		
-		get_item = itemgetter(0)
-		groupValues = [list(group) for key, group in groupby(sorted(monthyearIndexes, key=get_item), get_item)]
-	else:
-		raise ValueError(gtype + ' is not a valid group type')
 
 	if goperation == 'mean':
 		new_values = listMean(groupValues)
 	else:
-		raise ValueError(goperation + ' is not a valid group operation')
+		raise ValueError('"' + goperation + '" is not a valid group operation')
 
-	return new_values
+	return {
+		'values': new_values,
+		'frequency': frequency,
+		'dates': new_dates
+	}
 
 def listMean(values):
 	means = [float(sum(x))/len(x) for x in values]

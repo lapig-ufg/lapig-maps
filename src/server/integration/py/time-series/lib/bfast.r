@@ -20,8 +20,8 @@ getArgs = function(numArgs, must=FALSE){
 }
 
 # gets the arguments
-# Must be in the following order: h, season, start_date, end_date, timeseriesData
-args = getArgs(5, must=TRUE)
+# Must be in the following order: h, season, start_date, end_date, timeseriesData[, freq]
+args = getArgs(6, must=TRUE)
 
 h = as.numeric(args[1])
 season = as.character(args[2])
@@ -29,34 +29,40 @@ season = as.character(args[2])
 args[5] = paste0("c", chartr("[]", "()", args[5]))
 tsData = eval(parse(text=args[5]))
 
-#Verifica se existe mais de uma data
-# if(nchar(args[3]) >= 11){# || ifelse(grepl(' ', args[3]), TRUE, FALSE)){
-#     print("Erro: Existem mais de uma data inicial ou final.")
-#     quit()
-# }
-
 start_date = as.Date(args[3])
 end_date = if(args[4] == "NOW") Sys.Date() else as.Date(args[4])
 
 startYear = as.numeric(format(start_date, "%Y"))
 endYear = as.numeric(format(end_date, "%Y"))
 
-endYears = (startYear+1):endYear
-endYears = as.Date(paste0(endYears, "-01-01"))
-startYears = c(start_date, endYears[-length(endYears)])
+Yt = 0
+if(length(args) > 5 && as.numeric(args[6]) != 23){
+	freq = as.numeric(args[6])
 
-dates = Map(seq, startYears, endYears, 16)
-dates = do.call("c", dates)
+	first_date = as.Date(paste0(startYear, "-01-01"))
+	elapsedTime = as.numeric(start_date - first_date)
+	fracStart = ceiling(elapsedTime/365*freq)
+	Yt = ts(tsData, start=c(startYear, fracStart), frequency=freq)
+	season = "none"
+}else{
+	endYears = (startYear+1):endYear
+	endYears = as.Date(paste0(endYears, "-01-01"))
+	startYears = c(start_date, endYears[-length(endYears)])
 
-endYearDt = as.Date(endYears[length(endYears)])
-dates = c(dates, seq(from=endYearDt, to=end_date, by=16))
+	dates = Map(seq, startYears, endYears, 16)
+	dates = do.call("c", dates)
 
-if(length(tsData) < length(dates)){
-	dates = dates[1:length(tsData)]
+	endYearDt = as.Date(endYears[length(endYears)])
+	dates = c(dates, seq(from=endYearDt, to=end_date, by=16))
+
+	if(length(tsData) < length(dates)){
+		dates = dates[1:length(tsData)]
+	}
+
+	Yt = bfastts(tsData, dates, type="16-day")
 }
 
-Yt = bfastts(tsData, dates, type="16-day")
-fit = bfast(Yt, h=h, season=season, max.iter=1)
+invisible(capture.output(fit <- suppressWarnings(bfast(Yt, h=h, season=season, max.iter=1))))
 
 cat(fit$output[[1]]$Tt)
 

@@ -17,6 +17,11 @@ class Bfast(Filter):
 			self.units = layerParams['units']
 		except KeyError:
 			self.units = filterParams['units']
+
+		try:
+			self.frequency = layerParams['frequency']
+		except KeyError:
+			self.frequency = filterParams['frequency']
 		
 		try:
 			self.season = layerParams['season']
@@ -33,7 +38,7 @@ class Bfast(Filter):
 		except KeyError:
 			self.end_date = filterParams['end_date']
 
-	def run(self, timeserieData, longitude = None, latitude = None, h = None):
+	def run(self, timeserieData, longitude = None, latitude = None, h = None, freq = None):
 		
 		if self.time_change is not None and self.units is not None:
 			days = 0
@@ -48,9 +53,11 @@ class Bfast(Filter):
 
 		h = str(h) if h else self.h
 
-		# Must be in the following order: h, season, start_date, end_date, timeseriesData
+		freq = str(freq) if freq else self.frequency
+
+		# Must be in the following order: h, season, start_date, end_date, timeseriesData[, freq]
 		bfast_result = check_output(["integration/py/time-series/lib/bfast.r", h, self.season,
-		 self.start_date, self.end_date, str(timeserieData)])
+		 self.start_date, self.end_date, str(timeserieData), freq])
 
 		bfast_res_list = bfast_result.encode('utf-8').split(' ')
 		bfast_res_int = map(float, bfast_res_list)
