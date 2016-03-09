@@ -497,14 +497,15 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-
-
-var layersDir = "/home/fernanda/Documentos/Projeto/shp/"
+var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.14\,share\=geo\,user\=fernanda.stefani/REPOSITÓRIO\ DE\ DADOS/DADOS\ DO\ PORTAL/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 
 parseCsv(filepath, function(layers) {
-  console.log('estamos aqui:', filepath)
-      //insertLayers(dbUrl, layerCollectionName, layers, function() {});
+    setLayers(layersDir, layers, function(layers) {
+        createMapFile(layers, function() {
+          insertLayers(dbUrl, layerCollectionName, layers, function() {});
+        });
+    })
 });

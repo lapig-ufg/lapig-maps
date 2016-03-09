@@ -13,3 +13,4 @@ src/server/integration/py/time-series/conf/lapig-ee-09144f43f3b5.pem
 *.pyc
 *.rdb
 src/server/passwords.json
+*.sqlite
