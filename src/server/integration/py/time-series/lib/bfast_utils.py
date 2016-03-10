@@ -57,24 +57,20 @@ def groupData(dates, values, groupBy):
 		}
 	else:
 		gtypeIndexes = []
-		gtypeFormat = ''
 		groupDates = []
 
 		if gtype == 'YEAR':
 			frequency = 1
 			gtypeIndexes = [(str(dt.year), index) for index, dt in enumerate(dates)]
-			gtypeFormat = '%Y'
 		elif gtype == 'MONTH-YEAR':
 			frequency = 12
-			gtypeIndexes = [(str(dt.year)+'-'+str(dt.month), index) for index, dt in enumerate(dates)]
-			gtypeFormat = '%Y-%m'
+			gtypeIndexes = [((str(dt.year)+'-%s'+str(dt.month)) % ('' if dt.month > 9 else '0'), index) for index, dt in enumerate(dates)]
 		else:
 			raise ValueError('"' + gtype + '" is not a valid group type')
 
 		get_item = itemgetter(0)
 		for key, group in groupby(sorted(gtypeIndexes, key=get_item), get_item):
 			groupDates.append(list(group))
-			# new_dates.append(datetime.strptime(key, gtypeFormat))
 			new_dates.append(key)
 			
 		groupValues = [[values[tup[1]] for tup in item_list] for item_list in groupDates]

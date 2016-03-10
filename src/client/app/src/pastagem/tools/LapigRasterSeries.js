@@ -1177,15 +1177,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       }
     }
 
-    console.log("trendPosition: " + trendPosition)
-    console.log("originalPosition: " + originalPosition)
-    console.log("interpolationPosition: " + interpolationPosition)
-
     var chartRecords = [];
     trendData.values.forEach(function(values){
-      var dateStr = values[0];
-      var dtArray = values[0].split('-');
-      var date = new Date(dtArray[0] + "/" + dtArray[1] + "/" + dtArray[2]).getTime();
+      var dateStr = '-' + values[0];
+      date = new Date(dateStr).getTime();
 
       var record = { 
         date: date, 
@@ -1198,11 +1193,21 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     chart.setSeriesStyles(instance.getChartSeries(trendData.length));
     chart.store.loadData(chartRecords);
-    chart.setXAxis(new Ext.chart.TimeAxis({
-      labelRenderer: function(date) { 
-        return date.format("m.Y");
-      }
-    }));
+
+    var dtType = trendData.values[0][0].split('-').length;
+    if (dtType > 1) {
+      chart.setXAxis(new Ext.chart.TimeAxis({
+        labelRenderer: function(date) { 
+          return date.format("m.Y");
+        }
+      }));
+    } else {
+      chart.setXAxis(new Ext.chart.TimeAxis({
+        labelRenderer: function(date){
+          return date.format("Y.m");
+        }
+      }));
+    }
   },
 
   initLoadChartDataMask: function() {
