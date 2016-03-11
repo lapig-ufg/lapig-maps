@@ -258,14 +258,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         if(activeTab.index == instance.tabIndex.trend){
           var record = { date: date, original: value, interpolation: null, trend: null, dateStr: dateStr };
-          record.trend = values[instance.trendPosition];
+          record.trend = (instance.trendPosition != -1) ? values[instance.trendPosition] : null;
         }else{
           var record = { date: date, original: value, interpolation: null, dateStr: dateStr };
         }
         
         if(interpolationPosition > 0 && interpolationPosition != originalPosition)
           record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition] : null;
-
         chartData.push(record)
       }
     })
@@ -568,7 +567,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       split: true,
       layout: 'border',
       id: "lapig-coordinates-center-chart",
-      tbar: [
+      /*tbar: [
         {
           text: 'Dados Temporais',
           iconCls: 'lapig-icon-add-2',
@@ -592,7 +591,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             }
           }
         }
-      ],
+      ],*/
       items: [
         {
           xtype: "tabpanel",
@@ -606,6 +605,29 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               id: "lapig-raster-series-tab-series",
               layout: "border",
               tbar: [
+                {
+                  text: 'Dados Temporais',
+                  iconCls: 'lapig-icon-add-2',
+                  xtype:"button",
+                  listeners: {
+                    click: function(evt) {
+                      var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
+                      wdwInfo.show(this)
+                    }
+                  }
+                },
+                {
+                  xtype: 'button',
+                  id: 'lapig-raster-series-tab-series-btn-csv',
+                  iconCls: 'lapig-icon-csv',
+                  disabled: true,
+                  listeners: {
+                    click: function() {
+                      window.open(instance.csvUrl)
+                    }
+                  }
+                },
+                '-',
                 'Período:',
                 {
                   xtype:'combo',
@@ -853,7 +875,31 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               title: "Tendêcia",
               id: "lapig-raster-series-tab-trend",
               layout: "border",
+              disabled: true,
               tbar: [
+                {
+                  text: 'Dados Temporais',
+                  iconCls: 'lapig-icon-add-2',
+                  xtype:"button",
+                  listeners: {
+                    click: function(evt) {
+                      var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
+                      wdwInfo.show(this)
+                    }
+                  }
+                },
+                {
+                  xtype: 'button',
+                  id: 'lapig-raster-series-tab-trend-btn-csv',
+                  iconCls: 'lapig-icon-csv',
+                  disabled: true,
+                  listeners: {
+                    click: function() {
+                      window.open(instance.csvUrl)
+                    }
+                  }
+                },
+                '-',
                 'Período:',
                 {
                   xtype:'combo',
@@ -1013,8 +1059,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         }
                       }),
                       tipRenderer : function(chart, record, index, series) {
-                          
-                        /*var numberFormat = '0.000'
+                        var //TODO
+                        var numberFormat = '0.000'
                         var serie = series.data[index];
 
                         var date = serie.date;
@@ -1029,8 +1075,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                           return date + "\n" 
                                 + " Original: " + originalValue + "\n"
                                 + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
-                        }*/
-                        return "teste"
+                        }
                       },
                       chartStyle: {
                         animationEnabled: true,
@@ -1202,9 +1247,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         }
       }));
     } else {
-      chart.setXAxis(new Ext.chart.TimeAxis({
-        labelRenderer: function(date){
-          return date.format("Y.m");
+      chart.setXAxis(new Ext.chart.CategoryAxis({
+        labelRenderer: function(time){
+          var year = time/1000/60/60/24/365 +1970;
+          return Math.floor(year);
         }
       }));
     }
@@ -1240,9 +1286,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var activeTab = instance.getSeriesActiveTab();
     var components = [];
 
-    components.push(Ext.getCmp('lapig-raster-series-btn-csv'));
-
     if(activeTab.index == instance.tabIndex.series){
+      components.push(Ext.getCmp('lapig-raster-series-tab-series-btn-csv'));
+
       components.push(Ext.getCmp('lapig-raster-series-tab-series-cmb-start-year'));
       components.push(Ext.getCmp('lapig-raster-series-tab-series-cmb-end-year'));
       
@@ -1254,7 +1300,14 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       
       components.push(Ext.getCmp('lapig-raster-series-tab-series-chart-pnl'));
 
+      var tabTrend = Ext.getCmp('lapig-raster-series-tab-trend');
+      if (tabTrend.disabled){
+        components.push(tabTrend);
+      }
+
     }else if(activeTab.index == instance.tabIndex.trend){
+      components.push(Ext.getCmp('lapig-raster-series-tab-trend-btn-csv'));
+
       components.push(Ext.getCmp('lapig-raster-series-tab-trend-cmb-start-year'));
       components.push(Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year'));
       
@@ -1289,12 +1342,18 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var startValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value');
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabIndex.trend){
-      console.log("timeChangeNum");
+      if (timeseriesId.indexOf('MOD13Q1') == -1) {
+        alert("A tendência pode ser calculada apenas para dados MOD13Q1");
+        return;
+      }
+
       var timeChangeNum = Ext.getCmp('lapig-raster-series-tab-trend-num-time-change');
       var timeChangeUnitsCmb = Ext.getCmp('lapig-raster-series-tab-trend-cmb-time-change-units');
 
       timeChangeNum.setValue(1);
       timeChangeUnitsCmb.setValue('YEAR');
+
+      instance.trendPosition = -1;
     }
 
     var chartDataUrl = 'time-series/' + timeseriesId + '/values';

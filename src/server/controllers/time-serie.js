@@ -156,7 +156,7 @@ module.exports = function(app) {
   	var latitude = request.param('latitude');
   	var longitude = request.param('longitude');
 		
-		Internal.getTimeSeries(id, longitude, latitude, function(result) {
+		Internal.requestTimeSeries(id, longitude, latitude, function(result) {
 
 			var filename = ('time-series-' + id).toLowerCase();
 

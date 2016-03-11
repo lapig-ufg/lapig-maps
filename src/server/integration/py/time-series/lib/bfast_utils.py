@@ -53,7 +53,7 @@ def groupData(dates, values, groupBy):
 		return {
 			'values': values,
 			'frequency': 23,
-			'dates': dates
+			'dates': [str(dt.year)+'-%s'%('' if dt.month>9 else '0')+str(dt.month)+'-'+str(dt.day) for dt in dates]
 		}
 	else:
 		gtypeIndexes = []
