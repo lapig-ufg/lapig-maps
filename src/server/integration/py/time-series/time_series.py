@@ -42,6 +42,8 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 
 	values = clippedValues['values']
 	dates = clippedValues['dates']
+	startDate = dates[0]
+	endDate = dates[-1]
 
 	#Encontra o indice do filtro(se houver) e do bfast
 	filters = loader.getFilters(layerId)
@@ -68,11 +70,10 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 	
 	#Calcula o valor do parametro h(minimal segment size) para o bfast
 	minimalSegmentSize = bfast_utils.calculateMinimalSegmentSize(len(values), timeChange, timeChangeUnits, frequency)
-
 	#Executa o BFAST
 	result = []
 	if bfastIndex != -1:
-		result = filters[bfastIndex].run(values, longitude, latitude, minimalSegmentSize, frequency)
+		result = filters[bfastIndex].run(values, longitude, latitude, minimalSegmentSize, frequency, startDate, endDate)
 	else:
 		raise IndexError("Bfast filter could not be found.")
 
@@ -83,8 +84,8 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 	utils.joinArray(result, values)
 
 	return {
-			'series': series,
-			'values': result
+		'series': series,
+		'values': result
 	}
 
 result = []

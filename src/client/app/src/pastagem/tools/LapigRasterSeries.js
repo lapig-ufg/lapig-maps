@@ -229,7 +229,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
   populateChart: function(startYear, endYear, startValue, endValue, interpolationPosition, groupType, groupOperation) {
     var instance = this;
-    console.log("populate: "+startYear + ", "+endYear+", "+startValue+", "+endValue);
 
     var activeTab = instance.getSeriesActiveTab();
     var chart = Ext.getCmp('lapig-coordinates-chart-' + activeTab.name);
@@ -498,7 +497,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.initWdwInfo();
 
     var filterChartData = function() {
-      console.log("filterChartData")
 
       var activeTab = instance.getSeriesActiveTab();
 
@@ -530,7 +528,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     }
 
     var repopulateChart = function(){
-      console.log("repopulate");
 
       var activeTab = instance.getSeriesActiveTab();
 
@@ -567,31 +564,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       split: true,
       layout: 'border',
       id: "lapig-coordinates-center-chart",
-      /*tbar: [
-        {
-          text: 'Dados Temporais',
-          iconCls: 'lapig-icon-add-2',
-          xtype:"button",
-          listeners: {
-            click: function(evt) {
-              var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
-              wdwInfo.show(this)
-            }
-          }
-        },
-        "->",
-        {
-          xtype: 'button',
-          id: 'lapig-raster-series-btn-csv',
-          iconCls: 'lapig-icon-csv',
-          disabled: true,
-          listeners: {
-            click: function() {
-              window.open(instance.csvUrl)
-            }
-          }
-        }
-      ],*/
       items: [
         {
           xtype: "tabpanel",
@@ -1059,7 +1031,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         }
                       }),
                       tipRenderer : function(chart, record, index, series) {
-                        var //TODO
                         var numberFormat = '0.000'
                         var serie = series.data[index];
 
@@ -1067,14 +1038,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         if(typeof date === 'number')
                           date = new Date(date).format("d/m/Y") ;
 
-                        var originalValue = Ext.util.Format.number(serie.original, numberFormat);
+                        var trendValue = Ext.util.Format.number(serie.trend, numberFormat);
 
-                        if(serie.interpolation == null) {
-                          return date + ": " + originalValue
-                        } else {
+                        if(serie.interpolation != null) {
                           return date + "\n" 
-                                + " Original: " + originalValue + "\n"
+                                + " Tendência: " + trendValue + "\n"
                                 + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
+                        } else if(serie.original != null){
+                          return date + "\n" 
+                                + " Tendência: " + trendValue + "\n"
+                                + " Original: " + Ext.util.Format.number(serie.original, numberFormat);
                         }
                       },
                       chartStyle: {
@@ -1113,7 +1086,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                           displayField: 'interpolation',
                           style: {
                             color: 0x5057a6,
-                            size: 0,
+                            size: 4,
                             lineSize: 2
                           },
                         }, {
@@ -1146,12 +1119,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   calculateTrend: function(){
     var instance = this;
 
-    console.log("calculateTrend");
-
     var activeTab = instance.getSeriesActiveTab();
 
     var startYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-start-year').getValue();
     var endYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue();
+
+    if (endYear - startYear < 1){
+      return Ext.MessageBox.alert('LAPIG-Maps - Validação', "O período a ser analisado deve possuir pelo menos 1 ano.");
+    }
+
     var interpolation = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue();
     var groupData = Ext.getCmp('lapig-raster-series-tab-trend-cmb-group-data').getValue();
     var timeChange = Ext.getCmp('lapig-raster-series-tab-trend-num-time-change').getValue();
@@ -1161,6 +1137,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     instance.setSeriesActiveTabDisabled(true);
 
+    var oldChartData = instance.chartData[activeTab.index];
     instance.chartData[activeTab.index] = undefined;
 
     instance.initLoadChartDataMask();
@@ -1188,7 +1165,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.chartData[activeTab.index] = jsonResponse;
           instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
-          alert("Atenção: " + jsonResponse.error);
+          Ext.MessageBox.alert('LAPIG-Maps - Validação', "Atenção: " + jsonResponse.error);
+          instance.chartData[activeTab.index] = oldChartData;
+          instance.drawTrend(instance.chartData[activeTab.index]);
         }
 
         instance.setSeriesActiveTabDisabled(false);
@@ -1199,8 +1178,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
   drawTrend : function(trendData){
     instance = this;
-
-    console.log("drawTrend")
 
     activeTab = instance.getSeriesActiveTab();
 
@@ -1343,7 +1320,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabIndex.trend){
       if (timeseriesId.indexOf('MOD13Q1') == -1) {
-        alert("A tendência pode ser calculada apenas para dados MOD13Q1");
+        Ext.MessageBox.alert('LAPIG-Maps - Validação', "A tendência pode ser calculada apenas para dados MOD13Q1");
         return;
       }
 
@@ -1433,8 +1410,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         }
 
         instance.seriesProperties = {timeseriesId, longitude, latitude, startYear, endYear, startValue, endValue};
-
-        console.log("request: "+startYear + ", "+endYear+", "+startValue+", "+endValue);
 
         instance.populateChart(startYear, endYear, startValue, endValue)
 
