@@ -247,7 +247,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				Ext.getCmp('dms-lat-d-2').setValue(dmsLat[0]);
 				Ext.getCmp('dms-lat-m-2').setValue(dmsLat[1]);
 				Ext.getCmp('dms-lat-s-2').setValue(dmsLat[2]);
-
 		},
 
 		checkButtonsState: function() {
@@ -389,269 +388,317 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						align:'stretch'
 					},
 					items: [
-							{
-									xtype: 'fieldset',
-									title: 'Coordenadas Geográficas',
-									id: 'teste',
-									layout: {
-										type:'vbox',
-										padding:'1',
-										align:'stretch'
-									},
-									defaults: {
-									},
-									height: 120,
-									items: [
-											{
-												xtype: 'radiogroup',
-												hideLabel: true,
-												flex: 1,
-												items: [
-													{
-														name: 'graus',
-														boxLabel: 'Graus Decimais',
-														inputValue: 'DD',
-														checked: true,
-														listeners: {
-																check: function(evt, checked) {
-																		if (checked) {
-
-																				var ddLon = instance.dms2dd(
-																						Ext.getCmp('dms-lon-d-2').getValue(),
-																						Ext.getCmp('dms-lon-m-2').getValue(),
-																						Ext.getCmp('dms-lon-s-2').getValue()
-																				);
-
-																				var ddLat = instance.dms2dd(
-																						Ext.getCmp('dms-lat-d-2').getValue(),
-																						Ext.getCmp('dms-lat-m-2').getValue(),
-																						Ext.getCmp('dms-lat-s-2').getValue()
-																				);
-
-																				instance.setDd(ddLon, ddLat);
-
-																				Ext.getCmp('dd-panel-2').show();
-																				Ext.getCmp('dms-panel-2').hide();
-																		}
-																}
-														}
-													}
-												, {
-														name: 'graus',
-														boxLabel: 'Graus Minutos Seg.',
-														inputValue: 'DMS',
-														listeners: {
-															check: function(evt, checked) {
-																	if (checked) {
-
-																			var ddLon = Ext.getCmp('form-text-lon-2').value;
-																			var ddLat = Ext.getCmp('form-text-lat-2').value;
-
-																			if (ddLon && ddLat)
-																					instance.setDms(instance.dd2dms(ddLon, ddLat));
-
-																			Ext.getCmp('dd-panel-2').hide();
-																			Ext.getCmp('dms-panel-2').show();
-																			Ext.getCmp('teste').doLayout();
-																	}
-															}
-														}
-													}
-												]
-											}
-										, {
-												id: 'dd-panel-2',
-												flex: 1,
-												xtype: 'compositefield',
-												layout: {
-													type:'hbox',
-													padding:'2',
-													align:'stretch'
-												},
-												items: [
-															getMapCoordBtn()
-														,	{
-																	xtype: 'numberfield',
-																	id: 'form-text-lon-2',
-																	emptyText: 'Longitude',
-																	decimalPrecision: 4,
-																	flex: 1,
-																	name: 'lon',
-																	style: {
-																			'text-align': 'right'
-																	}
-															}
-														, {
-																xtype: 'numberfield',
-																id: 'form-text-lat-2',
-																emptyText: 'Latitude',
-																decimalPrecision: 4,
-																flex: 1,
-																style: {
-																		'text-align': 'right'
-																}
-															}
-												]
-											}
-										, {
-												xtype: 'compositefield',
-												id: 'dms-panel-2',
-												flex: 1,
-												hidden: true,
-												layout: {
-													type:'hbox',
-													padding:'0',
-													align:'stretch'
-												},
-												items: [
-														getMapCoordBtn()
-														, {
-																xtype: 'numberfield',
-																decimalPrecision: 0,
-																width: 25,
-																id: 'dms-lon-d-2'
-														}, {
-																xtype: 'label',
-																text: '°',
-																width: 1
-														}, {
-																xtype: 'numberfield',
-																decimalPrecision: 0,
-																width: 25,
-																id: 'dms-lon-m-2'
-														}, {
-																xtype: 'label',
-																text: "'",
-																width: 1
-														}, {
-																xtype: 'numberfield',
-																decimalPrecision: 4,
-																flex: 1,
-																id: 'dms-lon-s-2'
-														}, {
-																xtype: 'label',
-																text: '"',
-																width: 1
-														}, {
-																xtype: 'numberfield',
-																decimalPrecision: 0,
-																width: 25,
-																id: 'dms-lat-d-2'
-														}, {
-																xtype: 'label',
-																text: '°',
-																width: 1
-														}, {
-																xtype: 'numberfield',
-																decimalPrecision: 0,
-																width: 25,
-																id: 'dms-lat-m-2'
-														}, {
-																xtype: 'label',
-																text: "'",
-																width: 1
-														}, {
-																xtype: 'numberfield',
-																decimalPrecision: 4,
-																flex: 1,
-																id: 'dms-lat-s-2'
-														}, {
-																xtype: 'label',
-																text: '"',
-																width: 4
-														}
-												]
-											}
-										, {
-												xtype: 'compositefield',
-												layout: {
-													type:'hbox',
-													padding:'2',
-													align:'stretch'
-												},
-												flex:1,
-												items: [
-														{
-															xtype: "label",
-															text: 'Nome/Descrição:',
-															width: 90,
-															style: {
-																'margin-top': '4px'
-															}
-														}, {
-																xtype: "textfield",
-																flex:1,
-																id: "form-text-name",
-														}, {
-																icon: "theme/app/img/add.png",
-																xtype: 'button',
-																width: '20px',
-																handler: function() {
-
-																		var lat = Ext.getCmp('form-text-lat-2').getValue();
-																		var lon = Ext.getCmp('form-text-lon-2').getValue();
-																		var name = Ext.getCmp('form-text-name').getValue();
-
-																		if(!lat || !lon) {
-																				var ddLon = instance.dms2dd(
-																						Ext.getCmp('dms-lon-d-2').getValue(),
-																						Ext.getCmp('dms-lon-m-2').getValue(),
-																						Ext.getCmp('dms-lon-s-2').getValue()
-																				);
-
-																				var ddLat = instance.dms2dd(
-																						Ext.getCmp('dms-lat-d-2').getValue(),
-																						Ext.getCmp('dms-lat-m-2').getValue(),
-																						Ext.getCmp('dms-lat-s-2').getValue()
-																				);
-
-																				instance.setDd(ddLon, ddLat);
-																				lat = Ext.getCmp('form-text-lat-2').getValue();
-																				lon = Ext.getCmp('form-text-lon-2').getValue();
-
-																				if(!lat || !lon) {
-																					return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
-																				}
-																		}
-
-																		var lonLat = new OpenLayers.LonLat(lon, lat)
-																				.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
-
-																		var size = new OpenLayers.Size(38, 38);
-																		var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-																		var icon = new OpenLayers.Icon(instance.iconPathSelect, size, offset);
-
-																		var marker = new OpenLayers.Marker(lonLat, icon);
-																		marker.idLatLonCrl = name + '-' + lat + '-' + lon;
-																		instance.vectors.addMarker(marker);
-																		instance.store.loadData([[ name, lat, lon]], true);
-
-																		Ext.getCmp('form-text-lat-2').setValue('');
-																		Ext.getCmp('form-text-lon-2').setValue('');
-
-																		Ext.getCmp('dms-lat-d-2').setValue('');
-																		Ext.getCmp('dms-lat-m-2').setValue('');
-																		Ext.getCmp('dms-lat-s-2').setValue('');
-																		Ext.getCmp('dms-lon-d-2').setValue('');
-																		Ext.getCmp('dms-lon-m-2').setValue('');
-																		Ext.getCmp('dms-lon-s-2').setValue('');
-
-																		Ext.getCmp('form-text-name').setValue('');
-																}
-														}
-												]
-											}
-									]
+						{
+							xtype: 'fieldset',
+							title: 'Coordenadas Geográficas',
+							id: 'teste',
+							layout: {
+								type:'vbox',
+								padding:'1',
+								align:'stretch'
 							},
-							{
-								height: 120,
-								border: false,
-								autoScroll: true,
-								items: [
-									instance.getGrid()
-								]	
-							}
-							
+							defaults: {
+							},
+							height: 120,
+							items: [
+									{
+										xtype: 'radiogroup',
+										hideLabel: true,
+										flex: 1,
+										items: [
+											{
+												name: 'graus',
+												boxLabel: 'Graus Decimais',
+												inputValue: 'DD',
+												checked: true,
+												listeners: {
+														check: function(evt, checked) {
+																if (checked) {
+
+																		var ddLon = instance.dms2dd(
+																				Ext.getCmp('dms-lon-d-2').getValue(),
+																				Ext.getCmp('dms-lon-m-2').getValue(),
+																				Ext.getCmp('dms-lon-s-2').getValue()
+																		);
+
+																		var ddLat = instance.dms2dd(
+																				Ext.getCmp('dms-lat-d-2').getValue(),
+																				Ext.getCmp('dms-lat-m-2').getValue(),
+																				Ext.getCmp('dms-lat-s-2').getValue()
+																		);
+
+																		instance.setDd(ddLon, ddLat);
+
+																		Ext.getCmp('dd-panel-2').show();
+																		Ext.getCmp('dms-panel-2').hide();
+																}
+														}
+												}
+											},
+										  {
+												name: 'graus',
+												boxLabel: 'Graus Minutos Seg.',
+												inputValue: 'DMS',
+												listeners: {
+													check: function(evt, checked) {
+															if (checked) {
+
+																	var ddLon = Ext.getCmp('form-text-lon-2').value;
+																	var ddLat = Ext.getCmp('form-text-lat-2').value;
+
+																	if (ddLon && ddLat)
+																			instance.setDms(instance.dd2dms(ddLon, ddLat));
+
+																	Ext.getCmp('dd-panel-2').hide();
+																	Ext.getCmp('dms-panel-2').show();
+																	Ext.getCmp('teste').doLayout();
+															}
+													}
+												}
+											}
+										]
+									},
+								  {
+										id: 'dd-panel-2',
+										flex: 1,
+										xtype: 'compositefield',
+										layout: {
+											type:'hbox',
+											padding:'2',
+											align:'stretch'
+										},
+										items: [
+											getMapCoordBtn(),
+										 	{
+													xtype: 'numberfield',
+													id: 'form-text-lon-2',
+													emptyText: 'Longitude',
+													decimalPrecision: 4,
+													flex: 1,
+													name: 'lon',
+													style: {
+															'text-align': 'right'
+													}
+											},
+										  {
+												xtype: 'numberfield',
+												id: 'form-text-lat-2',
+												emptyText: 'Latitude',
+												decimalPrecision: 4,
+												flex: 1,
+												style: {
+														'text-align': 'right'
+												}
+											}
+										]
+									},
+								  {
+										xtype: 'compositefield',
+										id: 'dms-panel-2',
+										flex: 1,
+										hidden: true,
+										layout: {
+											type:'hbox',
+											padding:'0',
+											align:'stretch'
+										},
+										items: [
+												getMapCoordBtn(),
+												{
+														xtype: 'numberfield',
+														decimalPrecision: 0,
+														width: 25,
+														id: 'dms-lon-d-2'
+												}, {
+														xtype: 'label',
+														text: '°',
+														width: 1
+												}, {
+														xtype: 'numberfield',
+														decimalPrecision: 0,
+														width: 25,
+														id: 'dms-lon-m-2'
+												}, {
+														xtype: 'label',
+														text: "'",
+														width: 1
+												}, {
+														xtype: 'numberfield',
+														decimalPrecision: 4,
+														flex: 1,
+														id: 'dms-lon-s-2'
+												}, {
+														xtype: 'label',
+														text: '"',
+														width: 1
+												}, {
+														xtype: 'numberfield',
+														decimalPrecision: 0,
+														width: 25,
+														id: 'dms-lat-d-2'
+												}, {
+														xtype: 'label',
+														text: '°',
+														width: 1
+												}, {
+														xtype: 'numberfield',
+														decimalPrecision: 0,
+														width: 25,
+														id: 'dms-lat-m-2'
+												}, {
+														xtype: 'label',
+														text: "'",
+														width: 1
+												}, {
+														xtype: 'numberfield',
+														decimalPrecision: 4,
+														flex: 1,
+														id: 'dms-lat-s-2'
+												}, {
+														xtype: 'label',
+														text: '"',
+														width: 4
+												}
+										]
+									},
+								  {
+										xtype: 'compositefield',
+										layout: {
+											type:'hbox',
+											padding:'2',
+											align:'stretch'
+										},
+										flex:1,
+										items: [
+											{
+												xtype: "label",
+												text: 'Nome/Descrição:',
+												width: 90,
+												style: {
+													'margin-top': '4px'
+												}
+											}, {
+													xtype: "textfield",
+													flex:1,
+													id: "form-text-name",
+											}, {
+													icon: "theme/app/img/add.png",
+													xtype: 'button',
+													width: '20px',
+													handler: function() {
+
+															var lat = Ext.getCmp('form-text-lat-2').getValue();
+															var lon = Ext.getCmp('form-text-lon-2').getValue();
+															var name = Ext.getCmp('form-text-name').getValue();
+
+															if(!lat || !lon) {
+																	var ddLon = instance.dms2dd(
+																			Ext.getCmp('dms-lon-d-2').getValue(),
+																			Ext.getCmp('dms-lon-m-2').getValue(),
+																			Ext.getCmp('dms-lon-s-2').getValue()
+																	);
+
+																	var ddLat = instance.dms2dd(
+																			Ext.getCmp('dms-lat-d-2').getValue(),
+																			Ext.getCmp('dms-lat-m-2').getValue(),
+																			Ext.getCmp('dms-lat-s-2').getValue()
+																	);
+
+																	instance.setDd(ddLon, ddLat);
+																	lat = Ext.getCmp('form-text-lat-2').getValue();
+																	lon = Ext.getCmp('form-text-lon-2').getValue();
+
+																	if(!lat || !lon) {
+																		return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
+																	}
+															}
+
+															var lonLat = new OpenLayers.LonLat(lon, lat)
+																	.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
+
+															var size = new OpenLayers.Size(38, 38);
+															var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+															var icon = new OpenLayers.Icon(instance.iconPathSelect, size, offset);
+
+															var marker = new OpenLayers.Marker(lonLat, icon);
+															marker.idLatLonCrl = name + '-' + lat + '-' + lon;
+															instance.vectors.addMarker(marker);
+															instance.store.loadData([[ name, lat, lon]], true);
+
+															Ext.getCmp('form-text-lat-2').setValue('');
+															Ext.getCmp('form-text-lon-2').setValue('');
+
+															Ext.getCmp('dms-lat-d-2').setValue('');
+															Ext.getCmp('dms-lat-m-2').setValue('');
+															Ext.getCmp('dms-lat-s-2').setValue('');
+															Ext.getCmp('dms-lon-d-2').setValue('');
+															Ext.getCmp('dms-lon-m-2').setValue('');
+															Ext.getCmp('dms-lon-s-2').setValue('');
+
+															Ext.getCmp('form-text-name').setValue('');
+													}
+											}
+										]
+									}
+							]
+						},
+						{
+							height: 120,
+							border: false,
+							autoScroll: true,
+							items: [
+								instance.getGrid()
+							]
+						},
+						{
+							xtype: 'fieldset',
+							title: 'Configuração de raio',
+							hidden: true,
+							id: 'lapig-coordinates-radius-fieldset',
+							layout: {
+								type: 'hbox',
+								padding: '1',
+								align: 'stretch'
+							},
+							height: 120,
+							items: [
+								{
+									xtype: 'checkbox',
+									boxLabel: "Usar raio.",
+									id: 'lapig-coordenadas-chk-use-radius',
+									flex: 1,
+									listeners:{
+										check: function(checkbox, checked) {
+											Ext.getCmp('lapig-coordenadas-cmb-radius').setDisabled(!checked);
+										}
+									}
+								},
+								{
+									xtype:'combo',
+                  id: "lapig-coordenadas-cmb-radius",
+                  flex: 1,
+                  fieldLabel: 'Raios',
+                  border: false,
+                  displayField:'radius',
+                  valueField: 'radius',
+                  mode: 'local',
+                  typeAhead: true,
+                  editable: false,
+                  disabled: true,
+                  triggerAction: 'all',
+                  width: 70,
+                  store: {
+                    xtype: 'arraystore',
+                    fields: [
+                       {name: 'radius'},
+                    ],
+                    data: [
+                    	250, 500, 1000, 1250
+                    ]
+                  }
+								}
+							]
+						}
 					]
 				};
 
