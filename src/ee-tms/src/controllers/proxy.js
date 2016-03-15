@@ -1,5 +1,7 @@
 var requester = require('request');
 var querystring = require('querystring');
+var x = require('request');
+var fs = require('fs');
 
 module.exports = function(app){
 	var eetms = app.config.eeTms;	
@@ -37,8 +39,6 @@ module.exports = function(app){
 		return token;
 	}
 
-	console.log("PRRROOOXXYY")
-
 	Proxy.process = function(request, response) {
 
 	  var path = request.path;  
@@ -51,6 +51,7 @@ module.exports = function(app){
 			var mapid = layer.mapid;
 			var url = eetms + request.path;
 		  var params = querystring.stringify(request.query);
+		  var body = '';
 
 		  if(request.param('url'))
 		    url = request.param('url');
@@ -60,39 +61,45 @@ module.exports = function(app){
 		  url = url.replace(id,mapid);
 
 		  console.log(url);
+		  console.log('path', path);
+		  var img = new Buffer([]);
 
 		 	cache.get(path, function(data){
-		 		console.log('data',data);
 		 		
-		 		if(data){
-		 			console.log('aqui11111');
-					response.write(data);
-					response.end();	 			
+		 		if(data){	 				
+	 				response.set('Content-Type', 'image/png');
+					response.write(data, "binary");
+					response.end(); 			
+
 		 		}
 		 		else{
 		 			requester({
-			  		uri: url
-			  	, headers: {
-			  			'Accept': request.headers['accept']
-			  		,	'User-Agent': request.headers['user-agent']
-			  		,	'X-Requested-With': request.headers['x-requested-with']
-			  		,	'Accept-Language': request.headers['accept-language']
-			  		,	'Accept-Encoding': request.headers['accept-encoding']
-			  		}
-				  }, function(error, proxyResponse, body) {
+		  		uri: url
+		  	, headers: {
+		  			'Accept': request.headers['accept']
+		  		,	'User-Agent': request.headers['user-agent']
+		  		,	'X-Requested-With': request.headers['x-requested-with']
+		  		,	'Accept-Language': request.headers['accept-language']
+		  		,	'Accept-Encoding': request.headers['accept-encoding']
+		  	}
+			  }, function(error, proxyResponse, body) {
+			  	
+			  	if(error) {
+			  		console.log('error',error);
+			  		response.end();	
+			  	} else {
+			  		console.log('url',proxyResponse.statusCode, url);
+			  	}
 
-				  	cache.set(path, body);
-				  	
-				  	if(error) {
-				  		console.log('error',error);
-				  		response.end();	
-				  	} else {
-				  		console.log('aqui',proxyResponse.statusCode, url);
-				  	}
+			  }).on('data', function(data) {    
+				  var data = new Buffer(data);
+				  img = Buffer.concat([img, data])
+				})
+				.on('end', function(data) {    
+					cache.set(path, img)
+				}).pipe(response)
 
-				  })
-				  .pipe(response)
-		 		}
+		 	}
 		
 			});
 
