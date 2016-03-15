@@ -42,6 +42,8 @@ module.exports = function(app) {
 					if(mapfileContent != undefined) {
 						mapLayers += mapfileContent + '\n\n';
 						console.log(mapfile);
+					} else {
+						console.log(err)
 					}
 					next();
 				});		

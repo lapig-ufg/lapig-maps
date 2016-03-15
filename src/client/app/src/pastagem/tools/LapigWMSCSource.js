@@ -34,7 +34,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
         var record, original;
         
         var index = this.store.findExact("name", config.name);
-        
+
         if (index > -1) {
             original = this.store.getAt(index);
         } else if (Ext.isObject(config.capability)) {
@@ -99,7 +99,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 }
             }
 
-            layer.setName(config.title || layer.name);
+            layer.setName(config.oldName || layer.name);
             layer.addOptions({
                 attribution: layer.attribution || config.attribution,
                 maxExtent: maxExtent,
@@ -118,7 +118,8 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
             
             // data for the new record
             var data = Ext.applyIf({
-                title: layer.name,
+                abstract: config.description || config.oldDescription,
+                title: config.oldName,
                 group: config.group,
                 infoFormat: config.infoFormat,
                 getFeatureInfo:  config.getFeatureInfo,
@@ -132,6 +133,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
             
             // add additional fields
             var fields = [
+                {name: "_id", type: "string"},
                 {name: "source", type: "string"}, 
                 {name: "group", type: "string"},
                 {name: "properties", type: "string"},
@@ -154,7 +156,6 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 console.warn("Could not create layer record for layer '" + config.name + "'. Check if the layer is found in the WMS GetCapabilities response.");
             }
         }
-        console.log(config.name, record)
 
         var url = record.data.layer.url;
         var host = url.split("/")[2];
@@ -167,8 +168,6 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 //,   url.replace(host, "m4.lapig.iesa.ufg.br")
             ];
         }
-
-
         return record;
     }
     

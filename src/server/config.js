@@ -6,10 +6,11 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": "/home/leandro/Tmp/spatial-intelligence.sqlite",
+		"spatialIntelligenceDb": "/home/fernanda/Documentos/Projeto/lapig-maps/spatial-intelligence.sqlite",
 		"hostUrl": 'http://localhost:5000',
 		"ows": "http://localhost:5500",
 		"clientDir": appRoot + "/../client/build",
+		"langDir": appRoot + "/lang",
 		"mongo": {
 			"host": "localhost",
 			"port": "27017",

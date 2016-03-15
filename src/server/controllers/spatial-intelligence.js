@@ -9,6 +9,7 @@ module.exports = function(app) {
 	var Internal = {};
 	var Utils = app.libs.utils
 	var config = app.config
+	var translateEN = require(config.langDir + '/Spatial-Inteligence_en.json');
 
 	Internal.getSpatialDb = function(callback) {
 		var spatialDb = new sqlite3.Database(config.spatialIntelligenceDb);
@@ -131,24 +132,25 @@ module.exports = function(app) {
 		})
 	}
 
-	Spatial.metadata = function(request, response) {
+	Spatial.metadata = function(request, response, next) {
 		var subjectId = request.param('subject', 'livestock');
 
 		Internal.getSubject(subjectId, function(subject) {
-			response.send(subject)
-			response.end()
+			
+			request.finalizeResultMetadata = subject;
+			next();
 		});
 	}
 
-	Spatial.query = function(request, response) {
+	Spatial.query = function(request, response,next) {
 	  
 		var subjectId = request.param('subject', 'livestock');
 		var state = request.param('state', 'GO');
 		var sort = request.param('sort', 'value');
 
 		Internal.queryLayers(subjectId, state, sort, function(result) {
-			response.send(result)
-			response.end()
+				request.finalizeResultQuery = result,
+				next();
 		});
 
 	};
@@ -190,6 +192,54 @@ module.exports = function(app) {
 
 	}
 
-	return Spatial;
+	Spatial.translateMetadata = function(request, response){
 
+			if(response){
+					var result = request.finalizeResultMetadata;
+					var language = request.param('lang');
+					
+					if(language != 'pt-br'){
+
+							result.region.title = 'Municipality';
+
+							for(i=0; i<result.layers.length; i++){
+									idLayer = result.layers[i].table;
+									translateTitleMetadata = translateEN.layers[idLayer];
+
+									if (translateEN.layers[idLayer] != undefined){
+											result.layers[i].title = translateTitleMetadata.title,
+											result.layers[i].metadata = translateTitleMetadata.metadata
+									}
+							}
+					}
+
+					response.send(result)
+					response.end()
+			}
+	}
+
+	Spatial.translateQuery = function(request, response){
+
+			if(response){
+					var result = request.finalizeResultQuery;
+					var language = request.param('lang')
+
+					if (language != 'pt-br'){
+
+							for(i=0; i<result.length; i++){
+									idLayer = result[i].table;
+									translateTitleMetadata = translateEN.layers[idLayer];
+
+									if (translateEN.layers[idLayer] != undefined){
+											result[i].info = translateTitleMetadata.title
+									}
+							}
+					}
+					
+					response.send(result)
+					response.end()
+			}
+	}
+
+	return Spatial;
 }

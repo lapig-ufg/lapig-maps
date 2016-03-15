@@ -40,7 +40,7 @@ gxp.plugins.Zoom = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for zoom in menu item (i18n).
      */
-    zoomInMenuText: "Zoom In",
+    //zoomInMenuText: "Zoom In",
 
     /** api: config[zoomOutMenuText]
      *  ``String``

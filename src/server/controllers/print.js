@@ -12,6 +12,9 @@ module.exports = function(app) {
 
 	Print.map = function(request, response) {
 		var url = '/ows';
+		
+		var lang = require(config.langDir + '/en-us.json')
+		
 		var srs = request.param('srs', 'EPSG:900913');
 		var layers = request.param('layers', '');
 		var labels = request.param('labels', '');
@@ -81,7 +84,7 @@ module.exports = function(app) {
 			});
 		}
 
-		response.render('print-map.ejs', { title: title, map: map, legends: legends, description: description });
+		response.render('print-map.ejs', { title: title, map: map, legends: legends, description: description, lang: lang });
 	};
 
 	Print.mapPdf = function(request, response) {
