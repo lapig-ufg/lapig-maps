@@ -3,7 +3,7 @@ import loader
 from sys import argv
 from lib import bfast_utils
 
-def time_series(layerId, longitude, latitude):
+def time_series(layerId, longitude, latitude, mode):
 
 	datasourceInstance = loader.getDatasource(layerId)	
 
@@ -15,6 +15,8 @@ def time_series(layerId, longitude, latitude):
 	series = [{'id': 'original', 'label': 'Valores originais', 'position': 1}];
 	
 	for filter in loader.getFilters(layerId):
+		if filter.id == 'Bfast' and mode == 'series':
+			continue
 
 		filteredValues = filter.run(values, longitude, latitude);
 		if len(filteredValues) == len(values):
@@ -91,7 +93,7 @@ def trend(layerId, longitude, latitude, startYear, endYear, interpolation, group
 result = []
 
 if argv[1] == 'TS':
-	result = time_series(argv[2], utils.num(argv[3]), utils.num(argv[4]))
+	result = time_series(argv[2], utils.num(argv[3]), utils.num(argv[4]), argv[5])
 elif argv[1] == 'BFAST':
 	# id
 	# longitude

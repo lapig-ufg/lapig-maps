@@ -10,9 +10,9 @@ module.exports = function(app) {
 
 	var config = app.config;
 
-	Internal.requestTimeSeries = function(id, longitude, latitude, callback) {
+	Internal.requestTimeSeries = function(id, longitude, latitude, mode, callback) {
 		
-		var params = "TS " + id + " " + longitude + " " + latitude;
+		var params = "TS " + id + " " + longitude + " " + latitude + " " + mode;
 		var cmd ="python " + config.pathTimeSeries + " " + params;
 
 		console.log(cmd)
@@ -64,8 +64,9 @@ module.exports = function(app) {
   	var id = request.param('id');
   	var latitude = request.param('latitude');
   	var longitude = request.param('longitude');
+  	var mode = request.param('mode');
 
-		Internal.requestTimeSeries(id, longitude, latitude, function(result) {
+		Internal.requestTimeSeries(id, longitude, latitude, mode, function(result) {
 	  		response.send(result);
 	  		response.end();
 		})
@@ -155,8 +156,9 @@ module.exports = function(app) {
 		var id = request.param('id');
   	var latitude = request.param('latitude');
   	var longitude = request.param('longitude');
+  	var mode = request.param('mode');
 		
-		Internal.requestTimeSeries(id, longitude, latitude, function(result) {
+  	var callback = function(result) {
 
 			var filename = ('time-series-' + id).toLowerCase();
 
@@ -198,7 +200,25 @@ module.exports = function(app) {
 			})
 
 			writer.end();
-		})
+		}
+
+		if (mode == 'series') {
+			Internal.requestTimeSeries(id, longitude, latitude, mode, callback);
+		} else if(mode == 'trend'){
+			var bfastParams = [];
+			bfastParams.push(request.param('id'));
+	  	bfastParams.push(request.param('longitude'));
+			bfastParams.push(request.param('latitude'));
+	  	bfastParams.push(request.param('startYear'));
+	    bfastParams.push(request.param('endYear'));
+	    bfastParams.push(request.param('interpolation'));
+	    bfastParams.push(request.param('groupData'));
+	    bfastParams.push(request.param('timeChange'));
+	    bfastParams.push(request.param('timeChangeUnits'));
+
+			Internal.requestTrend(bfastParams, callback);
+		}
+		
 	}
 
 	TimeSerie.trend = function(request, response){

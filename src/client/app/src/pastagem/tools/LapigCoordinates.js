@@ -657,14 +657,13 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							id: 'lapig-coordinates-radius-fieldset',
 							layout: {
 								type: 'hbox',
-								padding: '1',
-								align: 'stretch'
+								// padding: '5'
 							},
-							height: 120,
+							height: 60,
 							items: [
 								{
 									xtype: 'checkbox',
-									boxLabel: "Usar raio.",
+									boxLabel: "Usar raio:",
 									id: 'lapig-coordenadas-chk-use-radius',
 									flex: 1,
 									listeners:{
@@ -687,15 +686,21 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
                   disabled: true,
                   triggerAction: 'all',
                   width: 70,
+                  value: 250,
                   store: {
                     xtype: 'arraystore',
                     fields: [
                        {name: 'radius'},
                     ],
                     data: [
-                    	250, 500, 1000, 1250
+                    	[250], [500], [1000], [1250]
                     ]
                   }
+								},
+								{
+									xtype: 'label',
+									html: "<text font=18>metros</text>",
+									flex: 1
 								}
 							]
 						}
@@ -710,7 +715,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						id: 'lapig-coordinates-window',
 						title: 'Coordenadas no Mapa ',
 						width: 320,
-						height: 320,
+						height: 340,
 						layout: 'fit',
 						plain: true,
 						items: [
