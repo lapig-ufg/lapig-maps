@@ -1,11 +1,14 @@
 var requester = require('request');
 var querystring = require('querystring');
+var x = require('request');
+var fs = require('fs');
 
 module.exports = function(app){
 	var eetms = app.config.eeTms;	
 	var Proxy = {};
 	var layerFunction = app.libs.init.getLayer;
 	var Internal = {};
+	var cache = app.libs.cache;
 
 
 	Internal.layerMapIdObjectGenerator = function(layers){
@@ -36,10 +39,9 @@ module.exports = function(app){
 		return token;
 	}
 
-
 	Proxy.process = function(request, response) {
 
-	  var path = request.path;	  
+	  var path = request.path;  
 	  var pathWithOutSlash = path.split('/'); 
 	  var id = pathWithOutSlash[2];
 
@@ -49,6 +51,7 @@ module.exports = function(app){
 			var mapid = layer.mapid;
 			var url = eetms + request.path;
 		  var params = querystring.stringify(request.query);
+		  var body = '';
 
 		  if(request.param('url'))
 		    url = request.param('url');
@@ -58,8 +61,19 @@ module.exports = function(app){
 		  url = url.replace(id,mapid);
 
 		  console.log(url);
+		  console.log('path', path);
+		  var img = new Buffer([]);
 
-			requester({
+		 	cache.get(path, function(data){
+		 		
+		 		if(data){	 				
+	 				response.set('Content-Type', 'image/png');
+					response.write(data, "binary");
+					response.end(); 			
+
+		 		}
+		 		else{
+		 			requester({
 		  		uri: url
 		  	, headers: {
 		  			'Accept': request.headers['accept']
@@ -68,18 +82,27 @@ module.exports = function(app){
 		  		,	'Accept-Language': request.headers['accept-language']
 		  		,	'Accept-Encoding': request.headers['accept-encoding']
 		  	}
-		  }, function(error, proxyResponse, body) {
-		  	
-		  	if(error) {
-		  		console.log('error',error);
-		  		response.end();	
-		  	} else {
-		  		console.log('aqui',proxyResponse.statusCode, url);
-		  	}
+			  }, function(error, proxyResponse, body) {
+			  	
+			  	if(error) {
+			  		console.log('error',error);
+			  		response.end();	
+			  	} else {
+			  		console.log('url',proxyResponse.statusCode, url);
+			  	}
 
-		  })
-		  .pipe(response)
+			  }).on('data', function(data) {    
+				  var data = new Buffer(data);
+				  img = Buffer.concat([img, data])
+				})
+				.on('end', function(data) {    
+					cache.set(path, img)
+				}).pipe(response)
+
+		 	}
 		
+			});
+
 		});
 
 	}
