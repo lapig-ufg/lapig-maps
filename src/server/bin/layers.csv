@@ -1,2 +1,3 @@
 Nome#Descrição#Região#Categoria#Arquivo/Pasta#Projeto#Metadata
-Áreas de Pastagens do Brasil#Mapeamento de áreas de pastagem, a partir de compilação de dados TerraClass Amazon; Funcate;  PROBIO; Canasat e TNC.#Brasil#Pastagem#pa_br_areas_pastagens_250_2015_lapig#Pastagem.org#mma.zip
+Áreas em conflito#Número de áreas em situações de conflitos por terra, por município.#Brasil#Social#pa_br_areas_conflitos_250_2014_cpt#Pastagem.org#cpt.zip
+Assassinatos no Campo#Número de mortes ocorridas por município, em consequência de conflitos por terra.#Brasil#Social#pa_br_assassinatos_campo_250_2014_cpt#Pastagem.org#cpt.zip
