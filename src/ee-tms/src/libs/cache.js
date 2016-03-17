@@ -1,5 +1,5 @@
 var util  = require('util')
-	,redis = require('redis');
+,redis = require('redis');
 
 module.exports = function(app) {
 
@@ -11,17 +11,17 @@ module.exports = function(app) {
 	Cache.get = function(cacheKey, callback) {
 		redisClient.get(cacheKey, function(err, data) {
 			if(!err && data) {
-		    	var bitmap = new Buffer(data, 'base64');
-		    	callback(bitmap);
-		    } else {
-		    	callback(undefined);
-		    }
-
+		    var bitmap = new Buffer(data,'base64');
+		    console.log('bitma', bitmap)
+		   	callback(bitmap);
+		  } else {
+		   	callback(undefined);
+		  }
 	  });
 	};
 
 	Cache.set = function(cacheKey, data){
-		var img = new Buffer(data || '').toString('base64');
+		var img = new Buffer(data || '').toString('base64');		
 		redisClient.set(cacheKey, img, function(){});
 	}
 

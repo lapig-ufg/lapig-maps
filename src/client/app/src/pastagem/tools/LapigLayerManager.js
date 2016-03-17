@@ -83,7 +83,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										minValue: 0,
 										maxValue: 100,
 										increment: 1,
-										fieldLabel: 'Transparência',
+										fieldLabel: i18n.LAPIGADDLAYER_SLIDER_TRANSPARENCY,
 										labelStyle: "font-size: 11px; color: #777777",
 										width: 130,
 										listeners: {
@@ -100,7 +100,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 								},
 								{
 									xtype:'fieldset',
-					        title: 'Legenda',
+					        title: i18n.LAPIGADDLAYER_SLIDER_LEGEND,
 					        collapsible: false,
 					        autoHeight:true,
 					        style: {
@@ -200,7 +200,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											editable: false,
 											triggerAction: 'all',
 											queryParam: 'years',
-											fieldLabel: 'Data',
+											fieldLabel: i18n.LAPIGADDLAYER_SLIDER_DATE,
 											value: layerLastDate,
 											lazyInit: false,
 											listeners: {

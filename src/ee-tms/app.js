@@ -6,17 +6,21 @@ var express = require('express')
 , multer = require('multer')
 , cluster = require('express-cluster')
 , requestParam = require('request-param')
-, morgan = require('morgan');
+, morgan = require('morgan')
+, schedule = require('node-schedule');
 
 var app = express();
 
 load('config.js', {'verbose': false}).into(app);
+load('libs/db.js', { 'verbose': false, cwd: 'src' }).into(app);
+load('libs/republish.js', { 'verbose': false, cwd: 'src' }).into(app);
 load('libs', { 'verbose': false, cwd: 'src' }).into(app);
 load('controllers', { 'verbose': false, cwd: 'src' }).into(app);
 
+var timeRepublish = app.config.midNight;
+var layers = app.config.layers;
 
-app.libs.init.init(function(){
-	
+app.libs.init.init(function(){	
 	app.use(compression());
 
 	app.use(requestTimeout({
@@ -50,6 +54,11 @@ app.libs.init.init(function(){
 	process.on('uncaughtException', function (err) {
 		console.error(err.stack);
 	});
+	
+	app.libs.init.getAllLayers(function(layers){
+		schedule.scheduleJob(timeRepublish, function(){
+			app.libs.republish.run(layers, function(){});
+		});		
+	})
 
 });
- 

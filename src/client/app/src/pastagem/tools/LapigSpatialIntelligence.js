@@ -26,7 +26,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     lapig.tools.SpatialIntelligence.superclass.constructor.apply(this, arguments);
 
     this.projectsParam = config.project.join(',');
-    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam;
+    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
 
     Ext.chart.Chart.CHART_URL = 'src/ext/resources/charts.swf';
     Ext.Ajax.timeout = 120000;
@@ -183,6 +183,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       url: metadataUrl,
       method: 'GET',
       timeout: 360000,
+      params: {
+        'lang': i18n.lang,
+      },
       success: function(request) {
         instance.queryMetadata = JSON.parse(request.responseText);
         instance.queryMetadata.layers = instance.queryMetadata.layers.reverse();
@@ -225,7 +228,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       requestMetadata(selectedSubject, function() {
 
-        var params = 'state=' + selectedState + '&sort=' + selectedSort
+        var params = 'state=' + selectedState + '&sort=' + selectedSort + '&lang='+i18n.lang; 
         gridInfo.loader.dataUrl = 'spatial/' + selectedSubject + '/query?' + params;
         instance.csvUrl = 'spatial/' + selectedSubject + '/csv?' + params;
 
@@ -257,7 +260,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           xtype:'combo',
           id: 'lapig_spatialintelligence::cmb-subject',
           displayField:'label',
-          fieldLabel: 'Informações sobre',
+          fieldLabel: i18n.LAPIGSPATIALINTELLIGENCE_FIELDLBL_INFO,
           valueField: 'id',
           mode: 'local',
           typeAhead: true,
@@ -273,15 +276,15 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'id'}
             ],
             data: [
-              ['Pecuária', 'livestock'],
-              ['Agricultura', 'agriculture']
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTLIVESTOCK, 'livestock'],
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTAGRICULTURE, 'agriculture']
             ]
           })
         },
         {
           xtype:'combo',
           displayField:'label',
-          fieldLabel: 'No estado de(o)',
+          fieldLabel: i18n.LAPIGSPATIALINTELLIGENCE_FIELDLBL_STATE,
           id: 'lapig_spatialintelligence::cmb-state',
           valueField: 'id',
           mode: 'local',
@@ -333,7 +336,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           xtype:'combo',
           id: 'lapig_spatialintelligence::cmb-sort',
           displayField:'label',
-          fieldLabel: 'Ordenar munícipios por',
+          fieldLabel: i18n.LAPIGSPATIALINTELLIGENCE_FIELDLBL_ORDER,
           valueField: 'id',
           mode: 'local',
           typeAhead: true,
@@ -349,15 +352,15 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'id'}
             ],
             data: [
-              ['Maior relevância', 'value'], 
-              ['Ordem alfabética', 'info'],
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTMOSTRELEVANT, 'value'], 
+              [i18n.LAPIGSPATIALINTELLIGENCE_OPTALPHAORDER, 'info'],
             ]
           })
         }
       ],
       buttons: [
         {
-          text: 'Consultar',
+          text: i18n.LAPIGSPATIALINTELLIGENCE_BTNTXT_CONSULT,
           id: 'lapig_spatialintelligence::btn-submit',
           disabled: true,
           listeners: {
@@ -378,7 +381,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         tbar: [
           {
             xtype: 'label',
-            text: 'Clique duas vezes no município para localizá-lo'
+            text: i18n.LAPIGSPATIALINTELLIGENCE_FIELDLBL_INSTRUCTION
           },
           '->',
           {
@@ -397,11 +400,11 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                   width: 600,
                   height: 360,
                   value: text,
-                  readOnly: true
+                  readOnly: true,
                 });
 
                 var metadataWin = new Ext.Window({
-                    title: "Metadados",
+                    title: i18n.LAPIGSPATIALINTELLIGENCE_TTLWIN_MTDATAS,
                     collapsible: false,
                     maximizable: false,
                     width: 350,
@@ -436,12 +439,12 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         disabled: true,
         columns:[
           {
-            header: 'Informação',
+            header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_INFO,
             dataIndex: 'info',
             width: 180,
           },
           {
-            header: 'Valor',
+            header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_VALUE,
             width: 100,
             dataIndex: 'value',
             align: 'right',
@@ -449,7 +452,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         ],
         autoScroll:true,
         stripeRows: true,
-        title: 'Resultados',
+        title: i18n.LAPIGSPATIALINTELLIGENCE_TTLAREA_RESULTS,
         requestMethod: 'GET',
         listeners: {
           'load': function(node) {

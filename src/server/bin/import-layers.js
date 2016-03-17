@@ -36,7 +36,7 @@ var parseCsv = function(filepath, callback) {
         "description": col[1],
         "region":regions,
         "subject":col[3].trim(),
-        "basepath":col[4].trim(),
+        "_id":col[4].trim(),
         "search":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4],
         "project": col[5].toUpperCase(),
         "metadata": col[6]
@@ -51,7 +51,7 @@ var parseCsv = function(filepath, callback) {
   });  
 }
 
-var insertLayers = function(dbUrl, layers, callback) {
+var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
 
   var MongoClient = mongodb.MongoClient;
 
@@ -69,7 +69,7 @@ var insertLayers = function(dbUrl, layers, callback) {
           notExistedLayers.push(layer.name)
       });
 
-      db.collection('layers', function(err, layersCollection) {
+      db.collection(layerCollectionName, function(err, layersCollection) {
         layersCollection.insert(existedLayers, null, function() {
           db.close();
 
@@ -117,7 +117,7 @@ var formatDate = function(date) {
 }
 
 var getLayerMultipleFiles = function(layersDir, layer, callback) {
-  var layerBasepath = path.join(layersDir, layer['subject'], layer['basepath']);
+  var layerBasepath = path.join(layersDir, layer['subject'], layer['_id']);
 
   var files = [];
 
@@ -166,7 +166,7 @@ var getLayerMultipleFiles = function(layersDir, layer, callback) {
 
 var checkLayerType = function(layersDir, layer, callback) {
 
-  var layerBasepath = path.join(layersDir, layer['subject'], layer['basepath']).replace(/\ /g, '\ ');;
+  var layerBasepath = path.join(layersDir, layer['subject'], layer['_id']).replace(/\ /g, '\ ');;
   var layerTiffPath = layerBasepath + '.tif';
   var layerShpPath = layerBasepath + '.shp';
 
@@ -188,12 +188,12 @@ var checkLayerType = function(layersDir, layer, callback) {
 }
 
 var getSource = function(layer) {
-  var nameTitle = layer.basepath.split('_');
+  var nameTitle = layer._id.split('_');
   return nameTitle[nameTitle.length-1];
 };
 
 var getScale = function(layer) {
-  var nameTitle = layer.basepath.split('_');
+  var nameTitle = layer._id.split('_');
   var scaleTitle = nameTitle[nameTitle.length-3];
 
   if (scaleTitle == 'ni')
@@ -211,7 +211,7 @@ var getScale = function(layer) {
 };
 
 var getYear = function(layer){
-  var nameTitle = layer.basepath.split('_');
+  var nameTitle = layer._id.split('_');
   var date = nameTitle[nameTitle.length - 2];
 
   return formatDate(date);
@@ -348,9 +348,9 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   var title = (isMultiple) ? layer.name + ' - ' + layer.date : layer.name;
 
   var params = {
-      'name': layer.basepath
+      'name': layer._id
     , 'description': layer.description.replace(/\'/g, "\\'").replace(/\"/g, '\\"')
-    , 'data': path.join(layer.subject, layer.basepath + extension)
+    , 'data': path.join(layer.subject, layer._id + extension)
     , 'title': title
     , 'extent': info.extent
     , 'type': info.type
@@ -371,7 +371,7 @@ var getFilePathRegexSpaces = function(layer, extension) {
 }
 
 var getFilePath = function(layer, extension) {
-  return path.join(layersDir, layer.subject, layer.basepath + extension);
+  return path.join(layersDir, layer.subject, layer._id + extension);
 }
 
 var getLayerFileInfo = function(layer, callback) {
@@ -383,7 +383,7 @@ var getLayerFileInfo = function(layer, callback) {
   if(layer.type == 'VECTOR') {
     
     var layerShpPath = getFilePathRegexSpaces(layer, '.shp');
-    var cmd = printf("ogrinfo -so -ro {0} {1} | grep -E 'Extent|Geometry' | cut -d':' -f2", [ layerShpPath, layer.basepath ]);
+    var cmd = printf("ogrinfo -so -ro {0} {1} | grep -E 'Extent|Geometry' | cut -d':' -f2", [ layerShpPath, layer._id ]);
 
     var output = child_process.execSync(cmd, { encoding: 'utf-8' });
     split = output.split(/\n/);
@@ -458,8 +458,8 @@ var createMapFile = function(layers, callback) {
       var onEachFileObj = function(file, nextFileObj) {
         var tmpLayer = _.clone(layer);
 
-        tmpLayer.subject = path.join(layer.subject, layer.basepath);
-        tmpLayer.basepath = file.name;
+        tmpLayer.subject = path.join(layer.subject, layer._id);
+        tmpLayer._id = file.name;
         tmpLayer.date = file.date;
         tmpLayer.type = file.type;
 
@@ -497,16 +497,15 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-
-var layersDir = "/home/leandro/Projetos/Github/lapig-maps/src/ows/data_dir/catalog/"
-var dbUrl = 'mongodb://localhost:27017/lapig-maps';
+var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.14\,share\=geo\,user\=fernanda.stefani/REPOSITÓRIO\ DE\ DADOS/DADOS\ DO\ PORTAL/"
 var filepath = 'layers.csv';
+var layerCollectionName = "layers"
+var dbUrl = 'mongodb://localhost:27017/lapig-maps';
 
 parseCsv(filepath, function(layers) {
- console.log(layers)
-  setLayers(layersDir, layers, function(layers) {
-    createMapFile(layers, function() {
-      insertLayers(dbUrl, layers, function() {});
-    });
-  })
+    setLayers(layersDir, layers, function(layers) {
+        createMapFile(layers, function() {
+          insertLayers(dbUrl, layerCollectionName, layers, function() {});
+        });
+    })
 });

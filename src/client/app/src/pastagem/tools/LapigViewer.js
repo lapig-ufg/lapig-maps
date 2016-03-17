@@ -39,6 +39,8 @@
  *
  */
 
+globalInstance = this;
+
 Ext.namespace("gxp");
 
 Ext.layout.BorderLayout.Region.prototype.getCollapsedEl = Ext.layout.BorderLayout.Region.prototype.getCollapsedEl.createSequence(function() {
@@ -50,16 +52,27 @@ Ext.layout.BorderLayout.Region.prototype.getCollapsedEl = Ext.layout.BorderLayou
 gxp.LapigViewer = Ext.extend(gxp.Viewer, {
     
     constructor: function(userLayers, lon, lat, zoomLevel, project) {
-      
+
+      var getLang = function(){
+        if(navigator.browserLanguage) {
+          return navigator.browserLanguage.toLowerCase();    
+        }
+        else if(navigator.language) {
+          return navigator.language.toLowerCase();
+        }
+      };
       var instance = this;
 
       Ext.Ajax.request({
         url: '/layers',
         method: 'POST',
-        jsonData: { "basepaths": layers },
+        jsonData: { "basepaths": userLayers, "language": getLang() },
         success: function(response) {
-          var layers = JSON.parse(response.responseText);
-          var config = instance.createLapigConfig(layers, lon, lat, zoomLevel, project);
+          var result = JSON.parse(response.responseText);
+          globalInstance.i18n = result.lang;
+          i18n.lang = getLang();
+
+          var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
           gxp.LapigViewer.superclass.constructor.apply(instance, [config]);
         }
       });
@@ -120,9 +133,11 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
       for (i in userLayers) {
         userLayers[i].source = 'ows';
         if(userLayers[i].last_name) {
+          userLayers[i].oldName = userLayers[i].name;
           userLayers[i].name = userLayers[i].last_name;
         } else {
-          userLayers[i].name = userLayers[i].basepath;
+          userLayers[i].oldName = userLayers[i].name;
+          userLayers[i].name = userLayers[i]._id;
         }
       }
 
@@ -166,7 +181,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapsible: true,
                   collapseMode: "mini",
                   header: true,
-                  title: 'Análise de Séries Temporais',
+                  title: i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES,
                   autoScroll: true
                 },
                 {
@@ -180,7 +195,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapseMode: "mini",
                   header: true,
                   layout:'fit',
-                  title: 'Análise de Informações Territoriais',
+                  title: i18n.LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS,
                 }
             ],
             bbar: {
@@ -192,11 +207,11 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             /********** Border layout regions */
             {
               ptype: "gxp_lapiglayermanager",
-              overlayNodeText: "Camadas",
-              baseNodeText: "Mapa Base", 
+              overlayNodeText: i18n.LAPIGVIEWER_LAYERMANAGER_OVERLAYNODETEXT,
+              baseNodeText: i18n.LAPIGVIEWER_LAYERMANAGER_BASENODETEXT, 
               outputConfig: {
                 id: "tree",
-                title: "Camadas",
+                title: i18n.LAPIGVIEWER_TTL_LAYER,
                 border: false,
                 tbar: []
               },
@@ -221,22 +236,22 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             /********** Tree ContextMenu */
             {
               ptype: "gxp_lapigdownload",
-              menuText: "Download da camada",
+              menuText: i18n.LAPIGVIEWER_DOWNLOAD_MENUTXT,
               actionTarget: ["tree.contextMenu"]
             },
             {
               ptype: "gxp_lapigdownloadall",
-              menuText: "Download de toda série temporal",
+              menuText: i18n.LAPIGVIEWER_DOWNLOADALL_MENUTXT,
               actionTarget: ["tree.contextMenu"]
             },
             {
               ptype: "gxp_zoomtolayerextent",
-              menuText: "Zoom na camada",
+              menuText: i18n.LAPIGVIEWER_ZOOMTOLAYEREXTENT_MENUTXT,
               actionTarget: {target: "tree.contextMenu"}
             },
             {
               ptype: "gxp_removelayer",
-              removeMenuText: "Remover camada",
+              removeMenuText: i18n.LAPIGVIEWER_REMOVELAYER_RMVMENUTXT,
               actionTarget: ["tree.contextMenu"]
             },
             
@@ -244,48 +259,70 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             {
               ptype: "gxp_lapigaddlayer",
               actionTarget: "tree.tbar",
-              addActionText: "Camadas",
+              text: i18n.LAPIGVIEWER_ADDLAYER_BTNTXT,
+              tooltip: i18n.LAPIGVIEWER_ADDLAYER_TLTP,
               project: project
             },
             {
               ptype: "gxp_lapigdownload",
-              menuText: "Download",
-              actionTarget: ["tree.tbar"]
+              menuText: i18n.LAPIGVIEWER_DOWNLOAD_BTNMENUTXT,
+              actionTarget: ["tree.tbar"],
+              tooltip: i18n.LAPIGVIEWER_DOWNLOAD_TLTP
             },
 
             /********** Map ContextMenu */
             {
               ptype: "gxp_lapigprint",
-              actionTarget: {target: "map.tbar"}
+              actionTarget: {target: "map.tbar"},
+              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
             },
             {
               ptype: "gxp_lapigcoordinates",
+              tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
               actionTarget: {target: "map.tbar"}
             },
             {
               ptype: "lapig_spatialintelligencebtn",
+              menuText: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT,
+              actionTip: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_ACTTIP,
               actionTarget: {target: "map.tbar"}
             },
             {
               ptype: "gxp_lapigrasterseriesbtn",
+              MenuText: i18n.LAPIGVIEWER_RASTERSERIESBTN_MENUTXT,
+              Tooltip: i18n.LAPIGVIEWER_RASTERSERIESBTN_TLTP,
               actionTarget: {target: "map.tbar"}
             },
             {
               ptype: "gxp_navigationhistory",
+              nextMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTMENUTXT,
+              nextTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTTLTP,
+              previousMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVMENUTXT,
+              previousTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVTLTP,
               actionTarget: {target: "map.tbar"}
             },
             {
               ptype: "gxp_lapigzoom",
+              zoomMenuText: i18n.LAPIGVIEWER_ZOOM_ZMMENUTXT,
+              zoomOutMenuText: i18n.LAPIGVIEWER_ZOOM_ZMOUTMENUTXT,
+              zoomTooltip: i18n.LAPIGVIEWER_ZOOM_ZMTLP,
+              zoomInTooltip: i18n.LAPIGVIEWER_ZOOM_ZMINTLP,
+              zoomOutTooltip: i18n.LAPIGVIEWER_ZOOM_ZMOUTTLP,
               showZoomBoxAction: true,
               actionTarget: {target: "map.tbar"}
             }, 
             {
-              ptype: "gxp_lapigwmsgetfeatureinfo", format: 'grid', toggleGroup: this.toggleGroup,
-              popupTitle: "Informações", infoActionTip: "Informações das Feições",
+              ptype: "gxp_lapigwmsgetfeatureinfo", 
+              format: 'grid', 
+              toggleGroup: this.toggleGroup,
+              popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
+              infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
               actionTarget: {target: "map.tbar"}
             },
             {
-              ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+              ptype: "gxp_navigation", 
+              tooltip: i18n.LAPIGVIEWER_NAVIGATION_TLTP,
+              toggleGroup: this.toggleGroup,
               actionTarget: {target: "map.tbar"}
             },
           ],
@@ -314,7 +351,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           },
           map: {
             id: "mymap",
-            title: "Mapa",
+            title: i18n.LAPIGVIEWER_TTL_MAP,
             projection: "EPSG:900913",
             units: "m",
             center: [center.lon,center.lat],

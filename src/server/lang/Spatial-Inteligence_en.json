@@ -1,0 +1,40 @@
+{
+	"subjects": {
+		"Agricultura": "Agriculture",
+		"Pecuária": "Livestock"
+	},
+	"layers": {
+		"agriculture_crop": {
+			"title": "Occupation by annual agriculture",
+			"metadata": "Data generated and organized by Agrosatélite."
+		},
+		"agriculture_forest": {
+			"title": "Occupation by planted forest",
+			"metadata": "Data organized by Agrosatélite."
+		},
+		"agriculture_sugar_cane": {
+			"title": "Occupation by cane sugar",
+			"metadata": "Data generated and organized by Agrosatélite as part of Canasat project"
+		},
+		"livestock_burned_2014": {
+			"title": "Burned area (2014)",
+			"metadata": "Data produced by LAPIG / UFG from MODIS (MCD45A1)."
+		},
+		"livestock_deforestation_2014": {
+			"title": "Deforested area (2014)",
+			"metadata": "Data organized by LAPIG / UFG adding DETER information (in real time deforestation detection) for the Amazon biome and SIAD (Integrated deforestation alert) for the Cerrado biome."
+		},
+		"livestock_grasslands": {
+			"title": "Pasture areas",
+			"metadata": "Map of the pasture areas  organized by LAPIG / UFG, from compiling TerraClass Amazon data; FUNCATE; PROBIO; Canasat and TNC."
+		},
+		"livestock_cattle_heads_2013": {
+			"title": "Cattle Herd (2013)",
+			"metadata": "Data acquired from the research of Municipal Livestock conducted by IBGE."
+		},
+		"livestock_slaughterhouse": {
+			"title": "Refrigerated warehouse / Slaughterhouses",
+			"metadata": "Data from the Ministry of Agriculture and geocoded from the supplied address."
+		}
+	}
+}

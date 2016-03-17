@@ -9,6 +9,7 @@ module.exports = function(app) {
 	var Internal = {};
 
 	var config = app.config;
+	var translateEN = require(config.langDir + '/Time-Series_en.json');
 
 	Internal.requestTimeSeries = function(id, longitude, latitude, mode, callback) {
 		
@@ -19,11 +20,11 @@ module.exports = function(app) {
 
 		ChildProcess.exec(cmd, function (error, stdout, stderr) {
 				
-			if(stderr)
+			if(stderr){
 				console.log(stderr)
-			
+			}
+
 	   	stdout=stdout.replace(/\'/g, '"');
-	 		console.log(stdout);
 
 	   	var result = JSON.parse(stdout);
 	   	
@@ -72,19 +73,19 @@ module.exports = function(app) {
 		})
 	};
 
-	TimeSerie.byId = function(request, response){
+	TimeSerie.byId = function(request, response, next){
 
 		var timeSeriesCollection = app.repository.collections.timeSeries;
 
 		var id = request.param('id');
 
 		timeSeriesCollection.findOne({_id : id}, function(err, timeSeries) {
-			response.send(timeSeries);
-			response.end()
+			request.finalizeResultById = timeSeries;
+			next();
 		})
 	};
 
-	TimeSerie.tree = function(request, response) {
+	TimeSerie.tree = function(request, response, next) {
 		
 		var timeSeriesCollection = app.repository.collections.timeSeries;
 
@@ -143,8 +144,8 @@ module.exports = function(app) {
 			    return 0;
 				})
 
-				response.send(result);
-				response.end();
+				request.finalizeResultTree = result;
+				next();
 			}
 
 			async.each(subjects, interate, finalize);
@@ -238,6 +239,51 @@ module.exports = function(app) {
     	response.send(result);
 			response.end();
     });
+	};
+
+	TimeSerie.translateTree = function(request, response){
+		if (response){
+				var result = request.finalizeResultTree;
+				var language = response.req.query.lang;
+
+				if(language != 'pt-br'){
+						result.forEach(function(layer) {
+								nameCat = layer.text;
+								categoriaEn = translateEN.subjects[nameCat];
+								layer.text = categoriaEn;
+
+								for(i=0; i<layer.children.length; i++){
+										idLayer = layer.children[i].id;
+										nameEn = translateEN.layers[idLayer];
+
+										if (translateEN.layers[idLayer] != undefined){
+												layer.children[i].text = nameEn.name
+										}
+								}
+						})
+				}
+
+				response.send(result);
+				response.end();
+		}
+	}
+
+	TimeSerie.translateById = function(request,response){
+			if(response){
+					var result = request.finalizeResultById
+					var language = request.param('lang')
+
+					if(language !='pt-br'){
+							idLayer = result._id;
+							translateNameDesc = translateEN.layers[idLayer];
+							
+							result.name = translateNameDesc.name;
+							result.description = translateNameDesc.description;
+					}
+
+					response.send(result);
+					response.end();
+			}
 	}
 	
 	return TimeSerie;

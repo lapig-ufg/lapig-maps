@@ -35,7 +35,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     lapig.tools.RasterSeries.superclass.constructor.apply(this, arguments);
 
     this.projectsParam = config.project.join(',');
-    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam;
+    this.timeSeriesTreeUrl = 'time-series/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
 
     Ext.chart.Chart.CHART_URL = 'src/ext/resources/charts.swf';
   },
@@ -216,9 +216,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
   getSeriesActiveTab: function(){
     var instance = this;
-    var tabseries = Ext.getCmp('lapig-raster-series-tab-pnl').getActiveTab();
+    var tab = Ext.getCmp('lapig-raster-series-tab-pnl').getActiveTab();
 
-    if(~tabseries.getId().indexOf("trend")){
+    if(tab.getId().indexOf("trend") != -1){
       return {
         name:instance.tabProperties.name[instance.tabProperties.trend],
         index: instance.tabProperties.trend
@@ -289,7 +289,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       height:440,
       closeAction:'hide',
       plain: true,
-      title: 'Dados Temporais',
+      title: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
       items:[
         {
           region: 'center',
@@ -300,7 +300,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           border:false,
           items: [
             {
-              title: 'Categorias',
+              title: i18n.LAPIGRASTERSERIES_TTLAREA_CAT,
               region: 'west',
               xtype: 'treepanel',
               border: false,
@@ -321,7 +321,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               dataUrl: this.timeSeriesTreeUrl,
               requestMethod: 'GET',
               columns:[{
-                header: 'Assuntos',
+                header: 'Assuntos', //TODO translate
                 dataIndex: 'task',
                 width: 200
               }],
@@ -342,7 +342,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               }
             },
             {
-              title: 'Detalhes',
+              title: i18n.LAPIGRASTERSERIES_TTLAREA_DETAILS,
               border:false,
               frame:true,
               region: 'center',
@@ -355,6 +355,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               id: 'lapig_rasterseries::frm-info',
               waitMsgTarget: 'lapig_rasterseries::frm-info',
               disabled: true,
+              baseParams: {
+                'projects': this.projectsParam,
+                'lang': i18n.lang
+              },
               reader:  new Ext.data.JsonReader({
                 idProperty: '_id',
                 root: '',
@@ -373,7 +377,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype: 'textfield',
                   hideLabel: false,
                   anchor:'100%',
-                  fieldLabel:'Nome',
+                  fieldLabel:i18n.LAPIGRASTERSERIES_FIELDLBL_NAME,
                   name: "name",
                   width:350,
                   height:20,
@@ -383,7 +387,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype: 'textarea',
                   hideLabel: false,
                   anchor:'100%',
-                  fieldLabel:'Descrição',
+                  fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_DESCRIPTION,
                   name: "description",
                   padding: "0px 0px 0px 0px",
                   width:350,
@@ -406,7 +410,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       items: [
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Satélite',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SATELLITE,
                           name: "satelite",
                           height: 20,
                           readOnly: true,
@@ -418,7 +422,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             id: 'lapig_rasterseries::frm-info-source',
                             html: "",
                             height: 69,
-                            fieldLabel: 'Fonte',
+                            fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SOURCE,
                             readOnly: true,
                             border: false,
                             cls: 'form-logo-field'
@@ -435,7 +439,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       items: [
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Período',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_PERIOD,
                           name: 'date',
                           height: 20,
                           width: 165,
@@ -444,7 +448,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         },
                         {
                             xtype:'textfield',
-                            fieldLabel: 'Escala',
+                            fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SCALE,
                             name: 'scale',
                             height: 20,
                             width: 165,
@@ -453,7 +457,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         },
                         {
                           xtype:'textfield',
-                          fieldLabel: 'Unidade de Medida',
+                          fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_UNIMEASURE,
                           name: 'pixelMeasure',
                           height: 20,
                           width: 165,
@@ -466,7 +470,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 },
               ],
               buttons: [{
-                text: 'Selecionar',
+                text: i18n.LAPIGRASTERSERIES_BTNTXT_SELECT,
                 listeners: {
                   click: function(evt) {
                     var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
@@ -527,6 +531,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endYearCmb = Ext.getCmp('lapig-raster-series-tab-'+ activeTab.name +'-cmb-end-year');
 
       var timeSeriesName = Ext.getCmp('lapig_rasterseries::frm-info').getForm().reader.jsonData.name;
+      //TODO translate
       Ext.getCmp('southpanel').setTitle('Análise de Séries Temporais - '+timeSeriesName);
 
       if(instance.chartData[activeTab.index] == undefined){
@@ -568,12 +573,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           region: "center",
           items: [
             {
-              title: "Série temporal",
+              title: "Série temporal", //Time series //TODO Translate
               id: "lapig-raster-series-tab-series",
               layout: "border",
               tbar: [
                 {
-                  text: 'Dados Temporais',
+                  text: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
                   iconCls: 'lapig-icon-add-2',
                   xtype:"button",
                   listeners: {
@@ -584,7 +589,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Período:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
                 {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-series-cmb-start-year",
@@ -608,7 +613,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     select: filterChartData
                   }
                 }, 
-                'a'
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_A
                 , {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-series-cmb-end-year",
@@ -633,7 +638,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Valores de:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_VALUES,
                 {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-series-cmb-start-value",
@@ -656,7 +661,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     select: filterChartData
                   }
                 }, 
-                'a'
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_A
                 , {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-series-cmb-end-value",
@@ -681,7 +686,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Filtro:'
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_FILTER
                 ,{
                   xtype:'combo',
                   id: 'lapig-raster-series-tab-series-cmb-interpolation',
@@ -702,7 +707,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Agupar por:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_GROUP,
                 {
                   xtype:'combo',
                   id: 'lapig-raster-series-tab-series-cmb-group-data',
@@ -720,15 +725,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       {name: 'label'}
                     ],
                     data: [
-                      ['NONE_NONE', 'Nenhum' ],
-                      ['YEAR_mean', 'Ano (média)' ],
-                      ['YEAR_sum', 'Ano (somatório)' ],
-                      ['NPP_mean', 'Out-Abr (média)' ],
-                      ['NPP_sum', 'Out-Abr (somatório)' ],
-                      ['MONTH_mean', 'Mês (média)' ],
-                      ['MONTH_sum', 'Mês (somatório)' ],
-                      ['DAY_mean', 'Dia (média)' ],
-                      ['DAY_sum', 'Dia (somatório)' ],
+                      ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE ],
+                      ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE ],
+                      ['YEAR_sum', i18n.LAPIGRASTERSERIES_GROUPCB_YEARSUM ],
+                      ['NPP_mean', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRAVER ],
+                      ['NPP_sum', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRSUM ],
+                      ['MONTH_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHAVER ],
+                      ['MONTH_sum', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHSUM ],
+                      ['DAY_mean', i18n.LAPIGRASTERSERIES_GROUPCB_DAYAVER ],
+                      ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM ],
                     ]
                   }),
                   listeners: {
@@ -786,6 +791,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         if(serie.interpolation == null) {
                           return date + ": " + originalValue
                         } else {
+                          //TODO Translate
                           return date + "\n" 
                                 + " Original: " + originalValue + "\n"
                                 + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
@@ -843,13 +849,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               ]
             },
             {
-              title: "Tendêcia",
+              title: "Tendêcia", //Trend //TODO Translate
               id: "lapig-raster-series-tab-trend",
               layout: "border",
               disabled: true,
               tbar: [
                 {
-                  text: 'Dados Temporais',
+                  text: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
                   iconCls: 'lapig-icon-add-2',
                   xtype:"button",
                   listeners: {
@@ -860,7 +866,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Período:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
                 {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-trend-cmb-start-year",
@@ -881,7 +887,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     ]
                   }
                 }, 
-                'a',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_A,
                 {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-trend-cmb-end-year",
@@ -903,7 +909,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Filtro:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_FILTER,
                 {
                   xtype:'combo',
                   id: 'lapig-raster-series-tab-trend-cmb-interpolation',
@@ -922,7 +928,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }
                 },
                 '-',
-                'Agupar por:',
+                i18n.LAPIGRASTERSERIES_FIELDLBLCB_GROUP,
                 {
                   xtype:'combo',
                   id: 'lapig-raster-series-tab-trend-cmb-group-data',
@@ -940,14 +946,14 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       {name: 'label'}
                     ],
                     data: [
-                      ['NONE_NONE', 'Nenhum' ],
-                      ['YEAR_mean', 'Ano (média)' ],
-                      ['MONTH-YEAR_mean', 'Mês-Ano (média)' ]
+                      ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE ],
+                      ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE ],
+                      ['MONTH-YEAR_mean', 'Mês-Ano (média)' ] //TODO Translate
                     ]
                   })
                 },
                 '-',
-                'Tempo em que ocorre mudança:',
+                'Tempo em que ocorre mudança:', //TODO Translate //Time on which change occurs
                 {
                   xtype:'numberfield',
                   id: 'lapig-raster-series-tab-trend-num-time-change',
@@ -979,15 +985,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       {name: 'label'}
                     ],
                     data: [
-                      ['DAY', 'Dias' ],
-                      ['MONTH', 'Meses' ],
-                      ['YEAR', 'Anos']
+                      ['DAY', 'Dias' ],//TODO Translate
+                      ['MONTH', 'Meses' ],//TODO Translate
+                      ['YEAR', 'Anos']//TODO Translate
                     ]
                   })
                 },
                 {
                   xtype: 'button',
                   id: 'lapig-raster-series-tab-trend-btn-refresh',
+                  tooltip: "Recalcular tendência", //TODO Translate
                   iconCls: 'lapig-icon-refresh',
                   disabled: true,
                   listeners: {
@@ -1061,10 +1068,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         var trendValue = Ext.util.Format.number(serie.trend, numberFormat);
 
                         if(serie.interpolation != null) {
+                          //TODO Translate
                           return date + "\n" 
                                 + " Tendência: " + trendValue + "\n"
                                 + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
                         } else if(serie.original != null){
+                          //TODO Translate
                           return date + "\n" 
                                 + " Tendência: " + trendValue + "\n"
                                 + " Original: " + Ext.util.Format.number(serie.original, numberFormat);
@@ -1132,7 +1141,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             }
           ]
         }
-      ],
+      ]
     }
   },
 
@@ -1145,6 +1154,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var endYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue();
 
     if (endYear - startYear < 1){
+      //TODO translate
       return Ext.MessageBox.alert('LAPIG-Maps - Validação', "O período a ser analisado deve possuir pelo menos 1 ano.");
     }
 
@@ -1185,6 +1195,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.chartData[activeTab.index] = jsonResponse;
           instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
+          //TODO translate
           Ext.MessageBox.alert('LAPIG-Maps - Validação', "Atenção: " + jsonResponse.error);
           instance.chartData[activeTab.index] = oldChartData;
           instance.drawTrend(instance.chartData[activeTab.index]);
@@ -1256,7 +1267,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   initLoadChartDataMask: function() {
     var instance = this;
     var chartPanel = Ext.getDom('lapig-raster-series-tab-pnl');
-    var msgText = "Isto pode levar alguns minutinhos, relaxe e tome um café... ";
+    var msgText = "Isto pode levar alguns minutinhos, relaxe e tome um café... "; //TODO translate
     var activeTab = instance.getSeriesActiveTab();
 
     instance.loadMask = new Ext.LoadMask(chartPanel, { msg: msgText });
@@ -1350,7 +1361,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     instance.setSeriesActiveTabDisabled(true);
 
-    Ext.getCmp('southpanel').setTitle('Análise de Séries Temporais');
+    Ext.getCmp('southpanel').setTitle('Análise de Séries Temporais'); //TODO translate
     instance.seriesProperties = undefined;
     instance.chartData[activeTab.index] = undefined;
   },
@@ -1372,6 +1383,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabProperties.trend){
       if (timeseriesId.indexOf('MOD13Q1') == -1) {
+        //TODO translate
         Ext.MessageBox.alert('LAPIG-Maps - Validação', "A tendência pode ser calculada apenas para dados MOD13Q1");
         instance.restartChart();
         return;
@@ -1429,7 +1441,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var interpolations = []
         instance.chartData[activeTab.index].series.forEach(function(serie) {
           if(serie.id == 'original')
-            serie.label = 'Nenhum';
+            serie.label = 'Nenhum'; //TODO translate
           else if(serie.type == 'trends'){
             instance.trendPosition = serie.position;
             return;
@@ -1478,11 +1490,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     return [
       {
-        text: "Selecione uma coordenada para continuar",
+        text: "Selecione uma coordenada para continuar", //TODO translate
         xtype: "label",
       },
       {
-        text: "Gerar gráfico",
+        text: "Gerar gráfico", //TODO translate
         xtype: "button",
         disabled: true,
         listeners: {
@@ -1503,6 +1515,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
             coordinateName = (coordinateName) ? " - " + coordinateName : ""
 
+            //TODO translate
             southPanel.setTitle('Análise de Séries Temporais - ' + timeSeriesName);
 
             var lapigCoordinatesWin = Ext.getCmp('lapig-coordinates-window');

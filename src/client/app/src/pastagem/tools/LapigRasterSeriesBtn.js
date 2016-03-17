@@ -30,20 +30,20 @@ gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Text for remove menu item (i18n).
      */
-    removeMenuText: 'Análise de Séries Temporais',
+    MenuText: 'Análise de Séries Temporais',
 
     /** api: config[removeActionTip]
      *  ``String``
      *  Text for remove action tooltip (i18n).
      */
-    removeActionTip: 'Análise de Séries Temporais',
+    Tooltip: 'Análise de Séries Temporais',
     
     /** api: method[addActions]
      */
     addActions: function() {
         var actions = gxp.plugins.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
-            menuText: this.removeMenuText,
-            tooltip: this.removeActionTip,
+            menuText: this.MenuText,
+            tooltip: this.Tooltip,
             icon   : 'theme/app/img/chart_xy.png',
             handler: function() {
                 Ext.getCmp('southpanel').expand(true);

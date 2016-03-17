@@ -25,8 +25,6 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_lapigdownload",
     
     menuText: "Download",
-
-    removeActionTip: "Download da camada",
     
     addActions: function() {
         var selectedLayer;
@@ -35,7 +33,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
             text: this.menuText,
             iconCls: "gxp-icon-asyncdownloadlayer",
             disabled: true,
-            tooltip: this.removeActionTip,
+            tooltip: this.tooltip,
             handler: function() {
                 this.removeOutput();
                 this.addOutput(selectedLayer);

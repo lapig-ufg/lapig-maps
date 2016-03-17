@@ -1,0 +1,11 @@
+_id#Title#Metadata#Categoria#Categorie
+agriculture_crop#Occupation by annual agriculture#Data generated and organized by Agrosatélite.#Agricultura#Agriculture
+agriculture_forest#Occupation by planted forest#Data organized by Agrosatélite.#Agricultura#Agriculture
+agriculture_sugar_cane#Occupation by cane sugar#Data generated and organized by Agrosatélite as part of Canasat project#Agricultura#Agriculture
+livestock_burned_2014#Burned Area (2014)#Data organized by LAPIG / UFG adding DETER information (in real time deforestation detection) for the Amazon biome and SIAD (Integrated deforestation alert) for the Cerrado biome.#Agricultura#Agriculture
+livestock_deforestation_2014#Deforested area (2014)#Data organized by LAPIG / UFG adding DETER information (in real time deforestation detection) for the Amazon biome and SIAD (Integrated deforestation alert) for the Cerrado biome.#Agricultura#Agriculture
+livestock_grasslands#Pasture areas#Map of the pasture areas  organized by LAPIG / UFG, from compiling TerraClass Amazon data; FUNCATE; PROBIO; Canasat and TNC.#Pecuária#Livestock
+livestock_cattle_heads_2013#Cattle Herd (2013)#Data acquired from the research of Municipal Livestock conducted by IBGE.#Pecuária#Livestock
+livestock_slaughterhouse#Refrigerated warehouse / Slaughterhouses#Data from the Ministry of Agriculture and geocoded from the supplied address.#Pecuária#Livestock
+livestock_burned_2014#Burned area (2014)#Data produced by LAPIG / UFG from MODIS (MCD45A1).#Pecuária#Livestock
+livestock_deforestation_2014#Deforested area (2014)#Data organized by LAPIG / UFG adding DETER information (in real time deforestation detection) for the Amazon biome and SIAD (Integrated deforestation alert) for the Cerrado biome.#Pecuária#Livestock
