@@ -13,7 +13,8 @@ var express = require('express')
 , async = require('async')
 , timeout = require('connect-timeout')
 , bodyParser = require('body-parser')
-, multer = require('multer');
+, multer = require('multer')
+, session = require('express-session');
 
 var app = express();
 
@@ -25,6 +26,8 @@ load('config.js', {'verbose': false})
 app.middleware.repository.init(function() {
 
 	app.repository = app.middleware.repository;
+
+	app.use(session({secret: 'LAPIG-MAPS'}));
 
 	app.use(compression());
 	app.use(express.static(app.config.clientDir));

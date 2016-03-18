@@ -296,7 +296,11 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                         if (j == this.defaultAction) {
                             a[j].pressed = true;
                         }
-                        a[j] = new Ext.Action(a[j]);
+                        if(a[j].text == '->') {
+                            a[j] = new Ext.Toolbar.Fill();
+                        } else {
+                            a[j] = new Ext.Action(a[j]);
+                        }
                     }
                 }
                 action = a[j];

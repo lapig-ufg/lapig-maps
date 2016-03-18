@@ -96,6 +96,14 @@ div.olControlMousePosition {
     background-image: url(img/ico_print.png); !import
 }
 
+.gxp-icon-lapiglogin {
+    background-image: url(img/login.png); !import   
+}
+
+.gxp-icon-lapiglogout {
+    background-image: url(img/logout.png); !import   
+}
+
 .lapig-icon-add-2 {
     background-image: url(img/add-2.png); !import
 }
@@ -136,6 +144,11 @@ div.olControlMousePosition {
 .x-form-cb-label {
     font-size: 12px;
 }
+/*
+.lapig-login{
+    width: '15%',
+    margin-left: '640px',
+}*/
 
 /* gxp_metadatalayer
 .x-btn .gxp-icon-imagestats, .x-menu-item .gxp-icon-imagestats, .x-tree-node .gxp-icon-imagestats {

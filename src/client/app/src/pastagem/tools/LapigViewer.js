@@ -36,6 +36,7 @@
  * @require tools/LapigRasterSeriesBtn.js
  * @require tools/LapigWMSGetFeatureInfo.js
  * @require tools/LapigDownloadAll.js
+ * @require tools/LapigLogin.js
  *
  */
 
@@ -203,7 +204,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             }
           },
           tools: [
-
             /********** Border layout regions */
             {
               ptype: "gxp_lapiglayermanager",
@@ -325,6 +325,16 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               toggleGroup: this.toggleGroup,
               actionTarget: {target: "map.tbar"}
             },
+            { 
+              actionTarget: { target: "map.tbar", index: 18 },
+              actions: {
+                text: "->"
+              }
+            },
+            {
+              ptype: "gxp_lapiglogin",
+              actionTarget: { target: "map.tbar", index: 19 }
+            }
           ],
           defaultSourceType: "gxp_lapigwmscsource",
           sources: {
