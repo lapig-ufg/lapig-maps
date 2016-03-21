@@ -14,7 +14,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         var patt = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]+");
         var res = patt.test(jsonData._id);
         if(res == false){
-            Ext.MessageBox.alert("","E-mail inválido!") 
+            Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_INVALIDEMAIL) 
         } else {
             if(jsonData.password == jsonData.repeatPassword){
                 var panelCadast = Ext.Ajax.request({
@@ -22,17 +22,20 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     method: 'PUT',
                     jsonData: jsonResult,
                     success: function (response){
-                        if((response.responseText == "Cadastro invalido") || (jsonData.password != jsonData.repeatPassword)){
-                            Ext.MessageBox.alert("","E-mail já utilizado")
+                        var responseText = response.responseText
+                        var user = JSON.parse(responseText)
+
+                        if((user.result == false) || (jsonData.password != jsonData.repeatPassword)){
+                            Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_ALREADYUSED)
                         } else {
-                            Ext.MessageBox.alert("","O usuário "+firstName[0]+" foi cadastrado com sucesso")
+                            Ext.MessageBox.alert("", i18n.LAPIGLOGIN_ALERT_THEUSER +" "+ firstName[0] +" "+ i18n.LAPIGLOGIN_ALERT_THEUSERCOMP)
                             callback()
                             Ext.getCmp('idCadaster').close()
                         }
                     },
                 })
             }else{
-                Ext.MessageBox.alert("","Senha incorreta!")
+                Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_INCORRECTPASS)
             }
         }
     },
@@ -67,11 +70,13 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             method: 'POST',
             jsonData: keysLogin,
             success: function (response){
-                if(response.responseText == 'Error'){
-                    Ext.MessageBox.alert('',"Senha ou ID inválidos.")
+
+                var responseText = response.responseText
+                var user = JSON.parse(responseText)
+
+                if(user.error == true){
+                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID)
                 }else{
-                    var responseText = response.responseText
-                    var user = JSON.parse(responseText)
                     user = user.name
                     user = user.split(' ')
                     callback()
@@ -94,36 +99,36 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             width: 250,
             defaults: {width: 150},
             items: [{
-                name: "_id",
-                id: 'idLogin',
-                xtype: 'textfield',
-                fieldLabel: 'E-mail'
-            },{
                 name: 'name',
                 xtype: 'textfield',
-                fieldLabel: 'Nome'
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_NAME
             },{
                 name: 'ocupation',
                 xtype: 'textfield',
-                fieldLabel: 'Ocupação'
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_OCCUPATION
             },{
                 name: 'instituition',
                 xtype: 'textfield',
-                fieldLabel: 'Instituição'
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_INSTITUTION
+            },{
+                name: "_id",
+                id: 'idLogin',
+                xtype: 'textfield',
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_EMAIL
             },{
                 name: "password",
                 id: 'idSenha',
                 xtype: 'textfield',
                 inputType: 'password',
-                fieldLabel: 'Senha'
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
             },{
                 name: 'repeatPassword',
                 xtype: 'textfield',
                 inputType: 'password',
-                fieldLabel: 'Repetir Senha'
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD
             }],
             buttons: [{
-                text: 'Confirmar',
+                text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                 listeners: {
                     click: function(n){
                         instance.userRegister(function() {
@@ -131,7 +136,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             var formPanel = form.getForm()
                             var jsonData = formPanel.getValues()
                             var keysLogin = {jsonData}
-                            console.log('keysLogin: ',keysLogin)
+
                             instance.userLogin(keysLogin, function(){
                                 instance.userInfo()
                             })
@@ -143,7 +148,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
         var screenCadaster = new Ext.Window({
             id: 'idCadaster',
-            title: 'Cadastro',
+            title: i18n.LAPIGLOGIN_TITLE_REGISTER,
             closable: true,
             border: false,
             width: 260,
@@ -174,10 +179,10 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.LapigLogin.superclass.addActions.apply(this,[
             {
                 menuText: 'Lapig Login',
-                tooltip: 'Login',
+                tooltip: i18n.LAPIGLOGIN_TXT_LOGIN,
                 id: 'buttonLogin',
                 iconCls: 'gxp-icon-lapiglogin',
-                text: "Login",
+                text: i18n.LAPIGLOGIN_TXT_LOGIN,
                 xtype: 'button',
                 handler: function() {
                     var form = new Ext.FormPanel({
@@ -193,15 +198,15 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                         items: [{
                                 name: '_id',
                                 xtype: 'textfield',
-                                fieldLabel: "E-mail"
+                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_EMAIL
                             },{
                                 name: 'password',
                                 xtype: 'textfield',
                                 inputType: 'password',
-                                fieldLabel: "Senha"
+                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
                             }],
                         buttons: [{
-                            text: "Confirmar",
+                            text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                             listeners:{
                                 click:  function(n){
                                     var login = Ext.getCmp('formId')
@@ -215,7 +220,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 }
                             }
                         },{
-                            text: "Cadastre-se",
+                            text: i18n.LAPIGLOGIN_BTNTXT_REGISTER,
                             listeners:{
                                 click: function(n){
                                     instance.formCadastro()
@@ -226,7 +231,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     })
 
                     var win = new Ext.Window({
-                        title: 'Login',
+                        title: i18n.LAPIGLOGIN_TXT_LOGIN,
                         id: 'idWindow',
                         closable:true,
                         width:270,
@@ -245,20 +250,20 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         gxp.plugins.LapigLogin.superclass.addActions.apply(this,[
             {
                 menuText: 'Lapig Login User',
-                tooltip: 'Usuário',
+                tooltip: i18n.LAPIGLOGIN_TXT_USER,
                 id: 'buttonLogout',
                 xtype: 'splitbutton',
                 menu: ({
                     items: [{
                         iconCls: 'gxp-icon-lapiglogout',
-                        text: "Logout",
+                        text: i18n.LAPIGLOGIN_TXT_LOGOUT,
                         handler: function(){
                             var panelLogout = new Ext.FormPanel({
                                 region:'center',
                                 id: 'formIdLogout',
                                 url:'save-form.php',
                                 buttons: [{
-                                    text: "Sim",
+                                    text: i18n.LAPIGLOGIN_BTNTXT_YES,
                                     listeners: {
                                         click: function(n){
                                             Ext.getCmp('idLogout').close()
@@ -266,7 +271,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                         }
                                     }
                                 },{
-                                    text: "Não",
+                                    text: i18n.LAPIGLOGIN_BTNTXT_NO,
                                     listeners: {
                                         click: function(n){
                                             Ext.getCmp('idLogout').close()
@@ -276,7 +281,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             });
 
                             var winLogout = new Ext.Window({
-                                title: "Deseja sair?",
+                                title: i18n.LAPIGLOGIN_TITLE_WINLOGOUT,
                                 id: 'idLogout',
                                 closable:true,
                                 width:185,

@@ -11,11 +11,12 @@ module.exports = function (app) {
 		delete user['repeatPassword']
 		
  		UserCollection.insertOne(user, function(failure, success){
+
 		  if(failure){
-		  	response.send("Cadastro invalido")
+		  	response.send({ result: false })
 		  	response.end()
 		  }else{
-		  	response.send("Cadastro efetuado com sucesso. Bem vindo!")
+		  	response.send({ result: true })
 			response.end()
 		  }
 		})
@@ -31,7 +32,7 @@ module.exports = function (app) {
 
 		UserCollection.findOne({_id: id, password: password}, {}, function(err, user){
 			if(user == null){
-				response.send('Error')
+				response.send({ error: true})
 				response.end()
 			} else {
 				request.session.user = user
