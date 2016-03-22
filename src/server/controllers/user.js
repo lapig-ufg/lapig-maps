@@ -8,17 +8,29 @@ module.exports = function (app) {
 		var password = user.password
 		var hash = crypto.createHash('md5').update(password).digest('hex')
 		user.password = hash
-		delete user['repeatPassword']
 		
- 		UserCollection.insertOne(user, function(failure, success){
-		  if(failure){
-		  	response.send("Cadastro invalido")
-		  	response.end()
-		  }else{
-		  	response.send("Cadastro efetuado com sucesso. Bem vindo!")
+		if(password != user.repeatPassword){
+			response.send({
+				success: false,
+				error: "senha"
+			}) 
 			response.end()
-		  }
-		})
+		} else {
+	 		UserCollection.insertOne(user, function(failure, success){
+				if(failure){
+			  		response.send({
+			  			success: false,
+			  			error: "email"
+			  		})
+					response.end()
+				} else {
+			  		response.send({
+			  			success: true,
+			  		})
+					response.end()
+				}
+			})
+		}
 	}
 	
 	User.login = function(request, response) {

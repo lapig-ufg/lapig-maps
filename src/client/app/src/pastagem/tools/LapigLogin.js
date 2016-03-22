@@ -11,30 +11,63 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         var jsonResult = {jsonData}
         var firstName = []
         firstName = (jsonData.name).split(' ')
-        var patt = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]+");
-        var res = patt.test(jsonData._id);
-        if(res == false){
-            Ext.MessageBox.alert("","E-mail inválido!") 
-        } else {
-            if(jsonData.password == jsonData.repeatPassword){
-                var panelCadast = Ext.Ajax.request({
-                    url: '/user/insert',
-                    method: 'PUT',
-                    jsonData: jsonResult,
-                    success: function (response){
-                        if((response.responseText == "Cadastro invalido") || (jsonData.password != jsonData.repeatPassword)){
-                            Ext.MessageBox.alert("","E-mail já utilizado")
-                        } else {
-                            Ext.MessageBox.alert("","O usuário "+firstName[0]+" foi cadastrado com sucesso")
-                            callback()
-                            Ext.getCmp('idCadaster').close()
-                        }
-                    },
-                })
-            }else{
-                Ext.MessageBox.alert("","Senha incorreta!")
+
+        var emailRegExp = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]+");
+        var nameRegExp = new RegExp("^[A-Za-záàâãẽéèêíïóôõöúçñÁÀÂÃẼÉÈÍÏÓÔÕÖÚÇÑ ]{3,140}$");
+        var ocupationRegExp = new RegExp("^[a-zA-ZáàâãẽéèêíïóôõöúçñÁÀÂÃẼÉÈÍÏÓÔÕÖÚÇÑ ./_-]+");
+        var passRegExp = new RegExp("^[A-Za-z0-9!@#$%^&*()-_ ]{6,12}$");
+        
+        var validations = [
+            {
+                validator: emailRegExp.test(jsonData._id),
+                msg: "Preencha o campo do E-mail corretamente!"
+            },
+            {
+                validator: nameRegExp.test(jsonData.name),
+                msg: "Preencha o campo nome com no mínimo 3 caracteres!"
+            },
+            {
+                validator: ocupationRegExp.test(jsonData.ocupation),
+                msg: "Preencha o campo de ocupação e instituição corretamente!"
+            },
+            {
+                validator: passRegExp.test(jsonData.password),
+                msg: "Preencha os campos de senha com 6 a 12 dígitos, se possivel use caracteres especiais (!@#$%()^&*)"
+            }
+        ]
+
+        var flag = true;
+        for(var i=0; i <  validations.length; i++) {
+            console.log(i)
+            var validation = validations[i]
+            if(validation.validator == false) {
+                Ext.MessageBox.alert("",validation.msg);
+                flag = false
+                break;
             }
         }
+
+        if(flag == true) {
+            var panelCadast = Ext.Ajax.request({
+                url: '/user/insert',
+                method: 'PUT',
+                jsonData: jsonResult,
+                success: function (response){
+                    var result = JSON.parse(response.responseText)
+                    if(result.success == false) {
+                        if(result.error == 'senha'){
+                            Ext.MessageBox.alert("","Sua senha não confere!")
+                        } else if(result.error == 'email') {
+                            Ext.MessageBox.alert("","E-mail já utilizado")
+                        }   
+                    } else {
+                        Ext.MessageBox.alert("","O usuário "+firstName[0]+" foi cadastrado com sucesso")
+                        callback()
+                        Ext.getCmp('idCadaster').close()
+                    }
+                }
+            })
+        }            
     },
 
     userInfo: function() {
@@ -44,24 +77,33 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             method: 'GET',
             success: function (response){
                 if(response.responseText == ''){
-                    Ext.getCmp('buttonLogout').hide(true)
-                    Ext.getCmp('buttonLogin').show()
+                    instance.adjustLoginButtons('')
                 }else{
-                    var buttonLogout = Ext.getCmp('buttonLogout')
                     var responseText = response.responseText
                     var user = JSON.parse(responseText)
                     user = user.name
                     user = user.split(' ')
-                    var name = user[0]
-                    buttonLogout.setText(name)
-                    Ext.getCmp('buttonLogin').hide(true)
-                    buttonLogout.show()
+                    instance.adjustLoginButtons(user)
                 }
             }
         });
     },
 
+    adjustLoginButtons: function(name) {
+        if(name == ''){
+            Ext.getCmp('buttonLogout').hide(true)
+            Ext.getCmp('buttonLogin').show()
+        }else{
+            var buttonLogout = Ext.getCmp('buttonLogout')
+            buttonLogout.setText(name[0])
+            Ext.getCmp('buttonLogin').hide(true)
+            buttonLogout.show()
+        }
+    },
+
     userLogin: function(keysLogin, callback) {
+        var instance = this
+
         Ext.Ajax.request({
             url: '/user/login',
             method: 'POST',
@@ -74,7 +116,11 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     var user = JSON.parse(responseText)
                     user = user.name
                     user = user.split(' ')
-                    callback()
+                    instance.adjustLoginButtons(user)
+
+                    if (callback != undefined) {
+                        callback()
+                    }
                 }
             },
         })
@@ -132,9 +178,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             var jsonData = formPanel.getValues()
                             var keysLogin = {jsonData}
                             console.log('keysLogin: ',keysLogin)
-                            instance.userLogin(keysLogin, function(){
-                                instance.userInfo()
-                            })
+                            instance.userLogin(keysLogin)
                         })
                     }
                 }
@@ -161,7 +205,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             method: 'GET',
             success: function (response){
                 if(response.responseText == ''){
-                    instance.userInfo()
+                    instance.adjustLoginButtons('')
                 }
             }
         })
@@ -209,7 +253,6 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                     var jsonData = formLogin.getValues()
                                     var keysLogin = {jsonData}
                                     instance.userLogin(keysLogin, function(){
-                                        instance.userInfo()
                                         Ext.getCmp('idWindow').close()
                                     })
                                 }
