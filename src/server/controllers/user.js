@@ -43,7 +43,7 @@ module.exports = function (app) {
 
 		UserCollection.findOne({_id: id, password: password}, {}, function(err, user){
 			if(user == null){
-				response.send('Error')
+				response.send({ error: true})
 				response.end()
 			} else {
 				request.session.user = user

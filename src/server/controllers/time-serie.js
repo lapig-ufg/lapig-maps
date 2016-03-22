@@ -279,6 +279,12 @@ module.exports = function(app) {
 							
 							result.name = translateNameDesc.name;
 							result.description = translateNameDesc.description;
+							result.date = result.date.replace("Atualmente", "Currently")
+
+							if (result.pixelMeasure=='Não se aplica')
+									result.pixelMeasure = 'Not applicable'
+							else if(result.pixelMeasure=='mm de água')
+									result.pixelMeasure = 'mm of water'
 					}
 
 					response.send(result);
