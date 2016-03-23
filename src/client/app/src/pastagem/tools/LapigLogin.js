@@ -20,19 +20,19 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         var validations = [
             {
                 validator: emailRegExp.test(jsonData._id),
-                msg: "Preencha o campo do E-mail corretamente!"
+                msg: i18n.LAPIGLOGIN_VALIDATION_EMAIL_MSG
             },
             {
                 validator: nameRegExp.test(jsonData.name),
-                msg: "Preencha o campo nome com no mínimo 3 caracteres!"
+                msg: i18n.LAPIGLOGIN_VALIDATION_NAME_MSG
             },
             {
                 validator: ocupationRegExp.test(jsonData.ocupation),
-                msg: "Preencha o campo de ocupação e instituição corretamente!"
+                msg: i18n.LAPIGLOGIN_VALIDATION_OCUPATION_MSG
             },
             {
                 validator: passRegExp.test(jsonData.password),
-                msg: "Preencha os campos de senha com 6 a 12 dígitos, se possivel use caracteres especiais (!@#$%()^&*)"
+                msg: i18n.LAPIGLOGIN_VALIDATION_PASSWORD_MSG
             }
         ]
 

@@ -86,6 +86,7 @@
 	"LAPIGRASTERSERIES_ALERT_VALIDATION": "LAPIG-Maps - Validation",
 	"LAPIGRASTERSERIES_ALERT_ERROR1": "The period to be analyzed must have at least 1 year.",
 	"LAPIGRASTERSERIES_ALERT_ERROR2": "The trend can be calculated only for data MOD13Q1",
+	"LAPIGRASTERSERIES_TXT_ORIGINAL": "Original",
 	"LAPIGRASTERSERIES_TXT_FILTRATED": "FIltrated",
 	"LAPIGRASTERSERIES_TXT_TREND": "Trend",
 	"LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED": "Select a coordinated to continue",
@@ -159,5 +160,9 @@
 	"LAPIGLOGIN_TXT_LOGOUT": "Logout",
 	"LAPIGLOGIN_BTNTXT_YES": "Yes",
 	"LAPIGLOGIN_BTNTXT_NO": "No",
-	"LAPIGLOGIN_TITLE_WINLOGOUT": "Want to log out"
+	"LAPIGLOGIN_TITLE_WINLOGOUT": "Want to log out",
+	"LAPIGLOGIN_VALIDATION_EMAIL_MSG": "Fill in the e-mail field correctly!",
+	"LAPIGLOGIN_VALIDATION_NAME_MSG": "Fill in the name field with at least 3 characters!",
+	"LAPIGLOGIN_VALIDATION_OCUPATION_MSG": "Fill in the occupation field correctly!",
+	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Fill out the password fields 6 to 12 digits, if possible use special characters (!@#$%()^&*)"
 }
