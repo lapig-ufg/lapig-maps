@@ -63,7 +63,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     } else {
                         Ext.MessageBox.alert("", i18n.LAPIGLOGIN_ALERT_THEUSER +" "+ firstName[0] +" "+ i18n.LAPIGLOGIN_ALERT_THEUSERCOMP)
                         callback()
-                        Ext.getCmp('idCadaster').close()
+                        Ext.getCmp('lapig_login::cadast-user').close()
                     }
                 }
             })
@@ -91,12 +91,12 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
     adjustLoginButtons: function(name) {
         if(name == ''){
-            Ext.getCmp('buttonLogout').hide(true)
-            Ext.getCmp('buttonLogin').show()
+            Ext.getCmp('lapig_login::button-logout').hide(true)
+            Ext.getCmp('lapig_login::button-login').show()
         }else{
-            var buttonLogout = Ext.getCmp('buttonLogout')
+            var buttonLogout = Ext.getCmp('lapig_login::button-logout')
             buttonLogout.setText(name[0])
-            Ext.getCmp('buttonLogin').hide(true)
+            Ext.getCmp('lapig_login::button-login').hide(true)
             buttonLogout.show()
         }
     },
@@ -155,12 +155,10 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_INSTITUTION
             },{
                 name: "_id",
-                id: 'idLogin',
                 xtype: 'textfield',
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_EMAIL
             },{
                 name: "password",
-                id: 'idSenha',
                 xtype: 'textfield',
                 inputType: 'password',
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
@@ -187,7 +185,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         });
 
         var screenCadaster = new Ext.Window({
-            id: 'idCadaster',
+            id: 'lapig_login::cadast-user',
             title: i18n.LAPIGLOGIN_TITLE_REGISTER,
             closable: true,
             border: false,
@@ -220,7 +218,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             {
                 menuText: 'Lapig Login',
                 tooltip: i18n.LAPIGLOGIN_TXT_LOGIN,
-                id: 'buttonLogin',
+                id: 'lapig_login::button-login',
                 iconCls: 'gxp-icon-lapiglogin',
                 text: i18n.LAPIGLOGIN_TXT_LOGIN,
                 xtype: 'button',
@@ -228,7 +226,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     var form = new Ext.FormPanel({
                         labelWidth: 75,
                         region:'center',
-                        id: 'formId',
+                        id: 'lapig_login::frm-panel-login',
                         url:'save-form.php',
                         frame:false,
                         bodyStyle:'padding:5px 5px 0',
@@ -249,12 +247,12 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                             listeners:{
                                 click:  function(n){
-                                    var login = Ext.getCmp('formId')
+                                    var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
                                     var keysLogin = {jsonData}
                                     instance.userLogin(keysLogin, function(){
-                                        Ext.getCmp('idWindow').close()
+                                        Ext.getCmp('lapig_login::panel-login').close()
                                     })
                                 }
                             }
@@ -263,7 +261,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             listeners:{
                                 click: function(n){
                                     instance.formCadastro()
-                                    Ext.getCmp('idWindow').close()
+                                    Ext.getCmp('lapig_login::panel-login').close()
                                 }
                             }
                         }],
@@ -271,7 +269,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
                     var win = new Ext.Window({
                         title: i18n.LAPIGLOGIN_TXT_LOGIN,
-                        id: 'idWindow',
+                        id: 'lapig_login::panel-login',
                         closable:true,
                         width:270,
                         height:135,
@@ -290,7 +288,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             {
                 menuText: 'Lapig Login User',
                 tooltip: i18n.LAPIGLOGIN_TXT_USER,
-                id: 'buttonLogout',
+                id: 'lapig_login::button-logout',
                 xtype: 'splitbutton',
                 menu: ({
                     items: [{
@@ -299,13 +297,12 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                         handler: function(){
                             var panelLogout = new Ext.FormPanel({
                                 region:'center',
-                                id: 'formIdLogout',
                                 url:'save-form.php',
                                 buttons: [{
                                     text: i18n.LAPIGLOGIN_BTNTXT_YES,
                                     listeners: {
                                         click: function(n){
-                                            Ext.getCmp('idLogout').close()
+                                            Ext.getCmp('lapig_login::panel-logout').close()
                                             instance.userLogout()
                                         }
                                     }
@@ -313,7 +310,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                     text: i18n.LAPIGLOGIN_BTNTXT_NO,
                                     listeners: {
                                         click: function(n){
-                                            Ext.getCmp('idLogout').close()
+                                            Ext.getCmp('lapig_login::panel-logout').close()
                                         }
                                     }
                                 }],
@@ -321,7 +318,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
                             var winLogout = new Ext.Window({
                                 title: i18n.LAPIGLOGIN_TITLE_WINLOGOUT,
-                                id: 'idLogout',
+                                id: 'lapig_login::panel-logout',
                                 closable:true,
                                 width:185,
                                 height:65,
