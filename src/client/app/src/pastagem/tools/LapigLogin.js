@@ -44,9 +44,11 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             method: 'GET',
             success: function (response){
                 if(response.responseText == ''){
+                    isAnyoneHome = false;
                     Ext.getCmp('buttonLogout').hide(true)
                     Ext.getCmp('buttonLogin').show()
                 }else{
+                    isAnyoneHome = true;
                     var buttonLogout = Ext.getCmp('buttonLogout')
                     var responseText = response.responseText
                     var user = JSON.parse(responseText)
@@ -70,6 +72,8 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 if(response.responseText == 'Error'){
                     Ext.MessageBox.alert('',"Senha ou ID inválidos.")
                 }else{
+                    isAnyoneHome = true;
+                    instance.target.fireEvent("login");
                     var responseText = response.responseText
                     var user = JSON.parse(responseText)
                     user = user.name
@@ -77,6 +81,21 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     callback()
                 }
             },
+        })
+    },
+
+    userLogout:function() {
+        var instance = this
+        Ext.Ajax.request({
+            url: '/user/logout',
+            method: 'GET',
+            success: function (response){
+                if(response.responseText == ''){
+                    isAnyoneHome = false;
+                    instance.target.fireEvent("logout");
+                    instance.userInfo()
+                }
+            }
         })
     },
 
@@ -154,22 +173,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         screenCadaster.show(this)
     },
 
-    userLogout:function() {
-        var instance = this
-        Ext.Ajax.request({
-            url: '/user/logout',
-            method: 'GET',
-            success: function (response){
-                if(response.responseText == ''){
-                    instance.userInfo()
-                }
-            }
-        })
-    },
-
     addActions: function() {
-        var instance = this
-        instance.userInfo()
+        var instance = this;
+        instance.userInfo();
 
         gxp.plugins.LapigLogin.superclass.addActions.apply(this,[
             {

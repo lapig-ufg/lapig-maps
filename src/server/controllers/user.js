@@ -1,16 +1,17 @@
 module.exports = function (app) {
 	var User = {}
-	var UserCollection = app.repository.collections.user
+	var UsersCollection = app.repository.collections.users
+	var PointsCollection = app.repository.collections.points
 
 	User.insert = function(request, response) {
-    	var user = request.param('jsonData')
+    var user = request.param('jsonData')
 		var crypto = require('crypto')
 		var password = user.password
 		var hash = crypto.createHash('md5').update(password).digest('hex')
 		user.password = hash
 		delete user['repeatPassword']
 		
- 		UserCollection.insertOne(user, function(failure, success){
+ 		UsersCollection.insertOne(user, function(failure, success){
 		  if(failure){
 		  	response.send("Cadastro invalido")
 		  	response.end()
@@ -29,7 +30,7 @@ module.exports = function (app) {
 		var hash = crypto.createHash('md5').update(password).digest('hex')
 		password = hash
 
-		UserCollection.findOne({_id: id, password: password}, {}, function(err, user){
+		UsersCollection.findOne({_id: id, password: password}, {}, function(err, user){
 			if(user == null){
 				response.send('Error')
 				response.end()
@@ -51,6 +52,86 @@ module.exports = function (app) {
 		var session = request.session
 		response.send(session.user = null)
 		response.end()
+	}
+
+	User.getPoints = function(request, response) {
+		if(request.session.user == undefined){
+			return
+		}
+		
+		var userId = request.session.user._id;
+
+		results = PointsCollection.find({"userId": userId}).toArray(function(err, results) {
+			if (err){
+				response.send({
+					success: false,
+					error: 'getpoints'
+				});
+				response.end();
+			}else{
+				response.send({
+					success: true,
+					result: results
+				});
+				response.end();
+			}
+		});
+	}
+
+	User.insertPoint = function(request, response) {
+		if(request.session.user == undefined){
+			return
+		}
+
+		var userId = request.session.user._id;
+		var pointName = request.param('name');
+		var lon = request.param('longitude');
+		var lat = request.param('latitude');
+
+		var point = {
+			_id: userId+lon+lat,
+			userId: userId,
+			name: pointName,
+			longitude: lon,
+			latitude: lat
+		};
+
+		PointsCollection.insertOne(point, function(err, success){
+			if(err){
+				response.send({
+					success: false,
+					error: 'insertpoint'
+				});
+				response.end();
+			}else{
+				response.send({success: true});
+				response.end();
+			}
+		});
+	}
+
+	User.deletePoint = function(request, response) {
+		if(request.session.user == undefined){
+			return
+		}
+
+		var userId = request.session.user._id;
+		var lon = request.param('longitude');
+		var lat = request.param('latitude');
+		var pointId = userId+lon+lat;
+
+		PointsCollection.deleteOne({_id: pointId}, function(err, result){
+			if(err){
+				response.send({
+					success: false,
+					error: 'deletepoint'
+				});
+				response.end();
+			}else{
+				response.send({success: true});
+				response.end();
+			}
+		});
 	}
 
 	return User

@@ -82,20 +82,20 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				});
 				map.addLayer(instance.vectors);
 
-				var checkWindowButtons = 
-
 				instance.store = new Ext.data.ArrayStore({
 						fields: [{
-								name: 'nome'
-						}, {
-								name: 'latitude',
-								type: 'float'
+								name: 'name'
 						}, {
 								name: 'longitude',
 								type: 'float'
+						}, {
+								name: 'latitude',
+								type: 'float'
 						}],
 						listeners: {
-							'remove': instance.checkButtonsState
+							'remove': function() {
+								instance.checkButtonsState()
+							}
 						}
 				});
 
@@ -104,6 +104,115 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				map.events.register('addlayer', map, function() {
 						instance.setLayerIndex();
 				});
+
+				this.target.addListener("logout", instance.resetPoints, this);
+				
+				this.target.addListener("login", function(){
+					instance.resetPoints();
+					instance.getPoints();
+				}, this);
+
+				instance.getPoints();
+		},
+
+		getPoints: function() {
+			var instance = this;
+			if(isAnyoneHome) {
+
+				Ext.Ajax.request({
+					url: '/user/points',
+	        method: 'GET',
+
+	        success: function (response){
+	          res = JSON.parse(response.responseText);
+	          
+	          if (res.success) {
+		          res.result.forEach(function(point){
+		          	instance.addPointGUI(point.name, point.longitude, point.latitude);
+		          });
+		        } else {
+		        	Ext.MessageBox.alert("", i18n.LAPIGCOORDINATES_ERRMSG_GETPOINTS);
+		        }
+	        }
+				});
+			}
+		},
+
+		insertPoint: function(name, lon, lat) {
+			var instance = this;
+			if(isAnyoneHome){
+
+				console.log("inserting point:", name, "lon:", lon, "lat:", lat)
+
+				Ext.Ajax.request({
+					url: 'user/points',
+					method: 'PUT',
+					jsonData:{
+						name: name,
+						longitude: lon,
+						latitude: lat
+					},
+					success: function (response) {
+						res = JSON.parse(response.responseText);
+	          
+	          if (!res.success) {
+							Ext.MessageBox.alert("", i18n.LAPIGCOORDINATES_ERRMSG_INSERTPOINT);
+						}else{
+							 instance.addPointGUI(name, lon, lat);
+						}
+					}
+				});
+			}else{
+				instance.addPointGUI(name, lon, lat);
+			}
+		},
+
+		deletePoint: function(lon, lat) {
+			var instance = this;
+			if(isAnyoneHome){
+
+				console.log("deleting point:", "lon:", lon, "lat:", lat)
+			
+				Ext.Ajax.request({
+					url: 'user/points',
+					method: 'DELETE',
+					params:{
+						longitude: lon,
+						latitude: lat,
+					},
+					success: function (response) {
+						res = JSON.parse(response.responseText);
+	          
+	          if (!res.success) {
+							Ext.MessageBox.alert("", i18n.LAPIGCOORDINATES_ERRMSG_DELETEPOINT);
+						}
+					}
+				});
+			}
+		},
+
+		addPointGUI: function(name, lon, lat) {
+			var instance = this;
+
+			var lonLat = new OpenLayers.LonLat(lon, lat)
+				.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
+
+			var size = new OpenLayers.Size(38, 38);
+			var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+			var icon = new OpenLayers.Icon(instance.iconPathSelect, size, offset);
+
+			var marker = new OpenLayers.Marker(lonLat, icon);
+			marker.idLatLonCrl = name + '-' + lat + '-' + lon;
+			instance.vectors.addMarker(marker);
+			instance.store.loadData([[ name, lon, lat]], true);
+		},
+
+		resetPoints: function() {
+			var instance = this;
+			var map = this.target.mapPanel.map;
+
+			instance.store.removeAll();
+			instance.vectors.clearMarkers();
 		},
 
 		getMapMarker: function(longitude, latitude) {
@@ -273,16 +382,16 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						},
 						header: false,
 						style: {
-								'margin-top': '10px'
+							'margin-top': '10px'
 						},
 						columns: [
 							{
-								id: 'nome',
+								id: 'name',
 								header: i18n.LAPIGCOORDINATES_TTLCOL_NAME,
 								width: 160,
 								sortable: true,
 								menuDisabled: true,
-								dataIndex: 'nome'
+								dataIndex: 'name'
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LONG,
 									width: 65,
@@ -306,12 +415,13 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 											handler: function(grid, rowIndex, colIndex) {
 													var rec = instance.store.getAt(rowIndex);
 
-													var idLatLonCrl = rec.get('nome') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
+													var idLatLonCrl = rec.get('name') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
 
 													instance.vectors.markers.every(function(m) {
 															if(m.idLatLonCrl == idLatLonCrl) {
 																	instance.store.removeAt(rowIndex);
 																	instance.vectors.removeMarker(m);
+																	instance.deletePoint(rec.get('longitude'), rec.get('latitude'));
 																	return false;
 															} else {
 																	return true;
@@ -322,7 +432,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							}
 						],
 						stripeRows: true,
-						autoExpandColumn: 'nome',
+						autoExpandColumn: 'name',
 						autoHeight: true, //!!!
 						autoWidth : true, //!!!
 						listeners: {
@@ -613,17 +723,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 																	}
 															}
 
-															var lonLat = new OpenLayers.LonLat(lon, lat)
-																	.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
-
-															var size = new OpenLayers.Size(38, 38);
-															var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-															var icon = new OpenLayers.Icon(instance.iconPathSelect, size, offset);
-
-															var marker = new OpenLayers.Marker(lonLat, icon);
-															marker.idLatLonCrl = name + '-' + lat + '-' + lon;
-															instance.vectors.addMarker(marker);
-															instance.store.loadData([[ name, lat, lon]], true);
+															instance.insertPoint(name, lon, lat);
 
 															Ext.getCmp('form-text-lat-2').setValue('');
 															Ext.getCmp('form-text-lon-2').setValue('');
