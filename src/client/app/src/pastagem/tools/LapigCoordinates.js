@@ -142,8 +142,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var instance = this;
 			if(isAnyoneHome){
 
-				console.log("inserting point:", name, "lon:", lon, "lat:", lat)
-
 				Ext.Ajax.request({
 					url: 'user/points',
 					method: 'PUT',
@@ -170,8 +168,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		deletePoint: function(lon, lat) {
 			var instance = this;
 			if(isAnyoneHome){
-
-				console.log("deleting point:", "lon:", lon, "lat:", lat)
 			
 				Ext.Ajax.request({
 					url: 'user/points',
