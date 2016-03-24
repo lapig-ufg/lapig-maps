@@ -321,7 +321,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               dataUrl: this.timeSeriesTreeUrl,
               requestMethod: 'GET',
               columns:[{
-                header: 'Assuntos', //TODO translate
+                header: 'Assuntos',
                 dataIndex: 'task',
                 width: 200
               }],
@@ -531,8 +531,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endYearCmb = Ext.getCmp('lapig-raster-series-tab-'+ activeTab.name +'-cmb-end-year');
 
       var timeSeriesName = Ext.getCmp('lapig_rasterseries::frm-info').getForm().reader.jsonData.name;
-      //TODO translate
-      Ext.getCmp('southpanel').setTitle('Análise de Séries Temporais - '+timeSeriesName);
+      Ext.getCmp('southpanel').setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES+' - '+timeSeriesName);
 
       if(instance.chartData[activeTab.index] == undefined){
         if(instance.seriesProperties != undefined){
@@ -573,7 +572,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           region: "center",
           items: [
             {
-              title: "Série temporal", //Time series //TODO Translate
+              title: i18n.LAPIGRASTERSERIES_TITLE_TIMESERIES,
               id: "lapig-raster-series-tab-series",
               layout: "border",
               tbar: [
@@ -593,7 +592,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 {
                   xtype:'combo',
                   id: "lapig-raster-series-tab-series-cmb-start-year",
-                  fieldLabel: 'Período',
+                  fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
                   border: false,
                   displayField:'year',
                   valueField: 'year',
@@ -791,10 +790,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         if(serie.interpolation == null) {
                           return date + ": " + originalValue
                         } else {
-                          //TODO Translate
                           return date + "\n" 
-                                + " Original: " + originalValue + "\n"
-                                + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
+                                + i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + originalValue + "\n"
+                                + i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
                         }
                       },
                       chartStyle: {
@@ -849,7 +847,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               ]
             },
             {
-              title: "Tendêcia", //Trend //TODO Translate
+              title: i18n.LAPIGRASTERSERIES_TITLE_TREND,
               id: "lapig-raster-series-tab-trend",
               layout: "border",
               disabled: true,
@@ -948,12 +946,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     data: [
                       ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE ],
                       ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE ],
-                      ['MONTH-YEAR_mean', 'Mês-Ano (média)' ] //TODO Translate
+                      ['MONTH-YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHYEARAVER ]
                     ]
                   })
                 },
                 '-',
-                'Tempo em que ocorre mudança:', //TODO Translate //Time on which change occurs
+                i18n.LAPIGRASTERSERIES_GROUPCB_TIME,
                 {
                   xtype:'numberfield',
                   id: 'lapig-raster-series-tab-trend-num-time-change',
@@ -985,16 +983,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       {name: 'label'}
                     ],
                     data: [
-                      ['DAY', 'Dias' ],//TODO Translate
-                      ['MONTH', 'Meses' ],//TODO Translate
-                      ['YEAR', 'Anos']//TODO Translate
+                      ['DAY', i18n.LAPIGRASTERSERIES_GROUPCB_DAYS],
+                      ['MONTH', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHS],
+                      ['YEAR', i18n.LAPIGRASTERSERIES_GROUPCB_YEARS]
                     ]
                   })
                 },
                 {
                   xtype: 'button',
                   id: 'lapig-raster-series-tab-trend-btn-refresh',
-                  tooltip: "Recalcular tendência", //TODO Translate
+                  tooltip: i18n.LAPIGRASTERSERIES_BTNTOOLTIP_RECALCULATE,
                   iconCls: 'lapig-icon-refresh',
                   disabled: true,
                   listeners: {
@@ -1068,15 +1066,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         var trendValue = Ext.util.Format.number(serie.trend, numberFormat);
 
                         if(serie.interpolation != null) {
-                          //TODO Translate
                           return date + "\n" 
-                                + " Tendência: " + trendValue + "\n"
-                                + " Filtrado: " + Ext.util.Format.number(serie.interpolation, numberFormat);
+                                + i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n"
+                                + i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
                         } else if(serie.original != null){
-                          //TODO Translate
                           return date + "\n" 
-                                + " Tendência: " + trendValue + "\n"
-                                + " Original: " + Ext.util.Format.number(serie.original, numberFormat);
+                                + i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n"
+                                + i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + Ext.util.Format.number(serie.original, numberFormat);
                         }
                       },
                       chartStyle: {
@@ -1154,8 +1150,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var endYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue();
 
     if (endYear - startYear < 1){
-      //TODO translate
-      return Ext.MessageBox.alert('LAPIG-Maps - Validação', "O período a ser analisado deve possuir pelo menos 1 ano.");
+      return Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_ERROR1);
     }
 
     var interpolation = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue();
@@ -1195,8 +1190,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.chartData[activeTab.index] = jsonResponse;
           instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
-          //TODO translate
-          Ext.MessageBox.alert('LAPIG-Maps - Validação', "Atenção: " + jsonResponse.error);
+          Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + jsonResponse.error);
           instance.chartData[activeTab.index] = oldChartData;
           instance.drawTrend(instance.chartData[activeTab.index]);
         }
@@ -1267,7 +1261,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   initLoadChartDataMask: function() {
     var instance = this;
     var chartPanel = Ext.getDom('lapig-raster-series-tab-pnl');
-    var msgText = "Isto pode levar alguns minutinhos, relaxe e tome um café... "; //TODO translate
+    var msgText = i18n.LAPIGRASTERSERIES_TXT_ALERTRELAX;
     var activeTab = instance.getSeriesActiveTab();
 
     instance.loadMask = new Ext.LoadMask(chartPanel, { msg: msgText });
@@ -1361,7 +1355,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     instance.setSeriesActiveTabDisabled(true);
 
-    Ext.getCmp('southpanel').setTitle('Análise de Séries Temporais'); //TODO translate
+    Ext.getCmp('southpanel').setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES);
     instance.seriesProperties = undefined;
     instance.chartData[activeTab.index] = undefined;
   },
@@ -1383,8 +1377,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabProperties.trend){
       if (timeseriesId.indexOf('MOD13Q1') == -1) {
-        //TODO translate
-        Ext.MessageBox.alert('LAPIG-Maps - Validação', "A tendência pode ser calculada apenas para dados MOD13Q1");
+        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.i18n.LAPIGRASTERSERIES_ALERT_ERROR2);
         instance.restartChart();
         return;
       }
@@ -1441,7 +1434,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var interpolations = []
         instance.chartData[activeTab.index].series.forEach(function(serie) {
           if(serie.id == 'original')
-            serie.label = 'Nenhum'; //TODO translate
+            serie.label = i18n.LAPIGRASTERSERIES_GROUPCB_NONE; 
           else if(serie.type == 'trends'){
             instance.trendPosition = serie.position;
             return;
@@ -1490,11 +1483,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     return [
       {
-        text: "Selecione uma coordenada para continuar", //TODO translate
+        text: i18n.LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED,
         xtype: "label",
       },
       {
-        text: "Gerar gráfico", //TODO translate
+        text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
         disabled: true,
         listeners: {
@@ -1515,8 +1508,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
             coordinateName = (coordinateName) ? " - " + coordinateName : ""
 
-            //TODO translate
-            southPanel.setTitle('Análise de Séries Temporais - ' + timeSeriesName);
+            southPanel.setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES + ' - ' + timeSeriesName);
 
             var lapigCoordinatesWin = Ext.getCmp('lapig-coordinates-window');
             lapigCoordinatesWin.close();

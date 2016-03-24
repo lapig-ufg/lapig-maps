@@ -9,17 +9,29 @@ module.exports = function (app) {
 		var password = user.password
 		var hash = crypto.createHash('md5').update(password).digest('hex')
 		user.password = hash
-		delete user['repeatPassword']
 		
- 		UsersCollection.insertOne(user, function(failure, success){
-		  if(failure){
-		  	response.send("Cadastro invalido")
-		  	response.end()
-		  }else{
-		  	response.send("Cadastro efetuado com sucesso. Bem vindo!")
+		if(password != user.repeatPassword){
+			response.send({
+				success: false,
+				error: "senha"
+			}) 
 			response.end()
-		  }
-		})
+		} else {
+	 		UserCollection.insertOne(user, function(failure, success){
+				if(failure){
+			  		response.send({
+			  			success: false,
+			  			error: "email"
+			  		})
+					response.end()
+				} else {
+			  		response.send({
+			  			success: true,
+			  		})
+					response.end()
+				}
+			})
+		}
 	}
 	
 	User.login = function(request, response) {
@@ -32,7 +44,7 @@ module.exports = function (app) {
 
 		UsersCollection.findOne({_id: id, password: password}, {}, function(err, user){
 			if(user == null){
-				response.send('Error')
+				response.send({ success: false})
 				response.end()
 			} else {
 				request.session.user = user

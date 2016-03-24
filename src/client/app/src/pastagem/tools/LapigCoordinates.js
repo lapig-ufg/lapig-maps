@@ -518,7 +518,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 										items: [
 											{
 												name: 'graus',
-												boxLabel: 'Graus Decimais', //TODO translate
+												boxLabel: i18n.LAPIGCOORDINATES_BOXLBL_GDEC,
 												inputValue: 'DD',
 												checked: true,
 												listeners: {
@@ -683,7 +683,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 											{
 												xtype: "label",
 												text: i18n.LAPIGCOORDINATES_FIELDLBL_NAMEDESC,
-												width: 90,
+												width: 100,
 												style: {
 													'margin-top': '4px'
 												}
@@ -815,7 +815,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				return new Ext.Window({
 						id: 'lapig-coordinates-window',
 						title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
-						width: 320,
+						width: 330,
 						height: 340,
 						layout: 'fit',
 						plain: true,

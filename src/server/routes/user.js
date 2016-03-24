@@ -9,6 +9,6 @@ module.exports = function (app) {
 	
 	app.get('/user/points', users.getPoints);
 	app.put('/user/points', users.insertPoint);
-	app.del('/user/points', users.deletePoint);
+	app.delete('/user/points', users.deletePoint);
 
 }
