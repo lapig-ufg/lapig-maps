@@ -166,7 +166,20 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 name: 'repeatPassword',
                 xtype: 'textfield',
                 inputType: 'password',
-                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD,
+                listeners:  {
+                    specialkey: function (n, passwordKey) {    
+                        if (passwordKey.getKey() == passwordKey.ENTER) {
+                            instance.userRegister(function() {
+                                var form = Ext.getCmp('lapig_login::frm-user')
+                                var formPanel = form.getForm()
+                                var jsonData = formPanel.getValues()
+                                var keysLogin = {jsonData}
+                                instance.userLogin(keysLogin)
+                            })
+                        }
+                    }
+                }
             }],
             buttons: [{
                 text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
@@ -241,18 +254,31 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 name: 'password',
                                 xtype: 'textfield',
                                 inputType: 'password',
-                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
+                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD,
+                                listeners:  {
+                                    specialkey: function (n, passwordKey) {    
+                                         if (passwordKey.getKey() == passwordKey.ENTER) {
+                                            var login = Ext.getCmp('lapig_login::frm-panel-login')
+                                            var formLogin = login.getForm()
+                                            var jsonData = formLogin.getValues()
+                                            var keysLogin = {jsonData}
+                                            instance.userLogin(keysLogin, function(){
+                                                Ext.getCmp('lapig_login::panel-login').close()                                        
+                                            })
+                                        }
+                                    }
+                                }
                             }],
                         buttons: [{
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
-                            listeners:{
+                            listeners: {
                                 click:  function(n){
                                     var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
                                     var keysLogin = {jsonData}
                                     instance.userLogin(keysLogin, function(){
-                                        Ext.getCmp('lapig_login::panel-login').close()
+                                        Ext.getCmp('lapig_login::panel-login').close()                                        
                                     })
                                 }
                             }
