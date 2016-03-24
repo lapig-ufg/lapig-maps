@@ -121,6 +121,9 @@
 	"LAPIGCOORDINATES_TTLCOL_LAT": "Latitude",
 	"LAPIGCOORDINATES_INSTR_EMPTYTXTGRID": "Add geographic coordinates using the options above.",
 	"LAPIGCOORDINATES_BTNREMOVE_TLTP": "Remove coordinates",
+	"LAPIGCOORDINATES_ERRMSG_GETPOINTS": "Error fetching saved points.",
+	"LAPIGCOORDINATES_ERRMSG_INSERTPOINT": "Error saving point. It might already exist.",
+	"LAPIGCOORDINATES_ERRMSG_DELETEPOINT": "Error deleting point.",
 
 	"LAPIGPRINT_TTL_WINDOW": "Follow the step by step for printing the map",
 	"LAPIGPRINT_TTLABA_REGION": "1) Region",

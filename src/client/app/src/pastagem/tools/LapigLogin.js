@@ -71,22 +71,24 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
     },
 
     userInfo: function() {
-        var instance = this
-        Ext.Ajax.request({
-            url: '/user/info',
-            method: 'GET',
-            success: function (response){
-                if(response.responseText == ''){
-                    instance.adjustLoginButtons('')
-                }else{
-                    var responseText = response.responseText
-                    var user = JSON.parse(responseText)
-                    user = user.name
-                    user = user.split(' ')
-                    instance.adjustLoginButtons(user)
-                }
-            }
-        });
+      var instance = this
+      Ext.Ajax.request({
+        url: '/user/info',
+        method: 'GET',
+        success: function (response){
+          if(response.responseText == ''){
+            isAnyoneHome = false;
+            instance.adjustLoginButtons('');
+          }else{
+            isAnyoneHome = true;
+            var responseText = response.responseText
+            var user = JSON.parse(responseText)
+            user = user.name
+            user = user.split(' ')
+            instance.adjustLoginButtons(user)
+          }
+        }
+      });
     },
 
     adjustLoginButtons: function(name) {
@@ -102,7 +104,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
     },
 
     userLogin: function(keysLogin, callback) {
-        var instance = this
+        var instance = this;
 
         Ext.Ajax.request({
             url: '/user/login',
@@ -110,22 +112,39 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
             jsonData: keysLogin,
             success: function (response){
 
-                var responseText = response.responseText
-                var user = JSON.parse(responseText)
+                var responseText = response.responseText;
+                var user = JSON.parse(responseText);
 
-                if(user.error == true){
-                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID)
+                if(user.success == false){
+                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID);
                 }else{
-                    user = user.name
-                    user = user.split(' ')
-                    instance.adjustLoginButtons(user)
+                    isAnyoneHome = true;
+                    instance.target.fireEvent("login");
+                    user = user.name;
+                    user = user.split(' ');
+                    instance.adjustLoginButtons(user);
 
                     if (callback != undefined) {
-                        callback()
+                        callback();
                     }
                 }
             },
         })
+    },
+
+    userLogout:function() {
+      var instance = this;
+      Ext.Ajax.request({
+        url: '/user/logout',
+        method: 'GET',
+        success: function (response){
+          if(response.responseText == ''){
+        		isAnyoneHome = false;
+            instance.target.fireEvent("logout");
+            instance.adjustLoginButtons('');
+          }
+        }
+      });
     },
 
     formCadastro: function() {
@@ -210,22 +229,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         screenCadaster.show(this)
     },
 
-    userLogout:function() {
-        var instance = this
-        Ext.Ajax.request({
-            url: '/user/logout',
-            method: 'GET',
-            success: function (response){
-                if(response.responseText == ''){
-                    instance.adjustLoginButtons('')
-                }
-            }
-        })
-    },
-
     addActions: function() {
-        var instance = this
-        instance.userInfo()
+        var instance = this;
+        instance.userInfo();
 
         gxp.plugins.LapigLogin.superclass.addActions.apply(this,[
             {
