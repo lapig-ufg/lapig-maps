@@ -17,7 +17,7 @@ module.exports = function (app) {
 			}) 
 			response.end()
 		} else {
-	 		UserCollection.insertOne(user, function(failure, success){
+	 		UsersCollection.insertOne(user, function(failure, success){
 				if(failure){
 			  		response.send({
 			  			success: false,

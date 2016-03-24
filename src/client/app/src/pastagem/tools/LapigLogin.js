@@ -56,7 +56,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     var result = JSON.parse(response.responseText)
                     if(result.success == false) {
                         if(result.error == 'senha'){
-                            Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_INCORRECTPASS)
+                            Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASS, function() {
+                                Ext.getCmp('lapig_login::fieldText-panel-cadaster-rePassword').focus('', 10);
+                            });
                         } else if(result.error == 'email') {
                             Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_ALREADYUSED)
                         }   
@@ -116,7 +118,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 var user = JSON.parse(responseText);
 
                 if(user.success == false){
-                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID);
+                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID, function() {
+                        Ext.getCmp('lapig_login::fieldText-panel-login-password').focus('', 10);
+                    });
                 }else{
                     isAnyoneHome = true;
                     instance.target.fireEvent("login");
@@ -183,6 +187,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
             },{
                 name: 'repeatPassword',
+                id: 'lapig_login::fieldText-panel-cadaster-rePassword',
                 xtype: 'textfield',
                 inputType: 'password',
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD,
@@ -258,6 +263,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_EMAIL
                             },{
                                 name: 'password',
+                                id: 'lapig_login::fieldText-panel-login-password',
                                 xtype: 'textfield',
                                 inputType: 'password',
                                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD,
