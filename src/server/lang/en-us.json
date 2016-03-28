@@ -152,7 +152,7 @@
 	"LAPIGLOGIN_ALERT_INVALIDEMAIL": "Invalid E-mail!",
 	"LAPIGLOGIN_ALERT_ALREADYUSED": "E-mail already used!",
 	"LAPIGLOGIN_ALERT_THEUSER": "The user",
-	"LAPIGLOGIN_ALERT_THEUSERCOMP": "it was successfully registered!",
+	"LAPIGLOGIN_ALERT_THEUSERCOMP": "was successfully registered!",
 	"LAPIGLOGIN_ALERT_INCORRECTPASS": "Incorrect password",
 	"LAPIGLOGIN_ALERT_INCORRECTPASSORID": "Invalid password or ID!",
 	"LAPIGLOGIN_TXT_USER": "User",
