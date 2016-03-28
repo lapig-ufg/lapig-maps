@@ -38,7 +38,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
         var flag = true;
         for(var i=0; i <  validations.length; i++) {
-            console.log(i)
+            //console.log(i)
             var validation = validations[i]
             if(validation.validator == false) {
                 Ext.MessageBox.alert("",validation.msg);

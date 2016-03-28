@@ -17,6 +17,7 @@ module.exports = function (app) {
 			}) 
 			response.end()
 		} else {
+			delete user.repeatPassword
 	 		UsersCollection.insertOne(user, function(failure, success){
 				if(failure){
 			  		response.send({
