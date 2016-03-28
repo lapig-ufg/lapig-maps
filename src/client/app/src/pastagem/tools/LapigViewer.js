@@ -71,6 +71,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
         success: function(response) {
           var result = JSON.parse(response.responseText);
           globalInstance.i18n = result.lang;
+          globalInstance.isAnyoneHome = false;
           i18n.lang = getLang();
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);

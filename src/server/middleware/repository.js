@@ -35,8 +35,9 @@ module.exports = function(app) {
 										var name = collection.name.substr(collection.name.indexOf('\.') + 1);
 										if(name != 'indexes') {
 											Repository.db.collection(name, function(err, repository) {
-												if(err)
+												if(err){
 													console.log(err)
+												}
 
 												Repository.collections[name] = repository;
 												callback();
