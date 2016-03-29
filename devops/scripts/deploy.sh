@@ -39,8 +39,14 @@ case $1 in
 
 			echo " 5) DB"
 			cd $PROD_DIR/db
-			$MONGODB_DIR/bin/mongo $DB_NAME --eval "db.dropDatabase()"
-			$MONGODB_DIR/bin/mongorestore -d $DB_NAME prod/$DB_NAME
+			
+			$MONGODB_DIR/bin/mongo $DB_NAME --eval "db.layers.drop()"
+			$MONGODB_DIR/bin/mongo $DB_NAME --eval "db.spatialInteligence.drop()"
+			$MONGODB_DIR/bin/mongo $DB_NAME --eval "db.timeSeries.drop()"
+
+			$MONGODB_DIR/bin/mongorestore -d $DB_NAME -c layers prod/$DB_NAME/layers.bson
+			$MONGODB_DIR/bin/mongorestore -d $DB_NAME -c spatialInteligence prod/$DB_NAME/spatialInteligence.bson
+			$MONGODB_DIR/bin/mongorestore -d $DB_NAME -c timeSeries prod/$DB_NAME/timeSeries.bson
 
 			echo " 6) Restart LAPIG-MAPS"
 			kill $(pgrep -f node\ app-cluster) &> /dev/null
