@@ -12,7 +12,6 @@ module.exports = function(app) {
 		redisClient.get(cacheKey, function(err, data) {
 			if(!err && data) {
 		    var bitmap = new Buffer(data,'base64');
-		    console.log('bitma', bitmap)
 		   	callback(bitmap);
 		  } else {
 		   	callback(undefined);
