@@ -211,11 +211,8 @@ module.exports = function(app){
 					delete layerWmtsIdObject[keysFoundRedis[i]];
 				}				
 			}
-
-			layersNotFoundRedis = Internal.layersNotFoundRedis(layerWmts, layerWmtsIdObject);
-			
+			layersNotFoundRedis = Internal.layersNotFoundRedis(layerWmts, layerWmtsIdObject);			
 			Internal.getRedisLayers(keysFoundRedis, function(layersFoundRedis){
-
 				
 				Internal.Conciditional(layersNotFoundRedis, layersFoundRedis, function(capabilities){
 

@@ -14,7 +14,7 @@ module.exports = function(app) {
 	Internal.requestTimeSeries = function(id, longitude, latitude, mode, callback) {
 		
 		var params = "TS " + id + " " + longitude + " " + latitude + " " + mode;
-		var cmd ="python " + config.pathTimeSeries + " " + params;
+		var cmd ="python " +"'"+ config.pathTimeSeries +"'"+" " + params;
 
 		console.log(cmd)
 
@@ -35,7 +35,7 @@ module.exports = function(app) {
 
 	Internal.requestTrend = function (bfastParams, callback) {
 		var params = "BFAST " + bfastParams.join(" ");
-		var cmd = "python " + config.pathTimeSeries + " " + params;
+		var cmd = "python " +"'"+ config.pathTimeSeries +"'"+ " " + params;
 
 		console.log(cmd)
 

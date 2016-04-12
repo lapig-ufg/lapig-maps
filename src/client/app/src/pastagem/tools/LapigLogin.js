@@ -38,7 +38,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
         var flag = true;
         for(var i=0; i <  validations.length; i++) {
-            console.log(i)
+            //console.log(i)
             var validation = validations[i]
             if(validation.validator == false) {
                 Ext.MessageBox.alert("",validation.msg);
@@ -56,7 +56,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     var result = JSON.parse(response.responseText)
                     if(result.success == false) {
                         if(result.error == 'senha'){
-                            Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_INCORRECTPASS)
+                            Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASS, function() {
+                                Ext.getCmp('lapig_login::fieldText-panel-cadaster-rePassword').focus('', 10);
+                            });
                         } else if(result.error == 'email') {
                             Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_ALREADYUSED)
                         }   
@@ -116,7 +118,9 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 var user = JSON.parse(responseText);
 
                 if(user.success == false){
-                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID);
+                    Ext.MessageBox.alert('', i18n.LAPIGLOGIN_ALERT_INCORRECTPASSORID, function() {
+                        Ext.getCmp('lapig_login::fieldText-panel-login-password').focus('', 10);
+                    });
                 }else{
                     isAnyoneHome = true;
                     instance.target.fireEvent("login");
@@ -183,9 +187,23 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
             },{
                 name: 'repeatPassword',
+                id: 'lapig_login::fieldText-panel-cadaster-rePassword',
                 xtype: 'textfield',
                 inputType: 'password',
-                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD
+                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_RPTPASSWORD,
+                listeners:  {
+                    specialkey: function (n, passwordKey) {    
+                        if (passwordKey.getKey() == passwordKey.ENTER) {
+                            instance.userRegister(function() {
+                                var form = Ext.getCmp('lapig_login::frm-user')
+                                var formPanel = form.getForm()
+                                var jsonData = formPanel.getValues()
+                                var keysLogin = {jsonData}
+                                instance.userLogin(keysLogin)
+                            })
+                        }
+                    }
+                }
             }],
             buttons: [{
                 text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
@@ -245,20 +263,34 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_EMAIL
                             },{
                                 name: 'password',
+                                id: 'lapig_login::fieldText-panel-login-password',
                                 xtype: 'textfield',
                                 inputType: 'password',
-                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD
+                                fieldLabel: i18n.LAPIGLOGIN_FIELDLBL_PASSWORD,
+                                listeners:  {
+                                    specialkey: function (n, passwordKey) {    
+                                         if (passwordKey.getKey() == passwordKey.ENTER) {
+                                            var login = Ext.getCmp('lapig_login::frm-panel-login')
+                                            var formLogin = login.getForm()
+                                            var jsonData = formLogin.getValues()
+                                            var keysLogin = {jsonData}
+                                            instance.userLogin(keysLogin, function(){
+                                                Ext.getCmp('lapig_login::panel-login').close()                                        
+                                            })
+                                        }
+                                    }
+                                }
                             }],
                         buttons: [{
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
-                            listeners:{
+                            listeners: {
                                 click:  function(n){
                                     var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
                                     var keysLogin = {jsonData}
                                     instance.userLogin(keysLogin, function(){
-                                        Ext.getCmp('lapig_login::panel-login').close()
+                                        Ext.getCmp('lapig_login::panel-login').close()                                        
                                     })
                                 }
                             }
