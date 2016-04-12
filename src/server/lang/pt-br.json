@@ -93,6 +93,7 @@
 	"LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH": "Gerar gráfico",
 	"LAPIGRASTERSERIES_TXT_ALERTRELAX": "Isto pode levar alguns minutinhos, relaxe e tome um café... ",
 	"LAPIGRASTERSERIES_TXT_ALERTATTENCION": "Atenção",
+	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "metros",
 
 	"LAPIGSPATIALINTELLIGENCE_OPTLIVESTOCK": "Pecuária",
 	"LAPIGSPATIALINTELLIGENCE_OPTAGRICULTURE": "Agricultura",
@@ -121,6 +122,9 @@
 	"LAPIGCOORDINATES_TTLCOL_LAT": "Latitude",
 	"LAPIGCOORDINATES_INSTR_EMPTYTXTGRID": "Adiciona uma coordenada geográfica utilizando as opções acima.",
 	"LAPIGCOORDINATES_BTNREMOVE_TLTP": "Remover coordenada",
+	"LAPIGCOORDINATES_BTNADD_TLTP": "Adicionar coordenada",
+	"LAPIGCOORDINATES_BTNEDIT_TLTP": "Editar a coordenada selecionada",
+	"LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD": "Nova coordenada",
 	"LAPIGCOORDINATES_ERRMSG_GETPOINTS": "Erro ao buscar pontos salvos.",
 	"LAPIGCOORDINATES_ERRMSG_INSERTPOINT": "Erro ao salvar ponto. Ele pode já existir.",
 	"LAPIGCOORDINATES_ERRMSG_DELETEPOINT": "Erro ao apagar ponto.",

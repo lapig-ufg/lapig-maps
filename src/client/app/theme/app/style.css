@@ -104,6 +104,10 @@ div.olControlMousePosition {
     background-image: url(img/logout.png); !import   
 }
 
+.lapig-icon-add {
+    background-image: url(img/add.png); !import
+}
+
 .lapig-icon-add-2 {
     background-image: url(img/add-2.png); !import
 }
@@ -122,6 +126,14 @@ div.olControlMousePosition {
 
 .lapig-icon-metadata {
     background-image: url(img/metadata.png); !import
+}
+
+.lapig-icon-delete {
+    background-image: url(img/delete.png); !import
+}
+
+.lapig-icon-edit {
+    background-image: url(img/edit.gif); !import
 }
 
 .gxp-icon-lapigpublicacoes {

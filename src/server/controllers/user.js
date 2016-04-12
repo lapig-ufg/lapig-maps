@@ -108,7 +108,7 @@ module.exports = function (app) {
 			latitude: lat
 		};
 
-		PointsCollection.insertOne(point, function(err, success){
+		PointsCollection.replaceOne({"_id":userId+lon+lat}, point, {"upsert": true}, function(err, success){
 			if(err){
 				response.send({
 					success: false,
