@@ -144,7 +144,6 @@ module.exports = function(app) {
 
 	Internal.correctSldName = function(filename, sldContent) {
 		var layername = filename.replace('.sld', '');
-
 		splitName = sldContent.split('Name>');
 
 		if(splitName.length >= 2) {

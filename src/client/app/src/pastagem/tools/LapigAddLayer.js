@@ -351,7 +351,12 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
     						var formLayer = Ext.getCmp('form-layer');
     						var layerData = formLayer.getForm().reader.jsonData;
-    						var layerConfig = { source: 'ows' }
+
+    						if(layerData.last_type == 'EE'){
+    							var layerConfig = { source: 'wmts' }
+    						}else{
+    							var layerConfig = { source: 'ows' }
+    						}
 
                 if (layerData.type == 'MULTIPLE'){
                 	layerConfig.oldName = layerData.name;
@@ -366,7 +371,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
       					instance.target.createLayerRecord(layerConfig, function(record) {
       						var mapPanel = instance.target.mapPanel;
       						record.json = layerData;
-      						
+
+      						console.log(record.getLayer().maxExtent)
+
       						mapPanel.layers.add([record]);
               		mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
       					});
@@ -385,8 +392,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
           	var formLayer = Ext.getCmp('form-layer');
           	formLayer.enable();
 
-          	var layer = actionLayer.result.data;
-
+	          var layer = actionLayer.result.data;
           	layerName = (layer.type == 'MULTIPLE') ? layer.last_name : layer._id
           	var urlPreview = 'ows?LAYERS=' + layerName
 				          	+ '&FORMAT=image/png'
@@ -399,6 +405,22 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 				          	+ '&BBOX=' + layer.extent.join(',')
 				          	+ '&WIDTH=196'
 				          	+ '&HEIGHT=202';
+          	
+          	if (layer.type == 'MULTIPLE'){
+
+	          	var fileObj = basicFormLayer.reader.jsonData.fileObj;
+
+	          	fileObj.forEach(function(fileObj) {
+	          		var idFileObj = fileObj['name'];
+	          		var typeFileObj = fileObj['type'];
+
+	          		if (typeFileObj == "EE"){
+	          			urlPreview = 'map/' + idFileObj + '/1/0/1';
+	          		}
+	          	});
+	          	
+          	}
+
 				    var fieldPreview = Ext.getCmp('field-layer-preview');
           	fieldPreview.update('<img src = '+urlPreview+'>');
 

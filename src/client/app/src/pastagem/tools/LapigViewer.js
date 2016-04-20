@@ -1,43 +1,45 @@
  /**
  *
- * @require OpenLayers/Control/MousePosition.js
+ * @requires OpenLayers/Control/MousePosition.js
  *
- * @require plugins/RemoveLayer.js
- * @require widgets/Viewer.js
+ * @requires plugins/RemoveLayer.js
+ * @requires widgets/Viewer.js
  *
- * @require plugins/Measure.js 
- * @require plugins/Zoom.js 
- * @require plugins/Navigation.js 
- * @require plugins/NavigationHistory.js 
- * @require plugins/Print.js
- * @require plugins/GoogleGeocoder.js
- * @require plugins/ZoomToLayerExtent.js
- * @require plugins/WMSGetFeatureInfo.js
+ * @requires plugins/Measure.js 
+ * @requires plugins/Zoom.js 
+ * @requires plugins/Navigation.js 
+ * @requires plugins/NavigationHistory.js 
+ * @requires plugins/Print.js
+ * @requires plugins/GoogleGeocoder.js
+ * @requires plugins/ZoomToLayerExtent.js
+ * @requires plugins/WMSGetFeatureInfo.js
  *
- * @require plugins/MapBoxSource.js
- * @require plugins/MapQuestSource.js
- * @require plugins/BingSource.js
- * @require plugins/GoogleSource.js
- * @require plugins/WMSCSource.js
+ * @requires plugins/LayerSource.js
+ * @requires plugins/TMSSource.js
+ * @requires plugins/MapBoxSource.js
+ * @requires plugins/MapQuestSource.js
+ * @requires plugins/BingSource.js
+ * @requires plugins/GoogleSource.js
+ * @requires plugins/WMSCSource.js
+ * @requires plugins/WMTSSource.js
  *
- * @require tools/LapigAddLayer.js
- * @require tools/LapigPrint.js
- * @require tools/LapigDownload.js
- * @require tools/LapigDownload.js
- * @require tools/LapigMetadata.js
- * @require tools/LapigGoogleSatellite.js
- * @require tools/LapigCoordinates.js
- * @require tools/LapigLayerManager.js
- * @require tools/LapigWMSCSource.js
- * @require tools/LapigZoom.js
- * @require tools/LapigRasterSeries.js
- * @require tools/LapigSpatialIntelligence.js
- * @require tools/LapigSpatialIntelligenceBtn.js
- * @require tools/LapigRasterSeriesBtn.js
- * @require tools/LapigWMSGetFeatureInfo.js
- * @require tools/LapigDownloadAll.js
- * @require tools/LapigLogin.js
- *
+ * @requires tools/LapigAddLayer.js
+ * @requires tools/LapigPrint.js
+ * @requires tools/LapigDownload.js
+ * @requires tools/LapigDownload.js
+ * @requires tools/LapigMetadata.js
+ * @requires tools/LapigGoogleSatellite.js
+ * @requires tools/LapigCoordinates.js
+ * @requires tools/LapigLayerManager.js
+ * @requires tools/LapigWMSCSource.js
+ * @requires tools/LapigZoom.js
+ * @requires tools/LapigRasterSeries.js
+ * @requires tools/LapigSpatialIntelligence.js
+ * @requires tools/LapigSpatialIntelligenceBtn.js
+ * @requires tools/LapigRasterSeriesBtn.js
+ * @requires tools/LapigWMSGetFeatureInfo.js
+ * @requires tools/LapigDownloadAll.js
+ * @requires tools/LapigLogin.js
  */
 
 globalInstance = this;
@@ -341,7 +343,12 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           sources: {
             ows: {
               url: '/ows/',
-              title: "LAPIG-OWS"
+              title: "LAPIG-OWS",
+            },
+            wmts: {
+              url: '/tms/',
+              ptype: "gxp_wmtssource",
+              title: "LAPIG-WMTS"
             },
             mapquest: {
               ptype: "gxp_mapquestsource",
@@ -455,5 +462,4 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             
         }        
     }
-    
 });

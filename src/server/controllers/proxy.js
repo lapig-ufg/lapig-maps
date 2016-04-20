@@ -7,13 +7,13 @@ module.exports = function(app) {
 	
 	var config = app.config;
 
+	var Internal = {};
 	var Proxy = {};
 
-	Proxy.ows = function(request, response) {
+	Internal.doRequest = function(request, response, baseUrl) {
 
 		var requestType = request.param('REQUEST');  
-
-	  var url = config.ows + request.path;
+	  var url = baseUrl + request.path;
 	  var params  = querystring.stringify(request.query);
 	  
 	  if(request.param('url'))
@@ -42,8 +42,17 @@ module.exports = function(app) {
 
 	  })
 	  .pipe(response)
-
 	}
 
+	Proxy.ows = function(request, response) {
+		var baseUrl = config.ows;
+		Internal.doRequest(request, response, baseUrl);
+	}
+
+	Proxy.tms = function(request, response) {
+		var baseUrl = config.tms;
+		Internal.doRequest(request, response, baseUrl);
+	}
+	
 	return Proxy;
 }

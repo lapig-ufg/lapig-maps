@@ -13,8 +13,7 @@ module.exports = function(app){
 	var db = app.libs.db;
 	var Internal = {};
 
-	var pathMapID = app.config.pathCreateMapID
-
+	var pathMapID = "'"+app.config.pathCreateMapID+"'"
 	
 	Internal.removeBComma = function(str){
 		str = str.replace(/B/g,'');

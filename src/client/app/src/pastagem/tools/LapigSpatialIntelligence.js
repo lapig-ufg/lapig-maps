@@ -141,6 +141,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         title: title,
         visibility: visibility
       }
+      console.log('type', app)
 
       app.createLayerRecord(layerConfig, function(record) {
         record.json = {};

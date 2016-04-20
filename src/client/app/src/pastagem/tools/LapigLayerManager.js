@@ -60,7 +60,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					attr.allowDrop = false;
 
 					layerRecord = this.target.mapPanel.layers.getByLayer(attr.layer);
-					
+					console.log(layerRecord)
 					layerId = layerRecord.json._id;
 					layerLastDate = layerRecord.json.last_date;
 					var url = '/layers/years/'+layerId;
@@ -120,7 +120,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 								
 						]
 					};
-
 					if (layerRecord.json.type == "MULTIPLE") {
 						var dateStore = new Ext.data.Store({
 							autoLoad: true,
@@ -128,7 +127,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
 								{name: 'name', mapping: 'name'},
 								{name: 'year', mapping: 'year'},
-								{name: 'last_date', mapping: 'last_date'}     
+								{name: 'last_date', mapping: 'last_date'},    
 							])
 						});
 
@@ -205,10 +204,18 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											lazyInit: false,
 											listeners: {
 												select: function(combo, record, index) {
-
-														var layerConfig = {
-															source: 'ows',
+													var layerConfig;
+													console.log(record.json.type)
+														if(record.json.type == 'EE'){
+															layerConfig = {
+																source: 'wmts',
+															  name: record.data.name
+															}
+														}else{
+															layerConfig = {
+																source: 'ows',
 														  	name: record.data.name
+															}
 														}
 
 														instance.target.createLayerRecord(layerConfig, function(newRecord) {

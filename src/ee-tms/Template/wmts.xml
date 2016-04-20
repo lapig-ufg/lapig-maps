@@ -32,14 +32,14 @@
     <ows:Operation name="GetTile">
       <ows:DCP>
         <ows:HTTP>
-          <ows:Get xlink:href="http://tileserver.maptiler.com/wmts/">
+          <ows:Get xlink:href="http://localhost:5000/map/">
             <ows:Constraint name="GetEncoding">
               <ows:AllowedValues>
                 <ows:Value>RESTful</ows:Value>
               </ows:AllowedValues>
             </ows:Constraint>
           </ows:Get>
-          <ows:Get xlink:href="http://tileserver.maptiler.com/wmts?">
+          <ows:Get xlink:href="http://localhost:5000/map/">
             <ows:Constraint name="GetEncoding">
               <ows:AllowedValues>
                 <ows:Value>KVP</ows:Value>
@@ -56,7 +56,7 @@
       <ows:Title>GoogleMapsCompatible</ows:Title>
       <ows:Abstract>the wellknown 'GoogleMapsCompatible' tile matrix set defined by OGC WMTS specification</ows:Abstract>
       <ows:Identifier>GoogleMapsCompatible</ows:Identifier>
-      <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
+      <ows:SupportedCRS>EPSG:900913</ows:SupportedCRS>
       <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
       <TileMatrix>
         <ows:Identifier>0</ows:Identifier>
