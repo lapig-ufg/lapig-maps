@@ -1483,61 +1483,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     return [
       {
-        xtype: 'checkbox',
-        boxLabel: "Usar raio:",
-        id: 'lapig-coordenadas-chk-use-radius',
-        width: 'auto',
-        disabled: true,
-        enableOnSelect: true,
-        listeners:{
-          check: function(checkbox, checked) {
-            Ext.getCmp('lapig-coordenadas-cmb-radius').setDisabled(!checked);
-            Ext.getCmp('lapig-coordinates-label-radius').setDisabled(!checked);
-          }
-        }
-      },
-      {
-        xtype:'combo',
-        id: "lapig-coordenadas-cmb-radius",
-        fieldLabel: 'Raios',
-        border: false,
-        displayField:'radius',
-        valueField: 'radius',
-        mode: 'local',
-        typeAhead: true,
-        editable: false,
-        disabled: true,
-        triggerAction: 'all',
-        width: 70,
-        store: {
-          xtype: 'arraystore',
-          fields: [
-             {name: 'radius'},
-          ],
-          data: [
-            [250], [500], [750], [1000]
-          ]
-        }
-      },
-      {
-        xtype: 'label',
-        id: 'lapig-coordinates-label-radius',
-        text: i18n.LAPIGRASTERSERIES_TXT_RADUNIT_METER,
-        width: 'auto',
-        height: 'auto',
-        disabled: true,
-      },
-      '->',
-      /*{
-        hidden: true,
         text: i18n.LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED,
         xtype: "label",
-      },*/
+      },
       {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
         disabled: true,
-        enableOnSelect: true,
         listeners: {
           click: function(evt) {
             
@@ -1572,8 +1524,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             
           }
         }
-      }
-    ]
+    }]
   }
 
 });

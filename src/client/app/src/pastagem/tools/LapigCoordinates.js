@@ -12,8 +12,6 @@
  * @requires OpenLayers/Icon.js
  * @requires OpenLayers/Marker.js
  * @requires OpenLayers/Control/DrawFeature.js
- *
- * @require tools/LapigRowEditor.js
  */
 
 /** api: (define)
@@ -98,10 +96,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							'remove': function() {
 								instance.checkButtonsState()
 							}
-						},
-						sortInfo: {
-					    field: 'name',
-					    direction: 'ASC'
 						}
 				});
 
@@ -134,7 +128,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 	          
 	          if (res.success) {
 		          res.result.forEach(function(point){
-		          	instance.addPointGUI(point.name, point.longitude, point.latitude, true);
+		          	instance.addPointGUI(point.name, point.longitude, point.latitude);
 		          });
 		        } else {
 		        	Ext.MessageBox.alert("", i18n.LAPIGCOORDINATES_ERRMSG_GETPOINTS);
@@ -193,7 +187,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			}
 		},
 
-		addPointGUI: function(name, lon, lat, store) {
+		addPointGUI: function(name, lon, lat) {
 			var instance = this;
 
 			var lonLat = new OpenLayers.LonLat(lon, lat)
@@ -206,10 +200,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var marker = new OpenLayers.Marker(lonLat, icon);
 			marker.idLatLonCrl = name + '-' + lat + '-' + lon;
 			instance.vectors.addMarker(marker);
-			if(store){
-				instance.store.loadData([[ name, lon, lat]], true);
-				instance.store.sort('name', 'ASC');
-			}
+			instance.store.loadData([[ name, lon, lat]], true);
 		},
 
 		resetPoints: function() {
@@ -364,118 +355,31 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		},
 
 		checkButtonsState: function() {
-			var buttons = Ext.getCmp('lapig-coordinates-window').getFooterToolbar().items.items;
+			var buttons = Ext.getCmp('lapig-coordinates-window').buttons;
 			var grid = Ext.getCmp('lapig-coordinates-grid');
 			if(buttons) {
 				var state = !grid.getSelectionModel().hasSelection();
-				buttons.forEach(function(btn) {
-					btn.setDisabled(state || !btn.enableOnSelect);
-				})
-			}
-		},
-
-		parseCoord: function(longitude, latitude) {
-			if (longitude.match('')) {
-				
-			} else if (longitude.match('')) {
-
+					buttons.forEach(function(btn) {
+						btn.setDisabled(state);
+					})
 			}
 		},
 
 		getGrid: function() {
 				var instance = this;
 
-				var Coordinate = Ext.data.Record.create([{
-					name: 'name',
-					type: 'string'
-				},{
-					name: 'longitude',
-					type: 'float'
-				},{
-					name: 'latitude',
-					type: 'float'
-				}]);
-
-				var rowEditor = new gxp.plugins.LapigRowEditor({
-					saveText: 'Salvar',
-					cancelText: 'Cancelar',
-				});
-
-				var grid = new Ext.grid.GridPanel({
+				return {
 						store: instance.store,
-						plugins: [rowEditor],
 						id: 'lapig-coordinates-grid',
 						xtype: "grid",
 						viewConfig: {
 							emptyText: i18n.LAPIGCOORDINATES_INSTR_EMPTYTXTGRID,
-							deferEmptyText: false,
-							markDirty: false
+							deferEmptyText: false
 						},
 						header: false,
 						style: {
 							'margin-top': '10px'
 						},
-						tbar: [
-							{
-								xtype: 'button',
-								// text: 'Adicionar',
-								tooltip: i18n.LAPIGCOORDINATES_BTNADD_TLTP,
-								iconCls: 'lapig-icon-add',
-								handler: function() {
-									var p = new Coordinate({
-                    name: i18n.LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD,
-	                });
-	                rowEditor.stopEditing();
-	                instance.store.insert(0, p);
-	                grid.getView().refresh();
-	                grid.getSelectionModel().selectRow(0);
-	                grid.newRecord = 0;
-	                rowEditor.newRecord(0);
-								}
-							},
-							' ',
-							{
-								xtype: 'button',
-								// text: 'Remover',
-								tooltip: i18n.LAPIGCOORDINATES_BTNREMOVE_TLTP,
-								iconCls: 'lapig-icon-delete',
-								disabled: true,
-								ref: '../removeBtn',
-		            handler: function(){
-	                rowEditor.stopEditing();
-	                var s = grid.getSelectionModel().getSelections();
-	                for(var i = 0, r; r = s[i]; i++){
-                    var idLatLonCrl = r.get('name') + '-' + r.get('latitude') + '-' + r.get('longitude');
-
-										instance.vectors.markers.every(function(m) {
-											if(m.idLatLonCrl == idLatLonCrl) {
-												instance.store.remove(r);
-												instance.vectors.removeMarker(m);
-												instance.deletePoint(r.get('longitude'), r.get('latitude'));
-												return false;
-											} else {
-												return true;
-											}
-										});
-	                }
-		            }
-							},
-							' ',
-							{
-								xtype: 'button',
-								// text: 'Editar',
-								tooltip: 'Inicia edição da coordenada selecionada.',
-								iconCls: 'lapig-icon-edit',
-								disabled: true,
-								ref: '../editBtn',
-								handler: function() {
-	                rowEditor.stopEditing();
-	                grid.getView().refresh();
-	                var row = grid.getSelectionModel().getSelected();
-	                rowEditor.startEditing(row);
-								}
-							},
-						],
 						columns: [
 							{
 								id: 'name',
@@ -483,30 +387,44 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								width: 160,
 								sortable: true,
 								menuDisabled: true,
-								dataIndex: 'name',
-								editor: {
-									xtype: 'textfield'
-								}
+								dataIndex: 'name'
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LONG,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
-									dataIndex: 'longitude',
-									editor: {
-										xtype: 'textfield',
-                		allowBlank: false,
-									}
+									dataIndex: 'longitude'
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LAT,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
-									dataIndex: 'latitude',
-									editor: {
-										xtype: 'textfield',
-                		allowBlank: false,
-									}
+									dataIndex: 'latitude'
+							}, {
+									xtype: 'actioncolumn',
+									width: 40,
+									sortable: false,
+									menuDisabled: true,
+									items: [{
+											icon: "theme/app/img/delete.png",
+											tooltip: i18n.LAPIGCOORDINATES_BTNREMOVE_TLTP,
+											handler: function(grid, rowIndex, colIndex) {
+													var rec = instance.store.getAt(rowIndex);
+
+													var idLatLonCrl = rec.get('name') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
+
+													instance.vectors.markers.every(function(m) {
+															if(m.idLatLonCrl == idLatLonCrl) {
+																	instance.store.removeAt(rowIndex);
+																	instance.vectors.removeMarker(m);
+																	instance.deletePoint(rec.get('longitude'), rec.get('latitude'));
+																	return false;
+															} else {
+																	return true;
+															}
+													})
+											}
+									}]
 							}
 						],
 						stripeRows: true,
@@ -514,40 +432,9 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						autoHeight: true, //!!!
 						autoWidth : true, //!!!
 						listeners: {
-							'rowclick': instance.checkButtonsState,
-
-							'canceledit': function(rowEditor, forced, rowIndex) {
-								if(forced){
-									if(grid.newRecord !== -1 && grid.newRecord !== undefined){
-										instance.store.removeAt(rowIndex);
-										grid.newRecord = -1;
-									}
-								}else{
-									grid.newRecord = -1;
-								}
-							},
-
-							'validateedit': function(rowEditor, changes, rec, rowIndex) {
-								console.log('validateedit');
-								// parsedRec = instance.parseCoord(rec.get('longitude'), rec.get('latitude'));
-								rec.set('name', 'EITA');
-								return true;
-							},
-
-							'afteredit': function(rowEditor, changes, rec, rowIndex) {
-								grid.newRecord = -1;
-								var name = rec.get('name'), lon = rec.get('longitude'), lat = rec.get('latitude');
-								instance.insertPoint(name, lon, lat);
-							}
+							'rowclick': instance.checkButtonsState
 						}
-				});
-
-				grid.getSelectionModel().on('selectionchange', function(sm){
-	        grid.removeBtn.setDisabled(sm.getCount() < 1);
-	        grid.editBtn.setDisabled(sm.getCount() < 1);
-		    });
-
-				return grid;
+				};
 		},
 
 		getWindowContent: function() {
@@ -608,7 +495,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					},
 					items: [
 						{
-							hidden: true, //TODO remove all
 							xtype: 'fieldset',
 							title: i18n.LAPIGCOORDINATES_TTLVBOX_COORD,
 							id: 'teste',
@@ -798,70 +684,123 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 													'margin-top': '4px'
 												}
 											}, {
-												xtype: "textfield",
-												flex:1,
-												id: "form-text-name",
+													xtype: "textfield",
+													flex:1,
+													id: "form-text-name",
 											}, {
-												icon: "theme/app/img/add.png",
-												xtype: 'button',
-												width: '20px',
-												handler: function() {
+													icon: "theme/app/img/add.png",
+													xtype: 'button',
+													width: '20px',
+													handler: function() {
 
-														var lat = Ext.getCmp('form-text-lat-2').getValue();
-														var lon = Ext.getCmp('form-text-lon-2').getValue();
-														var name = Ext.getCmp('form-text-name').getValue();
-
-														if(!lat || !lon) {
-															var ddLon = instance.dms2dd(
-																Ext.getCmp('dms-lon-d-2').getValue(),
-																Ext.getCmp('dms-lon-m-2').getValue(),
-																Ext.getCmp('dms-lon-s-2').getValue()
-															);
-
-															var ddLat = instance.dms2dd(
-																Ext.getCmp('dms-lat-d-2').getValue(),
-																Ext.getCmp('dms-lat-m-2').getValue(),
-																Ext.getCmp('dms-lat-s-2').getValue()
-															);
-
-															instance.setDd(ddLon, ddLat);
-															lat = Ext.getCmp('form-text-lat-2').getValue();
-															lon = Ext.getCmp('form-text-lon-2').getValue();
+															var lat = Ext.getCmp('form-text-lat-2').getValue();
+															var lon = Ext.getCmp('form-text-lon-2').getValue();
+															var name = Ext.getCmp('form-text-name').getValue();
 
 															if(!lat || !lon) {
-																return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
+																	var ddLon = instance.dms2dd(
+																			Ext.getCmp('dms-lon-d-2').getValue(),
+																			Ext.getCmp('dms-lon-m-2').getValue(),
+																			Ext.getCmp('dms-lon-s-2').getValue()
+																	);
+
+																	var ddLat = instance.dms2dd(
+																			Ext.getCmp('dms-lat-d-2').getValue(),
+																			Ext.getCmp('dms-lat-m-2').getValue(),
+																			Ext.getCmp('dms-lat-s-2').getValue()
+																	);
+
+																	instance.setDd(ddLon, ddLat);
+																	lat = Ext.getCmp('form-text-lat-2').getValue();
+																	lon = Ext.getCmp('form-text-lon-2').getValue();
+
+																	if(!lat || !lon) {
+																		return Ext.MessageBox.alert('LAPIG-Maps - Validação', 'Digite uma coordenada geográfica preenchendo os campos Longitude e Latitude');
+																	}
 															}
-														}
 
-														instance.insertPoint(name, lon, lat);
+															instance.insertPoint(name, lon, lat);
 
-														Ext.getCmp('form-text-lat-2').setValue('');
-														Ext.getCmp('form-text-lon-2').setValue('');
+															Ext.getCmp('form-text-lat-2').setValue('');
+															Ext.getCmp('form-text-lon-2').setValue('');
 
-														Ext.getCmp('dms-lat-d-2').setValue('');
-														Ext.getCmp('dms-lat-m-2').setValue('');
-														Ext.getCmp('dms-lat-s-2').setValue('');
-														Ext.getCmp('dms-lon-d-2').setValue('');
-														Ext.getCmp('dms-lon-m-2').setValue('');
-														Ext.getCmp('dms-lon-s-2').setValue('');
+															Ext.getCmp('dms-lat-d-2').setValue('');
+															Ext.getCmp('dms-lat-m-2').setValue('');
+															Ext.getCmp('dms-lat-s-2').setValue('');
+															Ext.getCmp('dms-lon-d-2').setValue('');
+															Ext.getCmp('dms-lon-m-2').setValue('');
+															Ext.getCmp('dms-lon-s-2').setValue('');
 
-														Ext.getCmp('form-text-name').setValue('');
-												}
+															Ext.getCmp('form-text-name').setValue('');
+													}
 											}
 										]
 									}
-							],
+							]
 						},
 						{
-							hidden: true, //TODO remove
-							height: 190,
+							height: 120,
 							border: false,
 							autoScroll: true,
 							items: [
 								instance.getGrid()
-							],
+							]
 						},
-						instance.getGrid()
+						{
+							xtype: 'fieldset',
+							title: 'Configuração de raio',
+							hidden: true,
+							id: 'lapig-coordinates-radius-fieldset',
+							layout: {
+								type: 'hbox',
+								// padding: '5'
+							},
+							height: 60,
+							items: [
+								{
+									xtype: 'checkbox',
+									boxLabel: "Usar raio:",
+									id: 'lapig-coordenadas-chk-use-radius',
+									flex: 1,
+									listeners:{
+										check: function(checkbox, checked) {
+											Ext.getCmp('lapig-coordenadas-cmb-radius').setDisabled(!checked);
+										}
+									}
+								},
+								{
+									xtype:'combo',
+                  id: "lapig-coordenadas-cmb-radius",
+                  flex: 1,
+                  fieldLabel: 'Raios',
+                  border: false,
+                  displayField:'radius',
+                  valueField: 'radius',
+                  mode: 'local',
+                  typeAhead: true,
+                  editable: false,
+                  disabled: true,
+                  triggerAction: 'all',
+                  width: 70,
+                  value: 250,
+                  store: {
+                    xtype: 'arraystore',
+                    fields: [
+                       {name: 'radius'},
+                    ],
+                    data: [
+                    	[250], [500], [1000], [1250]
+                    ]
+                  }
+								},
+								{
+									xtype: 'label',
+									html: "<text font=18>metros</text>",
+									flex: 1,
+									width: 1
+								}
+							]
+						}
 					]
 				};
 
@@ -873,7 +812,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						id: 'lapig-coordinates-window',
 						title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
 						width: 330,
-						height: 350,
+						height: 340,
 						layout: 'fit',
 						plain: true,
 						items: [
@@ -883,9 +822,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						listeners: {
 								close: function() {}
 						},
-						// buttons: buttons,
-						buttonAlign: 'left',
-						fbar: buttons
+						buttons: buttons
 				});
 		}
 });

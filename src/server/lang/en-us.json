@@ -171,5 +171,9 @@
 	"LAPIGLOGIN_VALIDATION_EMAIL_MSG": "Fill in the e-mail field correctly!",
 	"LAPIGLOGIN_VALIDATION_NAME_MSG": "Fill in the name field with at least 3 characters!",
 	"LAPIGLOGIN_VALIDATION_OCUPATION_MSG": "Fill in the occupation field correctly!",
-	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Fill out the password fields 6 to 12 digits, if possible use special characters (!@#$%()^&*)"
+	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Fill out the password fields 6 to 12 digits, if possible use special characters (!@#$%()^&*)",
+
+	"LAPIGLAYERLINK_MENUTEXT": "URL Layer",
+	"LAPIGLAYERLINK_TIPTEXT": "Access directly this layer.",
+	"LAPIGLAYERLINK_DESCRIPTION": "Use the link below to access directly this layer:"
 }

@@ -171,5 +171,9 @@
 	"LAPIGLOGIN_VALIDATION_EMAIL_MSG": "Preencha o campo do E-mail corretamente!",
 	"LAPIGLOGIN_VALIDATION_NAME_MSG": "Preencha o campo nome com no mínimo 3 caracteres!",
 	"LAPIGLOGIN_VALIDATION_OCUPATION_MSG": "Preencha o campo de ocupação corretamente!",
-	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Preencha os campos de senha com 6 a 12 dígitos, se possivel use caracteres especiais (!@#$%()^&*)"
+	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Preencha os campos de senha com 6 a 12 dígitos, se possivel use caracteres especiais (!@#$%()^&*)",
+
+	"LAPIGLAYERLINK_MENUTEXT": "Link de acesso da camada",
+	"LAPIGLAYERLINK_TIPTEXT": "Acesse diretamente essa camada.",
+	"LAPIGLAYERLINK_DESCRIPTION": "Utilize o link abaixo para acessar diretamente essa camada:"
 }
