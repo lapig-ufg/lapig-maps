@@ -166,7 +166,7 @@ module.exports = function(app) {
 					metadataFile = path.join(config['path_metadata'], metadata)
 					files.push(metadataFile);
 				}
-				Internal.streamFilesToZip(typeName, files, response);
+				Internal.streamFilesToZip(coverageId, files, response);
 			} else {
 				response.end();
 			}

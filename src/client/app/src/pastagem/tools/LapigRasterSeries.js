@@ -1541,7 +1541,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
         disabled: true,
-        enableOnSelect: true,
         listeners: {
           click: function(evt) {
             
@@ -1582,8 +1581,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             
           }
         }
-      }
-    ]
+    }]
   }
 
 });

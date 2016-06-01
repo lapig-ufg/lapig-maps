@@ -89,57 +89,61 @@ div.olControlMousePosition {
 }
 
 .x-btn .gxp-icon-lapigcoordinates, .x-menu-item .gxp-icon-icon-lapigcoordinates, .x-tree-node .gxp-icon-lapigcoordinates {
-    background-image: url(img/lapig-coordenadas.png); !import
+    background-image: url(img/lapig-coordenadas.png) !important;
 }
 
 .x-btn .gxp-icon-lapigprint, .x-menu-item .gxp-icon-icon-lapigprint, .x-tree-node .gxp-icon-lapigprint {
-    background-image: url(img/ico_print.png); !import
+    background-image: url(img/ico_print.png) !important;
 }
 
 .gxp-icon-lapiglogin {
-    background-image: url(img/login.png); !import   
+    background-image: url(img/login.png) !important;   
 }
 
 .gxp-icon-lapiglogout {
-    background-image: url(img/logout.png); !import   
+    background-image: url(img/logout.png) !important;   
 }
 
 .lapig-icon-add {
-    background-image: url(img/add.png); !import
+    background-image: url(img/add.png) !important;
 }
 
 .lapig-icon-add-2 {
-    background-image: url(img/add-2.png); !import
+    background-image: url(img/add-2.png) !important;
 }
 
 .lapig-icon-seta {
-    background-image: url(img/seta.png); !import
+    background-image: url(img/seta.png) !important;
 }
 
 .lapig-icon-csv {
-    background-image: url(img/file-xls.png); !import
+    background-image: url(img/file-xls.png) !important;
 }
 
 .lapig-icon-refresh {
-    background-image: url(img/refresh.png); !import
+    background-image: url(img/refresh.png) !important;
 }
 
 .lapig-icon-metadata {
-    background-image: url(img/metadata.png); !import
+    background-image: url(img/metadata.png) !important;
 }
 
 .lapig-icon-delete {
-    background-image: url(img/delete.png); !import
+    background-image: url(img/delete.png) !important;
 }
 
 .lapig-icon-edit {
-    background-image: url(img/edit.gif); !import
+    background-image: url(img/edit.gif) !important;
+}
+
+.gxp-icon-lapiglayerlink {
+    background-image: url(img/layer-link.png) !important;
 }
 
 .gxp-icon-lapigpublicacoes {
-    background-image: url(img/publicacoes.png); !import
-    height:16px; !import
-    width:16px; !import
+    background-image: url(img/publicacoes.png) !important;
+    height:16px !important;
+    width:16px !important;
 }
 
 .lapig-slider {
@@ -167,13 +171,13 @@ div.olControlMousePosition {
     background-image: url(img/image-stats.jpg);
 }
 .x-btn .gxp-icon-lapig-add-point, .x-menu-item .gxp-icon-lapig-add-point, .x-tree-node .gxp-icon-lapig-add-point {
-    background-image: url(img/shape_square_add.png); !import
+    background-image: url(img/shape_square_add.png) !important;
 }
 
 .x-btn .gxp-icon-lapigcoordinates, .x-menu-item .gxp-icon-icon-lapigcoordinates, .x-tree-node .gxp-icon-lapigcoordinates {
-    background-image: url(img/shape_square_add.png); !import
+    background-image: url(img/shape_square_add.png) !important;
 }
 
 .x-btn .gxp-icon-lapig-delete-point, .x-menu-item .gxp-icon-lapig-delete-point, .x-tree-node .gxp-icon-lapig-delete-point {
-    background-image: url(img/shape_square_delete.png); !import
+    background-image: url(img/shape_square_delete.png) !important;
 } */

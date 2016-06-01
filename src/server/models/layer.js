@@ -30,7 +30,6 @@ module.exports = function(app) {
 						layer.last_name = lastName;
 						layer.last_date = lastDate;
 				}
-
 			return layer;
 		}
 

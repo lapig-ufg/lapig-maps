@@ -1,43 +1,46 @@
  /**
  *
- * @require OpenLayers/Control/MousePosition.js
+ * @requires OpenLayers/Control/MousePosition.js
  *
- * @require plugins/RemoveLayer.js
- * @require widgets/Viewer.js
+ * @requires plugins/RemoveLayer.js
+ * @requires widgets/Viewer.js
  *
- * @require plugins/Measure.js 
- * @require plugins/Zoom.js 
- * @require plugins/Navigation.js 
- * @require plugins/NavigationHistory.js 
- * @require plugins/Print.js
- * @require plugins/GoogleGeocoder.js
- * @require plugins/ZoomToLayerExtent.js
- * @require plugins/WMSGetFeatureInfo.js
+ * @requires plugins/Measure.js 
+ * @requires plugins/Zoom.js 
+ * @requires plugins/Navigation.js 
+ * @requires plugins/NavigationHistory.js 
+ * @requires plugins/Print.js
+ * @requires plugins/GoogleGeocoder.js
+ * @requires plugins/ZoomToLayerExtent.js
+ * @requires plugins/WMSGetFeatureInfo.js
  *
- * @require plugins/MapBoxSource.js
- * @require plugins/MapQuestSource.js
- * @require plugins/BingSource.js
- * @require plugins/GoogleSource.js
- * @require plugins/WMSCSource.js
+ * @requires plugins/LayerSource.js
+ * @requires plugins/TMSSource.js
+ * @requires plugins/MapBoxSource.js
+ * @requires plugins/MapQuestSource.js
+ * @requires plugins/BingSource.js
+ * @requires plugins/GoogleSource.js
+ * @requires plugins/WMSCSource.js
+ * @requires plugins/WMTSSource.js
  *
- * @require tools/LapigAddLayer.js
- * @require tools/LapigPrint.js
- * @require tools/LapigDownload.js
- * @require tools/LapigDownload.js
- * @require tools/LapigMetadata.js
- * @require tools/LapigGoogleSatellite.js
- * @require tools/LapigCoordinates.js
- * @require tools/LapigLayerManager.js
- * @require tools/LapigWMSCSource.js
- * @require tools/LapigZoom.js
- * @require tools/LapigRasterSeries.js
- * @require tools/LapigSpatialIntelligence.js
- * @require tools/LapigSpatialIntelligenceBtn.js
- * @require tools/LapigRasterSeriesBtn.js
- * @require tools/LapigWMSGetFeatureInfo.js
- * @require tools/LapigDownloadAll.js
- * @require tools/LapigLogin.js
- *
+ * @requires tools/LapigAddLayer.js
+ * @requires tools/LapigPrint.js
+ * @requires tools/LapigLayerLink.js
+ * @requires tools/LapigDownload.js
+ * @requires tools/LapigDownload.js
+ * @requires tools/LapigMetadata.js
+ * @requires tools/LapigGoogleSatellite.js
+ * @requires tools/LapigCoordinates.js
+ * @requires tools/LapigLayerManager.js
+ * @requires tools/LapigWMSCSource.js
+ * @requires tools/LapigZoom.js
+ * @requires tools/LapigRasterSeries.js
+ * @requires tools/LapigSpatialIntelligence.js
+ * @requires tools/LapigSpatialIntelligenceBtn.js
+ * @requires tools/LapigRasterSeriesBtn.js
+ * @requires tools/LapigWMSGetFeatureInfo.js
+ * @requires tools/LapigDownloadAll.js
+ * @requires tools/LapigLogin.js
  */
 
 globalInstance = this;
@@ -54,30 +57,113 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
     
     constructor: function(userLayers, lon, lat, zoomLevel, project) {
 
-      var getLang = function(){
-        if(navigator.browserLanguage) {
-          return navigator.browserLanguage.toLowerCase();    
-        }
-        else if(navigator.language) {
-          return navigator.language.toLowerCase();
-        }
-      };
       var instance = this;
+
+      instance.lon = lon;
+      instance.lat = lat;
+      instance.project = project;
+      instance.zoomLevel = zoomLevel;
+      instance.userLayers = userLayers;
+
+      instance.init();
+    },
+
+    init: function() {
+      var instance = this;
+
+      var language = instance.getLang();
+      var basepaths = instance.getLayers();
+      
+      var project = instance.project;
+      
+      var lon = instance.getLon();
+      var lat = instance.getLat();
+      var zoomLevel = instance.getZoom();
 
       Ext.Ajax.request({
         url: '/layers',
         method: 'POST',
-        jsonData: { "basepaths": userLayers, "language": getLang() },
+        jsonData: { "basepaths": basepaths, "language": language },
         success: function(response) {
           var result = JSON.parse(response.responseText);
           globalInstance.i18n = result.lang;
           globalInstance.isAnyoneHome = false;
-          i18n.lang = getLang();
+          i18n.lang = language;
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
           gxp.LapigViewer.superclass.constructor.apply(instance, [config]);
         }
       });
+    },
+
+    getURLParams: function() {
+      var getParams = document.URL.split("?");
+      return Ext.urlDecode(getParams[getParams.length - 1]);
+    },
+
+    getZoom: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.zoom) {
+        return params.zoom.split(',');
+      } else {
+        return instance.zoomLevel
+      }
+    },
+
+    getLat: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.lat) {
+        return params.lat.split(',');
+      } else {
+        return instance.lat
+      }
+    },
+
+    getLon: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.lon) {
+        return params.lon.split(',');
+      } else {
+        return instance.lon
+      }
+    },
+
+    getLayers: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.layers) {
+        var layers = params.layers.split(',');
+        layers.push('pa_br_estados_250_2013_ibge');
+        return layers;
+      } else {
+        return instance.userLayers
+      }
+    },
+
+    getLang: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+
+      if (params.lang) {
+        return params.lang;
+      } else if(navigator.browserLanguage) {
+        return navigator.browserLanguage.toLowerCase();    
+      }
+      else if(navigator.language) {
+        return navigator.language.toLowerCase();
+      }
     },
 
     createLapigConfig: function(userLayers, lon, lat, zoomLevel, project) {
@@ -101,21 +187,9 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               group: "background"
             }
             ,{
-              source: "google",
-              title: "Google Terrain",
-              name: "TERRAIN",
-              group: "background"
-            }
-            ,{
-              source: "google",
-              title: "Google Satellite",
-              name: "SATELLITE",
-              group: "background"
-            }
-            ,{
-              source: "google",
-              title: "Google Roadmap",
-              name: "ROADMAP",
+              source: "bing",
+              title: "Bing Satellite",
+              name: "Aerial",
               group: "background"
             }
             ,{
@@ -125,9 +199,21 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               group: "background"
             }
             ,{
-              source: "bing",
-              title: "Bing Satellite",
-              name: "Aerial",
+              source: "google",
+              title: "Google Terrain",
+              name: "TERRAIN",
+              group: "background"
+            }
+            ,{
+              source: "google",
+              title: "Google Roadmap",
+              name: "ROADMAP",
+              group: "background"
+            }
+            ,{
+              source: "google",
+              title: "Google Satellite",
+              name: "SATELLITE",
               group: "background"
             }
       ]
@@ -255,7 +341,13 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               removeMenuText: i18n.LAPIGVIEWER_REMOVELAYER_RMVMENUTXT,
               actionTarget: ["tree.contextMenu"]
             },
-            
+            {
+              ptype: "gxp_lapiglayerlink",
+              menuText: i18n.LAPIGLAYERLINK_MENUTEXT,
+              actionTip: i18n.LAPIGLAYERLINK_TIPTEXT,
+              actionTarget: ["tree.contextMenu"]
+            },
+
             /********** Tree Toolbar */
             {
               ptype: "gxp_lapigaddlayer",
@@ -341,7 +433,12 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           sources: {
             ows: {
               url: '/ows/',
-              title: "LAPIG-OWS"
+              title: "LAPIG-OWS",
+            },
+            wmts: {
+              url: '/tms/',
+              ptype: "gxp_wmtssource",
+              title: "LAPIG-WMTS"
             },
             mapquest: {
               ptype: "gxp_mapquestsource",
@@ -455,5 +552,4 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             
         }        
     }
-    
 });

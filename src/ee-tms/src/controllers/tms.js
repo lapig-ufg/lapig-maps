@@ -25,7 +25,7 @@ module.exports = function(app) {
 		
 		for (var i = 0; i < layers.length; i++){				
 			xml+="<Layer>\n"+
-				"<ows:Title>"+layers[i].satellite+" "+layers[i].startDate+" "+"("+layers[i].composite+")"+"</ows:Title>\n"+
+				"<ows:Title>"+layers[i].satellite+" "+layers[i].startDate+" "+"RGB "+layers[i].composite+"</ows:Title>\n"+
 				"<ows:Identifier>"+layers[i].id+"</ows:Identifier>\n"+
 				"<ows:WGS84BoundingBox crs='urn:ogc:def:crs:OGC:2:84'>\n"+
 				"<ows:LowerCorner>"+layers[i].b_box[0]+" "+layers[i].b_box[1]+"</ows:LowerCorner>\n"+

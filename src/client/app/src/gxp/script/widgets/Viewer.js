@@ -421,6 +421,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                 config, this.defaultSourceType
             );
         } catch (err) {
+            console.log(err);
             throw new Error("Could not create new source plugin with ptype: " + options.config.ptype);
         }
         source.on({

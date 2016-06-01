@@ -23,14 +23,14 @@ module.exports = function(app) {
 						if (layer.fileObj != undefined){
 								layer.fileObj.forEach(function(yearDate){
 										year.push({
-												'name':yearDate.name,
-												'year':yearDate.date
+												'name' : yearDate.name,
+												'year' : yearDate.date,
+												'type' : yearDate.type
 										});
 								});
 						};
 						
 						result = { years: year };
-
 						response.send(result);
 						response.end();
 				});	
@@ -42,7 +42,7 @@ module.exports = function(app) {
 
 				layerModel.findById(id, function(layer) {
 					
-						delete layer.fileObj;
+						//delete layer.fileObj;
 
 						request.finalizeResultById = layer;
 						next();
@@ -70,7 +70,7 @@ module.exports = function(app) {
 						}
 
 						layers.forEach(function(layer) {
-								delete layer.fileObj;
+								//delete layer.fileObj;
 								result.layers.push(layer);
 						})
 						request.finalizeResultByBasepath = result;
