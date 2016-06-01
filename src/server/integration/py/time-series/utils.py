@@ -9,6 +9,9 @@ def isNow(dateStr):
 		return str(dateStr)
 
 def num(s):
+	if type(s) == int or type(s) == float:
+		return s;
+		
 	if '.' in s:
 		return float(s)
 	else:

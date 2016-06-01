@@ -11,6 +11,7 @@
 
 import numpy
 import math
+import warnings
 
 from ConfigParser import SafeConfigParser
 cp = SafeConfigParser();
@@ -24,7 +25,10 @@ def AveregeYearDoy(iArray,iFlag,nComposites,GoodFlags):
 		for j in range(i,len(iArray),nComposites):
 			if iFlag[j] in GoodFlags:
 				aAverege.append(iArray[j])
-		aAveregeYearDay.append(numpy.average(aAverege))
+		
+		# aAverege pode ser vazio, quando isso ocorre numpy.average lanca um warning e retorna nan
+		# Condicao adicionada para evitar warning - Guilherme, 19/05/2016
+		aAveregeYearDay.append(numpy.average(aAverege) if len(aAverege) > 0 else float('nan'))
 	return aAveregeYearDay
 
 #Desvio de cada dia na serie temporal em relacao a media do ano - Finalizado
@@ -152,6 +156,7 @@ def removeNone(E, fillValue):
 
 
 def run(pixelValues, flagValues, nComposites, goodFlags, fillValue = 0):
+	# warnings.simplefilter("error", "RuntimeWarning")
 	A = AveregeYearDoy(pixelValues,flagValues,nComposites,goodFlags)
 	B = DevAveregeAnual(pixelValues,flagValues,nComposites,A,goodFlags)
 	C = DevNeighborhoodDay(pixelValues,flagValues,goodFlags)

@@ -448,6 +448,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         },
                         {
                             xtype:'textfield',
+                            id: 'lapig_rasterserires::wdw-info-txt-scale',
                             fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBL_SCALE,
                             name: 'scale',
                             height: 20,
@@ -537,7 +538,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         if(instance.seriesProperties != undefined){
 
           instance.requestChartData(instance.seriesProperties.timeseriesId,
-            instance.seriesProperties.longitude, instance.seriesProperties.latitude);
+            instance.seriesProperties.longitude, instance.seriesProperties.latitude, instance.seriesProperties.radius);
         }else{
           instance.restartChart();
         }
@@ -749,7 +750,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     click: function() {
                       var csvUrl = 'time-series/' + instance.seriesProperties.timeseriesId + 
                       '/csv?longitude='+instance.seriesProperties.longitude+
-                      "&latitude="+instance.seriesProperties.latitude+"&mode=series";
+                      "&latitude="+instance.seriesProperties.latitude+"&mode=series&radius="+
+                      instance.seriesProperties.radius;
                       window.open(csvUrl)
                     }
                   }
@@ -1027,7 +1029,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       "&groupData="+groupData+
                       "&timeChange="+timeChange+
                       "&timeChangeUnits="+timeChangeUnits+
-                      "&mode=trend"
+                      "&mode=trend"+
+                      "&radius="+instance.seriesProperties.radius
 
                       window.open(csvUrl)
                     }
@@ -1179,7 +1182,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         interpolation: interpolation,
         groupData: groupData,
         timeChange: timeChange,
-        timeChangeUnits: timeChangeUnits
+        timeChangeUnits: timeChangeUnits,
+        radius: instance.seriesProperties.radius
       },
       success: function(request){
 
@@ -1272,10 +1276,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     runner.start({
       run: function() {
-        if (instance.chartData[activeTab.index] != undefined)
+        if (instance.chartData[activeTab.index] != undefined){
           runner.stopAll();
-        else
+          console.log("Series download and processing elapsed time: "+ countSeconds);
+        }else{
           instance.loadMask.el.mask(msgText + countSeconds++ + " seg.", instance.loadMask.msgCls);
+        }
       },
       interval: 1000
     });
@@ -1360,7 +1366,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.chartData[activeTab.index] = undefined;
   },
 
-  requestChartData: function(timeseriesId, longitude, latitude) {
+  requestChartData: function(timeseriesId, longitude, latitude, radius) {
     var instance = this;
     
     var activeTab = instance.getSeriesActiveTab();
@@ -1377,7 +1383,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabProperties.trend){
       if (timeseriesId.indexOf('MOD13Q1') == -1) {
-        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.i18n.LAPIGRASTERSERIES_ALERT_ERROR2);
+        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_ERROR2);
         instance.restartChart();
         return;
       }
@@ -1412,7 +1418,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       params: {
           longitude: longitude,
           latitude: latitude,
-          mode: activeTab.name
+          mode: activeTab.name,
+          radius: radius
       },
       success: function(request) {
         
@@ -1467,7 +1474,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           startValueCmb.setValue(startValue);
         }
 
-        instance.seriesProperties = {timeseriesId, longitude, latitude, startYear, endYear, startValue, endValue};
+        instance.seriesProperties = {timeseriesId, longitude, latitude, startYear, endYear, startValue, endValue, radius};
 
         instance.populateChart(startYear, endYear, startValue, endValue);
 
@@ -1481,24 +1488,26 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   getWdwInfoButtons: function() {
     var instance = this;
 
+    var scale = parseInt(Ext.getCmp('lapig_rasterserires::wdw-info-txt-scale').getValue());
+
     return [
       {
         xtype: 'checkbox',
         boxLabel: "Usar raio:",
-        id: 'lapig-coordenadas-chk-use-radius',
+        id: 'lapig-coordinates-chk-use-radius',
         width: 'auto',
         disabled: true,
         enableOnSelect: true,
         listeners:{
           check: function(checkbox, checked) {
-            Ext.getCmp('lapig-coordenadas-cmb-radius').setDisabled(!checked);
+            Ext.getCmp('lapig-coordinates-cmb-radius').setDisabled(!checked);
             Ext.getCmp('lapig-coordinates-label-radius').setDisabled(!checked);
           }
         }
       },
       {
         xtype:'combo',
-        id: "lapig-coordenadas-cmb-radius",
+        id: "lapig-coordinates-cmb-radius",
         fieldLabel: 'Raios',
         border: false,
         displayField:'radius',
@@ -1515,9 +1524,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
              {name: 'radius'},
           ],
           data: [
-            [250], [500], [750], [1000]
+            [scale], [scale*2], [scale*3], [scale*4]
           ]
-        }
+        },
       },
       {
         xtype: 'label',
@@ -1528,11 +1537,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         disabled: true,
       },
       '->',
-      /*{
-        hidden: true,
-        text: i18n.LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED,
-        xtype: "label",
-      },*/
       {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
@@ -1558,9 +1562,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
             southPanel.setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES + ' - ' + timeSeriesName);
 
-            var lapigCoordinatesWin = Ext.getCmp('lapig-coordinates-window');
-            lapigCoordinatesWin.close();
-
             var activeTab = instance.getSeriesActiveTab();
             var otherTabIndex = Math.abs(activeTab.index-1);
 
@@ -1568,7 +1569,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               instance.chartData[otherTabIndex] = undefined;
             }
 
-            instance.requestChartData(timeSeriesId, longitude, latitude);
+            var useRadius = Ext.getCmp('lapig-coordinates-chk-use-radius').getValue();
+            var radius = undefined;
+            if (useRadius == true) {
+              radius = Ext.getCmp('lapig-coordinates-cmb-radius').getValue();
+            }
+
+            var lapigCoordinatesWin = Ext.getCmp('lapig-coordinates-window');
+            lapigCoordinatesWin.close();
+
+            instance.requestChartData(timeSeriesId, longitude, latitude, radius);
             
           }
         }

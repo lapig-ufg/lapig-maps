@@ -51,11 +51,11 @@ class Gdal(Datasource):
 
 		return result
 
-	def lockup(self, longitude, latitude):
+	def lookup(self, geoJsonGeometry, mode=None):
 
 		result = []
 
-		if('month' == self.temporal_resolution_type):		
+		if('month' == self.temporal_resolution_type):
 			date = self.localDateByMonth()
 		else:		
 			date = self.LocalDateByDay()

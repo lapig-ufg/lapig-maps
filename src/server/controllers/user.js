@@ -1,7 +1,8 @@
 module.exports = function (app) {
-	var User = {}
-	var UsersCollection = app.repository.collections.users
-	var PointsCollection = app.repository.collections.points
+	var User = {};
+	var Internal = {};
+	var UsersCollection = app.repository.collections.users;
+	var PointsCollection = app.repository.collections.points;
 
 	User.insert = function(request, response) {
     var user = request.param('jsonData')
@@ -97,9 +98,26 @@ module.exports = function (app) {
 		}
 
 		var userId = request.session.user._id;
+
 		var pointName = request.param('name');
 		var lon = request.param('longitude');
 		var lat = request.param('latitude');
+		
+		var oldLon = request.param('oldLon');
+		var oldLat = request.param('oldLat');
+
+		if((oldLon != undefined) && (oldLat != undefined) && ((lon != oldLon) || (lat != oldLat)) ){
+			Internal.deletePoint(oldLon, oldLat, userId, function(result){
+				if(!result.success){
+					response.send({
+						success: false,
+						error: 'insertpoint'
+					});
+					response.end();
+					return;
+				}
+			});
+		}
 
 		var point = {
 			_id: userId+lon+lat,
@@ -131,18 +149,26 @@ module.exports = function (app) {
 		var userId = request.session.user._id;
 		var lon = request.param('longitude');
 		var lat = request.param('latitude');
+
+		Internal.deletePoint(lon, lat, userId, function(result){
+			console.log(result)
+
+			response.send(result);
+			response.end();
+		});
+	}
+
+	Internal.deletePoint = function(lon, lat, userId, callback){
 		var pointId = userId+lon+lat;
 
 		PointsCollection.deleteOne({_id: pointId}, function(err, result){
 			if(err){
-				response.send({
+				callback({
 					success: false,
 					error: 'deletepoint'
 				});
-				response.end();
 			}else{
-				response.send({success: true});
-				response.end();
+				callback({success: true});
 			}
 		});
 	}

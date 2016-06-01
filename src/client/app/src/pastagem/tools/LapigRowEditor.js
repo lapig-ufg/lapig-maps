@@ -7,6 +7,8 @@ Ext.namespace("gxp.plugins");
 gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
 	ptype: 'gxp_lapigroweditor',
 	buttonAlign: 'center',
+	frameWidth: 0,
+  buttonPad: 0,
 
 	initComponent: function(){
     Ext.ux.grid.RowEditor.superclass.initComponent.call(this);
@@ -45,6 +47,7 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
        * @param {Object} changes Object with changes made to the record.
        * @param {Ext.data.Record} r The Record that was edited.
        * @param {Number} rowIndex The rowIndex of the row just edited
+       * @param {Ext.data.Record} old The Record before being edited.
        */
       'afteredit'
     );
@@ -127,6 +130,57 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
     this.hide();
   },
 
+  positionButtons: function(){
+    if(this.btns){
+      var g = this.grid,
+        h = this.el.dom.clientHeight,
+        view = g.getView(),
+        scroll = view.scroller.dom.scrollLeft,
+        bw = this.btns.getWidth(),
+        width = Math.min(g.getWidth(), g.getColumnModel().getTotalWidth());
+
+      var rowNum = this.grid.getStore().getCount();
+      var top = 0;
+      if(rowNum - this.rowIndex <= 2){
+      	top = -h;
+      }else{
+      	top = h - 2;
+      }
+
+      this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: top, stopFx: true, duration:0.2});
+
+      this.doLayout();
+    }
+  },
+
+  onRender: function(){
+    Ext.ux.grid.RowEditor.superclass.onRender.apply(this, arguments);
+    this.el.swallowEvent(['keydown', 'keyup', 'keypress']);
+    
+    this.btns = new Ext.Panel({
+      baseCls: 'x-plain',
+      cls: 'x-btns',
+      elements:'body',
+      layout: 'table',
+      floating: {shadow: false},
+      width: (this.minButtonWidth * 2) + (this.frameWidth * 2) + (this.buttonPad * 4), // width must be specified for IE
+      items: [{
+        ref: 'saveBtn',
+        itemId: 'saveBtn',
+        xtype: 'button',
+        text: this.saveText,
+        width: this.minButtonWidth,
+        handler: this.stopEditing.createDelegate(this, [true])
+    	}, {
+        xtype: 'button',
+        text: this.cancelText,
+        width: this.minButtonWidth,
+        handler: this.stopEditing.createDelegate(this, [false])
+      }]
+    });
+    this.btns.render(this.bwrap);
+  },
+
   onRowClick: function(g, rowIndex, e){
     if(this.clicksToEdit == 'auto'){
       var li = this.lastClickIndex;
@@ -136,19 +190,38 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
       }
     }
     if(this.editing){
-      // this.showTooltip(this.commitChangesText);
-      return;
+      this.startEditing(rowIndex, false);
+    	this.doFocus.defer(this.focusDelay, this, [e.getPoint()]);
     }
+  },
 
-    this.startEditing(rowIndex, false);
-    this.doFocus.defer(this.focusDelay, this, [e.getPoint()]);
+  onRowDblClick: function(g, rowIndex, e){
+    // this.startEditing(rowIndex, false);
+    // this.doFocus.defer(this.focusDelay, this, [e.getPoint()]);
   },
 
   newRecord: function(rowIndex){
-  	if(rowIndex != undefined){
+  	if(rowIndex != undefined && !this.editing){
   		this.startEditing(rowIndex)
   		this.values = {};
   	}
+  },
+
+  isEditing: function(){
+    return this.editing;
+  },
+
+  setValue: function(column, value){
+    if (this.isEditing()) {
+      fields = this.items.items;
+
+      if (column > 0 && column < this.grid.colModel.getColumnCount()) {
+        fields[column].setValue(value);
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
 });

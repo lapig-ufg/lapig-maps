@@ -63,6 +63,6 @@ class Bfast(Filter):
 		 startdate, enddate, str(timeserieData), freq])
 
 		bfast_res_list = bfast_result.encode('utf-8').split(' ')
-		bfast_res_int = map(float, bfast_res_list)
+		bfast_res_float = map(float, bfast_res_list)
 		
-		return bfast_res_int
+		return bfast_res_float
