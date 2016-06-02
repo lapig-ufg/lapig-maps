@@ -1278,7 +1278,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       run: function() {
         if (instance.chartData[activeTab.index] != undefined){
           runner.stopAll();
-          console.log("Series download and processing elapsed time: "+ countSeconds);
+          console.log("Series download and processing elapsed time: "+ countSeconds,
+            "\nId: "+ instance.seriesProperties.timeseriesId,
+            "\nRadius: "+ instance.seriesProperties.radius,
+            "\nCoordinates: ("+instance.seriesProperties.longitude+", "+instance.seriesProperties.latitude+")");
         }else{
           instance.loadMask.el.mask(msgText + countSeconds++ + " seg.", instance.loadMask.msgCls);
         }
@@ -1541,6 +1544,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
         disabled: true,
+        enableOnSelect: true,
         listeners: {
           click: function(evt) {
             
@@ -1581,7 +1585,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             
           }
         }
-    }]
+      }
+    ]
   }
 
 });

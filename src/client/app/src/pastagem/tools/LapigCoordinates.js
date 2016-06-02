@@ -12,6 +12,8 @@
  * @requires OpenLayers/Icon.js
  * @requires OpenLayers/Marker.js
  * @requires OpenLayers/Control/DrawFeature.js
+ *
+ * @require tools/LapigRowEditor.js
  */
 
 /** api: (define)
@@ -104,6 +106,10 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							'remove': function() {
 								instance.checkButtonsState()
 							}
+						},
+						sortInfo: {
+					    field: 'name',
+					    direction: 'ASC'
 						}
 				});
 
@@ -136,7 +142,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 	          
 	          if (res.success) {
 		          res.result.forEach(function(point){
-		          	instance.addPointGUI(point.name, point.longitude, point.latitude);
+		          	instance.addPointGUI(point.name, point.longitude, point.latitude, true);
 		          });
 		        } else {
 		        	Ext.MessageBox.alert("", i18n.LAPIGCOORDINATES_ERRMSG_GETPOINTS);
@@ -198,7 +204,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			}
 		},
 
-		addPointGUI: function(name, lon, lat) {
+		addPointGUI: function(name, lon, lat, store) {
 			var instance = this;
 
 			var lonLat = new OpenLayers.LonLat(lon, lat)
@@ -211,7 +217,10 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var marker = new OpenLayers.Marker(lonLat, icon);
 			marker.idLatLonCrl = name + '-' + lat + '-' + lon;
 			instance.vectors.addMarker(marker);
-			instance.store.loadData([[ name, lon, lat]], true);
+			if(store){
+				instance.store.loadData([[ name, lon, lat]], true);
+				instance.store.sort('name', 'ASC');
+			}
 		},
 
 		unifyPoints: function(name, lon, lat){
@@ -447,11 +456,13 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 				var grid = new Ext.grid.GridPanel({
 						store: instance.store,
+						plugins: [rowEditor],
 						id: 'lapig-coordinates-grid',
 						xtype: "grid",
 						viewConfig: {
 							emptyText: i18n.LAPIGCOORDINATES_INSTR_EMPTYTXTGRID,
-							deferEmptyText: false
+							deferEmptyText: false,
+							markDirty: false
 						},
 						header: false,
 						style: {
@@ -529,44 +540,30 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								width: 160,
 								sortable: true,
 								menuDisabled: true,
-								dataIndex: 'name'
+								dataIndex: 'name',
+								editor: {
+									xtype: 'textfield'
+								}
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LONG,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
-									dataIndex: 'longitude'
+									dataIndex: 'longitude',
+									editor: {
+										xtype: 'textfield',
+                		allowBlank: false,
+									}
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LAT,
 									width: 65,
 									sortable: true,
 									menuDisabled: true,
-									dataIndex: 'latitude'
-							}, {
-									xtype: 'actioncolumn',
-									width: 40,
-									sortable: false,
-									menuDisabled: true,
-									items: [{
-											icon: "theme/app/img/delete.png",
-											tooltip: i18n.LAPIGCOORDINATES_BTNREMOVE_TLTP,
-											handler: function(grid, rowIndex, colIndex) {
-													var rec = instance.store.getAt(rowIndex);
-
-													var idLatLonCrl = rec.get('name') + '-' + rec.get('latitude') + '-' + rec.get('longitude');
-
-													instance.vectors.markers.every(function(m) {
-															if(m.idLatLonCrl == idLatLonCrl) {
-																	instance.store.removeAt(rowIndex);
-																	instance.vectors.removeMarker(m);
-																	instance.deletePoint(rec.get('longitude'), rec.get('latitude'));
-																	return false;
-															} else {
-																	return true;
-															}
-													})
-											}
-									}]
+									dataIndex: 'latitude',
+									editor: {
+										xtype: 'textfield',
+                		allowBlank: false,
+									}
 							}
 						],
 						stripeRows: true,
