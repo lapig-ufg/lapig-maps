@@ -393,6 +393,14 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				Ext.getCmp('dms-lat-s-2').setValue(dmsLat[2]);
 		},*/
 
+		/*parseCoord: function(longitude, latitude) {
+			if (longitude.match('')) {
+				
+			} else if (longitude.match('')) {
+
+			}
+		},*/
+
 		checkButtonsState: function() {
 			var fbar = Ext.getCmp('lapig-coordinates-window').getFooterToolbar();
 			if (fbar == undefined) {
@@ -409,14 +417,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				})
 			}
 		},
-
-		/*parseCoord: function(longitude, latitude) {
-			if (longitude.match('')) {
-				
-			} else if (longitude.match('')) {
-
-			}
-		},*/
 
 		mapClickFn: function(e) {
 			var instance = this;

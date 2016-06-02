@@ -1492,6 +1492,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var instance = this;
 
     var scale = parseInt(Ext.getCmp('lapig_rasterserires::wdw-info-txt-scale').getValue());
+    var srcHtml = Ext.getCmp('lapig_rasterseries::frm-info-source').body.dom.innerHTML;
+    var source = srcHtml.slice(32, -6);
+    console.log(source)
 
     return [
       {
@@ -1500,7 +1503,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         id: 'lapig-coordinates-chk-use-radius',
         width: 'auto',
         disabled: true,
-        enableOnSelect: true,
+        enableOnSelect: (source != 'lapig') ? true : false,
         listeners:{
           check: function(checkbox, checked) {
             Ext.getCmp('lapig-coordinates-cmb-radius').setDisabled(!checked);
