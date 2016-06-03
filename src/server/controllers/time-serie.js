@@ -56,8 +56,10 @@ module.exports = function(app) {
 	Internal.requestTimeSeries = function(id, longitude, latitude, mode, radius, callback) {
 		var geoJsonGeometry = Internal.createGeoJson(longitude, latitude, radius);
 
+		var pythonEnv = "export PYTHON_ENV=" + process.env.NODE_ENV;
+
 		var params = "TS " + id +" "+ mode +" '"+ geoJsonGeometry + "'";
-		var cmd ="python " +"'"+ config.pathTimeSeries +"'"+" " + params;
+		var cmd = pythonEnv + ";python " +"'"+ config.pathTimeSeries +"'"+" " + params;
 
 		console.log(cmd)
 

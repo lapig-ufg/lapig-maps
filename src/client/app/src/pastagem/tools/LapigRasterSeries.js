@@ -1530,7 +1530,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
              {name: 'radius'},
           ],
           data: [
-            [scale], [scale*2], [scale*3], [scale*4]
+            [scale], [scale*2], [scale*3]
           ]
         },
       },
