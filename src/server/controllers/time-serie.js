@@ -86,9 +86,9 @@ module.exports = function(app) {
 		bfastParams.pop();
 		
 		var pythonEnv = "export PYTHON_ENV=" + process.env.NODE_ENV;
-		
+
 		var params = "BFAST " + bfastParams.join(" ") +" '"+ geoJsonGeometry + "'";
-		var cmd = pythonEnv + "python " +"'"+ config.pathTimeSeries +"'"+ " " + params;
+		var cmd = pythonEnv + ";python " +"'"+ config.pathTimeSeries +"'"+ " " + params;
 
 		console.log(cmd)
 
