@@ -344,8 +344,11 @@ class EarthEngine(Datasource):
 		cacheStr = self.layer_id + geoJsonGeometry
 		cacheKey = sha1(cacheStr.encode()).hexdigest()
 
-		cacheResult = self.cache.get(cacheKey)
-		if cacheResult is not None:
+		cacheResult = None;
+		if(self.cache.enable == '1'):
+			cacheResult = self.cache.get(cacheKey)
+
+		if cacheResult is not None and mode == 'series':
 			result = ast.literal_eval(cacheResult)
 			return result
 		else:
@@ -385,6 +388,7 @@ class EarthEngine(Datasource):
 			for i, dtRow in enumerate(result["values"]):
 				dtRow.insert(0, dates[i])
 
-			# self.cache.set(cacheKey, result);
+			if(self.cache.enable == '1'):
+				self.cache.set(cacheKey, result);
 
 			return result;
