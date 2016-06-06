@@ -1494,7 +1494,29 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var scale = parseInt(Ext.getCmp('lapig_rasterserires::wdw-info-txt-scale').getValue());
     var srcHtml = Ext.getCmp('lapig_rasterseries::frm-info-source').body.dom.innerHTML;
     var source = srcHtml.slice(32, -6);
-    console.log(source)
+
+    var addRadiusGUI = function(combo){
+      var radius = combo.getValue();
+      if(radius == '') return;
+
+      var grid = Ext.getCmp('lapig-coordinates-grid');
+      var map = instance.target.mapPanel.map;
+      var vectorsLayer = map.getLayer("Coordinate_radius_layer");
+      var selectedRec = grid.getSelectionModel().getSelected();
+
+      var lon = selectedRec.get("longitude");
+      var lat = selectedRec.get("latitude");
+
+      var lonLat = new OpenLayers.LonLat(lon, lat)
+        .transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
+      var centerPoint = new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
+
+      var radiusPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(centerPoint, radius, 30, 0);
+      circleFeature = new OpenLayers.Feature.Vector(radiusPolygon);
+
+      vectorsLayer.destroyFeatures();
+      vectorsLayer.addFeatures([circleFeature]);
+    }
 
     return [
       {
@@ -1533,6 +1555,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             [scale], [scale*2], [scale*3]
           ]
         },
+        listeners:{
+          select: addRadiusGUI,
+          disable: function(combo) {
+            var map = instance.target.mapPanel.map;
+            var vectorsLayer = map.getLayer("Coordinate_radius_layer");
+            vectorsLayer.destroyFeatures();
+          },
+          enable: addRadiusGUI
+        }
       },
       {
         xtype: 'label',
