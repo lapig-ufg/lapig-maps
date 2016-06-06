@@ -528,6 +528,8 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									delete instance.markers["selected"];
 									
 									instance.deletePoint(rec.get('longitude'), rec.get('latitude'));
+
+									instance.vectorsLayer.destroyFeatures();
 	                // }
 	                // instance.store.commitChanges();
 		            }
@@ -586,6 +588,18 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						autoWidth : true, //!!!
 						listeners: {
 							'rowclick': instance.checkButtonsState,
+
+							'rowdblclick': function (grid, rowIndex, event) {
+								var rec = grid.getSelectionModel().getSelected();
+								var lon = rec.get("longitude");
+								var lat = rec.get("latitude");
+
+								var lonLat = new OpenLayers.LonLat(lon, lat)
+									.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
+
+								instance.map.setCenter(lonLat, 15);
+
+							},
 
 							'canceledit': function(rowEditor, forced, rowIndex) {
 								if(forced){
