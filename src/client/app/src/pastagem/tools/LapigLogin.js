@@ -38,7 +38,6 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
 
         var flag = true;
         for(var i=0; i <  validations.length; i++) {
-            //console.log(i)
             var validation = validations[i]
             if(validation.validator == false) {
                 Ext.MessageBox.alert("",validation.msg);
@@ -63,6 +62,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             Ext.MessageBox.alert("",i18n.LAPIGLOGIN_ALERT_ALREADYUSED)
                         }   
                     } else {
+                        lapigAnalytics.clickTool('Login', 'click-Register', '')
                         Ext.MessageBox.alert("", i18n.LAPIGLOGIN_ALERT_THEUSER +" "+ firstName[0] +" "+ i18n.LAPIGLOGIN_ALERT_THEUSERCOMP)
                         callback()
                         Ext.getCmp('lapig_login::cadast-user').close()
@@ -78,6 +78,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         url: '/user/info',
         method: 'GET',
         success: function (response){
+            console.log(response)
           if(response.responseText == ''){
             isAnyoneHome = false;
             instance.adjustLoginButtons('');
@@ -247,6 +248,8 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 text: i18n.LAPIGLOGIN_TXT_LOGIN,
                 xtype: 'button',
                 handler: function() {
+                    console.log("Estou no Login")
+                    lapigAnalytics.clickTool('Tools', 'Login', '')
                     var form = new Ext.FormPanel({
                         labelWidth: 75,
                         region:'center',
@@ -284,7 +287,8 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                         buttons: [{
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                             listeners: {
-                                click:  function(n){
+                                click:  function(n) {
+                                    lapigAnalytics.clickTool('Login', 'click-Login', '')
                                     var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
@@ -340,6 +344,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                     text: i18n.LAPIGLOGIN_BTNTXT_YES,
                                     listeners: {
                                         click: function(n){
+                                            lapigAnalytics.clickTool('Login', 'click-Logout', '')
                                             Ext.getCmp('lapig_login::panel-logout').close()
                                             instance.userLogout()
                                         }

@@ -141,7 +141,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         title: title,
         visibility: visibility
       }
-      console.log('type', app)
+      //console.log('type', app)
 
       app.createLayerRecord(layerConfig, function(record) {
         record.json = {};
@@ -223,7 +223,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       var selectedSubject = Ext.getCmp('lapig_spatialintelligence::cmb-subject').getValue();
       var selectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
       var selectedSort = Ext.getCmp('lapig_spatialintelligence::cmb-sort').getValue();
-
+      
       instance.loadMask = createLoadDataMask(gridInfoId)
       instance.loadMask.show()
 
@@ -345,7 +345,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           triggerAction: 'all',
           flex: 1,
           listeners: {
-            select: checkSubmitBtn
+            select: checkSubmitBtn,
           },
           store:  new Ext.data.ArrayStore({
             fields: [
@@ -365,7 +365,12 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           id: 'lapig_spatialintelligence::btn-submit',
           disabled: true,
           listeners: {
-            click: submit,
+            click: function() {
+              submit();
+              var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+              lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
+              console.log('click-Consult Spatial Intelligence',clickSelectedState)
+            }
           },
         }
       ]
@@ -390,6 +395,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             iconCls: 'lapig-icon-metadata',
             listeners: {
               click: function() {
+                lapigAnalytics.clickTool('Spatial Intelligence', 'click-Metadata', '')
+                console.log('Estou no Metadata')
                 var text = ''
                 instance.queryMetadata.layers.reverse().forEach(function(layer) {
                   if(layer.title && layer.metadata) {
@@ -427,6 +434,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             iconCls: 'lapig-icon-csv',
             listeners: {
               click: function() {
+                var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+                lapigAnalytics.clickTool('Spatial Intelligence', 'click-csvDownloads',clickSelectedState);
+                console.log("click-csvDownloads ",clickSelectedState)
                 window.open(instance.csvUrl)
               }
             }
@@ -474,6 +484,10 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           'dblclick': function(node) {
             var attr = node.attributes;
             var parentAttr = node.parentNode.attributes;
+
+            var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+            console.log("Spatial Intelligence /","dbclick-"+parentAttr.table," /"+attr.info+"-"+clickSelectedState)
+            lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.table, attr.info+'-'+clickSelectedState)
 
             if(attr.bbox) {
               var bbox = attr.bbox;
