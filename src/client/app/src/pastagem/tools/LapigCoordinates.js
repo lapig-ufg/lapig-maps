@@ -226,7 +226,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			}
 		},
 
-		addPointGUI: function(name, lon, lat, updateStore=false, callback) {
+		addPointGUI: function(name, lon, lat, updateStore, callback) {
 			var instance = this;
 
 			var lonLat = new OpenLayers.LonLat(lon, lat)
