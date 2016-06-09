@@ -57,33 +57,115 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
     
     constructor: function(userLayers, lon, lat, zoomLevel, project) {
 
-      var getLang = function(){
-        if(navigator.browserLanguage) {
-          return navigator.browserLanguage.toLowerCase();    
-        }
-        else if(navigator.language) {
-          return navigator.language.toLowerCase();
-        }
-      };
       var instance = this;
+
+      instance.lon = lon;
+      instance.lat = lat;
+      instance.project = project;
+      instance.zoomLevel = zoomLevel;
+      instance.userLayers = userLayers;
+
+      instance.init();
+    },
+
+    init: function() {
+      var instance = this;
+
+      var language = instance.getLang();
+      var basepaths = instance.getLayers();
+      
+      var project = instance.project;
+      
+      var lon = instance.getLon();
+      var lat = instance.getLat();
+      var zoomLevel = instance.getZoom();
 
       Ext.Ajax.request({
         url: '/layers',
         method: 'POST',
-        jsonData: { "basepaths": userLayers, "language": getLang() },
+        jsonData: { "basepaths": basepaths, "language": language },
         success: function(response) {
           var result = JSON.parse(response.responseText);
           
           globalInstance.i18n = result.lang;
           globalInstance.isAnyoneHome = false;
           globalInstance.lapigAnalytics = gxp.plugins.LapigAnalytics;
-
-          i18n.lang = getLang();
+          i18n.lang = language;
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
           gxp.LapigViewer.superclass.constructor.apply(instance, [config]);
         }
       });
+    },
+
+    getURLParams: function() {
+      var getParams = document.URL.split("?");
+      return Ext.urlDecode(getParams[getParams.length - 1]);
+    },
+
+    getZoom: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.zoom) {
+        return params.zoom.split(',');
+      } else {
+        return instance.zoomLevel
+      }
+    },
+
+    getLat: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.lat) {
+        return params.lat.split(',');
+      } else {
+        return instance.lat
+      }
+    },
+
+    getLon: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.lon) {
+        return params.lon.split(',');
+      } else {
+        return instance.lon
+      }
+    },
+
+    getLayers: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+      
+      if(params.layers) {
+        var layers = params.layers.split(',');
+        layers.push('pa_br_estados_250_2013_ibge');
+        return layers;
+      } else {
+        return instance.userLayers
+      }
+    },
+
+    getLang: function() {
+      
+      var instance = this;
+      var params = instance.getURLParams();
+
+      if (params.lang) {
+        return params.lang;
+      } else if(navigator.browserLanguage) {
+        return navigator.browserLanguage.toLowerCase();    
+      }
+      else if(navigator.language) {
+        return navigator.language.toLowerCase();
+      }
     },
 
     createLapigConfig: function(userLayers, lon, lat, zoomLevel, project) {
@@ -107,21 +189,9 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               group: "background"
             }
             ,{
-              source: "google",
-              title: "Google Terrain",
-              name: "TERRAIN",
-              group: "background"
-            }
-            ,{
-              source: "google",
-              title: "Google Satellite",
-              name: "SATELLITE",
-              group: "background"
-            }
-            ,{
-              source: "google",
-              title: "Google Roadmap",
-              name: "ROADMAP",
+              source: "bing",
+              title: "Bing Satellite",
+              name: "Aerial",
               group: "background"
             }
             ,{
@@ -131,9 +201,21 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               group: "background"
             }
             ,{
-              source: "bing",
-              title: "Bing Satellite",
-              name: "Aerial",
+              source: "google",
+              title: "Google Terrain",
+              name: "TERRAIN",
+              group: "background"
+            }
+            ,{
+              source: "google",
+              title: "Google Roadmap",
+              name: "ROADMAP",
+              group: "background"
+            }
+            ,{
+              source: "google",
+              title: "Google Satellite",
+              name: "SATELLITE",
               group: "background"
             }
       ]
@@ -261,7 +343,13 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               removeMenuText: i18n.LAPIGVIEWER_REMOVELAYER_RMVMENUTXT,
               actionTarget: ["tree.contextMenu"]
             },
-            
+            {
+              ptype: "gxp_lapiglayerlink",
+              menuText: i18n.LAPIGLAYERLINK_MENUTEXT,
+              actionTip: i18n.LAPIGLAYERLINK_TIPTEXT,
+              actionTarget: ["tree.contextMenu"]
+            },
+
             /********** Tree Toolbar */
             {
               ptype: "gxp_lapigaddlayer",

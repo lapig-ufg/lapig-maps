@@ -18,13 +18,12 @@ class Composite(Datasource):
 		self.layers = layerParams['layers'].split()
 
 
-	def lockup(self, longitude, latitude):
+	def lookup(self, geoJsonGeometry, mode=None):
 
-		result = []
+		result = {"values":[]};
 		for i in xrange(0, len(self.start_date)):
 
 			datasourceInstance = loader.getDatasource(self.layers[i])
-			
 			datasourceInstance.start_date = self.start_date[i]
 
 			if self.end_date[i] == 'NOW':
@@ -32,10 +31,18 @@ class Composite(Datasource):
 			else:
 				datasourceInstance.end_date = self.end_date[i]
 
-			timeserieData = datasourceInstance.lockup(longitude, latitude)
-			
-			for j in timeserieData:
-				result.append(j) 
+			timeserieData = datasourceInstance.lookup(geoJsonGeometry, mode)
+
+			if "series" not in result:#timeserieData["series"] != result["series"]:
+				result["series"] = timeserieData["series"];
+
+			# if len(result["values"]) > 0 and result["values"][-1][0] == timeserieData["values"][0][0]:
+			# 	if timeserieData["values"][0][1] != 0:
+			# 		del result["values"][-1]
+			# 	else:
+			# 		del timeserieData["values"][0]
+
+			result["values"].extend(timeserieData["values"]);
 			
 		return result
 		

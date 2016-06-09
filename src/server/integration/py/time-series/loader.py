@@ -13,17 +13,31 @@ CONF_FILES = {
 	'CACHE': 'conf/cache.ini'
 }
 
+sectionPrefix = '';
+if os.environ['PYTHON_ENV'] != '' and os.environ['PYTHON_ENV'] != 'dev':
+	sectionPrefix = os.environ['PYTHON_ENV'] + ':';
+
 def getRunPath():
 	dirname, filename = os.path.split(os.path.abspath(__file__))
 	return dirname
 
 def getConfFromSection(filepath, sectionName):
-	cp.read(filepath)
-	result = {}
-	if cp.has_section(sectionName):
-		for key, values in cp.items(sectionName):
+	cp.read(filepath);
+	result = {};
+	
+	haSection = False;
+	section = sectionPrefix + sectionName;
+	if cp.has_section(section):
+		haSection = True;
+	else:
+		section = sectionName;
+		if cp.has_section(section):
+			haSection = True;
+	
+	if(haSection):
+		for key, values in cp.items(section):
 			result[key] = values
-
+	
 	return result
 
 

@@ -24,7 +24,7 @@ def calculateMinimalSegmentSize(values_length, timeChange, units, frequency=None
 
 	return minimalSegmentSize
 
-def clipValuesByYear(startYear, endYear, timeserieData, datesStr):
+def clipValuesByYear(startYear, endYear, timeserieValues, datesStr):
 
 	dates = [datetime.strptime(x, "%Y-%m-%d") for x in datesStr]
 
@@ -35,7 +35,7 @@ def clipValuesByYear(startYear, endYear, timeserieData, datesStr):
 	endYearIndex = utils.findIndex(dates, endYearDt)
 
 	return {
-		'values': utils.oneArray(timeserieData[startYearIndex:endYearIndex]),
+		'values': utils.oneArray(timeserieValues[startYearIndex:endYearIndex]),
 		'dates': dates[startYearIndex:endYearIndex]
 	}
 

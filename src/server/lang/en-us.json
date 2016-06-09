@@ -91,7 +91,7 @@
 	"LAPIGRASTERSERIES_TXT_TREND": "Trend",
 	"LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED": "Select a coordinated to continue",
 	"LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH": "Create Graphic",
-	"LAPIGRASTERSERIES_TXT_ALERTRELAX": "This may take some minutinhos, relax and have a coffee ...",
+	"LAPIGRASTERSERIES_TXT_ALERTRELAX": "This may take some minutes, relax and have a coffee ...",
 	"LAPIGRASTERSERIES_TXT_ALERTATTENCION": "Attention",
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "meters",
 
@@ -113,7 +113,7 @@
 	"LAPIGCOORDINATES_TTLVBOX_COORD": "Geographic Coordinates",
 	"LAPIGCOORDINATES_BOXLBL_GDEC":"Decimal Degrees",
 	"LAPIGCOORDINATES_BOXLBL_GMINSE": "Degrees Minutes Sec.",
-	"LAPIGCOORDINATES_BTNMAPCOORD_TLTP": "Click on a region of the map to fill out the latitude and longitude.",
+	"LAPIGCOORDINATES_BTNMAPCOORD_TLTP": "Click on the map to fill in the latitude and longitude.",
 	"LAPIGCOORDINATES_NBFIELD_EMPTYTXTLON": "Longitude",
 	"LAPIGCOORDINATES_NBFIELD_EMPTYTXTLAT": "Latitude",
 	"LAPIGCOORDINATES_FIELDLBL_NAMEDESC": "Name/Description:",
@@ -122,12 +122,15 @@
 	"LAPIGCOORDINATES_TTLCOL_LAT": "Latitude",
 	"LAPIGCOORDINATES_INSTR_EMPTYTXTGRID": "Add geographic coordinates using the options above.",
 	"LAPIGCOORDINATES_BTNREMOVE_TLTP": "Remove coordinate",
-	"LAPIGCOORDINATES_BTNADD_TLTP": "Add coordinate",
-	"LAPIGCOORDINATES_BTNEDIT_TLTP": "Edit the coordinate selected",
+	"LAPIGCOORDINATES_BTNEDIT_TLTP": "Edit coordinate",
 	"LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD": "New coordinate",
 	"LAPIGCOORDINATES_ERRMSG_GETPOINTS": "Error fetching saved points.",
 	"LAPIGCOORDINATES_ERRMSG_INSERTPOINT": "Error saving point. It might already exist.",
 	"LAPIGCOORDINATES_ERRMSG_DELETEPOINT": "Error deleting point.",
+	"LAPIGCOORDINATES_BTNLBL_SAVE":"Save",
+	"LAPIGCOORDINATES_BTNLBL_CANCEL":"Cancel",
+	"LAPIGCOORDINATES_ALERT_ERRTLT": "Error",
+	"LAPIGCOORDINATES_ALERT_ERRMSG_SETLONLAT": "Error updating the longitude and latitude values.",
 
 	"LAPIGPRINT_TTL_WINDOW": "Follow the step by step for printing the map",
 	"LAPIGPRINT_TTLABA_REGION": "1) Region",
@@ -171,5 +174,9 @@
 	"LAPIGLOGIN_VALIDATION_EMAIL_MSG": "Fill in the e-mail field correctly!",
 	"LAPIGLOGIN_VALIDATION_NAME_MSG": "Fill in the name field with at least 3 characters!",
 	"LAPIGLOGIN_VALIDATION_OCUPATION_MSG": "Fill in the occupation field correctly!",
-	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Fill out the password fields 6 to 12 digits, if possible use special characters (!@#$%()^&*)"
+	"LAPIGLOGIN_VALIDATION_PASSWORD_MSG": "Fill out the password fields 6 to 12 digits, if possible use special characters (!@#$%()^&*)",
+
+	"LAPIGLAYERLINK_MENUTEXT": "URL Layer",
+	"LAPIGLAYERLINK_TIPTEXT": "Access directly this layer.",
+	"LAPIGLAYERLINK_DESCRIPTION": "Use the link below to access directly this layer:"
 }

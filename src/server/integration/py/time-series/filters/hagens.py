@@ -10,7 +10,17 @@ class Hagens(Filter):
 
 	def getQualityValues(self, longitude, latitude):
 		datasourceInstance = loader.getDatasource(self.quality_layer)
-		return utils.oneArray( datasourceInstance.lockup(longitude, latitude) )
+		qvalues = utils.oneArray( datasourceInstance.lookup(str({
+		    "type": "Point",
+		    "coordinates": [
+		        longitude,
+		        latitude
+		    ]
+			}))["values"] );
+
+		qvalues = [int(i) for i in qvalues]
+		
+		return qvalues;
 	
 	def getGoodValues(self)	:
 		good_values = []

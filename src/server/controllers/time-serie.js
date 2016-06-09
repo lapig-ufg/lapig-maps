@@ -11,10 +11,55 @@ module.exports = function(app) {
 	var config = app.config;
 	var translateEN = require(config.langDir + '/Time-Series_en.json');
 
-	Internal.requestTimeSeries = function(id, longitude, latitude, mode, callback) {
+	Internal.getCircleCoords = function(longitude, latitude, radius){
+		var lon = 0;
+		var lat = 0;
+		var numPoints = 20;
+		var theta = 350.00 / numPoints;
+
+		//Considera a terra uma esfera perfeita
+		var radiusDegrees = (0.00001 * radius)/1.1132;
+		var coords = [];
+		for (var i = 0; i < numPoints; i++) {
+
+		    // calc x/y
+		    lon = radiusDegrees * Math.cos(2*Math.PI*i/numPoints + theta) + parseInt(longitude);
+		    lat = radiusDegrees * Math.sin(2*Math.PI*i/numPoints + theta) + parseInt(latitude);
+
+		    coords[i] = [lon, lat];
+		}
+
+		return coords;
+	}
+
+	Internal.createGeoJson = function(longitude, latitude, radius){
+		var geoJsonGeometry = "{";
+		if(radius != undefined && radius > 0){
+			var coords = Internal.getCircleCoords(longitude, latitude, radius);
+
+			geoJsonGeometry += '"type": "Polygon",';
+			geoJsonGeometry += '"coordinates": [[';
+			geoJsonGeometry += '['+coords.join('],[')+']';
+			geoJsonGeometry += ',['+coords[0]+']'
+			geoJsonGeometry += ']';
+		}else{
+			geoJsonGeometry += '"type": "Point",';
+			geoJsonGeometry += '"coordinates": [';
+			geoJsonGeometry += longitude + ',' + latitude;
+		}
+
+		geoJsonGeometry+= ']}';
 		
-		var params = "TS " + id + " " + longitude + " " + latitude + " " + mode;
-		var cmd ="python " +"'"+ config.pathTimeSeries +"'"+" " + params;
+		return geoJsonGeometry;
+	}
+
+	Internal.requestTimeSeries = function(id, longitude, latitude, mode, radius, callback) {
+		var geoJsonGeometry = Internal.createGeoJson(longitude, latitude, radius);
+
+		var pythonEnv = "export PYTHON_ENV=" + process.env.NODE_ENV;
+
+		var params = "TS " + id +" "+ mode +" '"+ geoJsonGeometry + "'";
+		var cmd = pythonEnv + ";python " +"'"+ config.pathTimeSeries +"'"+" " + params;
 
 		console.log(cmd)
 
@@ -29,13 +74,21 @@ module.exports = function(app) {
 	   	var result = JSON.parse(stdout);
 	   	
 	   	callback(result);
-	   	
 	 	});
 	}
 
 	Internal.requestTrend = function (bfastParams, callback) {
-		var params = "BFAST " + bfastParams.join(" ");
-		var cmd = "python " +"'"+ config.pathTimeSeries +"'"+ " " + params;
+		// bfastParams[1]==longitude; bfastParams[2]==latitude; bfastParams[9]==radius;
+		var geoJsonGeometry = Internal.createGeoJson(bfastParams[1], bfastParams[2], bfastParams[9]);
+
+		// remove as coordenadas e o raio dos parâmetros, pois estes são substituidos pelo GeoJson
+		bfastParams.splice(0, 3, bfastParams[0]);
+		bfastParams.pop();
+		
+		var pythonEnv = "export PYTHON_ENV=" + process.env.NODE_ENV;
+
+		var params = "BFAST " + bfastParams.join(" ") +" '"+ geoJsonGeometry + "'";
+		var cmd = pythonEnv + ";python " +"'"+ config.pathTimeSeries +"'"+ " " + params;
 
 		console.log(cmd)
 
@@ -66,11 +119,32 @@ module.exports = function(app) {
   	var latitude = request.param('latitude');
   	var longitude = request.param('longitude');
   	var mode = request.param('mode');
+  	var radius = request.param('radius');
 
-		Internal.requestTimeSeries(id, longitude, latitude, mode, function(result) {
+		Internal.requestTimeSeries(id, longitude, latitude, mode, radius, function(result) {
 	  		response.send(result);
 	  		response.end();
 		})
+	};
+
+	TimeSerie.trend = function(request, response){
+
+		var bfastParams = [];
+		bfastParams.push(request.param('id'));
+  	bfastParams.push(request.param('longitude'));
+		bfastParams.push(request.param('latitude'));
+  	bfastParams.push(request.param('startYear'));
+    bfastParams.push(request.param('endYear'));
+    bfastParams.push(request.param('interpolation'));
+    bfastParams.push(request.param('groupData'));
+    bfastParams.push(request.param('timeChange'));
+    bfastParams.push(request.param('timeChangeUnits'));
+    bfastParams.push(request.param('radius'));
+
+    Internal.requestTrend(bfastParams, function(result){
+    	response.send(result);
+			response.end();
+    });
 	};
 
 	TimeSerie.byId = function(request, response, next){
@@ -204,42 +278,24 @@ module.exports = function(app) {
 		}
 
 		if (mode == 'series') {
-			Internal.requestTimeSeries(id, longitude, latitude, mode, callback);
+	  	var radius = request.param('radius')
+			Internal.requestTimeSeries(id, longitude, latitude, mode, radius, callback);
 		} else if(mode == 'trend'){
 			var bfastParams = [];
-			bfastParams.push(request.param('id'));
-	  	bfastParams.push(request.param('longitude'));
-			bfastParams.push(request.param('latitude'));
+			bfastParams.push(id);
+	  	bfastParams.push(longitude);
+			bfastParams.push(latitude);
 	  	bfastParams.push(request.param('startYear'));
 	    bfastParams.push(request.param('endYear'));
 	    bfastParams.push(request.param('interpolation'));
 	    bfastParams.push(request.param('groupData'));
 	    bfastParams.push(request.param('timeChange'));
 	    bfastParams.push(request.param('timeChangeUnits'));
+	    bfastParams.push(request.param('radius'));
 
 			Internal.requestTrend(bfastParams, callback);
 		}
-		
 	}
-
-	TimeSerie.trend = function(request, response){
-
-		var bfastParams = [];
-		bfastParams.push(request.param('id'));
-  	bfastParams.push(request.param('longitude'));
-		bfastParams.push(request.param('latitude'));
-  	bfastParams.push(request.param('startYear'));
-    bfastParams.push(request.param('endYear'));
-    bfastParams.push(request.param('interpolation'));
-    bfastParams.push(request.param('groupData'));
-    bfastParams.push(request.param('timeChange'));
-    bfastParams.push(request.param('timeChangeUnits'));
-
-    Internal.requestTrend(bfastParams, function(result){
-    	response.send(result);
-			response.end();
-    });
-	};
 
 	TimeSerie.translateTree = function(request, response){
 		if (response){
