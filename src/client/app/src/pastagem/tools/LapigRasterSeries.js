@@ -1000,6 +1000,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     ]
                   })
                 },
+                ' ',
                 {
                   xtype: 'button',
                   id: 'lapig-raster-series-tab-trend-btn-refresh',

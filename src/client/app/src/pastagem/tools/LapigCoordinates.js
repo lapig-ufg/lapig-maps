@@ -226,8 +226,39 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			}
 		},
 
+		removeCommasPoint: function (name, lon, lat) {
+			var instance = this;
+
+			var newlon = lon;
+			var newlat = lat;
+			console.log(lon, lat);
+			
+			var isInvalid = false;			
+			if(typeof lon == 'string' && lon.indexOf(",") != -1){
+				newlon = lon.replace(/,/g, ".");
+				isInvalid = true;
+			}
+			if(typeof lat == 'string' && lat.indexOf(",") != -1){
+				newlat = lat.replace(/,/g, ".");
+				isInvalid = true;
+			}
+			
+			if (isInvalid) {
+				instance.insertPoint(name, newlon, newlat, lon, lat)
+			}
+
+			return {
+				"lon": newlon,
+				"lat": newlat 
+			}
+		},
+
 		addPointGUI: function(name, lon, lat, updateStore, callback) {
 			var instance = this;
+
+			validCoords = instance.removeCommasPoint(name, lon, lat);
+			lon = validCoords.lon;
+			lat = validCoords.lat;
 
 			var lonLat = new OpenLayers.LonLat(lon, lat)
 				.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
@@ -567,7 +598,9 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									menuDisabled: true,
 									dataIndex: 'longitude',
 									editor: {
-										xtype: 'textfield',
+										xtype: 'numberfield',
+										decimalPrecision: 4,
+										decimalSeparator: ".",
                 		allowBlank: false,
 									}
 							}, {
@@ -577,7 +610,9 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									menuDisabled: true,
 									dataIndex: 'latitude',
 									editor: {
-										xtype: 'textfield',
+										xtype: 'numberfield',
+										decimalPrecision: 4,
+										decimalSeparator: ".",
                 		allowBlank: false,
 									}
 							}
