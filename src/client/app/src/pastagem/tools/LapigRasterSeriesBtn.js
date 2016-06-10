@@ -42,7 +42,7 @@ gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
      */
     addActions: function() {
         var actions = gxp.plugins.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
-            menuText: this.MenuText,
+            text: this.MenuText,
             tooltip: this.Tooltip,
             icon   : 'theme/app/img/chart_xy.png',
             handler: function() {

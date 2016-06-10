@@ -276,9 +276,9 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   id: "eastpanel",
                   border: false,
                   region: "east",
-                  width: 330,
+                  width: 350,
                   split: true,
-                  collapsed: true,
+                  collapsed: false,
                   collapsible: true,
                   collapseMode: "mini",
                   header: true,
@@ -365,16 +365,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
 
             /********** Map ContextMenu */
             {
-              ptype: "gxp_lapigprint",
-              actionTarget: {target: "map.tbar"},
-              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
-            },
-            {
-              ptype: "gxp_lapigcoordinates",
-              tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
-              actionTarget: {target: "map.tbar"}
-            },
-            {
               ptype: "lapig_spatialintelligencebtn",
               menuText: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT,
               actionTip: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_ACTTIP,
@@ -386,12 +376,43 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               Tooltip: i18n.LAPIGVIEWER_RASTERSERIESBTN_TLTP,
               actionTarget: {target: "map.tbar"}
             },
+            { 
+              actionTarget: { target: "map.tbar" },
+              actions: {
+                text: "-"
+              }
+            },
+            {
+              ptype: "gxp_lapigprint",
+              actionTarget: {target: "map.tbar"},
+              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
+            },
+            {
+              ptype: "gxp_lapigcoordinates",
+              tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
+              actionTarget: {target: "map.tbar"}
+            },
+            {
+              ptype: "gxp_lapigwmsgetfeatureinfo", 
+              format: 'grid', 
+              toggleGroup: this.toggleGroup,
+              popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
+              infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
+              actionTarget: {target: "map.tbar"},
+              layerParams: ['CQL_FILTER']
+            },
+            { 
+              actionTarget: { target: "map.tbar" },
+              actions: {
+                text: "-"
+              }
+            },
             {
               ptype: "gxp_navigationhistory",
-              nextMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTMENUTXT,
-              nextTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTTLTP,
               previousMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVMENUTXT,
               previousTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVTLTP,
+              nextMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTMENUTXT,
+              nextTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTTLTP,
               actionTarget: {target: "map.tbar"}
             },
             {
@@ -404,14 +425,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               showZoomBoxAction: true,
               actionTarget: {target: "map.tbar"}
             }, 
-            {
-              ptype: "gxp_lapigwmsgetfeatureinfo", 
-              format: 'grid', 
-              toggleGroup: this.toggleGroup,
-              popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
-              infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
-              actionTarget: {target: "map.tbar"}
-            },
             {
               ptype: "gxp_navigation", 
               tooltip: i18n.LAPIGVIEWER_NAVIGATION_TLTP,

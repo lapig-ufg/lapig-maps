@@ -298,6 +298,8 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                         }
                         if(a[j].text == '->') {
                             a[j] = new Ext.Toolbar.Fill();
+                        } else if(a[j].text == '-') {
+                            a[j] = new Ext.Toolbar.Separator();
                         } else {
                             a[j] = new Ext.Action(a[j]);
                         }

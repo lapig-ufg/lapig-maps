@@ -11,117 +11,437 @@ module.exports = function(app) {
 	var config = app.config
 	var translateEN = require(config.langDir + '/Spatial-Inteligence_en.json');
 
+	Internal.metadata = {
+			"layer": "regions",
+			"label": "Municípios",
+			"columnCity": "COD_MUNICI",
+			"fields": [
+				{
+					"name": "AGR_AREAHA",
+					"layer": "cost_crop",
+					"label": "Agricultura Anual (2014)",
+					"unit": "ha",
+					"metadata": "Agrosatélite",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "ALG_PROD",
+					"layer": "",
+					"label": "Algodão - Produção (2014)",
+					"unit": "ton",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "ALG_RENMED",
+					"layer": "",
+					"label": "Algodão - Rendimento Médio (2014)",
+					"unit": "ton/ha",
+					"metadata": "IBGE",
+					"precision": 1,
+					"operation": "avg"
+				}, 
+				{
+					"name": "PPE_AREAHA",
+					"layer": "law_permanent_protected_area",
+					"label": "Área de Proteção Permanente - INCRA",
+					"unit": "ha",
+					"metadata": "MMA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "RLG_AREAHA",
+					"layer": "law_legal_reserve_area",
+					"label": "Área de Reserva Legal - INCRA",
+					"unit": "ha",
+					"metadata": "INCRA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "ASS_AREAHA",
+					"layer": "law_assentaments",
+					"label": "Assentamentos Rurais - INCRA",
+					"unit": "ha",
+					"metadata": "INCRA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "BFU_AREAHA",
+					"layer": "law_land_basis",
+					"label": "Base fundiária - INCRA",
+					"unit": "ha",
+					"metadata": "INCRA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "BOV_ABAT",
+					"layer": "",
+					"label": "Bovinos - Abatidos (2006)",
+					"unit": "cbçs",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "BOV_QTDE",
+					"layer": "",
+					"label": "Bovinos - Rebanho (2014)",
+					"unit": "cbçs",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "CAN_PROD",
+					"layer": "",
+					"label": "Cana - Produção (2014)",
+					"unit": "ton",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "CAN_RENMED",
+					"layer": "",
+					"label": "Cana - Rendimento Médio (2014)",
+					"unit": "ton/ha",
+					"metadata": "IBGE",
+					"precision": 1,
+					"operation": "avg"
+				}, 
+				{
+					"name": "COM_TRADIC",
+					"layer": "",
+					"label": "Comunidades tradicionais (Fund. Palmares)",
+					"unit": "",
+					"metadata": "Fundação Palmares",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "CON_TERRA",
+					"layer": "",
+					"label": "Conflitos por terra - Registrados (2014)",
+					"unit": "",
+					"metadata": "CPT",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "CON_TERPES",
+					"layer": "",
+					"label": "Conflitos por terra - Pessoas envolvidas (2014)",
+					"unit": "",
+					"metadata": "CPT",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "DES_AREAHA",
+					"layer": "tradeoff_deforestation",
+					"label": "Desmatamento - Área (mais recente)",
+					"unit": "ha",
+					"metadata": "LAPIG-UFG/PRODES/PMDBBS/SOS-MATA-ATLÂNTICA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "FIG_QTD",
+					"layer": "infraestructure_slaughterhouse",
+					"label": "Frigorificos e Matadouros",
+					"unit": "",
+					"metadata": "",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "FOR_AREAHA",
+					"layer": "cost_planted_forest",
+					"label": "Floresta plantada",
+					"unit": "ha",
+					"metadata": "WRI",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "LEI_LITROS",
+					"layer": "",
+					"label": "Leite - Produção (2006)",
+					"unit": "l",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "MIL_PROD",
+					"layer": "",
+					"label": "Milho - Produção (2014)",
+					"unit": "ton",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "MIL_RENMED",
+					"layer": "",
+					"label": "Milho - Rendimento Médio (2014)",
+					"unit": "ton/ha",
+					"metadata": "IBGE",
+					"precision": 1,
+					"operation": "avg"
+				}, 
+				{
+					"name": "PIV_AREAHA",
+					"layer": "infraestructure_pivot",
+					"label": "Pivôs Centrais",
+					"unit": "ha",
+					"metadata": "EMBRAPA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "QUI_AREAHA",
+					"layer": "tradeoff_quilombos",
+					"label": "Quilombolas - INCRA",
+					"unit": "ha",
+					"metadata": "INCRA",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "PAS_AREAHA",
+					"layer": "cost_pasture",
+					"label": "Pastagem",
+					"unit": "ha",
+					"metadata": "LAPIG/UFG",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "SIL_CAPTON",
+					"layer": "infrastructure_warehouses",
+					"label": "Silos - Capacidade Max.",
+					"unit": "ton",
+					"metadata": "",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "SOJ_PROD",
+					"layer": "",
+					"label": "Soja - Produção (2014)",
+					"unit": "ton",
+					"metadata": "IBGE",
+					"precision": 0,
+					"operation": "sum"
+				}, 
+				{
+					"name": "SOJ_RENMED",
+					"layer": "",
+					"label": "Soja - Rendimento Médio (2014)",
+					"unit": "ton/ha",
+					"metadata": "IBGE",
+					"precision": 1,
+					"operation": "avg"
+				}, 
+				{
+					"name": "TRB_ESCRAV",
+					"layer": "",
+					"label": "Trabalho Escravo - Trabalhadores envolvidos",
+					"unit": "",
+					"metadata": "CPT",
+					"precision": 0,
+					"operation": "sum"
+				},
+				{
+					"name": "PSU_AREAHA",
+					"layer": "law_sustainable_protected_area",
+					"label": "U.C. - Uso Sustentável",
+					"unit": "ha",
+					"metadata": "MMA",
+					"precision": 0,
+					"operation": "sum"
+				},
+				{
+					"name": "PIN_AREAHA",
+					"layer": "law_integral_protected_area",
+					"label": "U.C. - Proteção Integral",
+					"unit": "ha",
+					"metadata": "MMA",
+					"precision": 0,
+					"operation": "sum"
+				}
+			]
+	};
+
 	Internal.getSpatialDb = function(callback) {
 		var spatialDb = new sqlite3.Database(config.spatialIntelligenceDb);
+		console.log(config.spatialIntelligenceDb)
 		spatialDb.spatialite(function() {
 			callback(spatialDb);
 		});
 	}
 
-	Internal.getSql = function(table, operation, column, state, sort) {
-		return 		"SELECT COD_MUN, NM_MUN info, " + operation + "(" + column + ") value, bbox "
-						+ " FROM " + table
-						+ " WHERE NM_UF = '" + state + "'"
-						+ " GROUP BY info"
-						+ " ORDER BY " + sort + ((sort == 'value') ? " DESC" : " ASC")
+	Internal.getRegionFilter = function(regionType, region, city, toMapserver) {
+		
+		var filterPreffix = '';
+		var filterSuffix = '';
+
+		if(toMapserver) {
+			filterPreffix = '\'[';
+			filterSuffix = ']\'';
+		}
+
+		var cityFilter = '';
+		if(city) {
+			cityFilter = " \"COD_MUNICI\" = '" + city + "' AND ";
+		}
+
+		if (regionType == 'state') {
+			return " " + cityFilter + filterPreffix + 'UF' + filterSuffix + " = '" + region + "'";
+		} else if (regionType == 'biome') {
+			return " " + cityFilter + filterPreffix + 'BIOMA' + filterSuffix + " = '" + region + "'";
+		} else if (regionType == 'ROI' && region == 'ARC_DEFORESTATION') {
+			return " " + cityFilter + filterPreffix + 'ARCODESMAT' + filterSuffix + " = '1' ";
+		} else {
+			return " " + cityFilter + filterPreffix + 'MATOPIBA' + filterSuffix + " = '1'"
+		}
 	}
 
-	Internal.queryLayers = function(subjectId, state, sort, callback) {
-		Internal.getSubject(subjectId, function(subject) {
-			if(subject) {
-				
-				var layers = subject.layers;
+	Internal.getCitieSql = function( regionFilter) {
+		return 		"SELECT DISTINCT COD_MUNICI, (MUNICIPIO || ' - ' || UF)  info, bbox "
+						+ " FROM \"regions\" "
+						+ " WHERE " + regionFilter
+						+ " ORDER BY info ASC"
+	}
 
-				Internal.getSpatialDb(function(spatialDb) {
+	Internal.getQuerySql = function(field, regionFilter, operation) {
+		return 		"SELECT COD_MUNICI, (MUNICIPIO || ' - ' || UF)  info, bbox, " + operation + "(" + field + ") as value"
+						+ " FROM \"regions\" "
+						+ " WHERE " + regionFilter + " AND " + field + " > 0"
+						+ " GROUP BY 1, 2, 3"
+						+ " ORDER BY value DESC"
+	}
 
-			  	var result = [];
+	Internal.queryLayers = function(regionType, region, city, callback) {
+		var metadata = Internal.metadata;
 
-			  	var descEach = function(layer, next) {
-			  		var section = {
-				  		info: layer.title,
-				  		table: layer.table,
-				  		value: 0,
-				  		iconCls:'task-folder',
-				  		children: []
-				  	};
-			  		
-				  	var sql = Internal.getSql(layer.table, layer.operation, layer.column, state, sort);
-				  	
-				  	var rowEach = function(err, row) {
-				  		row.leaf = true;
-					   	row.iconCls = 'task';
-					   	section['value'] += row['value'];
-					   	row['value'] = Utils.numberFormat(row['value'], layer.precision, '.', ',') + layer.unitMeasure;
-					   	section.children.push(row);
-				  	}
+		Internal.getSpatialDb(function(spatialDb) {
 
-				  	var rowComplete = function() {
-				  		section['value'] = Utils.numberFormat(section['value'], layer.precision, '.', ',') + layer.unitMeasure;
-						  result.push(section);
-						  next();
-				  	}
+	  	var result = [];
+	  	var regionFilter = Internal.getRegionFilter(regionType, region, city, false);
 
-				  	spatialDb.each(sql, rowEach, rowComplete)
-			  	}
+	  	var fieldEach = function(field, next) {
+	  		var section = {
+		  		info: field.label,
+		  		layer: field.layer,
+		  		value: 0,
+		  		count: 0,
+		  		iconCls: (field.layer) ? 'spatial-intelligence-geosection' : 'spatial-intelligence-nogeosection',
+		  		children: []
+		  	};
+	  		
+		  	var sql = Internal.getQuerySql(field.name, regionFilter, field.operation);
+		  	console.log(sql);
+		  	
+		  	var rowEach = function(err, row) {
+		  		row.leaf = true;
+			   	row.iconCls = (field.layer) ? 'spatial-intelligence-geomap' : 'spatial-intelligence-nomap';
+			   	section['value'] += row['value'];
+			   	section['count'] += 1;
+			   	row['value'] = Utils.numberFormat(row['value'], field.precision, '.', ',') + " " + field.unit;
+			   	section.children.push(row);
+		  	}
 
-			  	var descComplete = function() {
-			  		callback(result);
-			  	}
+		  	var rowComplete = function() {
+		  		if(field.operation == 'avg' && section['value']) {
+		  			section['value'] = section['value'] / section['count'];
+		  			delete section['count'];
+		  		}
+		  		if(!section['value']) {
+		  			section['value'] = 'Sem inform.';
+		  		} else {
+		  			section['value'] = Utils.numberFormat(section['value'], field.precision, '.', ',') + " " + field.unit;
+		  		}
+				  result.push(section);
+				  next();
+		  	}
 
-			  	async.eachSeries(layers, descEach, descComplete);
+		  	spatialDb.each(sql, rowEach, rowComplete)
+	  	}
 
-			  });
+	  	var fieldComplete = function() {
+	  		callback(result);
+	  	}
 
-			} else {
-				callback([]);
-			}
+	  	async.eachSeries(metadata.fields, fieldEach, fieldComplete);
+
 		});
+
 	}
 
-	Internal.queryLayersForCsv = function(subjectId, state, sort, callback) {
-		Internal.getSubject(subjectId, function(subject) {
-			if(subject) {
-				
-				var layers = subject.layers;
-				var filename = [subject.label, "-", state].join('').toLowerCase()
+	Internal.queryLayersForCsv = function(regionType, region, city, callback) {
+		
+		var metadata = Internal.metadata;
 
-				Internal.getSpatialDb(function(spatialDb) {
+		var filename = (regionType + '_' + region  + ((city) ? '_' + city : '') ).toLowerCase();
+		Internal.getSpatialDb(function(spatialDb) {
 
-			  	var result = {};
+	  	var result = {};
+	  	var regionFilter = Internal.getRegionFilter(regionType, region, city, false);
 
-					var layerEach = function(layer, next) {
-						
-				  	var sql = Internal.getSql(layer.table, layer.operation, layer.column, state, sort);
-				  	
-				  	var rowEach = function(err, row) {
-				  		var columnName = layer.title + ' -' + layer['unitMeasure'];
+	  	var fieldEach = function(field, next) {
+	  		
+		  	var sql = Internal.getQuerySql(field.name, regionFilter, field.operation);
+		  	
+		  	var rowEach = function(err, row) {
+		  		var columnName = field.label + ' - ' + field.unit;
 
-				  		if(result[row['info']] == undefined) {
-				  			result[row['info']] = {};
-				  		}
+					if(result[row['info']] == undefined) {
+						result[row['info']] = {};
+					}
+					
+					result[row['info']][metadata.label] = row['info'];
 
-				  		result[row['info']][subject.region.title] = row['info'];
-							result[row['info']][columnName] = row['value'];
-				  	}
-
-				  	var rowComplete = function() {
-						  next();
-				  	}
-
-				  	spatialDb.each(sql, rowEach, rowComplete)
+					if(result[row['info']][columnName] == undefined) {
+						result[row['info']][columnName] = 0;
+						result[row['info']][columnName+"_count"] = 0;
 					}
 
-					var layerComplete = function() {
-						callback(filename, result);
-					}
+					result[row['info']][columnName] +=  row['value'];
+					result[row['info']][columnName+"_count"] += 1;
+					
+		  	}
 
-					async.eachSeries(layers, layerEach, layerComplete);
+		  	var rowComplete = function() {
+		  		for (info in result) {
+		  			for(columnName in result[info]) {
+		  				if(result[info][columnName+"_count"] != undefined) {
+		  					result[info][columnName] = result[info][columnName] / result[info][columnName+"_count"];
+		  					result[info][columnName] = Utils.numberFormat(result[info][columnName], 2, '.', ',');
+		  					delete result[info][columnName+"_count"];
+		  				}
+		  			}
+		  		}
+		  		
+				  next();
+		  	}
 
-			  });
+		  	spatialDb.each(sql, rowEach, rowComplete)
+	  	}
 
-			} else {
-				callback([]);
-			}
+	  	var fieldComplete = function() {
+	  		callback(filename, result);
+	  	}
+
+	  	async.eachSeries(metadata.fields, fieldEach, fieldComplete);
+
 		});
 	}
 
@@ -133,50 +453,63 @@ module.exports = function(app) {
 	}
 
 	Spatial.metadata = function(request, response, next) {
-		var subjectId = request.param('subject', 'livestock');
+		var regionType = request.param('regionType', 'state');
+		var region = request.param('region', 'GO');
 
-		Internal.getSubject(subjectId, function(subject) {
-			
-			request.finalizeResultMetadata = subject;
-			next();
+		var metadata = Internal.metadata;
+		metadata.filter = Internal.getRegionFilter(regionType, region, '', true);
+		metadata.titlePrefix = 'Municípios do(a) ';
+
+		Internal.getSpatialDb(function(spatialDb) {
+			var sqlRegionFilter = Internal.getRegionFilter(regionType, region, '', false);
+			var sql = Internal.getCitieSql(sqlRegionFilter);
+
+			spatialDb.all(sql, function(err, rows) {
+				metadata.cities = rows;
+				response.send(metadata);
+			})
+
 		});
+
 	}
 
-	Spatial.query = function(request, response,next) {
+	Spatial.query = function(request, response, next) {
 	  
-		var subjectId = request.param('subject', 'livestock');
-		var state = request.param('state', 'GO');
-		var sort = request.param('sort', 'value');
+		var regionType = request.param('regionType', 'state');
+		var region = request.param('region', 'GO');
+		var city = request.param('city', '');
 
-		Internal.queryLayers(subjectId, state, sort, function(result) {
-				request.finalizeResultQuery = result,
-				next();
+		Internal.queryLayers(regionType, region, city, function(result) {
+			/*request.finalizeResultQuery = result,
+			next();*/
+			response.send(result);
+			response.end()
 		});
 
 	};
 
 	Spatial.csv = function(request, response) {
 
-		var subjectId = request.param('subject', 'livestock');
-		var state = request.param('state', 'GO');
-		var sort = request.param('sort', 'value');
+		var regionType = request.param('regionType', 'state');
+		var region = request.param('region', 'GO');
+		var city = request.param('city', '');
 
-		Internal.queryLayersForCsv(subjectId, state, sort, function(filename, result) {
+		Internal.queryLayersForCsv(regionType, region, city, function(filename, result) {
 
 			response.set('Content-Type', 'text/csv');
-	  	response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
+			response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
 
-	  	var writer = csvWriter({
-			  separator: ';',
-			  newline: '\n',
-			  headers: undefined,
-			  sendHeaders: true
-			});
+			var writer = csvWriter({
+				  separator: ';',
+				  newline: '\n',
+				  headers: undefined,
+				  sendHeaders: true
+				});
 
-	  	var encoder = new iconv.Iconv('utf-8', 'latin1');
+			var encoder = new iconv.Iconv('utf-8', 'latin1');
 
-	  	writer.pipe(encoder, { end: false });
-	  	encoder.pipe(response, { end: false });
+			writer.pipe(encoder, { end: false });
+			encoder.pipe(response, { end: false });
 
 			for(info in result) {
 				writer.write(result[info])
@@ -188,7 +521,8 @@ module.exports = function(app) {
 			})
 
 			writer.end();
-		})
+
+		});
 
 	}
 

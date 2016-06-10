@@ -21,7 +21,7 @@ lapig.tools.LapigSpatialIntelligenceBtn = Ext.extend(gxp.plugins.Tool, {
 
     addActions: function() {
         var actions = lapig.tools.LapigSpatialIntelligenceBtn.superclass.addActions.apply(this, [{
-            menuText: this.menuText,
+            text: this.menuText,
             tooltip: this.actionTip,
             icon   : 'theme/app/img/spatial-intelligence.png',
             handler: function() {

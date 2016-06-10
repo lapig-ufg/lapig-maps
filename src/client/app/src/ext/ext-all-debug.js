@@ -38368,6 +38368,9 @@ Ext.reg('piechart', Ext.chart.PieChart);
 
 
 Ext.chart.CartesianChart = Ext.extend(Ext.chart.Chart, {
+    
+    labelFn: [],
+
     onSwfReady : function(isReset){
         Ext.chart.CartesianChart.superclass.onSwfReady.call(this, isReset);
         this.labelFn = [];
