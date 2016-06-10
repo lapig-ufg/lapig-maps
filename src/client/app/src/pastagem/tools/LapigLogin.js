@@ -248,7 +248,6 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                 text: i18n.LAPIGLOGIN_TXT_LOGIN,
                 xtype: 'button',
                 handler: function() {
-                    console.log("Estou no Login")
                     lapigAnalytics.clickTool('Tools', 'Login', '')
                     var form = new Ext.FormPanel({
                         labelWidth: 75,

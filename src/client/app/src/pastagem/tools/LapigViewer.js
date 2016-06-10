@@ -25,6 +25,7 @@
  *
  * @require tools/LapigAddLayer.js
  * @require tools/LapigAnalytics.js
+ * @require tools/LapigLayerLink.js
  * @require tools/LapigPrint.js
  * @require tools/LapigDownload.js
  * @require tools/LapigDownload.js

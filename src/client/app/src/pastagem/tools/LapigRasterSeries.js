@@ -328,12 +328,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               listeners: {
                 click: function(node, e ) {
                   if(node.leaf) {
-                    console.log("select-layer Time Series "+node.attributes.id)
-                    lapigAnalytics.clickTool('Time Series','select-Layer',node.attributes.id)
                     var id = node.attributes.id;
                     var url = 'time-series/'+ id;
                     var frmInfo = Ext.getCmp('lapig_rasterseries::frm-info');
-
+                    lapigAnalytics.clickTool('Time Series','view-Layer',_id);
+                    console.log("tirar o // view-Layer",id);
+                    this.id
                     frmInfo.load({
                       url:url, 
                       method:'GET', 
@@ -479,9 +479,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
                     var lapigCoordinatesTool = Ext.getCmp('lapig-coordinates-tool');
                     var wndInfoButtons = instance.getWdwInfoButtons();
-                    var selectId = Ext.getCmp('lapig_rasterseries::frm-info');
-                    console.log('view-Layer Time Series ',selectId.reader.jsonData._id)
-                    lapigAnalytics.clickTool('Time Series','view-Layer',selectId.reader.jsonData._id)
+                    var selectView = Ext.getCmp('lapig_rasterseries::frm-info');
+                    lapigAnalytics.clickTool('Time Series','select-Layer',selectView.reader.jsonData._id);
 
                     wdwInfo.hide(this);
                     lapigCoordinatesTool.handler(null, null, wndInfoButtons);
@@ -576,6 +575,17 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           activeItem: "lapig-raster-series-tab-series",
           border: false,
           region: "center",
+          listeners: {
+            'tabchange': function(evt, tab) {
+              if(tab.id == "lapig-raster-series-tab-series") {
+                  lapigAnalytics.clickTool('Tools','Time Series','')
+              } else {
+                if(tab.id == "lapig-raster-series-tab-trend") {
+                  lapigAnalytics.clickTool('Tools','Trend','')
+                }
+              }
+            }
+          },
           items: [
             {
               title: i18n.LAPIGRASTERSERIES_TITLE_TIMESERIES,
@@ -588,7 +598,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype:"button",
                   listeners: {
                     click: function(evt) {
-                      console.log('click Time Series temporalData ')
                       lapigAnalytics.clickTool('Time Series','click-temporalData','')
                       var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
                       wdwInfo.show(this)
@@ -618,10 +627,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var nameFilterDateStart = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-year');
-                      lapigAnalytics.clickTool('Time Series','click-filterDateStart',nameFilterDateStart.lastSelectionText)
-                      console.log('Time Series filterDateStart',nameFilterDateStart.lastSelectionText)
                       filterChartData();
+                      var TDcmbStartYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-year').getValue(); 
+                      lapigAnalytics.clickTool('Time Series','click-filterDateStart',TDcmbStartYear)
                     }
                   }
                 }, 
@@ -647,10 +655,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var nameFilterDateEnd = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-year');
-                      lapigAnalytics.clickTool('Time Series','click-filterDateEnd',nameFilterDateEnd.lastSelectionText)
-                      console.log('Time Series filterDateEnd',nameFilterDateEnd.lastSelectionText)     
                       filterChartData();
+                      var TDcmbEndYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-year').getValue(); 
+                      lapigAnalytics.clickTool('Time Series','click-filterDateEnd',TDcmbEndYear)
                     }
                   }
                 },
@@ -676,10 +683,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var nameFilterValueStart = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value')
-                      lapigAnalytics.clickTool('Time Series','click-filterValueStart',nameFilterValueStart.lastSelectionText)
-                      console.log('Time Series filterValueStart ',nameFilterValueStart.lastSelectionText)
                       filterChartData();
+                      var TDfilterStartValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value').getValue(); 
+                      lapigAnalytics.clickTool('Time Series','click-filterValueStart',TDfilterStartValue)
                     }
                   }
                 }, 
@@ -705,10 +711,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var nameFilterValueEnd = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value')
-                      lapigAnalytics.clickTool('Time Series','click-filterValueEnd',nameFilterValueEnd.lastSelectionText)
-                      console.log('Time Series filterValueEnd ',nameFilterValueEnd.lastSelectionText)
                       filterChartData();
+                      var TDfilterEndValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value').getValue(); 
+                      lapigAnalytics.clickTool('Time Series','click-filterValueEnd',TDfilterEndValue)
                     }
                   }
                 },
@@ -730,11 +735,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     fields: [ 'label', 'position' ]
                   },
                   listeners: {
-                    select: function(){
-                      var nameFilter = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation')
-                      lapigAnalytics.clickTool('Time Series','click-filterSoften',nameFilter.lastSelectionText)
-                      console.log('click filter ',nameFilter.lastSelectionText)
+                    select: function() {
                       filterChartData();
+                      var TDfilterSoften = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation'); 
+                      lapigAnalytics.clickTool('Time Series','click-filterSoften',TDfilterSoften.lastSelectionText)
                     }
                   }
                 },
@@ -770,10 +774,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }),
                   listeners: {
                     select: function() {
-                      var nameClassifyBy = Ext.getCmp('lapig-raster-series-tab-series-cmb-group-data')
-                      lapigAnalytics.clickTool('Time Series','click-filterClassifyBy',nameClassifyBy.lastSelectionText)
-                      console.log('click filter ',nameClassifyBy.lastSelectionText)
                       filterChartData();
+                      var TDclassifyBy = Ext.getCmp('lapig-raster-series-tab-series-cmb-group-data').getValue(); 
+                      lapigAnalytics.clickTool('Time Series','click-filterClassifyBy',TDclassifyBy)
                     }
                   }
                 },
@@ -789,7 +792,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       '/csv?longitude='+instance.seriesProperties.longitude+
                       "&latitude="+instance.seriesProperties.latitude+"&mode=series&radius="+
                       instance.seriesProperties.radius;
-                      console.log('click csv-Downloads')
                       lapigAnalytics.clickTool('Time Series','csv-Downloads',instance.seriesProperties.timeseriesId);
                       window.open(csvUrl)
                     }
@@ -899,7 +901,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   xtype:"button",
                   listeners: {
                     click: function(evt) {
-                      console.log("click-temporalData Trend")
                       lapigAnalytics.clickTool('Trend','click-temporalData','')
                       var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
                       wdwInfo.show(this)
@@ -929,9 +930,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var filterDateStartTrend = Ext.getCmp('lapig-raster-series-tab-trend-cmb-start-year')
-                      lapigAnalytics.clickTool('Trend','click-filterDateStart',filterDateStartTrend.lastSelectionText)
-                      console.log('click-filterDateStart pelo Trend',filterDateStartTrend.lastSelectionText)
+                      var TrendCmbStartYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-start-year').getValue(); 
+                      lapigAnalytics.clickTool('Trend','click-filterDateStart',TrendCmbStartYear)
                     }
                   }
                 }, 
@@ -957,9 +957,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var filterDateEndTrend = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year')
-                      lapigAnalytics.clickTool('Trend','click-filterDateEnd',filterDateEndTrend.lastSelectionText)
-                      console.log('click-filterDateEnd Trend',filterDateEndTrend.lastSelectionText)
+                      var TrendCmbEndYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue(); 
+                      lapigAnalytics.clickTool('Trend','click-filterDateEnd',TrendCmbEndYear)
                     }
                   }
                 },
@@ -983,9 +982,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   },
                   listeners: {
                     select: function() {
-                      var filterInterpolationTrend = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation')
-                      lapigAnalytics.clickTool('Trend','click-filterSoften',filterInterpolationTrend.lastSelectionText)
-                      console.log('click-filterSoften Trend',filterInterpolationTrend.lastSelectionText)
+                      var TrendFilterSoften = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue(); 
+                      lapigAnalytics.clickTool('Trend','click-filterSoften',TrendFilterSoften)
                     }
                   }
                 },
@@ -1015,9 +1013,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }),
                   listeners: {
                     select: function() {
-                      var filterClassifyByTrend = Ext.getCmp('lapig-raster-series-tab-trend-cmb-group-data')
-                      lapigAnalytics.clickTool('Trend','click-filterClassifyBy',filterClassifyByTrend.lastSelectionText)
-                      console.log('click-filterClassifyBy Trend',filterClassifyByTrend.lastSelectionText)
+                      var TrendFiterClassifyBy = Ext.getCmp('lapig-raster-series-tab-trend-cmb-group-data').getValue(); 
+                      lapigAnalytics.clickTool('Trend','click-fiterClassifyBy',TrendFiterClassifyBy)
                     }
                   }
                 },
@@ -1061,9 +1058,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   }),
                   listeners: {
                     select: function() {
-                      var timeChangeUnitsTrend = Ext.getCmp('lapig-raster-series-tab-trend-cmb-time-change-units')
-                      lapigAnalytics.clickTool('Trend','click-filterTimeChangeUnits',timeChangeUnitsTrend.lastSelectionText)
-                      console.log('click-filterTimeChangeUnits',timeChangeUnitsTrend.lastSelectionText)
+                      var TrendFiterClassifyByPeriod = Ext.getCmp('lapig-raster-series-tab-trend-cmb-time-change-units').getValue(); 
+                      lapigAnalytics.clickTool('Trend','click-fiterClassifyByPeriod',TrendFiterClassifyByPeriod)
                     }
                   }
                 },
@@ -1075,9 +1071,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   disabled: true,
                   listeners: {
                     click: function() {
-                      console.log('click-Refresh Trend')
-                      lapigAnalytics.clickTool('Trend','click-Refresh','')
                       instance.calculateTrend();
+                      lapigAnalytics.clickTool('Trend','click-Refresh','');
                     }
                   }
                 },
@@ -1089,7 +1084,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   disabled: true,
                   listeners: {
                     click: function() {
-                      console.log("csv-Downloads Trend",instance.seriesProperties.timeseriesId)
                       lapigAnalytics.clickTool('Trend','click-csvDownloads',instance.seriesProperties.timeseriesId)
                       var csvUrl = 'time-series/' + instance.seriesProperties.timeseriesId + '/csv';
 
@@ -1217,15 +1211,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 }
               ]
             }
-          ],
-          listeners: {
-            tabchange: function(tabppnl, tab){
-              if (tab.id.indexOf("trend") != -1) {
-                console.log("click Trend")
-                lapigAnalytics.clickTool('Tools','Trend','')
-              }
-            }
-          }
+          ]
         }
       ]
     }
@@ -1348,7 +1334,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       }));
     }
   },
-
+ 
   initLoadChartDataMask: function() {
     var instance = this;
     var chartPanel = Ext.getDom('lapig-raster-series-tab-pnl');
@@ -1615,8 +1601,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         enableOnSelect: (source != 'lapig') ? true : false,
         listeners:{
           check: function(checkbox, checked) {
-            console.log('Verificar click no raio ainda nao implementado')
-            Ext.getCmp('lapig-coordenadas-cmb-radius').setDisabled(!checked);
+            Ext.getCmp('lapig-coordinates-cmb-radius').setDisabled(!checked);
             Ext.getCmp('lapig-coordinates-label-radius').setDisabled(!checked);
           }
         }
@@ -1669,9 +1654,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         enableOnSelect: true,
         listeners: {
           click: function(evt) {
-            
-            console.log("click-createGraphic Time Series")
             lapigAnalytics.clickTool('Time Series','click-createGraphic','')
+            
+            var viewRadius = Ext.getCmp()
+
             var grid = Ext.getCmp('lapig-coordinates-grid');
             var formTimeSeries = Ext.getCmp('lapig_rasterseries::frm-info');
             var southPanel = Ext.getCmp('southpanel');
@@ -1688,7 +1674,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             coordinateName = (coordinateName) ? " - " + coordinateName : ""
 
             southPanel.setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES + ' - ' + timeSeriesName);
-
             var activeTab = instance.getSeriesActiveTab();
             var otherTabIndex = Math.abs(activeTab.index-1);
 
@@ -1701,6 +1686,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             if (useRadius == true) {
               radius = Ext.getCmp('lapig-coordinates-cmb-radius').getValue();
             }
+            /*if((useRadius == 250) || (useRadius == 500) || (useRadius == 750)){
+                //lapigAnalytics.clickTool('Time Series','value-Radius',valueRadius.lastSelectionText);
+                console.log("tirar o // value-Radius",valueRadius.lastSelectionText);
+            } else {
+              //lapigAnalytics.clickTool('Time Series','value-Radius','0');
+              console.log("valor do raio eh 0");
+            }*/
 
             var lapigCoordinatesWin = Ext.getCmp('lapig-coordinates-window');
             lapigCoordinatesWin.close();

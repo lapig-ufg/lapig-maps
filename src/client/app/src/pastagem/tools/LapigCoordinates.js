@@ -59,6 +59,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						iconCls: "gxp-icon-lapigcoordinates",
 						handler: function(scope, evt, buttons) {
 								instance.addOutput(buttons);
+								lapigAnalytics.clickTool('Tools', 'Add Coordinates', '')
 						},
 						id: 'lapig-coordinates-tool',
 						scope: this
@@ -176,6 +177,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 		insertPoint: function(name, lon, lat, oldLon, oldLat, callback) {
 			var instance = this;
+
 			if(isAnyoneHome){
 
 				Ext.Ajax.request({
@@ -206,6 +208,8 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 		deletePoint: function(lon, lat) {
 			var instance = this;
+
+			lapigAnalytics.clickTool('Add Coordinates', 'click-Remove', '')
 			if(isAnyoneHome){
 			
 				Ext.Ajax.request({
@@ -229,6 +233,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		addPointGUI: function(name, lon, lat, updateStore, callback) {
 			var instance = this;
 
+			lapigAnalytics.clickTool('Add Coordinates', 'click-Save', '')
 			var lonLat = new OpenLayers.LonLat(lon, lat)
 				.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
 
@@ -432,6 +437,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		mapClickFn: function(e) {
 			var instance = this;
 
+			lapigAnalytics.clickTool('Add Coordinates', 'click-Map', '')
 			var lonLat = instance.map.getLonLatFromPixel(e.xy)
 					.transform(instance.GOOGLE_PROJ, instance.WGS84_PROJ);
 
@@ -489,6 +495,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								tooltip: i18n.LAPIGCOORDINATES_BTNMAPCOORD_TLTP,
 								iconCls: 'lapig-icon-add',
 								handler: function() {
+								lapigAnalytics.clickTool('Add Coordinates', 'click-Add', '')
 									if (rowEditor.isEditing()) {
 										return;
 									}
@@ -542,6 +549,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								disabled: true,
 								ref: '../editBtn',
 								handler: function() {
+								lapigAnalytics.clickTool('Add Coordinates', 'click-Edit', '')
 	                rowEditor.stopEditing();
 	                grid.getView().refresh();
 	                var row = grid.getSelectionModel().getSelected();
@@ -602,6 +610,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							},
 
 							'canceledit': function(rowEditor, forced, rowIndex) {
+								lapigAnalytics.clickTool('Add Coordinates', 'click-cancelEdit', '')
 								if(forced){
 									if(grid.newRecord !== -1 && grid.newRecord !== undefined){
 										instance.store.removeAt(rowIndex);

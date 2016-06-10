@@ -48,7 +48,6 @@ lapig.tools.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
             handler: function() {
                 
                 lapigAnalytics.clickTool('Tools','Time Series','');
-                console.log("Estou no TimeSeries")
                 Ext.getCmp('southpanel').expand(true);
                 Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
             },

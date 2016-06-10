@@ -460,7 +460,6 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                 disabled: true,
                 iconCls: "gxp-icon-addlayers",
                 handler: function() {
-                    console.log("add layers click")
                     lapigAnalytics.clickTool('Tools','Add Layers','')
                     instance.layerWindow.show(instance);
                 },

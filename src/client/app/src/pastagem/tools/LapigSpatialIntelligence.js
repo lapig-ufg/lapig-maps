@@ -369,7 +369,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               submit();
               var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
               lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
-              console.log('click-Consult Spatial Intelligence',clickSelectedState)
             }
           },
         }
@@ -396,7 +395,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             listeners: {
               click: function() {
                 lapigAnalytics.clickTool('Spatial Intelligence', 'click-Metadata', '')
-                console.log('Estou no Metadata')
                 var text = ''
                 instance.queryMetadata.layers.reverse().forEach(function(layer) {
                   if(layer.title && layer.metadata) {
@@ -436,7 +434,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               click: function() {
                 var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
                 lapigAnalytics.clickTool('Spatial Intelligence', 'click-csvDownloads',clickSelectedState);
-                console.log("click-csvDownloads ",clickSelectedState)
                 window.open(instance.csvUrl)
               }
             }
@@ -486,7 +483,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             var parentAttr = node.parentNode.attributes;
 
             var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
-            console.log("Spatial Intelligence /","dbclick-"+parentAttr.table," /"+attr.info+"-"+clickSelectedState)
             lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.table, attr.info+'-'+clickSelectedState)
 
             if(attr.bbox) {
