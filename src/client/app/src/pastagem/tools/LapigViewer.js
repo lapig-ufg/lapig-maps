@@ -23,25 +23,24 @@
  * @requires plugins/WMSCSource.js
  * @requires plugins/WMTSSource.js
  *
- * @require tools/LapigAddLayer.js
- * @require tools/LapigAnalytics.js
- * @require tools/LapigLayerLink.js
- * @require tools/LapigPrint.js
- * @require tools/LapigDownload.js
- * @require tools/LapigDownload.js
- * @require tools/LapigMetadata.js
- * @require tools/LapigGoogleSatellite.js
- * @require tools/LapigCoordinates.js
- * @require tools/LapigLayerManager.js
- * @require tools/LapigWMSCSource.js
- * @require tools/LapigZoom.js
- * @require tools/LapigRasterSeries.js
- * @require tools/LapigSpatialIntelligence.js
- * @require tools/LapigSpatialIntelligenceBtn.js
- * @require tools/LapigRasterSeriesBtn.js
- * @require tools/LapigWMSGetFeatureInfo.js
- * @require tools/LapigDownloadAll.js
- * @require tools/LapigLogin.js
+ * @requires tools/LapigAddLayer.js
+ * @requires tools/LapigAnalytics.js
+ * @requires tools/LapigPrint.js
+ * @requires tools/LapigLayerLink.js
+ * @requires tools/LapigDownload.js
+ * @requires tools/LapigMetadata.js
+ * @requires tools/LapigGoogleSatellite.js
+ * @requires tools/LapigCoordinates.js
+ * @requires tools/LapigLayerManager.js
+ * @requires tools/LapigWMSCSource.js
+ * @requires tools/LapigZoom.js
+ * @requires tools/LapigRasterSeries.js
+ * @requires tools/LapigSpatialIntelligence.js
+ * @requires tools/LapigSpatialIntelligenceBtn.js
+ * @requires tools/LapigRasterSeriesBtn.js
+ * @requires tools/LapigWMSGetFeatureInfo.js
+ * @requires tools/LapigDownloadAll.js
+ * @requires tools/LapigLogin.js
  */
 
 globalInstance = this;

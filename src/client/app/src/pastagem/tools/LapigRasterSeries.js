@@ -266,8 +266,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           var record = { date: date, original: value, interpolation: null, dateStr: dateStr };
         }
         
-        if(interpolationPosition > 0 && interpolationPosition != originalPosition)
-          record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition] : null;
+        if (interpolationPosition < 0) {
+          record.original = null;
+          if(interpolationPosition != originalPosition)
+            record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition * -1] : null;
+        }else{
+          if(interpolationPosition != originalPosition)
+            record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition] : null;
+        }
+
         chartData.push(record)
       }
     })
@@ -540,22 +547,24 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
       if(instance.chartData[activeTab.index] == undefined){
         if(instance.seriesProperties != undefined){
-
+          console.log("requestChartData")
           instance.requestChartData(instance.seriesProperties.timeseriesId,
             instance.seriesProperties.longitude, instance.seriesProperties.latitude, instance.seriesProperties.radius);
         }else{
+          console.log("restartChart")
           instance.restartChart();
         }
       }else{
 
-        var startValue, endValue;
         if(activeTab.index == instance.tabProperties.series){
-          startValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value').getValue();
-          endValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value').getValue();
+          var startValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value').getValue();
+          var endValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value').getValue();
+          // Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation').setValue("Nenhum");
 
           instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
           startValue, endValue);
         }else{
+          console.log(activeTab)
           instance.drawTrend(instance.chartData[activeTab.index])
         }
       }
@@ -728,11 +737,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   typeAhead: true,
                   editable: false,
                   disabled: true,
-                  width: 120,
+                  width: 200,
                   triggerAction: 'all',
                   store: {
                     xtype: 'jsonstore',
-                    fields: [ 'label', 'position' ]
+                    fields: [ 'label', 'position', 'id' ]
                   },
                   listeners: {
                     select: function() {
@@ -1063,6 +1072,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     }
                   }
                 },
+                ' ',
                 {
                   xtype: 'button',
                   id: 'lapig-raster-series-tab-trend-btn-refresh',
@@ -1279,42 +1289,50 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   },
 
   drawTrend : function(trendData){
-    instance = this;
+    var instance = this;
 
-    activeTab = instance.getSeriesActiveTab();
+    console.log("drawTrend")
 
-    chart = Ext.getCmp('lapig-coordinates-chart-'+activeTab.name);
-    filter = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue();
+    var activeTab = instance.getSeriesActiveTab();
+
+    var chart = Ext.getCmp('lapig-coordinates-chart-'+activeTab.name);
+    var interpolationCmb = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation');
+    var filter = interpolationCmb.getValue();
 
     var trendPosition = 0;
     var originalPosition = -1;
     var interpolationPosition = -1;
     
-    for(var i in trendData.series) {
-      var serie = trendData.series[i];
-      if(serie.id == 'Bfast') {
+    var interpolations = [];
+    console.log(trendData.series)
+    trendData.series.forEach(function(serie) {
+      if(serie.type == 'trend') {
         trendPosition = serie.position;
-      }else if(serie.id == 'original'){
+      }else if(serie.type == 'original'){
         originalPosition = serie.position;
-      }else if(serie.id != undefined && filter != 'Nenhum'){
+        serie.label = "Nenhum";
+      }else if(serie.type == 'filter' && filter != 'Nenhum'){
         interpolationPosition = serie.position;
       }
-    }
+    });
+
+    console.log(trendPosition, originalPosition, interpolationPosition)
 
     var chartRecords = [];
     trendData.values.forEach(function(values){
       var dateStr = '-' + values[0];
       date = new Date(dateStr).getTime();
 
-      var record = { 
+      var record = {
         date: date, 
-        original: originalPosition != -1 ? values[originalPosition] : null, 
-        interpolation: interpolationPosition != -1 ? values[interpolationPosition] : null, 
-        trend: values[trendPosition], 
+        original: originalPosition != -1 ? values[originalPosition] : null,
+        interpolation: interpolationPosition != -1 && originalPosition == -1 ? values[interpolationPosition] : null,
+        trend: values[trendPosition],
         dateStr: dateStr };
       chartRecords.push(record);
     });
 
+    
     chart.setSeriesStyles(instance.getChartSeries(trendData.length));
     chart.store.loadData(chartRecords);
 
@@ -1478,7 +1496,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.setSeriesActiveTabDisabled(true);
 
     groupDataCmb.setValue('NONE_NONE');
+    console.log("interpolationCmb.setValue Nenhum")
     interpolationCmb.setValue('Nenhum');
+    console.log("interpolationCmb.getValue:", interpolationCmb.getValue());
 
     if(instance.chartData == undefined){
       instance.chartData = [];
@@ -1514,13 +1534,20 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         values = _.sortBy(values, function(value) { return value[0]; });
         values = _.uniq(values, true, function(value) { return value[0]; });
 
-        var interpolations = []
+        var interpolations = [];
         instance.chartData[activeTab.index].series.forEach(function(serie) {
           if(serie.id == 'original')
             serie.label = i18n.LAPIGRASTERSERIES_GROUPCB_NONE; 
-          else if(serie.type == 'trends'){
+          else if(serie.type == 'trend'){
             instance.trendPosition = serie.position;
             return;
+          }else if(activeTab.index == instance.tabProperties.series) {
+            var filterOnly = {};
+            filterOnly.position = -serie.position;
+            filterOnly.type = serie.type;
+            filterOnly.id = "only-"+serie.id;
+            filterOnly.label = "Apenas " + serie.label;
+            interpolations.push(filterOnly);
           }
 
           interpolations.push(serie)
@@ -1528,7 +1555,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         years = _.sortBy(years, function(year) { return year[0]; });
         years = _.uniq(years, true, function(year) { return year[0]; });
-
         endYearCmb.store.loadData(years);
         startYearCmb.store.loadData(years);
         interpolationCmb.store.loadData(interpolations);
@@ -1674,6 +1700,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             coordinateName = (coordinateName) ? " - " + coordinateName : ""
 
             southPanel.setTitle(i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES + ' - ' + timeSeriesName);
+
             var activeTab = instance.getSeriesActiveTab();
             var otherTabIndex = Math.abs(activeTab.index-1);
 
@@ -1686,6 +1713,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             if (useRadius == true) {
               radius = Ext.getCmp('lapig-coordinates-cmb-radius').getValue();
             }
+
             /*if((useRadius == 250) || (useRadius == 500) || (useRadius == 750)){
                 //lapigAnalytics.clickTool('Time Series','value-Radius',valueRadius.lastSelectionText);
                 console.log("tirar o // value-Radius",valueRadius.lastSelectionText);
