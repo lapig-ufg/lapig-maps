@@ -238,11 +238,14 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var chart = Ext.getCmp('lapig-coordinates-chart-' + activeTab.name);
 
     var originalPosition = 0;
+    var trendPosition = -1;
     for(var i in instance.chartData[activeTab.index].series) {
       var serie = instance.chartData[activeTab.index].series[i];
       if(serie.id == 'original') {
         originalPosition = serie.position;
-        break;
+      }
+      else if(serie.type == 'trend'){
+        trendPosition = serie.position;
       }
     }
 
@@ -261,7 +264,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         if(activeTab.index == instance.tabProperties.trend){
           var record = { date: date, original: value, interpolation: null, trend: null, dateStr: dateStr };
-          record.trend = (instance.trendPosition != -1) ? values[instance.trendPosition] : null;
+          record.trend = (trendPosition != -1) ? values[trendPosition] : null;
         }else{
           var record = { date: date, original: value, interpolation: null, dateStr: dateStr };
         }
@@ -543,11 +546,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
       if(instance.chartData[activeTab.index] == undefined){
         if(instance.seriesProperties != undefined){
-          console.log("requestChartData")
           instance.requestChartData(instance.seriesProperties.timeseriesId,
             instance.seriesProperties.longitude, instance.seriesProperties.latitude, instance.seriesProperties.radius);
         }else{
-          console.log("restartChart")
           instance.restartChart();
         }
       }else{
@@ -560,7 +561,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
           startValue, endValue);
         }else{
-          console.log(activeTab)
           instance.drawTrend(instance.chartData[activeTab.index])
         }
       }
@@ -1204,7 +1204,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.chartData[activeTab.index] = jsonResponse;
           instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
-          Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + jsonResponse.error);
+          Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + ': ' + jsonResponse.error);
           instance.chartData[activeTab.index] = oldChartData;
           instance.drawTrend(instance.chartData[activeTab.index]);
         }
@@ -1218,8 +1218,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   drawTrend : function(trendData){
     var instance = this;
 
-    console.log("drawTrend")
-
     var activeTab = instance.getSeriesActiveTab();
 
     var chart = Ext.getCmp('lapig-coordinates-chart-'+activeTab.name);
@@ -1230,8 +1228,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var originalPosition = -1;
     var interpolationPosition = -1;
     
-    var interpolations = [];
-    console.log(trendData.series)
     trendData.series.forEach(function(serie) {
       if(serie.type == 'trend') {
         trendPosition = serie.position;
@@ -1242,8 +1238,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         interpolationPosition = serie.position;
       }
     });
-
-    console.log(trendPosition, originalPosition, interpolationPosition)
 
     var chartRecords = [];
     trendData.values.forEach(function(values){
@@ -1414,8 +1408,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
       timeChangeNum.setValue(1);
       timeChangeUnitsCmb.setValue('YEAR');
-
-      instance.trendPosition = -1;
     }
 
     var chartDataUrl = 'time-series/' + timeseriesId + '/values';
@@ -1423,9 +1415,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.setSeriesActiveTabDisabled(true);
 
     groupDataCmb.setValue('NONE_NONE');
-    console.log("interpolationCmb.setValue Nenhum")
     interpolationCmb.setValue('Nenhum');
-    console.log("interpolationCmb.getValue:", interpolationCmb.getValue());
 
     if(instance.chartData == undefined){
       instance.chartData = [];
@@ -1461,30 +1451,38 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         values = _.sortBy(values, function(value) { return value[0]; });
         values = _.uniq(values, true, function(value) { return value[0]; });
 
-        var interpolations = [];
-        instance.chartData[activeTab.index].series.forEach(function(serie) {
-          if(serie.id == 'original')
-            serie.label = i18n.LAPIGRASTERSERIES_GROUPCB_NONE; 
-          else if(serie.type == 'trend'){
-            instance.trendPosition = serie.position;
-            return;
-          }else if(activeTab.index == instance.tabProperties.series) {
-            var filterOnly = {};
-            filterOnly.position = -serie.position;
-            filterOnly.type = serie.type;
-            filterOnly.id = "only-"+serie.id;
-            filterOnly.label = "Apenas " + serie.label;
-            interpolations.push(filterOnly);
-          }
-
-          interpolations.push(serie)
-        })
-
         years = _.sortBy(years, function(year) { return year[0]; });
         years = _.uniq(years, true, function(year) { return year[0]; });
         endYearCmb.store.loadData(years);
         startYearCmb.store.loadData(years);
-        interpolationCmb.store.loadData(interpolations);
+
+        if(activeTab.index == instance.tabProperties.series){
+          var interpolations = [];
+          instance.chartData[activeTab.index].series.forEach(function(serie) {
+            if(serie.id == 'original')
+              serie.label = i18n.LAPIGRASTERSERIES_GROUPCB_NONE; 
+            else{
+              var filterOnly = {};
+              filterOnly.position = -serie.position;
+              filterOnly.type = serie.type;
+              filterOnly.id = "only-"+serie.id;
+              filterOnly.label = "Apenas " + serie.label;
+              interpolations.push(filterOnly);
+            }
+
+            interpolations.push(serie)
+          })
+          interpolationCmb.store.loadData(interpolations);
+        }else{
+          var seriesInterpolationCmb = Ext.getCmp("lapig-raster-series-tab-series-cmb-interpolation");
+          var filteredRecs = [];
+
+          seriesInterpolationCmb.store.each(function (rec) {
+            if (rec.get('id').indexOf("only") == -1) filteredRecs.push(rec.copy());
+          });
+          interpolationCmb.store.removeAll();
+          interpolationCmb.store.add(filteredRecs);
+        }
 
         var startYear = [years[0]];
         var endYear = [years[years.length - 1]];
