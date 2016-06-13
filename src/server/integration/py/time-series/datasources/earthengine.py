@@ -297,6 +297,7 @@ class EarthEngine(Datasource):
 				'label': filterBlock["filterProperties"]["label"],
 				'position': position,
 				'type': 'trend' if filterBlock["filterProperties"]["id"] == "Bfast"
+
 					else 'original' if filterBlock["filterProperties"]["id"] == "original" else "filter"
 			});
 

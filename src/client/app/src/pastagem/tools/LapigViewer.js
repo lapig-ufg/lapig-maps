@@ -24,9 +24,9 @@
  * @requires plugins/WMTSSource.js
  *
  * @requires tools/LapigAddLayer.js
+ * @requires tools/LapigAnalytics.js
  * @requires tools/LapigPrint.js
  * @requires tools/LapigLayerLink.js
- * @requires tools/LapigDownload.js
  * @requires tools/LapigDownload.js
  * @requires tools/LapigMetadata.js
  * @requires tools/LapigGoogleSatellite.js
@@ -86,8 +86,10 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
         jsonData: { "basepaths": basepaths, "language": language },
         success: function(response) {
           var result = JSON.parse(response.responseText);
+          
           globalInstance.i18n = result.lang;
           globalInstance.isAnyoneHome = false;
+          globalInstance.lapigAnalytics = gxp.plugins.LapigAnalytics;
           i18n.lang = language;
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
