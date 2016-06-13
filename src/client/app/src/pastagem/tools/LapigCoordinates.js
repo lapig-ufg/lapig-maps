@@ -234,7 +234,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 			var newlon = lon;
 			var newlat = lat;
-			console.log(lon, lat);
 			
 			var isInvalid = false;			
 			if(typeof lon == 'string' && lon.indexOf(",") != -1){

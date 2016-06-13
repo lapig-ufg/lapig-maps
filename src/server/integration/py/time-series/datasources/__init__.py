@@ -1,6 +1,6 @@
 from earthengine import EarthEngine
-from gdal import Gdal
+from gdalds import Gdalds
 from composite import Composite
 
-__all__ = ["EarthEngine", "Gdal", "Composite"]
+__all__ = ["EarthEngine", "Gdalds", "Composite"]
 

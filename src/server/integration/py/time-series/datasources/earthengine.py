@@ -65,11 +65,7 @@ class EarthEngine(Datasource):
 				if item[0] not in dates:
 					dates[item[0]] = True;
 					newPixelSeries.append(item);
-				# else:
-					# print("deleting: "+str(item))
-			
 			new_eeResultList.append(newPixelSeries);
-
 
 		return new_eeResultList;
 
@@ -222,14 +218,12 @@ class EarthEngine(Datasource):
 
 	def groupValuesByCoord(self, eeResultList):
 		groupedValues = [];
-		keys = [];
 		def lonlat(item):
 			return str(item[1])+str(item[2])
 
 		groups = groupby(sorted(sorted(eeResultList, key=itemgetter(1)), key=itemgetter(2)), lonlat)
 		for key, group in groups:
 			groupedValues.append(list(group));
-			keys.append(key);
 
 		return groupedValues;
 
@@ -259,6 +253,8 @@ class EarthEngine(Datasource):
 		for filter in loader.getFilters(self.layer_id):
 			if filter.id == 'Bfast' and mode == 'series':
 				continue;
+			elif filter.id != 'Bfast' and mode == 'trend':
+				continue;
 
 			filteredPixels.append({"filterProperties": {"id": filter.id, "label": filter.label}, "pixels": []});
 			for pixel in pixels:
@@ -275,7 +271,7 @@ class EarthEngine(Datasource):
 				else:
 					filteredPixels[-1]["pixels"].append({"values": [0 for _ in xrange(len(values))], "lon": longitude, "lat": latitude});
 
-		return filteredPixels;
+		return filteredPixels;	
 
 	def calculateMean(self, pixelsStruct):
 		series = [];
@@ -342,21 +338,33 @@ class EarthEngine(Datasource):
 
 	def lookup(self, geoJsonGeometry, mode=None):
 
-		cacheStr = self.layer_id + geoJsonGeometry
-		cacheKey = sha1(cacheStr.encode()).hexdigest()
+		cacheStr = self.layer_id + geoJsonGeometry + (str(mode) if mode is not None else '');
+		cacheKey = sha1(cacheStr.encode()).hexdigest();
 
 		cacheResult = None;
+		pixelsStruct = None;
+		hasCache = False;
+
 		if(self.cache.enable == '1'):
 			cacheResult = self.cache.get(cacheKey)
+			if cacheResult is not None:
+				result = ast.literal_eval(cacheResult);
+				return result;
+			elif mode is not None:
+				altMode = ('series' if mode == 'trend' else ('trend' if mode == 'series' else ''));
 
-		if cacheResult is not None and mode == 'series':
-			result = ast.literal_eval(cacheResult)
-			return result
-		else:
+				altCacheStr = self.layer_id + geoJsonGeometry + altMode;
+				altCacheKey = sha1(altCacheStr.encode()).hexdigest();
+				altCacheResult = self.cache.get(altCacheKey)
 
+				if altCacheResult is not None:
+					hasCache = True;
+					resultCache = ast.literal_eval(altCacheResult);
+					pixelsStruct = self.createPixelStructure([resultCache["values"]]);
+				
+		if not hasCache:
 			dates = self.splitDate()
 			eeResultList = []
-			result = {"series": [], "values": []};
 
 			# Todas as threads usam a mesma queue
 			q = Queue.Queue();
@@ -371,25 +379,23 @@ class EarthEngine(Datasource):
 
 			groupedValues = self.groupValuesByCoord(eeResultList);
 
-			# print("before removing duplicates:" + str(len(groupedValues)))
 			groupedValues = self.dateJulianToGregorian(groupedValues);
 			groupedValues =  self.removeDuplicate(groupedValues);
-			# print("after removing duplicates:" + str(len(groupedValues)))
 
 			pixelsStruct = self.createPixelStructure(groupedValues);
 
-			dates = pixelsStruct["dates"];
-			pixelsOriginal = pixelsStruct["series"][0]["pixels"];
+		dates = pixelsStruct["dates"];
+		pixelsOriginal = pixelsStruct["series"][0]["pixels"];
 
-			if not self.ignore_filter:
-				pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
+		if not self.ignore_filter:
+			pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
 
-			result = self.calculateMean(pixelsStruct["series"]);
+		result = self.calculateMean(pixelsStruct["series"]);
 
-			for i, dtRow in enumerate(result["values"]):
-				dtRow.insert(0, dates[i])
+		for i, dtRow in enumerate(result["values"]):
+			dtRow.insert(0, dates[i])
 
-			if(self.cache.enable == '1'):
-				self.cache.set(cacheKey, result);
+		if(self.cache.enable == '1'):
+			self.cache.set(cacheKey, result);
 
-			return result;
+		return result;
