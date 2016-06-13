@@ -339,8 +339,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     var url = 'time-series/'+ id;
                     var frmInfo = Ext.getCmp('lapig_rasterseries::frm-info');
                     lapigAnalytics.clickTool('Time Series','view-Layer',id);
-                    console.log("tirar o // view-Layer",id);
-                    this.id
                     frmInfo.load({
                       url:url, 
                       method:'GET', 
@@ -547,11 +545,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
       if(instance.chartData[activeTab.index] == undefined){
         if(instance.seriesProperties != undefined){
-          console.log("requestChartData")
           instance.requestChartData(instance.seriesProperties.timeseriesId,
             instance.seriesProperties.longitude, instance.seriesProperties.latitude, instance.seriesProperties.radius);
         }else{
-          console.log("restartChart")
           instance.restartChart();
         }
       }else{
@@ -564,7 +560,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
           startValue, endValue);
         }else{
-          console.log(activeTab)
           instance.drawTrend(instance.chartData[activeTab.index])
         }
       }
@@ -1291,7 +1286,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
   drawTrend : function(trendData){
     var instance = this;
 
-    console.log("drawTrend")
 
     var activeTab = instance.getSeriesActiveTab();
 
@@ -1496,9 +1490,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.setSeriesActiveTabDisabled(true);
 
     groupDataCmb.setValue('NONE_NONE');
-    console.log("interpolationCmb.setValue Nenhum")
     interpolationCmb.setValue('Nenhum');
-    console.log("interpolationCmb.getValue:", interpolationCmb.getValue());
 
     if(instance.chartData == undefined){
       instance.chartData = [];
