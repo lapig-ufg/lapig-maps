@@ -33,8 +33,6 @@ class EarthEngine(Datasource):
 
 		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
-		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
-
 		self.cache = Cache()
 
 	def landsatDate(self, imgId):
@@ -327,11 +325,13 @@ class EarthEngine(Datasource):
 		geometry = ee.Geometry(ast.literal_eval(geoJsonGeometry));
 		timeSeries = ee.ImageCollection(self.collection_id).filterDate(date[0], date[1]).map(calculateIndex).getRegion(geometry, self.pixel_resolution);
 
-		while(True):
+		count = 0;
+		while(count < 4):
 			try:
 				eeResult = timeSeries.getInfo();
 				break;	
 			except ee.ee_exception.EEException:
+				count = count + 1;
 				time.sleep(1)
 
 		# remove the header

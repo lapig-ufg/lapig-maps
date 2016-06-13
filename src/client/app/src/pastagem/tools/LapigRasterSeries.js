@@ -338,7 +338,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     var id = node.attributes.id;
                     var url = 'time-series/'+ id;
                     var frmInfo = Ext.getCmp('lapig_rasterseries::frm-info');
-                    lapigAnalytics.clickTool('Time Series','view-Layer',_id);
+                    lapigAnalytics.clickTool('Time Series','view-Layer',id);
                     console.log("tirar o // view-Layer",id);
                     this.id
                     frmInfo.load({
@@ -746,8 +746,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   listeners: {
                     select: function() {
                       filterChartData();
-                      var TDfilterSoften = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation'); 
-                      lapigAnalytics.clickTool('Time Series','click-filterSoften',TDfilterSoften.lastSelectionText)
+                      var TDfilterSoften = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation').getValue();
+                      lapigAnalytics.clickTool('Time Series','click-filterSoften',TDfilterSoften)
                     }
                   }
                 },

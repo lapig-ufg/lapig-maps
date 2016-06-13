@@ -357,7 +357,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           listeners: {
             click: function() {
               submit();
-              var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+              var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
               lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
             }
           },
@@ -388,6 +388,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 	            select: function(evt, record) {
                 instance._layers.removeAll('city');
                 instance.selectCity = record.data;
+                lapigAnalytics.clickTool('Spatial Intelligence', 'click-cityFilter', instance.selectCity.info);
                 instance.updateGrid();
               }.bind(instance)
 	          },
@@ -407,7 +408,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             hidden: true,
             listeners: {
               click: function() {
-                lapigAnalytics.clickTool('Spatial Intelligence', 'click-Metadata', '')
+                lapigAnalytics.clickTool('Spatial Intelligence', 'click-clearFilter', '')
                 var cities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
                 instance._layers.removeAll('city');
                 cities.setValue('');
@@ -421,7 +422,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             iconCls: 'lapig-icon-csv',
             listeners: {
               click: function() {
-                var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
+                var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
                 lapigAnalytics.clickTool('Spatial Intelligence', 'click-csvDownloads',clickSelectedState);
                 window.open(instance.csvUrl)
               }
@@ -482,8 +483,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
             var attr = node.attributes;
             var parentAttr = node.parentNode.attributes;
 
-            var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-state').getValue();
-            lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.table, attr.info+'-'+clickSelectedState)
+            var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
+            lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.layer, attr.layer+'-'+clickSelectedState)
 
             if(attr.bbox) {
               var bbox = attr.bbox;

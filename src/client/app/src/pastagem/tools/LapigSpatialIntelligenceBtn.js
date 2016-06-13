@@ -13,8 +13,7 @@ lapig.tools.LapigSpatialIntelligenceBtn = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.actionTip,
             icon   : 'theme/app/img/spatial-intelligence.png',
             handler: function() {
-                lapigAnalytics.clickTool('Tools', 'Spatial Intelligence', '');
-                
+                lapigAnalytics.clickTool('Tools', 'Spatial Intelligence', ''); 
                 Ext.getCmp('eastpanel').expand(true);
             },
             scope: this

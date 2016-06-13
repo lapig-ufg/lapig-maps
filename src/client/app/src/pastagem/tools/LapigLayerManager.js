@@ -204,7 +204,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											listeners: {
 												select: function(combo, record, index) {
 													var layerConfig;
-													console.log(record.json.type)
 														if(record.json.type == 'EE'){
 															layerConfig = {
 																source: 'wmts',

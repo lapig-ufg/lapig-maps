@@ -38,6 +38,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.tooltip,
             iconCls: "gxp-icon-lapigprint",
             handler: function() {
+                lapigAnalytics.clickTool('Tools', 'Print', ''); 
                 this.addSelectedPrint();
             },
             scope: this
