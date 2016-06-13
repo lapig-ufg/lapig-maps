@@ -130,6 +130,7 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 if(pressed) {
                     OpenLayers.Element.addClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
                 } else {
+                    lapigAnalytics.clickTool('Tools', 'Feature Info', '');
                     OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
                     OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigLoading");
                 }

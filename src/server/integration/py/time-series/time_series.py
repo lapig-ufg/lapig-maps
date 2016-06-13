@@ -45,6 +45,7 @@ def trend(layerId, startYear, endYear, interpolation, groupData, timeChange, tim
 	if interpolationPos != -1:
 		values = utils.oneArray(timeserieData["values"], interpolationPos)
 		series.append({'id':timeserieData["series"][interpolationIndex]["id"], 'label': timeserieData["series"][interpolationIndex]["label"], 'position': 2, 'type': 'filter'})
+
 	else:
 		series.append({'id':'original', 'label':'Valores Originais', 'position':2, 'type':'original'})
 

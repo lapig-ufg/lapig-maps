@@ -48,6 +48,8 @@ module.exports = function(app) {
 
 		fs.writeFileSync(config.path_logfile, cmdParams + '\n', { flag: 'a' });
 
+		console.log(config['path_mapserv'], '-nh', cmdParams);
+
 		var mapserv = spawn(config['path_mapserv'], ['-nh', cmdParams ]);
 		var grep = spawn('grep', ['-a', '-v', '^Content-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*:']);
 		var sed = spawn('sed', ['1,1d']);

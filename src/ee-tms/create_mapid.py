@@ -9,7 +9,6 @@ EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
 
 ee.Initialize(EE_CREDENTIALS)
 
-
 def setCoordinates(rectangle):
 	rct = [];
 	for i in rectangle.split(',',3):

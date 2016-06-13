@@ -160,6 +160,27 @@ div.olControlMousePosition {
 .x-form-cb-label {
     font-size: 12px;
 }
+
+.spatial-intelligence-geomap {
+    background-image: url(img/spatial-intelligence-geomap.png) !important;
+}
+
+.spatial-intelligence-nomap {
+    background-image: url(img/spatial-intelligence-nomap.png) !important;
+}
+
+.spatial-intelligence-geosection {
+    background-image: url(img/spatial-intelligence-geosection.png) !important;
+}
+
+.spatial-intelligence-nogeosection {
+    background-image: url(img/spatial-intelligence-nogeosection.png) !important;
+}
+
+.spatial-intelligence-clear-filter {
+    background-image: url(img/spatial-intelligence-clear-filter.png) !important;
+}
+
 /*
 .lapig-login{
     width: '15%',
