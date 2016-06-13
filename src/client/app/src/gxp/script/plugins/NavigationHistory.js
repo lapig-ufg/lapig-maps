@@ -66,19 +66,22 @@ gxp.plugins.NavigationHistory = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
         var historyControl = new OpenLayers.Control.NavigationHistory();
         this.target.mapPanel.map.addControl(historyControl);
-        var actions = [new GeoExt.Action({
-            menuText: this.previousMenuText,
-            iconCls: "gxp-icon-zoom-previous",
-            tooltip: this.previousTooltip,
-            disabled: true,
-            control: historyControl.previous
-        }), new GeoExt.Action({
-            menuText: this.nextMenuText,
-            iconCls: "gxp-icon-zoom-next",
-            tooltip: this.nextTooltip,
-            disabled: true,
-            control: historyControl.next
-        })];
+        var actions = [
+            new GeoExt.Action({
+                menuText: this.nextMenuText,
+                iconCls: "gxp-icon-zoom-next",
+                tooltip: this.nextTooltip,
+                disabled: true,
+                control: historyControl.next
+            }),
+            new GeoExt.Action({
+                menuText: this.previousMenuText,
+                iconCls: "gxp-icon-zoom-previous",
+                tooltip: this.previousTooltip,
+                disabled: true,
+                control: historyControl.previous
+            })
+        ];
         return gxp.plugins.NavigationHistory.superclass.addActions.apply(this, [actions]);
     }
         

@@ -37,6 +37,7 @@ gxp.plugins.LapigDownloadAll = Ext.extend(gxp.plugins.Tool, {
             disabled: true,
             tooltip: this.actionTip,
             handler: function() {
+                lapigAnalytics.clickTool('Tools', 'Download Multiple Layers', '')
                 this.removeOutput();
                 this.addOutput(selectedLayer);
             },
@@ -79,6 +80,8 @@ gxp.plugins.LapigDownloadAll = Ext.extend(gxp.plugins.Tool, {
            success: function(response) {
             var responseJson = JSON.parse(response.responseText);
             
+            lapigAnalytics.clickTool('Download Multiple Layer','request-download', id);
+
             if(responseJson.result) {
                 var msg = 'Enviamos um email para ' + email + ' contendo<br> instruções para download.';
                 var icon = 'ext-mb-info';

@@ -13,7 +13,7 @@
 /** api: (extends)
  *  plugins/Tool.js
  */
-Ext.namespace("gxp.plugins");
+Ext.namespace("lapig.tools");
 
 /** api: constructor
  *  .. class:: LapigRasterSeriesBtn(config)
@@ -21,7 +21,7 @@ Ext.namespace("gxp.plugins");
  *    Plugin for removing a selected layer from the map.
  *    TODO Make this plural - selected layers
  */
-gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
+lapig.tools.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_LapigRasterSeriesBtn */
     ptype: "gxp_lapigrasterseriesbtn",
@@ -41,11 +41,13 @@ gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-        var actions = gxp.plugins.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
-            menuText: this.MenuText,
+        var actions = lapig.tools.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
+            text: this.MenuText,
             tooltip: this.Tooltip,
             icon   : 'theme/app/img/chart_xy.png',
             handler: function() {
+                
+                lapigAnalytics.clickTool('Tools','Time Series','');
                 Ext.getCmp('southpanel').expand(true);
                 Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
             },
@@ -59,4 +61,4 @@ gxp.plugins.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
         
 });
 
-Ext.preg(gxp.plugins.LapigRasterSeriesBtn.prototype.ptype, gxp.plugins.LapigRasterSeriesBtn);
+Ext.preg(lapig.tools.LapigRasterSeriesBtn.prototype.ptype, lapig.tools.LapigRasterSeriesBtn);

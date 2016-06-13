@@ -1,6 +1,7 @@
 import os
 from subprocess import Popen, PIPE, STDOUT
 from _datasource import Datasource
+import re
 
 class Gdal(Datasource):
 
@@ -55,6 +56,8 @@ class Gdal(Datasource):
 
 		result = []
 
+		longitude, latitude = re.findall("[-+]?\d+[\.]?\d*", geoJsonGeometry);
+
 		if('month' == self.temporal_resolution_type):
 			date = self.localDateByMonth()
 		else:		
@@ -74,4 +77,15 @@ class Gdal(Datasource):
 			count.append(float(i))
 			result.append(count)
 
-		return result
+		finalResult = {
+			"series": [
+				{
+					"position": 1,
+					"id": "original",
+					"label": "Valores originais"
+				}
+			],
+			"values": result
+		}
+
+		return finalResult

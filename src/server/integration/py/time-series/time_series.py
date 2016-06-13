@@ -35,17 +35,19 @@ def trend(layerId, startYear, endYear, interpolation, groupData, timeChange, tim
 	bfastIndex = utils.findIndexByAttribute(filters, 'id', 'Bfast')
 	
 	# O filtro já foi calculado na datasource
+	interpolation = interpolation if interpolation != "original" else 'STRING_NOT_FOUND';
 	interpolationIndex, interpolationPos = next(((i, item['position']) for i, item in enumerate(timeserieData["series"]) if item['id'] == interpolation), (-1, -1))
 
 	#Inicializa preparação do objeto de resposta
-	series = [{'id':'Bfast', 'label':'BFAST', 'position':1}]
+	series = [{'id':'Bfast', 'label':'BFAST', 'position':1, 'type':'trend'}]
 
 	#Se há filtro selecionado, executa e adiciona ao objeto de resposta
 	if interpolationPos != -1:
 		values = utils.oneArray(timeserieData["values"], interpolationPos)
-		series.append({'id':timeserieData["series"][interpolationIndex]["id"], 'label': timeserieData["series"][interpolationIndex]["label"], 'position': 2})
+		series.append({'id':timeserieData["series"][interpolationIndex]["id"], 'label': timeserieData["series"][interpolationIndex]["label"], 'position': 2, 'type': 'filter'})
+
 	else:
-		series.append({'id':'original', 'label':'Valores Originais', 'position':2})
+		series.append({'id':'original', 'label':'Valores Originais', 'position':2, 'type':'original'})
 
 	#Agrupa os valores
 	groupedData = bfast_utils.groupData(dates, values, groupData)
@@ -77,6 +79,7 @@ result = [];
 
 # for i in xrange(len(argv)):
 # 	print("argv["+str(i)+"]: " + argv[i])
+
 
 if argv[1] == 'TS':
 	result = time_series(argv[2], argv[3], argv[4]);

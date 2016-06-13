@@ -35,6 +35,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
             disabled: true,
             tooltip: this.tooltip,
             handler: function() {
+                lapigAnalytics.clickTool('Tools', 'Download Layer', '');
                 this.removeOutput();
                 this.addOutput(selectedLayer);
             },
@@ -83,6 +84,8 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
             ];
 
         }
+
+        lapigAnalytics.clickTool('Download Layer','request-download',layerName);
 
         if(params.length > 0) {
             if(metadata){

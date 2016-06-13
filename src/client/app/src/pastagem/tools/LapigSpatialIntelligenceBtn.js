@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2008-2011 The Open Planning Project
- * 
- * Published under the GPL license.
- * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
- * of the license.
- */
-
-/**
- * @requires plugins/Tool.js
- */
-
 Ext.namespace("lapig.tools");
 
 lapig.tools.LapigSpatialIntelligenceBtn = Ext.extend(gxp.plugins.Tool, {
@@ -21,10 +9,11 @@ lapig.tools.LapigSpatialIntelligenceBtn = Ext.extend(gxp.plugins.Tool, {
 
     addActions: function() {
         var actions = lapig.tools.LapigSpatialIntelligenceBtn.superclass.addActions.apply(this, [{
-            menuText: this.menuText,
+            text: this.menuText,
             tooltip: this.actionTip,
             icon   : 'theme/app/img/spatial-intelligence.png',
             handler: function() {
+                lapigAnalytics.clickTool('Tools', 'Spatial Intelligence', ''); 
                 Ext.getCmp('eastpanel').expand(true);
             },
             scope: this

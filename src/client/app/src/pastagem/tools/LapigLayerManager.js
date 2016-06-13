@@ -60,7 +60,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					attr.allowDrop = false;
 
 					layerRecord = this.target.mapPanel.layers.getByLayer(attr.layer);
-					console.log(layerRecord)
 					layerId = layerRecord.json._id;
 					layerLastDate = layerRecord.json.last_date;
 					var url = '/layers/years/'+layerId;
@@ -205,7 +204,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											listeners: {
 												select: function(combo, record, index) {
 													var layerConfig;
-													console.log(record.json.type)
 														if(record.json.type == 'EE'){
 															layerConfig = {
 																source: 'wmts',
