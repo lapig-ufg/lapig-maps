@@ -41,7 +41,7 @@ app.middleware.repository.init(function() {
 	app.use(express.static(app.config.clientDir));
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
-	
+
 	var publicDir = path.join(__dirname, '');
 
 	app.use(requestTimeout({
@@ -78,4 +78,4 @@ app.middleware.repository.init(function() {
 
 process.on('uncaughtException', function (err) {
 	console.error(err.stack);
-}); 
+});
