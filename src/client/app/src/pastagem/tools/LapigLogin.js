@@ -287,7 +287,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                             listeners: {
                                 click:  function(n) {
-                                    lapigAnalytics.clickTool('Login', 'click-Login', '')
+                                    lapigAnalytics.clickTool("Login", "click-Login", "")
                                     var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
