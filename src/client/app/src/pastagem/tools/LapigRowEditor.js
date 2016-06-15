@@ -117,6 +117,7 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
         }
       }
     }
+    var keep = false;
     if(hasChange && this.fireEvent('validateedit', this, changes, r, this.rowIndex) !== false){
       r.beginEdit();
       Ext.iterate(changes, function(name, value){
@@ -126,8 +127,10 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
       this.fireEvent('afteredit', this, changes, r, this.rowIndex);
     } else {
       this.fireEvent('canceledit', this, false, this.rowIndex);
+      keep = true;
     }
-    this.hide();
+
+    if(!keep) this.hide();
   },
 
   positionButtons: function(){
@@ -221,6 +224,53 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
       } else {
         return false;
       }
+    }
+  },
+
+  showTooltip: function(ttl, msg){
+      var t = this.tooltip;
+      msg = !msg ? ttl:msg;
+      ttl = msg==ttl ? this.errorText:ttl;
+      if(!t){
+          t = this.tooltip = new Ext.ToolTip({
+              maxWidth: 600,
+              cls: 'errorTip',
+              width: 300,
+              title: ttl,
+              autoHide: false,
+              anchor: 'left',
+              anchorToTarget: true,
+              mouseOffset: [40,0]
+          });
+      }
+      var v = this.grid.getView(),
+          top = parseInt(this.el.dom.style.top, 10),
+          scroll = v.scroller.dom.scrollTop,
+          h = this.el.getHeight();
+
+      if(top + h >= scroll){
+          t.initTarget(this.lastVisibleColumn().getEl());
+          if(!t.rendered){
+              t.show();
+              t.hide();
+          }
+
+          if(!t.isVisible()){
+            t.body.update(msg);
+            t.setTitle(ttl);
+            t.doAutoWidth(20);
+            t.show();              
+          }
+      }else if(t.rendered){
+          t.hide();
+      }
+  },
+
+  hideTooltip: function () {
+    var t = this.tooltip;
+
+    if(t && t.rendered && t.isVisible()){
+      t.hide();
     }
   }
 

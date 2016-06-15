@@ -229,6 +229,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				});
 			}
 		},
+
 		removeCommasPoint: function (name, lon, lat) {
 			var instance = this;
 
@@ -485,20 +486,26 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		getGrid: function() {
 				var instance = this;
 
-				var Coordinate = Ext.data.Record.create([{
-					name: 'name',
-					type: 'string'
-				},{
-					name: 'longitude',
-					type: 'float'
-				},{
-					name: 'latitude',
-					type: 'float'
-				}]);
+				var Coordinate = Ext.data.Record.create([
+					{
+						name: 'name',
+						type: 'string'
+					},
+					{
+						name: 'longitude',
+						type: 'float'
+					},
+					{
+						name: 'latitude',
+						type: 'float'
+					}
+				]);
 
 				rowEditor = new gxp.plugins.LapigRowEditor({
 					saveText: i18n.LAPIGCOORDINATES_BTNLBL_SAVE,
 					cancelText: i18n.LAPIGCOORDINATES_BTNLBL_CANCEL,
+					commitChangesText: i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG,
+    			errorText: i18n.LAPIGCOORDINATES_ALERT_ERRTLT,
 				});
 
 				var grid = new Ext.grid.GridPanel({
@@ -609,6 +616,13 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 										decimalPrecision: 4,
 										decimalSeparator: ".",
                 		allowBlank: false,
+                		minValue: -180,
+                		maxValue: 180,
+                		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
+                		// validationEvent: false,
+                		bubbleEvents: ["invalid", "valid"]
 									}
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LAT,
@@ -621,6 +635,13 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 										decimalPrecision: 4,
 										decimalSeparator: ".",
                 		allowBlank: false,
+                		minValue: -90,
+                		maxValue: 90,
+                		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
+                		// validationEvent: false,
+                		bubbleEvents: ["invalid", "valid"]
 									}
 							}
 						],
@@ -640,7 +661,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
 
 								instance.map.setCenter(lonLat, 15);
-
 							},
 
 							'canceledit': function(rowEditor, forced, rowIndex) {
@@ -662,12 +682,14 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							},
 
 							'validateedit': function(rowEditor, changes, rec, rowIndex) {
-								// if (!isNaN(parseFloat(rec.get("longitude") + rec.get("latitude")))) {
-								// 	return true;
-								// } else {
-								// 	return false;
-								// }
-								return true
+								/*var lon = parseFloat(changes.longitude);
+								var lat = parseFloat(changes.latitude);
+
+								if(lat > 90 || lat < -91 || lon > 180 || lon < -180){
+									Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, "Coordenadas inválidas");
+									return false;
+								}
+								else*/ return true;
 							},
 
 							'afteredit': function(rowEditor, changes, rec, rowIndex) {
@@ -686,6 +708,20 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									instance.store.commitChanges();
 									grid.getSelectionModel().selectRow(rowIndex);
 								});
+							},
+
+							invalid: function(field, msg){
+								if (msg.indexOf(i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE) != -1) {
+									console.log(field)
+									rowEditor.showTooltip(i18n.LAPIGCOORDINATES_ALERT_ERRTLT,
+									 i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE+' '+
+									 i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG_ALLOWVAL+' ' + field.minValue +
+									 " "+i18n.LAPIGRASTERSERIES_FIELDLBLCB_A+' '+field.maxValue)
+								}
+							},
+
+							valid: function(field) {
+								rowEditor.hideTooltip()
 							}
 						}
 				});

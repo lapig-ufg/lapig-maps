@@ -23,8 +23,8 @@ module.exports = function(app) {
 		for (var i = 0; i < numPoints; i++) {
 
 		    // calc x/y
-		    lon = radiusDegrees * Math.cos(2*Math.PI*i/numPoints + theta) + parseInt(longitude);
-		    lat = radiusDegrees * Math.sin(2*Math.PI*i/numPoints + theta) + parseInt(latitude);
+		    lon = radiusDegrees * Math.cos(2*Math.PI*i/numPoints + theta) + parseFloat(longitude);
+		    lat = radiusDegrees * Math.sin(2*Math.PI*i/numPoints + theta) + parseFloat(latitude);
 
 		    coords[i] = [lon, lat];
 		}
