@@ -244,7 +244,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						            listeners: {
 						            	'click': btnNextPrevDate
 						            }
-						        },
+						        }
 						    ]
 						};
 

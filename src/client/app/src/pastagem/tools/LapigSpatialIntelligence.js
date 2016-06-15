@@ -45,11 +45,11 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       border: false,
       flex:1,
       style:{
-        'margin-top':'10px',
+        'margin-top':'10px'
       },
       items: [
         this.getOptionsCmp(),
-        this.getGridCmp(),
+        this.getGridCmp()
       ]
     };
   },
@@ -355,7 +355,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
               lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
             }
-          },
+          }
         }
       ]
     }
@@ -434,14 +434,14 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           {
             header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_INFO,
             dataIndex: 'info',
-            width: 220,
+            width: 220
           },
           {
             header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_VALUE,
             width: 100,
             dataIndex: 'value',
-            align: 'right',
-          },
+            align: 'right'
+          }
         ],
         autoScroll:true,
         stripeRows: true,
@@ -521,9 +521,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           }
         }
     };
-
-  },
-
+  }
 });
 
 Ext.preg(lapig.tools.SpatialIntelligence.prototype.ptype, lapig.tools.SpatialIntelligence);

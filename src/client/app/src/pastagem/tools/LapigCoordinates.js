@@ -217,7 +217,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					method: 'DELETE',
 					params:{
 						longitude: lon,
-						latitude: lat,
+						latitude: lat
 					},
 					success: function (response) {
 						res = JSON.parse(response.responseText);
@@ -505,7 +505,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					saveText: i18n.LAPIGCOORDINATES_BTNLBL_SAVE,
 					cancelText: i18n.LAPIGCOORDINATES_BTNLBL_CANCEL,
 					commitChangesText: i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG,
-    			errorText: i18n.LAPIGCOORDINATES_ALERT_ERRTLT,
+    			errorText: i18n.LAPIGCOORDINATES_ALERT_ERRTLT
 				});
 
 				var grid = new Ext.grid.GridPanel({
@@ -538,7 +538,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									}
 
 									var p = new Coordinate({
-                    name: i18n.LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD,
+                    name: i18n.LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD
 	                });
 	                rowEditor.stopEditing();
 	                instance.store.insert(0, p);
@@ -592,7 +592,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 	                var row = grid.getSelectionModel().getSelected();
 	                rowEditor.startEditing(row);
 								}
-							},
+							}
 						],
 						columns: [
 							{

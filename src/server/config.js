@@ -8,7 +8,7 @@ module.exports = function(app) {
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
 		"spatialIntelligenceDb": "/home/leandro/Projetos/Github/lapig-maps/src/ows/data_dir/catalog/Ocultos/spatial-intelligence.sqlite",
 		"hostUrl": 'http://localhost:5000',
-		"ows": "http://localhost:5500",
+		"ows": "http://maps.lapig.iesa.ufg.br/",
 		"tms": "http://localhost:5555",
 		"clientDir": appRoot + "/../client/build",
 		"langDir": appRoot + "/lang",

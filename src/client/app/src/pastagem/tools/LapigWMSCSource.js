@@ -118,7 +118,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
             
             // data for the new record
             var data = Ext.applyIf({
-                abstract: config.description || config.oldDescription,
+                "abstract": config.description || config.oldDescription,
                 title: config.oldName,
                 group: config.group,
                 infoFormat: config.infoFormat,

@@ -443,7 +443,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                     'beforeclose': function() {
                         this.hide();
                         return false;
-                      },
+                      }
                 },
                 items: [search, layers, info]
             });
