@@ -596,7 +596,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						],
 						columns: [
 							{
-								id: 'name',
+								id: 'coordinate_name',
 								header: i18n.LAPIGCOORDINATES_TTLCOL_NAME,
 								width: 160,
 								sortable: true,
@@ -646,7 +646,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 							}
 						],
 						stripeRows: true,
-						autoExpandColumn: 'name',
+						autoExpandColumn: 'coordinate_name',
 						autoHeight: true, //!!!
 						autoWidth : true, //!!!
 						listeners: {

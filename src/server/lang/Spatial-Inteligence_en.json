@@ -1,40 +1,91 @@
 {
-	"subjects": {
-		"Agricultura": "Agriculture",
-		"Pecuária": "Livestock"
-	},
-	"layers": {
-		"agriculture_crop": {
-			"title": "Occupation by annual agriculture",
-			"metadata": "Data generated and organized by Agrosatélite."
+	"fields": {
+		"AGR_AREAHA": {
+			"title": "Annual Crop (2014)"
 		},
-		"agriculture_forest": {
-			"title": "Occupation by planted forest",
-			"metadata": "Data organized by Agrosatélite."
+		"ALG_PROD": {
+			"title": "Cotton - Production (2014)"
 		},
-		"agriculture_sugar_cane": {
-			"title": "Occupation by cane sugar",
-			"metadata": "Data generated and organized by Agrosatélite as part of Canasat project"
+		"ALG_RENMED": {
+			"title": "Cotton - Average Income (2014)"
 		},
-		"livestock_burned_2014": {
-			"title": "Burned area (2014)",
-			"metadata": "Data produced by LAPIG / UFG from MODIS (MCD45A1)."
+		"PPE_AREAHA": {
+			"title": "Permanent Protection Area - INCRA"
 		},
-		"livestock_deforestation_2014": {
-			"title": "Deforested area (2014)",
-			"metadata": "Data organized by LAPIG / UFG adding DETER information (in real time deforestation detection) for the Amazon biome and SIAD (Integrated deforestation alert) for the Cerrado biome."
+		"RLG_AREAHA": {
+			"title": "Legal Reserve Area- INCRA"
 		},
-		"livestock_grasslands": {
-			"title": "Pasture areas",
-			"metadata": "Map of the pasture areas  organized by LAPIG / UFG, from compiling TerraClass Amazon data; FUNCATE; PROBIO; Canasat and TNC."
+		"ASS_AREAHA": {
+			"title": "Rural Settlements - INCRA"
 		},
-		"livestock_cattle_heads_2013": {
-			"title": "Cattle Herd (2013)",
-			"metadata": "Data acquired from the research of Municipal Livestock conducted by IBGE."
+		"BFU_AREAHA": {
+			"title": "Land Basis - INCRA"
 		},
-		"livestock_slaughterhouse": {
-			"title": "Refrigerated warehouse / Slaughterhouses",
-			"metadata": "Data from the Ministry of Agriculture and geocoded from the supplied address."
+		"BOV_ABAT": {
+			"title": "Cattle - Slaughtered (2006)"
+		},
+		"BOV_QTDE": {
+			"title": "Cattle - Herd (2014)"
+		},
+		"CAN_PROD": {
+			"title": "Sugar Cane - Production (2014)"
+		},
+		"CAN_RENMED": {
+			"title": "Sugar Cane - Average Income (2014)"
+		},
+		"COM_TRADIC": {
+			"title": "Traditional Communities (Fund. Palmares)"
+		},
+		"CON_TERRA": {
+			"title": "Land Conflicts - Registered (2014)"
+		},
+		"CON_TERPES": {
+			"title": "Land Conflicts - People Involved (2014)"
+		},
+		"DES_AREAHA": {
+			"title": "Deforestation (Most recent)"
+		},
+		"FIG_QTD": {
+			"title": "Slaughterhouses"
+		},
+		"FOR_AREAHA": {
+			"title": "Planted Forest"
+		},
+		"LEI_LITROS": {
+			"title": "Milk - Production (2006)"
+		},
+		"MIL_PROD": {
+			"title": "Corn - Production (2014)"
+		},
+		"MIL_RENMED": {
+			"title": "Corn - Average Income (2014)"
+		},
+		"PIV_AREAHA": {
+			"title": "Central Pivots"
+		},
+		"QUI_AREAHA": {
+			"title": "Maroons - INCRA"
+		},
+		"PAS_AREAHA": {
+			"title": "Pastures"
+		},
+		"SIL_CAPTON": {
+			"title": "Silos - Max Capacity"
+		},
+		"SOJ_PROD": {
+			"title": "Soy - Production (2014)"
+		},
+		"SOJ_RENMED": {
+			"title": "Soy - Average Income (2014)"
+		},
+		"TRB_ESCRAV": {
+			"title": "Slave Work - People"
+		},
+		"PSU_AREAHA": {
+			"title": "U.C. - Sustainable Use"
+		},
+		"PIN_AREAHA": {
+			"title": "U.C. - Full Protection"
 		}
 	}
 }

@@ -342,8 +342,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     var url = 'time-series/'+ id;
                     var frmInfo = Ext.getCmp('lapig_rasterseries::frm-info');
                     lapigAnalytics.clickTool('Time Series','view-Layer',id);
-                    console.log("tirar o // view-Layer",id);
-                    this.id
                     frmInfo.load({
                       url:url, 
                       method:'GET', 
@@ -1574,7 +1572,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           startValueCmb.setValue(startValue);
         }
 
-        instance.seriesProperties = {timeseriesId, longitude, latitude, startYear, endYear, startValue, endValue, radius};
+        instance.seriesProperties = {
+            timeseriesId : timeseriesId,
+            longitude : longitude,
+            latitude : latitude,
+            startYear : startYear,
+            endYear : endYear,
+            startValue : startValue,
+            endValue : endValue,
+            radius: radius
+        };
 
         instance.populateChart(startYear, endYear, startValue, endValue);
 

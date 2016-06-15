@@ -66,9 +66,9 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
         relativeUploadOnly: true,
 
-        startSourceId: null,
+        startSourceId: undefined,
         
-        selectedSource: null,
+        selectedSource: undefined,
 
         constructor: function(config) {
                 this.addEvents(

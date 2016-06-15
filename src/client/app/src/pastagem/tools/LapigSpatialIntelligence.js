@@ -1,11 +1,5 @@
 /**
  * @requires plugins/Tool.js
- * @requires OpenLayers/Layer/Markers.js
- * @requires OpenLayers/Icon.js
- * @requires OpenLayers/Marker.js
- * @requires OpenLayers/Control/DrawFeature.js
- * @requires OpenLayers/Control/DrawFeature.js
- * @require tools/LapigCoordinates.js
  */
 
 Ext.namespace("lapig.tools");
@@ -299,7 +293,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           listeners: {
             select: checkSubmitBtn
           },
-          store:  new Ext.data.ArrayStore({
+          store:  {
+            xtype: "arraystore",
             fields: [
               {name: 'id'}, 
               {name: 'label'},
@@ -346,7 +341,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               ['SP', 'São Paulo', '-53.10935612642795,-25.31182903176157,-44.16051713806287,-19.77919383235752', 'state'],
               ['TO', 'Tocantins', '-50.74160818574438,-13.46727761938996,-45.69711366617483,-5.167998438250915', 'state']
             ]
-          })
+          }
         }
       ],
       buttons: [
