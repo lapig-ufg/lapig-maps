@@ -1037,7 +1037,18 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   disabled: true,
                   width: 60,
                   maxLength: 5,
-                  value: 1
+                  value: 1,
+                  listeners:{
+                    invalid: function (field, msg) {
+                      var refreshBtnCmp = Ext.getCmp('lapig-raster-series-tab-trend-btn-refresh');
+                      refreshBtnCmp.setDisabled(true);
+                    },
+
+                    valid: function (field, msg) {
+                      var refreshBtnCmp = Ext.getCmp('lapig-raster-series-tab-trend-btn-refresh');
+                      refreshBtnCmp.setDisabled(false);
+                    }
+                  }
                 },
                 '  ',
                 {
