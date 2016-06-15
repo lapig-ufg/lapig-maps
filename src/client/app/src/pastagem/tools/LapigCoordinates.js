@@ -621,7 +621,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
                 		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
                 		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
                 		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
-                		// validationEvent: false,
                 		bubbleEvents: ["invalid", "valid"]
 									}
 							}, {
@@ -640,7 +639,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
                 		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
                 		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
                 		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
-                		// validationEvent: false,
                 		bubbleEvents: ["invalid", "valid"]
 									}
 							}
