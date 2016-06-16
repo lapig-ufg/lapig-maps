@@ -1688,7 +1688,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         height: 'auto',
         disabled: true,
       },
-      '->',
+      {xtype: "tbfill"},
       {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
@@ -1728,10 +1728,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var radius = undefined;
             if (useRadius == true) {
               radius = Ext.getCmp('lapig-coordinates-cmb-radius').getValue();
+              //Olha esse if aqui Rhuan. Vê se assim resolve - Guilherme, O generoso
+              // lapigAnalytics.clickTool('Time Series','value-Radius', (radius == undefined) ? 0:radius);
             }
 
             /*if((useRadius == 250) || (useRadius == 500) || (useRadius == 750)){
-                //lapigAnalytics.clickTool('Time Series','value-Radius',valueRadius.lastSelectionText);
                 console.log("tirar o // value-Radius",valueRadius.lastSelectionText);
             } else {
               //lapigAnalytics.clickTool('Time Series','value-Radius','0');

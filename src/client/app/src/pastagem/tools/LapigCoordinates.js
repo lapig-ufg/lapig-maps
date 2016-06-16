@@ -70,15 +70,20 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 		addOutput: function(buttons) {
 			var instance = this;
-			
-			if (instance.CoordWindow == undefined){
-				instance.CoordWindow = instance.getWindow(buttons);
-				instance.CoordWindow.on('close', function() {
-					instance.CoordWindow = undefined;
+
+			if (instance.coordWindow == undefined){
+				instance.coordWindow = instance.getWindow(buttons);
+				instance.coordWindow.on('close', function() {
+					instance.coordWindow = undefined;
 				});
-				instance.CoordWindow.show();
-			} else if(!instance.CoordWindow.isVisible()){
-				instance.CoordWindow.show();
+			} else if(buttons != undefined){
+				instance.coordWindow.getFooterToolbar().removeAll(true);
+				instance.coordWindow.getFooterToolbar().addButton(buttons);
+				instance.coordWindow.getFooterToolbar().doLayout();
+			}
+
+			if(!instance.coordWindow.isVisible()){
+				instance.coordWindow.show();
 			}
 		},
 
@@ -792,28 +797,30 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var x = screenSize.width - width - (screenSize.width*0.05);
 			var y = screenSize.height/2 - height/2;
 
-				return new Ext.Window({
-						id: 'lapig-coordinates-window',
-						title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
-						width: width,
-						height: height,
-						layout: 'fit',
-						plain: true,
-						x: x,
-						y: y,
-						items: [
-								instance.getWindowContent()
-						],
-						bodyStyle: 'padding:0px;',
-						listeners: {
-								close: function() {
-									OpenLayers.Element.removeClass(instance.map.viewPortDiv, "olControlLapigCoordinates");
-									instance.map.events.unregister("click", instance, instance.mapClickFn);
-								}
-						},
-						buttonAlign: 'left',
-						fbar: buttons
-				});
+			var fbar = buttons==undefined ? new Ext.Toolbar([]) : buttons;
+
+			return new Ext.Window({
+				id: 'lapig-coordinates-window',
+				title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
+				width: width,
+				height: height,
+				layout: 'fit',
+				plain: true,
+				x: x,
+				y: y,
+				items: [
+					instance.getWindowContent()
+				],
+				bodyStyle: 'padding:0px;',
+				listeners: {
+					close: function() {
+						OpenLayers.Element.removeClass(instance.map.viewPortDiv, "olControlLapigCoordinates");
+						instance.map.events.unregister("click", instance, instance.mapClickFn);
+					}
+				},
+				buttonAlign: 'left',
+				fbar: fbar
+			});
 		}
 });
 
