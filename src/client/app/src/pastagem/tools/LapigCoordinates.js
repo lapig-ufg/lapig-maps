@@ -684,17 +684,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								}
 							},
 
-							'validateedit': function(rowEditor, changes, rec, rowIndex) {
-								/*var lon = parseFloat(changes.longitude);
-								var lat = parseFloat(changes.latitude);
-
-								if(lat > 90 || lat < -91 || lon > 180 || lon < -180){
-									Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, "Coordenadas inválidas");
-									return false;
-								}
-								else*/ return true;
-							},
-
 							'afteredit': function(rowEditor, changes, rec, rowIndex) {
 								grid.newRecord = -1;
 								var name = rec.get('name'), lon = rec.get('longitude'), lat = rec.get('latitude');
@@ -715,7 +704,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 							invalid: function(field, msg){
 								if (msg.indexOf(i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE) != -1) {
-									console.log(field)
 									rowEditor.showTooltip(i18n.LAPIGCOORDINATES_ALERT_ERRTLT,
 									 i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE+' '+
 									 i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG_ALLOWVAL+' ' + field.minValue +
