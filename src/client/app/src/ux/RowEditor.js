@@ -468,9 +468,9 @@ Ext.ux.grid.RowEditor = Ext.extend(Ext.Panel, {
             return false; // stops binding
         }
         var valid = this.isValid();
-        if(!valid && this.errorSummary){
+       /* if(!valid && this.errorSummary){
             //this.showTooltip(this.getErrorText().join(''));
-        }
+        }*/
         this.btns.saveBtn.setDisabled(!valid);
         this.fireEvent('validation', this, valid);
     },

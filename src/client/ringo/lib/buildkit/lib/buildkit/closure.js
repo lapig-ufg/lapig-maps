@@ -1,6 +1,7 @@
 /**
  * @fileoverview <p>This module provides access to the Google Closure Compiler.
  */
+var fs = require('fs');
 var jar = module.resolve("../../jars/compiler.jar");
 addToClasspath(jar);
 
@@ -99,6 +100,17 @@ var Compiler = exports.Compiler = function(config) {
         var externs = ImmutableList.of(
             jscomp.JSSourceFile.fromCode("externs.js", config.externs || "")
         );
+
+        var textStream = fs.open('input.js', {
+            write: true,
+            binary: false
+        });
+        try {
+            textStream.write(config.code);
+            textStream.flush();
+        } finally {
+            textStream.close();
+        }
 
         // TODO: accept list of input files
         var inputs = ImmutableList.of(
