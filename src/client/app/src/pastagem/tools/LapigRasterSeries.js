@@ -287,7 +287,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     chart.setSeriesStyles(instance.getChartSeries(chartData.length));
     chart.store.loadData(chartData);
   },
-
+  
   initWdwInfo: function() {
     var instance = this;
 
@@ -505,6 +505,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   var urlSource = 'theme/app/img/sources/' + actionLayer.result.data.source + '.png';
                   fieldSource.update('<img src = '+urlSource+'>');
                   formTimeSeries.enable();
+
                 }
               }
             },
@@ -513,7 +514,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       ]
     });
   },
-
+  
   getCenterCmp: function (){
     var instance = this;
 
@@ -1622,7 +1623,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         id: 'lapig-coordinates-chk-use-radius',
         width: 'auto',
         disabled: true,
-        enableOnSelect: (source != 'lapig') ? true : false,
+        enableOnSelect: true/*(source == 'lapig') ? true : false,*/,
         listeners:{
           check: function(checkbox, checked) {
             Ext.getCmp('lapig-coordinates-cmb-radius').setDisabled(!checked);

@@ -71,6 +71,8 @@ module.exports = function(app) {
 
 	   	stdout=stdout.replace(/\'/g, '"');
 
+	   	console.log(stdout);
+
 	   	var result = JSON.parse(stdout);
 	   	
 	   	callback(result);

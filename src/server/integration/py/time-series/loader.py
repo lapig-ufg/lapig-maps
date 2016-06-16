@@ -14,6 +14,7 @@ CONF_FILES = {
 }
 
 sectionPrefix = '';
+
 if os.environ['PYTHON_ENV'] != '' and os.environ['PYTHON_ENV'] != 'dev':
 	sectionPrefix = os.environ['PYTHON_ENV'] + ':';
 
