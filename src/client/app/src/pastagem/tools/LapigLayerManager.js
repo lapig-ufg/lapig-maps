@@ -109,10 +109,10 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										{
 												xtype: "gx_wmslegend",
 												baseParams: {
-														format: "image/png",
+														format: "image/png"
 												},
 												layerRecord: this.target.mapPanel.layers.getByLayer(attr.layer),
-												showTitle: false,
+												showTitle: false
 										}
 					        ]
 								}
@@ -126,7 +126,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
 								{name: 'name', mapping: 'name'},
 								{name: 'year', mapping: 'year'},
-								{name: 'last_date', mapping: 'last_date'},    
+								{name: 'last_date', mapping: 'last_date'}   
 							])
 						});
 
@@ -244,7 +244,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						            listeners: {
 						            	'click': btnNextPrevDate
 						            }
-						        },
+						        }
 						    ]
 						};
 

@@ -8,6 +8,8 @@ src/client/build/*
 src/server/integration/py/time-series/image-db
 src/ows/data_dir/catalog
 src/server/integration/py/time-series/conf/lapig-ee-09144f43f3b5.pem
+src/client/input.js
+src/ee-tms/lapig-ee-09144f43f3b5.pem
 *~
 *#
 *.pyc

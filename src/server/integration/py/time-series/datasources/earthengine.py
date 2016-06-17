@@ -291,7 +291,6 @@ class EarthEngine(Datasource):
 				'label': filterBlock["filterProperties"]["label"],
 				'position': position,
 				'type': 'trend' if filterBlock["filterProperties"]["id"] == "Bfast"
-
 					else 'original' if filterBlock["filterProperties"]["id"] == "original" else "filter"
 			});
 
@@ -350,8 +349,8 @@ class EarthEngine(Datasource):
 			if cacheResult is not None:
 				result = ast.literal_eval(cacheResult);
 				return result;
-			elif mode is not None:
-				altMode = ('series' if mode == 'trend' else ('trend' if mode == 'series' else ''));
+			elif mode is not None and mode is not 'series':
+				altMode = 'series' if mode == 'trend' else '';
 
 				altCacheStr = self.layer_id + geoJsonGeometry + altMode;
 				altCacheKey = sha1(altCacheStr.encode()).hexdigest();

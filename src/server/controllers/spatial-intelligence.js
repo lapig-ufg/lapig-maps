@@ -329,7 +329,7 @@ module.exports = function(app) {
 						+ " ORDER BY value DESC"
 	}
 
-	Internal.queryLayers = function(regionType, region, city, callback) {
+	Internal.queryLayers = function(regionType, region, city, language, callback) {
 		var metadata = Internal.metadata;
 
 		Internal.getSpatialDb(function(spatialDb) {
@@ -341,6 +341,7 @@ module.exports = function(app) {
 	  		var section = {
 		  		info: field.label,
 		  		layer: field.layer,
+		  		name: field.name,
 		  		value: 0,
 		  		count: 0,
 		  		iconCls: (field.layer) ? 'spatial-intelligence-geosection' : 'spatial-intelligence-nogeosection',
@@ -365,7 +366,7 @@ module.exports = function(app) {
 		  			delete section['count'];
 		  		}
 		  		if(!section['value']) {
-		  			section['value'] = 'Sem inform.';
+		  			section['value'] = (language && language.toLowerCase() == 'pt-br') ? 'Sem inform.' : 'No info';
 		  		} else {
 		  			section['value'] = Utils.numberFormat(section['value'], field.precision, '.', ',') + " " + field.unit;
 		  		}
@@ -477,13 +478,12 @@ module.exports = function(app) {
 	  
 		var regionType = request.param('regionType', 'state');
 		var region = request.param('region', 'GO');
+		var language = request.param('lang');
 		var city = request.param('city', '');
 
-		Internal.queryLayers(regionType, region, city, function(result) {
-			/*request.finalizeResultQuery = result,
-			next();*/
-			response.send(result);
-			response.end()
+		Internal.queryLayers(regionType, region, city, language, function(result) {
+			request.finalizeResultQuery = result,
+			next();
 		});
 
 	};
@@ -526,45 +526,19 @@ module.exports = function(app) {
 
 	}
 
-	Spatial.translateMetadata = function(request, response){
-
-			if(response){
-					var result = request.finalizeResultMetadata;
-					var language = request.param('lang');
-					
-					if(language != 'pt-br'){
-
-							result.region.title = 'Municipality';
-
-							for(i=0; i<result.layers.length; i++){
-									idLayer = result.layers[i].table;
-									translateTitleMetadata = translateEN.layers[idLayer];
-
-									if (translateEN.layers[idLayer] != undefined){
-											result.layers[i].title = translateTitleMetadata.title,
-											result.layers[i].metadata = translateTitleMetadata.metadata
-									}
-							}
-					}
-
-					response.send(result)
-					response.end()
-			}
-	}
-
 	Spatial.translateQuery = function(request, response){
 
 			if(response){
 					var result = request.finalizeResultQuery;
-					var language = request.param('lang')
+					var language = request.param('lang');
 
 					if (language != 'pt-br'){
 
 							for(i=0; i<result.length; i++){
-									idLayer = result[i].table;
-									translateTitleMetadata = translateEN.layers[idLayer];
+									name = result[i].name;
+									translateTitleMetadata = translateEN.fields[name];
 
-									if (translateEN.layers[idLayer] != undefined){
+									if (translateEN.fields[name] != undefined){
 											result[i].info = translateTitleMetadata.title
 									}
 							}

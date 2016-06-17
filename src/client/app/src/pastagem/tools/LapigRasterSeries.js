@@ -54,7 +54,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       id: 'lapig-raster-series-pnl-main',
       border: false,
       items: [
-        this.getCenterCmp(),
+        this.getCenterCmp()
       ]
     };
   },
@@ -342,13 +342,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     var url = 'time-series/'+ id;
                     var frmInfo = Ext.getCmp('lapig_rasterseries::frm-info');
                     lapigAnalytics.clickTool('Time Series','view-Layer',id);
-                    console.log("tirar o // view-Layer",id);
-                    this.id
                     frmInfo.load({
                       url:url, 
                       method:'GET', 
-                      waitMsg:'Loading',
-                    });                           
+                      waitMsg:'Loading'
+                    });
                   }
                 }
               }
@@ -381,7 +379,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   { name:'pixelMeasure', mapping:'pixelMeasure' },
                   { name:'satelite', mapping:'satelite' },
                   { name:'scale', mapping:'scale' },
-                  { name:'source', mapping:'source' },
+                  { name:'source', mapping:'source' }
                 ]
               }),
               items:[
@@ -393,7 +391,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   name: "name",
                   width:350,
                   height:20,
-                  readOnly:true,
+                  readOnly:true
                 },
                 {
                   xtype: 'textarea',
@@ -405,7 +403,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   width:350,
                   height:110,
                   readOnly:true,
-                  autoScroll:true,
+                  autoScroll:true
                 },
                 {
                   layout:'column',
@@ -476,11 +474,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                           width: 165,
                           readOnly: true,
                           anchor:'100%'
-                        },
+                        }
                       ]
                     }
                   ]
-                },
+                }
               ],
               buttons: [{
                 text: i18n.LAPIGRASTERSERIES_BTNTXT_SELECT,
@@ -494,8 +492,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
                     wdwInfo.hide(this);
                     lapigCoordinatesTool.handler(null, null, wndInfoButtons);
-                  },
-                },
+                  }
+                }
               }],
               listeners: {
                 actioncomplete: function(basicFormLayer, actionLayer) {
@@ -508,8 +506,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
                 }
               }
-            },
-          ],
+            }
+          ]
         }
       ]
     });
@@ -632,7 +630,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'year'},
+                       {name: 'year'}
                     ]
                   },
                   listeners: {
@@ -660,7 +658,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'year'},
+                       {name: 'year'}
                     ]
                   },
                   listeners: {
@@ -688,7 +686,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'value'},
+                       {name: 'value'}
                     ]
                   },
                   listeners: {
@@ -716,7 +714,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'value'},
+                       {name: 'value'}
                     ]
                   },
                   listeners: {
@@ -779,7 +777,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                       ['MONTH_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHAVER ],
                       ['MONTH_sum', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHSUM ],
                       ['DAY_mean', i18n.LAPIGRASTERSERIES_GROUPCB_DAYAVER ],
-                      ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM ],
+                      ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM ]
                     ]
                   }),
                   listeners: {
@@ -877,7 +875,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             color: 0xfc4239,
                             size: 4,
                             lineSize: 2
-                          },
+                          }
                         }, {
                           type:'line',
                           yField: 'interpolation',
@@ -886,7 +884,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             color: 0x5057a6,
                             size: 0,
                             lineSize: 2
-                          },
+                          }
                         }
                       ],
                       listeners: {
@@ -935,7 +933,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'year'},
+                       {name: 'year'}
                     ]
                   },
                   listeners: {
@@ -962,7 +960,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   store: {
                     xtype: 'arraystore',
                     fields: [
-                       {name: 'year'},
+                       {name: 'year'}
                     ]
                   },
                   listeners: {
@@ -1040,7 +1038,18 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                   disabled: true,
                   width: 60,
                   maxLength: 5,
-                  value: 1
+                  value: 1,
+                  listeners:{
+                    invalid: function (field, msg) {
+                      var refreshBtnCmp = Ext.getCmp('lapig-raster-series-tab-trend-btn-refresh');
+                      refreshBtnCmp.setDisabled(true);
+                    },
+
+                    valid: function (field, msg) {
+                      var refreshBtnCmp = Ext.getCmp('lapig-raster-series-tab-trend-btn-refresh');
+                      refreshBtnCmp.setDisabled(false);
+                    }
+                  }
                 },
                 '  ',
                 {
@@ -1191,7 +1200,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             color: 0xfc4239,
                             size: 4,
                             lineSize: 2
-                          },
+                          }
                         }, {
                           type:'line',
                           yField: 'interpolation',
@@ -1200,7 +1209,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             color: 0x5057a6,
                             size: 4,
                             lineSize: 2
-                          },
+                          }
                         }, {
                           type:'line',
                           yField: 'trend',
@@ -1575,14 +1584,23 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           startValueCmb.setValue(startValue);
         }
 
-        instance.seriesProperties = {timeseriesId, longitude, latitude, startYear, endYear, startValue, endValue, radius};
+        instance.seriesProperties = {
+            timeseriesId : timeseriesId,
+            longitude : longitude,
+            latitude : latitude,
+            startYear : startYear,
+            endYear : endYear,
+            startValue : startValue,
+            endValue : endValue,
+            radius: radius
+        };
 
         instance.populateChart(startYear, endYear, startValue, endValue);
 
         instance.setSeriesActiveTabDisabled(false);
 
         loadMask.hide();
-      },                                    
+      }
     });
   },
 
@@ -1647,7 +1665,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         store: {
           xtype: 'arraystore',
           fields: [
-             {name: 'radius'},
+             {name: 'radius'}
           ],
           data: [
             [scale], [scale*2], [scale*3]
@@ -1669,9 +1687,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         text: i18n.LAPIGRASTERSERIES_TXT_RADUNIT_METER,
         width: 'auto',
         height: 'auto',
-        disabled: true,
+        disabled: true
       },
-      '->',
+      {xtype: "tbfill"},
       {
         text: i18n.LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH,
         xtype: "button",
@@ -1711,10 +1729,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var radius = undefined;
             if (useRadius == true) {
               radius = Ext.getCmp('lapig-coordinates-cmb-radius').getValue();
+              //Olha esse if aqui Rhuan. Vê se assim resolve - Guilherme, O generoso
+              // lapigAnalytics.clickTool('Time Series','value-Radius', (radius == undefined) ? 0:radius);
             }
 
             /*if((useRadius == 250) || (useRadius == 500) || (useRadius == 750)){
-                //lapigAnalytics.clickTool('Time Series','value-Radius',valueRadius.lastSelectionText);
                 console.log("tirar o // value-Radius",valueRadius.lastSelectionText);
             } else {
               //lapigAnalytics.clickTool('Time Series','value-Radius','0');

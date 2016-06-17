@@ -128,6 +128,10 @@
 	"LAPIGCOORDINATES_BTNLBL_CANCEL":"Cancel",
 	"LAPIGCOORDINATES_ALERT_ERRTLT": "Error",
 	"LAPIGCOORDINATES_ALERT_ERRMSG_SETLONLAT": "Error updating the longitude and latitude values.",
+	"LAPIGCOORDINATES_ALERT_ERRMSG_INVALIDVALUE": "Invalid Value.",
+	"LAPIGCOORDINATES_WRNMSG_BLANKFIELD": "This field is required.",
+	"LAPIGCOORDINATES_TOOLTIP_ERRMSG": "You need to commit or cancel your changes",
+	"LAPIGCOORDINATES_TOOLTIP_ERRMSG_ALLOWVAL": "Allowed values:",
 
 	"LAPIGPRINT_TTL_WINDOW": "Follow the step by step for printing the map",
 	"LAPIGPRINT_TTLABA_REGION": "1) Region",

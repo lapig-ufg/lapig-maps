@@ -1,11 +1,5 @@
 /**
  * @requires plugins/Tool.js
- * @requires OpenLayers/Layer/Markers.js
- * @requires OpenLayers/Icon.js
- * @requires OpenLayers/Marker.js
- * @requires OpenLayers/Control/DrawFeature.js
- * @requires OpenLayers/Control/DrawFeature.js
- * @require tools/LapigCoordinates.js
  */
 
 Ext.namespace("lapig.tools");
@@ -51,11 +45,11 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       border: false,
       flex:1,
       style:{
-        'margin-top':'10px',
+        'margin-top':'10px'
       },
       items: [
         this.getOptionsCmp(),
-        this.getGridCmp(),
+        this.getGridCmp()
       ]
     };
   },
@@ -299,7 +293,8 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           listeners: {
             select: checkSubmitBtn
           },
-          store:  new Ext.data.ArrayStore({
+          store:  {
+            xtype: "arraystore",
             fields: [
               {name: 'id'}, 
               {name: 'label'},
@@ -346,7 +341,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               ['SP', 'São Paulo', '-53.10935612642795,-25.31182903176157,-44.16051713806287,-19.77919383235752', 'state'],
               ['TO', 'Tocantins', '-50.74160818574438,-13.46727761938996,-45.69711366617483,-5.167998438250915', 'state']
             ]
-          })
+          }
         }
       ],
       buttons: [
@@ -360,7 +355,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
               lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
             }
-          },
+          }
         }
       ]
     }
@@ -439,14 +434,14 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           {
             header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_INFO,
             dataIndex: 'info',
-            width: 220,
+            width: 220
           },
           {
             header: i18n.LAPIGSPATIALINTELLIGENCE_TTLCOL_VALUE,
             width: 100,
             dataIndex: 'value',
-            align: 'right',
-          },
+            align: 'right'
+          }
         ],
         autoScroll:true,
         stripeRows: true,
@@ -526,9 +521,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           }
         }
     };
-
-  },
-
+  }
 });
 
 Ext.preg(lapig.tools.SpatialIntelligence.prototype.ptype, lapig.tools.SpatialIntelligence);

@@ -255,7 +255,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   id: "westpanel",
                   border: false,
                   region: "west",
-                  width: 320,
+                  width: 350,
                   split: true,
                   collapsible: true,
                   collapseMode: "mini",
@@ -279,13 +279,13 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   border: false,
                   region: "east",
                   width: 350,
-                  split: true,
-                  collapsed: false,
+                  split: false,
+                  collapsed: true,
                   collapsible: true,
                   collapseMode: "mini",
                   header: true,
                   layout:'fit',
-                  title: i18n.LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS,
+                  title: i18n.LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS
                 }
             ],
             bbar: {
@@ -312,7 +312,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               outputTarget: "southpanel",
               project: project,
               outputConfig: {
-                height: 215,
+                height: 215
               }
             },
             { 
@@ -448,7 +448,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           sources: {
             ows: {
               url: '/ows/',
-              title: "LAPIG-OWS",
+              title: "LAPIG-OWS"
             },
             wmts: {
               url: '/tms/',

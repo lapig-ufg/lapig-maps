@@ -70,15 +70,20 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 
 		addOutput: function(buttons) {
 			var instance = this;
-			
-			if (instance.CoordWindow == undefined){
-				instance.CoordWindow = instance.getWindow(buttons);
-				instance.CoordWindow.on('close', function() {
-					instance.CoordWindow = undefined;
+
+			if (instance.coordWindow == undefined){
+				instance.coordWindow = instance.getWindow(buttons);
+				instance.coordWindow.on('close', function() {
+					instance.coordWindow = undefined;
 				});
-				instance.CoordWindow.show();
-			} else if(!instance.CoordWindow.isVisible()){
-				instance.CoordWindow.show();
+			} else if(buttons != undefined){
+				instance.coordWindow.getFooterToolbar().removeAll(true);
+				instance.coordWindow.getFooterToolbar().addButton(buttons);
+				instance.coordWindow.getFooterToolbar().doLayout();
+			}
+
+			if(!instance.coordWindow.isVisible()){
+				instance.coordWindow.show();
 			}
 		},
 
@@ -217,7 +222,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					method: 'DELETE',
 					params:{
 						longitude: lon,
-						latitude: lat,
+						latitude: lat
 					},
 					success: function (response) {
 						res = JSON.parse(response.responseText);
@@ -229,6 +234,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				});
 			}
 		},
+
 		removeCommasPoint: function (name, lon, lat) {
 			var instance = this;
 
@@ -485,20 +491,26 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		getGrid: function() {
 				var instance = this;
 
-				var Coordinate = Ext.data.Record.create([{
-					name: 'name',
-					type: 'string'
-				},{
-					name: 'longitude',
-					type: 'float'
-				},{
-					name: 'latitude',
-					type: 'float'
-				}]);
+				var Coordinate = Ext.data.Record.create([
+					{
+						name: 'name',
+						type: 'string'
+					},
+					{
+						name: 'longitude',
+						type: 'float'
+					},
+					{
+						name: 'latitude',
+						type: 'float'
+					}
+				]);
 
 				rowEditor = new gxp.plugins.LapigRowEditor({
 					saveText: i18n.LAPIGCOORDINATES_BTNLBL_SAVE,
 					cancelText: i18n.LAPIGCOORDINATES_BTNLBL_CANCEL,
+					commitChangesText: i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG,
+    			errorText: i18n.LAPIGCOORDINATES_ALERT_ERRTLT
 				});
 
 				var grid = new Ext.grid.GridPanel({
@@ -531,7 +543,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									}
 
 									var p = new Coordinate({
-                    name: i18n.LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD,
+                    name: i18n.LAPIGCOORDINATES_NAMEFIELD_EMPTYTXT_NEWCOORD
 	                });
 	                rowEditor.stopEditing();
 	                instance.store.insert(0, p);
@@ -585,11 +597,11 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 	                var row = grid.getSelectionModel().getSelected();
 	                rowEditor.startEditing(row);
 								}
-							},
+							}
 						],
 						columns: [
 							{
-								id: 'name',
+								id: 'coordinate_name',
 								header: i18n.LAPIGCOORDINATES_TTLCOL_NAME,
 								width: 160,
 								sortable: true,
@@ -609,6 +621,12 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 										decimalPrecision: 4,
 										decimalSeparator: ".",
                 		allowBlank: false,
+                		minValue: -180,
+                		maxValue: 180,
+                		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
+                		bubbleEvents: ["invalid", "valid"]
 									}
 							}, {
 									header: i18n.LAPIGCOORDINATES_TTLCOL_LAT,
@@ -621,11 +639,17 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 										decimalPrecision: 4,
 										decimalSeparator: ".",
                 		allowBlank: false,
+                		minValue: -90,
+                		maxValue: 90,
+                		minText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		maxText: i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE,
+                		blankText: i18n.LAPIGCOORDINATES_WRNMSG_BLANKFIELD,
+                		bubbleEvents: ["invalid", "valid"]
 									}
 							}
 						],
 						stripeRows: true,
-						autoExpandColumn: 'name',
+						autoExpandColumn: 'coordinate_name',
 						autoHeight: true, //!!!
 						autoWidth : true, //!!!
 						listeners: {
@@ -640,7 +664,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									.transform(instance.WGS84_PROJ, instance.GOOGLE_PROJ);
 
 								instance.map.setCenter(lonLat, 15);
-
 							},
 
 							'canceledit': function(rowEditor, forced, rowIndex) {
@@ -661,15 +684,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 								}
 							},
 
-							'validateedit': function(rowEditor, changes, rec, rowIndex) {
-								// if (!isNaN(parseFloat(rec.get("longitude") + rec.get("latitude")))) {
-								// 	return true;
-								// } else {
-								// 	return false;
-								// }
-								return true
-							},
-
 							'afteredit': function(rowEditor, changes, rec, rowIndex) {
 								grid.newRecord = -1;
 								var name = rec.get('name'), lon = rec.get('longitude'), lat = rec.get('latitude');
@@ -686,6 +700,19 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 									instance.store.commitChanges();
 									grid.getSelectionModel().selectRow(rowIndex);
 								});
+							},
+
+							invalid: function(field, msg){
+								if (msg.indexOf(i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE) != -1) {
+									rowEditor.showTooltip(i18n.LAPIGCOORDINATES_ALERT_ERRTLT,
+									 i18n.LAPIGCOORDINATES_ERRMSG_INVALIDVALUE+' '+
+									 i18n.LAPIGCOORDINATES_TOOLTIP_ERRMSG_ALLOWVAL+' ' + field.minValue +
+									 " "+i18n.LAPIGRASTERSERIES_FIELDLBLCB_A+' '+field.maxValue)
+								}
+							},
+
+							valid: function(field) {
+								rowEditor.hideTooltip()
 							}
 						}
 				});
@@ -758,28 +785,30 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var x = screenSize.width - width - (screenSize.width*0.05);
 			var y = screenSize.height/2 - height/2;
 
-				return new Ext.Window({
-						id: 'lapig-coordinates-window',
-						title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
-						width: width,
-						height: height,
-						layout: 'fit',
-						plain: true,
-						x: x,
-						y: y,
-						items: [
-								instance.getWindowContent()
-						],
-						bodyStyle: 'padding:0px;',
-						listeners: {
-								close: function() {
-									OpenLayers.Element.removeClass(instance.map.viewPortDiv, "olControlLapigCoordinates");
-									instance.map.events.unregister("click", instance, instance.mapClickFn);
-								}
-						},
-						buttonAlign: 'left',
-						fbar: buttons
-				});
+			var fbar = buttons==undefined ? new Ext.Toolbar([]) : buttons;
+
+			return new Ext.Window({
+				id: 'lapig-coordinates-window',
+				title: i18n.LAPIGCOORDINATES_TTLWIN_COORD,
+				width: width,
+				height: height,
+				layout: 'fit',
+				plain: true,
+				x: x,
+				y: y,
+				items: [
+					instance.getWindowContent()
+				],
+				bodyStyle: 'padding:0px;',
+				listeners: {
+					close: function() {
+						OpenLayers.Element.removeClass(instance.map.viewPortDiv, "olControlLapigCoordinates");
+						instance.map.events.unregister("click", instance, instance.mapClickFn);
+					}
+				},
+				buttonAlign: 'left',
+				fbar: fbar
+			});
 		}
 });
 
