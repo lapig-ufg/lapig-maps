@@ -94,6 +94,7 @@
 	"LAPIGRASTERSERIES_TXT_ALERTRELAX": "Isto pode levar alguns minutinhos, relaxe e tome um café... ",
 	"LAPIGRASTERSERIES_TXT_ALERTATTENCION": "Atenção",
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "metros",
+	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "É necessário ter o plugin Flash instalado e atualizado no seu navegador para usar esta ferramenta!",
 
 
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_ROI": "Região de interesse",
