@@ -247,7 +247,20 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       else if(serie.type == 'trend'){
         trendPosition = serie.position;
       }
+      // === triple equal sign here is VERY important;
+      // === sinal triplo de igual aqui é MUITO importante;
+      else if(interpolationPosition === null && serie.type == 'filter'){
+        interpolationPosition = serie.position;
+      }
     }
+
+    if (startValue == undefined || startValue == null) {
+      startValue = instance.seriesProperties.startValue
+    }
+    if (endValue == undefined || endValue == null) {
+      endValue = instance.seriesProperties.endValue
+    }
+    console.log("populateChart", startValue, endValue)
 
     var chartData = [];
     instance.chartData[activeTab.index].values.forEach(function(values) {
@@ -564,7 +577,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
           startValue, endValue);
         }else{
-          instance.drawTrend(instance.chartData[activeTab.index])
+          instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(), null, null, null)
         }
       }
     }
@@ -1285,11 +1298,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var jsonResponse = JSON.parse(request.responseText);
         if (jsonResponse.error == undefined) {
           instance.chartData[activeTab.index] = jsonResponse;
-          instance.drawTrend(instance.chartData[activeTab.index]);
+          instance.populateChart(startYear, endYear, null, null, null);
+          // instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
           Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + ': ' + jsonResponse.error);
           instance.chartData[activeTab.index] = oldChartData;
-          instance.drawTrend(instance.chartData[activeTab.index]);
+          instance.populateChart(startYear, endYear, null, null, null);
+          // instance.drawTrend(instance.chartData[activeTab.index]);
         }
 
         instance.setSeriesActiveTabDisabled(false);
@@ -1335,15 +1350,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         dateStr: dateStr };
       chartRecords.push(record);
     });
+    console.log(chartRecords)
 
-    
     chart.setSeriesStyles(instance.getChartSeries(trendData.length));
     chart.store.loadData(chartRecords);
 
     var dtType = trendData.values[0][0].split('-').length;
     if (dtType > 1) {
       chart.setXAxis(new Ext.chart.TimeAxis({
-        labelRenderer: function(date) { 
+        labelRenderer: function(date) {
           return date.format("m.Y");
         }
       }));
@@ -1570,8 +1585,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var startYear = [years[0]];
         var endYear = [years[years.length - 1]];
 
-        var startValue = [values[0]];
-        var endValue = [values[values.length - 1]];
+        var startValue = values[0][0];
+        var endValue = values[values.length - 1][0];
 
         endYearCmb.setValue(endYear);
         startYearCmb.setValue(startYear);
@@ -1584,6 +1599,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           startValueCmb.setValue(startValue);
         }
 
+        console.log("requestChartData", startValue, endValue)
         instance.seriesProperties = {
             timeseriesId : timeseriesId,
             longitude : longitude,

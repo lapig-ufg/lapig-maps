@@ -227,7 +227,7 @@ class EarthEngine(Datasource):
 
 		return groupedValues;
 
-	def createPixelStructure(self, eeResultList):
+	def createPixelStructure(self, eeResultList, originalIndex):
 		pixels = [];
 		dates = [];
 		datesFull = False;
@@ -238,7 +238,7 @@ class EarthEngine(Datasource):
 
 			for item in pixelSeries:
 				if datesFull == False: dates.append(item[0]);
-				pixels[-1]["values"].append(item[4] if item[4] is not None else self.fill_value);
+				pixels[-1]["values"].append(item[originalIndex] if item[originalIndex] is not None else self.fill_value);
 			datesFull = True;
 
 		return {
@@ -359,7 +359,7 @@ class EarthEngine(Datasource):
 				if altCacheResult is not None:
 					hasCache = True;
 					resultCache = ast.literal_eval(altCacheResult);
-					pixelsStruct = self.createPixelStructure([resultCache["values"]]);
+					pixelsStruct = self.createPixelStructure([resultCache["values"]], 1);
 				
 		if not hasCache:
 			dates = self.splitDate()
@@ -381,7 +381,7 @@ class EarthEngine(Datasource):
 			groupedValues = self.dateJulianToGregorian(groupedValues);
 			groupedValues =  self.removeDuplicate(groupedValues);
 
-			pixelsStruct = self.createPixelStructure(groupedValues);
+			pixelsStruct = self.createPixelStructure(groupedValues, 4);
 
 		dates = pixelsStruct["dates"];
 		pixelsOriginal = pixelsStruct["series"][0]["pixels"];
