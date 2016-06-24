@@ -237,8 +237,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var activeTab = instance.getSeriesActiveTab();
     var chart = Ext.getCmp('lapig-coordinates-chart-' + activeTab.name);
 
-    var originalPosition = 0;
+    var originalPosition = -1;
     var trendPosition = -1;
+
     for(var i in instance.chartData[activeTab.index].series) {
       var serie = instance.chartData[activeTab.index].series[i];
       if(serie.id == 'original') {
@@ -249,9 +250,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       }
       // === triple equal sign here is VERY important;
       // === sinal triplo de igual aqui é MUITO importante;
-      else if(interpolationPosition === null && serie.type == 'filter'){
-        interpolationPosition = serie.position;
+      else if(serie.type == 'filter'){
+        if(interpolationPosition === null || interpolationPosition == serie.id){
+          interpolationPosition = serie.position
+        }
       }
+    }
+
+    if (typeof interpolationPosition == 'string' || interpolationPosition == originalPosition) {
+      interpolationPosition = undefined;
     }
 
     if (startValue == undefined || startValue == null) {
@@ -260,7 +267,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     if (endValue == undefined || endValue == null) {
       endValue = instance.seriesProperties.endValue
     }
-    console.log("populateChart", startValue, endValue)
 
     var chartData = [];
     instance.chartData[activeTab.index].values.forEach(function(values) {
@@ -269,26 +275,22 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var dtArray = values[0].split('-');
       var year = dtArray[0];
       var date = new Date(dtArray[0] + "/" + dtArray[1] + "/" + dtArray[2]).getTime();
-      var value = values[originalPosition];
 
       if(year >= startYear && year <= endYear) {
-        
-        value = (value >= startValue && value <= endValue) ? value : null;
 
         if(activeTab.index == instance.tabProperties.trend){
-          var record = { date: date, original: value, interpolation: null, trend: null, dateStr: dateStr };
+          var record = { date: date, original: null, interpolation: null, trend: null, dateStr: dateStr };
+          
+          record.original = (originalPosition != -1) ? values[originalPosition] : null;
           record.trend = (trendPosition != -1) ? values[trendPosition] : null;
+          record.interpolation = (interpolationPosition != undefined) ? values[Math.abs(interpolationPosition)] : null;
         }else{
-          var record = { date: date, original: value, interpolation: null, dateStr: dateStr };
-        }
-        
-        if (interpolationPosition < 0) {
-          record.original = null;
-          if(interpolationPosition != originalPosition)
-            record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition * -1] : null;
-        }else{
-          if(interpolationPosition != originalPosition)
-            record.interpolation = (value >= startValue && value <= endValue) ? values[interpolationPosition] : null;
+          var record = { date: date, original: null, interpolation: null, dateStr: dateStr };
+          
+          var value = (originalPosition != -1) ? values[originalPosition] : "no_original";
+          value = (value >= startValue && value <= endValue) ? value : null;
+          record.original = (interpolationPosition >= 0 || interpolationPosition === undefined) ? value : null;
+          record.interpolation = (interpolationPosition != undefined && value != null) ? values[Math.abs(interpolationPosition)] : null;
         }
 
         chartData.push(record)
@@ -1298,12 +1300,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var jsonResponse = JSON.parse(request.responseText);
         if (jsonResponse.error == undefined) {
           instance.chartData[activeTab.index] = jsonResponse;
-          instance.populateChart(startYear, endYear, null, null, null);
+          instance.populateChart(startYear, endYear, null, null, interpolation);
           // instance.drawTrend(instance.chartData[activeTab.index]);
         } else {
           Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + ': ' + jsonResponse.error);
           instance.chartData[activeTab.index] = oldChartData;
-          instance.populateChart(startYear, endYear, null, null, null);
+          instance.populateChart(startYear, endYear, null, null, interpolation);
           // instance.drawTrend(instance.chartData[activeTab.index]);
         }
 
@@ -1350,7 +1352,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         dateStr: dateStr };
       chartRecords.push(record);
     });
-    console.log(chartRecords)
 
     chart.setSeriesStyles(instance.getChartSeries(trendData.length));
     chart.store.loadData(chartRecords);
@@ -1393,6 +1394,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             "\nRadius: "+ instance.seriesProperties.radius,
             "\nCoordinates: ("+instance.seriesProperties.longitude+", "+instance.seriesProperties.latitude+")");
         }else{
+          if (countSeconds < 50) {
+            msgText = i18n.LAPIGRASTERSERIES_TXT_ALERTRELAX
+          } else {
+            msgText = i18n.LAPIGRASTERSERIES_TXT_ALERTRELAXMORE
+          }
           instance.loadMask.el.mask(msgText + countSeconds++ + " seg.", instance.loadMask.msgCls);
         }
       },
@@ -1513,7 +1519,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     instance.setSeriesActiveTabDisabled(true);
 
     groupDataCmb.setValue('NONE_NONE');
-    interpolationCmb.setValue('Nenhum');
+    interpolationCmb.setValue(i18n.LAPIGRASTERSERIES_GROUPCB_NONE);
 
     if(instance.chartData == undefined){
       instance.chartData = [];
@@ -1564,7 +1570,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               filterOnly.position = -serie.position;
               filterOnly.type = serie.type;
               filterOnly.id = "only-"+serie.id;
-              filterOnly.label = "Apenas " + serie.label;
+              filterOnly.label = i18n.LAPIGRASTERSERIES_GROUPCB_ONLY+" " + serie.label;
               interpolations.push(filterOnly);
             }
 
@@ -1599,7 +1605,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
           startValueCmb.setValue(startValue);
         }
 
-        console.log("requestChartData", startValue, endValue)
         instance.seriesProperties = {
             timeseriesId : timeseriesId,
             longitude : longitude,
@@ -1653,7 +1658,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     return [
       {
         xtype: 'checkbox',
-        boxLabel: "Usar raio:",
+        boxLabel: i18n.LAPIGCOORDINATES_CHKBOXLBL_USERADIUS,
         id: 'lapig-coordinates-chk-use-radius',
         width: 'auto',
         disabled: true,

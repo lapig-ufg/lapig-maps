@@ -92,9 +92,11 @@
 	"LAPIGRASTERSERIES_TXT_INFOWINCOORDINATED": "Select a coordinated to continue",
 	"LAPIGRASTERSERIES_BTNTXT_CREATEGRAPH": "Create Graphic",
 	"LAPIGRASTERSERIES_TXT_ALERTRELAX": "This may take some minutes, relax and have a coffee ...",
+	"LAPIGRASTERSERIES_TXT_ALERTRELAXMORE": "The Google Earth Engine is taking longer than usual, better have another coffee...",
 	"LAPIGRASTERSERIES_TXT_ALERTATTENCION": "Attention",
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "meters",
 	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "The Flash plugin needs to be installed and updated on your browser to use this tool!",
+	"LAPIGRASTERSERIES_GROUPCB_ONLY": "Only",
 
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_ROI": "Region of interest",
 	"LAPIGSPATIALINTELLIGENCE_BTNTXT_CONSULT": "Consult",
@@ -133,6 +135,7 @@
 	"LAPIGCOORDINATES_WRNMSG_BLANKFIELD": "This field is required.",
 	"LAPIGCOORDINATES_TOOLTIP_ERRMSG": "You need to commit or cancel your changes",
 	"LAPIGCOORDINATES_TOOLTIP_ERRMSG_ALLOWVAL": "Allowed values:",
+	"LAPIGCOORDINATES_CHKBOXLBL_USERADIUS": "Use radius:",
 
 	"LAPIGPRINT_TTL_WINDOW": "Follow the step by step for printing the map",
 	"LAPIGPRINT_TTLABA_REGION": "1) Region",

@@ -58,6 +58,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						tooltip: this.tooltip,
 						iconCls: "gxp-icon-lapigcoordinates",
 						handler: function(scope, evt, buttons) {
+								instance.layerName = i18n.LAPIGCOORDINATES_TTLVBOX_COORD;
 								instance.addOutput(buttons);
 								lapigAnalytics.clickTool('Tools', 'Add Coordinates', '')
 						},
