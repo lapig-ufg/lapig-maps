@@ -70,7 +70,6 @@ def trend(layerId, startYear, endYear, interpolation, groupData, timeChange, tim
 	result = datesList
 	utils.joinArray(result, values)
 	
-	
 	return {
 		'series': series,
 		'values': result
@@ -88,4 +87,4 @@ elif argv[1] == 'BFAST':
  	# layerId, startYear, endYear, interpolation, groupData, timeChange, timeChangeUnits, geoJsonGeometry
 	result = trend(argv[2], utils.num(argv[3]), utils.num(argv[4]), argv[5], argv[6], utils.num(argv[7]), argv[8], argv[9]);
 
-print result
+print(result)

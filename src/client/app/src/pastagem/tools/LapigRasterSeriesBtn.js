@@ -22,43 +22,44 @@ Ext.namespace("lapig.tools");
  *    TODO Make this plural - selected layers
  */
 lapig.tools.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
-    
-    /** api: ptype = gxp_LapigRasterSeriesBtn */
-    ptype: "gxp_lapigrasterseriesbtn",
-    
-    /** api: config[removeMenuText]
-     *  ``String``
-     *  Text for remove menu item (i18n).
-     */
-    MenuText: 'Análise de Séries Temporais',
+  
+  /** api: ptype = gxp_LapigRasterSeriesBtn */
+  ptype: "gxp_lapigrasterseriesbtn",
+  
+  /** api: config[removeMenuText]
+   *  ``String``
+   *  Text for remove menu item (i18n).
+   */
+  MenuText: 'Análise de Séries Temporais',
 
-    /** api: config[removeActionTip]
-     *  ``String``
-     *  Text for remove action tooltip (i18n).
-     */
-    Tooltip: 'Análise de Séries Temporais',
-    
-    /** api: method[addActions]
-     */
-    addActions: function() {
-        var actions = lapig.tools.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
-            text: this.MenuText,
-            tooltip: this.Tooltip,
-            icon   : 'theme/app/img/chart_xy.png',
-            handler: function() {
-                
-                lapigAnalytics.clickTool('Tools','Time Series','');
-                Ext.getCmp('southpanel').expand(true);
-                Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
-            },
-            scope: this
-        }]);
-        
+  /** api: config[removeActionTip]
+   *  ``String``
+   *  Text for remove action tooltip (i18n).
+   */
+  Tooltip: 'Análise de Séries Temporais',
+  
+  /** api: method[addActions]
+   */
+  addActions: function() {
+    var actions = lapig.tools.LapigRasterSeriesBtn.superclass.addActions.apply(this, [{
+      text: this.MenuText,
+      tooltip: this.Tooltip,
+      icon   : 'theme/app/img/chart_xy.png',
+      handler: function() {
+        var flashProperties = Utils.checkFlashVersion();
+        if(flashProperties.hasFlash){
+          lapigAnalytics.clickTool('Tools','Time Series','');
+          Ext.getCmp('southpanel').expand(true);
+          Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
+        }else{
+          Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
+        }
+      },
+      scope: this
+    }]);
 
-        
-        return actions;
-    }
-        
+    return actions;
+  }  
 });
 
 Ext.preg(lapig.tools.LapigRasterSeriesBtn.prototype.ptype, lapig.tools.LapigRasterSeriesBtn);

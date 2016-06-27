@@ -1,4 +1,5 @@
 import utils
+from lib import bfast_utils
 from _filter import Filter
 from subprocess import check_output
 import os
@@ -40,26 +41,20 @@ class Bfast(Filter):
 
 	def run(self, timeserieData, longitude = None, latitude = None, h = None, freq = None, startdate = None, enddate = None):
 		
-		if self.time_change is not None and self.units is not None:
-			days = 0
-			if self.units == 'year':
-				days = self.time_change * 365
-			elif self.units == 'month':
-				days = self.time_change * 30
-			else:
-				days = self.time_change
-
-			self.h = str(days/16.0/len(timeserieData))
-
-		h = str(h) if h else self.h
-
 		freq = str(freq) if freq else self.frequency
+
+		if(h is None):
+			if self.time_change is not None and self.units is not None:
+				h = bfast_utils.calculateMinimalSegmentSize(len(timeserieData), self.time_change, self.units, float(freq))
+				h = str(h)
+		elif(h>0.5):
+			raise ValueError("minimum segment size error")
 
 		startdate = str(startdate) if startdate else self.start_date
 		enddate = str(enddate) if enddate else utils.isNow(self.end_date)
 
 		# Must be in the following order: h, season, start_date, end_date, timeseriesData, freq
-		bfast_result = check_output(["integration/py/time-series/lib/bfast.r", h, self.season,
+		bfast_result = check_output(["integration/py/time-series/lib/bfast.r", str(h), self.season,
 		 startdate, enddate, str(timeserieData), freq])
 
 		bfast_res_list = bfast_result.encode('utf-8').split(' ')
