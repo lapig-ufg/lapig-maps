@@ -18,7 +18,12 @@ class Cache:
 		if self.enable:
 			cacheKey = self.addPrefix(cacheKey)
 
-			return self.rserver.get(cacheKey)
+			res = self.rserver.get(cacheKey)
+
+			if res is not None:
+				self.rserver.expire(cacheKey, self.expiration)
+
+			return res
 		else:
 			return None
 
