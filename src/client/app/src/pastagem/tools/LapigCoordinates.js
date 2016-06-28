@@ -489,7 +489,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			instance.map.events.unregister("click", instance, instance.mapClickFn);
 		},
 
-		getGrid: function() {
+		getGrid: function(wdwHeight) {
 				var instance = this;
 
 				var Coordinate = Ext.data.Record.create([
@@ -651,7 +651,8 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						],
 						stripeRows: true,
 						autoExpandColumn: 'coordinate_name',
-						autoHeight: true, //!!!
+						// autoHeight: true, //!!!
+						height: wdwHeight-33,
 						autoWidth : true, //!!!
 						listeners: {
 							'rowclick': instance.checkButtonsState,
@@ -745,7 +746,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				return grid;
 		},
 
-		getWindowContent: function() {
+		getWindowContent: function(wdwHeight) {
 				var instance = this;
 				var map = this.target.mapPanel.map;
 
@@ -767,11 +768,10 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 					border: false,
 					layout: {
 						type:'vbox',
-						padding:'0',
 						align:'stretch'
 					},
 					items: [
-						instance.getGrid()
+						instance.getGrid(wdwHeight)
 					]
 				};
 
@@ -798,7 +798,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				x: x,
 				y: y,
 				items: [
-					instance.getWindowContent()
+					instance.getWindowContent(height)
 				],
 				bodyStyle: 'padding:0px;',
 				listeners: {
