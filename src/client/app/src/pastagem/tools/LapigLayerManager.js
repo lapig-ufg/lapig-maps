@@ -53,7 +53,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 				var instance = this;
 
 				gxp.plugins.LapigLayerManager.superclass.configureLayerNode.apply(this, arguments);
-				
+
 				if (attr.layer instanceof OpenLayers.Layer.WMS) {
 
 					attr.expanded = true;
@@ -112,6 +112,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 														format: "image/png"
 												},
 												layerRecord: this.target.mapPanel.layers.getByLayer(attr.layer),
+												useScaleParameter: false,
 												showTitle: false
 										}
 					        ]
@@ -135,6 +136,26 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										'<h4>{year}</h4>',
 								'</div></tpl>'
 						);
+
+						var btnAnimation = function() {
+							var btnNextDate = Ext.getCmp("lapig_layermanager::btn_nextdate");
+							var prevNextDate = Ext.getCmp("lapig_layermanager::btn_prevdate");
+
+							var instance = this;
+							
+							var evtFn = function() {
+								if(!btnNextDate.disabled) {
+									setTimeout(function(){
+					        	btnNextPrevDate(btnNextDate);
+									}, 1000);
+					      } else {
+					      	layerRecord.data.layer.events.unregister('loadend', instance, evtFn);
+					      }
+							}
+
+							layerRecord.data.layer.events.register('loadend', instance, evtFn);
+							evtFn();
+						}
 
 						var btnNextPrevDate = function(btn) {
 							var comboDate = btn.ownerCt.items.itemAt(1);
@@ -180,8 +201,9 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						    items: [
 						        {
 						            xtype: 'button',
+						            id: "lapig_layermanager::btn_prevdate",
 						            width: 20,
-						            text: '<',
+						            icon   : 'theme/app/img/arrow-left.png',
 						            listeners: {
 						            	click: btnNextPrevDate
 						            }
@@ -238,11 +260,20 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										},
 										{
 						            xtype: 'button',
+						            id: "lapig_layermanager::btn_nextdate",
 						            width: 20,
-						            text: '>',
+						            icon   : 'theme/app/img/arrow-right.png',
 						            disabled: true,
 						            listeners: {
 						            	'click': btnNextPrevDate
+						            }
+						        },
+						        {
+						            xtype: 'button',
+						            width: 20,
+						            icon   : 'theme/app/img/play.png',
+						            listeners: {
+						            	'click': btnAnimation
 						            }
 						        }
 						    ]

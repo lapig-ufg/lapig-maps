@@ -497,7 +497,7 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-var layersDir = "/home/leandro/Tmp/Dados Novos/Catalog/"
+var layersDir = "../../ows/data_dir/catalog/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';

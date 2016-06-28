@@ -85,7 +85,6 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 STYLES: config.styles,
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
-                CQL_FILTER: config.cql_filter,
                 FILTER: config.filter
             });
             
@@ -168,6 +167,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 //,   url.replace(host, "m4.lapig.iesa.ufg.br")
             ];
         }
+
         return record;
     }
     

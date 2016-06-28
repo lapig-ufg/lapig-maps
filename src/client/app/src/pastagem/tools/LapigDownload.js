@@ -62,7 +62,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
-    download: function(layerName, layerType, metadata) {
+    download: function(layerName, layerType, vendorParams) {
         var params = [];
 
         if (layerType == 'VECTOR') {
@@ -80,7 +80,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
                 ,   'SERVICE=WCS'
                 ,   'VERSION=2.0.0'
                 ,   'COVERAGEID=' + layerName
-                ,   'FORMAT=tiff-zip'
+                ,   ((vendorParams['MSFILTER']) ? 'FORMAT=IMAGE/TIFF' : 'FORMAT=tiff-zip')
             ];
 
         }
@@ -88,10 +88,12 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         lapigAnalytics.clickTool('Download Layer','request-download',layerName);
 
         if(params.length > 0) {
-            if(metadata){
-                params.push('METADATA=' + metadata)
+            console.log(vendorParams)
+            for (key in vendorParams) {
+                params.push(key + '=' + vendorParams[key]);
             }
 
+            console.log(params);
             var iframe = Ext.DomHelper.append(Ext.getBody(),{
                     tag : 'iframe'
                     ,src: '/ows?' + params.join('&')
@@ -111,9 +113,19 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         if(selectedLayer.json && selectedLayer.data.name && selectedLayer.json.type) {
 
             var layerName   = selectedLayer.data.name;
-            var metadata   = selectedLayer.json.metadata;
             var layerType   = (selectedLayer.json.type == 'MULTIPLE' ) ? selectedLayer.json.last_type : selectedLayer.json.type;
             var title       = 'Download - '+selectedLayer.data.title;
+            
+            var vendorParamsKey = ['MSFILTER','MUNCODE'];
+            var vendorParams = {
+                'METADATA': selectedLayer.json.metadata
+            }
+
+            vendorParamsKey.forEach(function(p){
+                if(selectedLayer.data.layer.params[p] && selectedLayer.data.layer.params[p] != '') {
+                    vendorParams[p] = selectedLayer.data.layer.params[p];
+                }
+            })
 
             var form = new Ext.form.FormPanel({
                 baseCls: 'x-plain',
@@ -176,7 +188,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     listeners: {
                         click: function(evt) {
-                            instance.download(layerName, layerType, metadata);
+                            instance.download(layerName, layerType, vendorParams);
                             w.hide();
                         }
                     }
