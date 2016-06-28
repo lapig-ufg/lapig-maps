@@ -1501,11 +1501,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var startValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value');
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabProperties.trend){
-      if (timeseriesId.indexOf('MOD13Q1') == -1) {
+      /*if (timeseriesId.indexOf('MOD13Q1') == -1) {
         Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_ERROR2);
         instance.restartChart();
         return;
-      }
+      }*/
 
       var timeChangeNum = Ext.getCmp('lapig-raster-series-tab-trend-num-time-change');
       var timeChangeUnitsCmb = Ext.getCmp('lapig-raster-series-tab-trend-cmb-time-change-units');

@@ -96,7 +96,6 @@ class Gdalds(Datasource):
 		pixelWidth = transform[1]
 		pixelHeight = transform[5]
 
-
 		geoJsonGeometry = ogr.CreateGeometryFromJson(geoJsonGeometry);
 
 		layer = data_source.CreateLayer("tempLayer", srs, geoJsonGeometry.GetGeometryType())

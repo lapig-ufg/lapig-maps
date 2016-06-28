@@ -273,6 +273,28 @@ class EarthEngine(Datasource):
 
 		return filteredPixels;	
 
+	def calcTrend(self, resultMean):
+		filters = loader.getFilters(self.layer_id);
+
+		bfastIndex = utils.findIndexByAttribute(filters, 'id', 'Bfast')
+		origSeriesProp = utils.findIndexByAttribute(resultMean['series'], 'type', 'original');
+		
+		originalValues = utils.oneArray(resultMean['values'], resultMean['series'][origSeriesProp]['position']-1)
+		filteredValues = filters[bfastIndex].run(originalValues, None, None);
+		filteredValues = filteredValues if type(filteredValues) == list else filteredValues.tolist();
+		
+		result = {
+			'series': {
+				'id': "Bfast",
+				'label': 'BFAST',
+				'position': len(resultMean['values'][0])+1,
+				'type': 'trend'
+			},
+			'values': filteredValues
+		}
+		
+		return result
+
 	def calculateMean(self, pixelsStruct):
 		series = [];
 		
@@ -387,10 +409,20 @@ class EarthEngine(Datasource):
 		dates = pixelsStruct["dates"];
 		pixelsOriginal = pixelsStruct["series"][0]["pixels"];
 
-		if not self.ignore_filter:
-			pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
+		result = None
+		if mode == 'series' or mode is None:
+			if not self.ignore_filter:
+				pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
 
-		result = self.calculateMean(pixelsStruct["series"]);
+			result = self.calculateMean(pixelsStruct["series"]);
+
+		elif mode == 'trend':
+			result = self.calculateMean(pixelsStruct["series"]);
+			resTrend = self.calcTrend(result);
+
+			if len(resTrend['values']) == len(result['values']):	
+				utils.joinArray(result['values'], resTrend['values']);
+				result['series'].append(resTrend['series'])
 
 		for i, dtRow in enumerate(result["values"]):
 			dtRow.insert(0, dates[i])

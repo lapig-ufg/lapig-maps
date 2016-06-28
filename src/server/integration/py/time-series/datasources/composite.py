@@ -33,14 +33,8 @@ class Composite(Datasource):
 
 			timeserieData = datasourceInstance.lookup(geoJsonGeometry, mode)
 
-			if "series" not in result:#timeserieData["series"] != result["series"]:
+			if "series" not in result:
 				result["series"] = timeserieData["series"];
-
-			# if len(result["values"]) > 0 and result["values"][-1][0] == timeserieData["values"][0][0]:
-			# 	if timeserieData["values"][0][1] != 0:
-			# 		del result["values"][-1]
-			# 	else:
-			# 		del timeserieData["values"][0]
 
 			result["values"].extend(timeserieData["values"]);
 			

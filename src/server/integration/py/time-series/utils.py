@@ -32,5 +32,8 @@ def findIndex(data, value):
 	return index
 
 def findIndexByAttribute(collection, attr, value):
-	index = next((i for i, item in enumerate(collection) if getattr(item, attr) == value), -1)
+	if type(collection[0]) == dict:
+		index = next((i for i, item in enumerate(collection) if item[attr] == value), -1)
+	else:
+		index = next((i for i, item in enumerate(collection) if getattr(item, attr) == value), -1)
 	return index
