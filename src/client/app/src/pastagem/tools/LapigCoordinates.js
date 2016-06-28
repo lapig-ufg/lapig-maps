@@ -489,7 +489,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			instance.map.events.unregister("click", instance, instance.mapClickFn);
 		},
 
-		getGrid: function(wdwHeight) {
+		getGrid: function(gridHeight) {
 				var instance = this;
 
 				var Coordinate = Ext.data.Record.create([
@@ -652,7 +652,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						stripeRows: true,
 						autoExpandColumn: 'coordinate_name',
 						// autoHeight: true, //!!!
-						height: wdwHeight-33,
+						height: gridHeight,
 						autoWidth : true, //!!!
 						listeners: {
 							'rowclick': instance.checkButtonsState,
@@ -746,7 +746,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				return grid;
 		},
 
-		getWindowContent: function(wdwHeight) {
+		getWindowContent: function(gridHeight) {
 				var instance = this;
 				var map = this.target.mapPanel.map;
 
@@ -771,7 +771,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						align:'stretch'
 					},
 					items: [
-						instance.getGrid(wdwHeight)
+						instance.getGrid(gridHeight)
 					]
 				};
 
@@ -787,6 +787,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var y = screenSize.height/2 - height/2;
 
 			var fbar = buttons==undefined ? new Ext.Toolbar([]) : buttons;
+			var gridHeight = buttons==undefined ? height-33 : height-63;
 
 			return new Ext.Window({
 				id: 'lapig-coordinates-window',
@@ -798,7 +799,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 				x: x,
 				y: y,
 				items: [
-					instance.getWindowContent(height)
+					instance.getWindowContent(gridHeight)
 				],
 				bodyStyle: 'padding:0px;',
 				listeners: {
