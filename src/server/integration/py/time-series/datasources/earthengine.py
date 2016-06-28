@@ -227,7 +227,7 @@ class EarthEngine(Datasource):
 
 		return groupedValues;
 
-	def createPixelStructure(self, eeResultList):
+	def createPixelStructure(self, eeResultList, originalIndex):
 		pixels = [];
 		dates = [];
 		datesFull = False;
@@ -238,7 +238,7 @@ class EarthEngine(Datasource):
 
 			for item in pixelSeries:
 				if datesFull == False: dates.append(item[0]);
-				pixels[-1]["values"].append(item[4] if item[4] is not None else self.fill_value);
+				pixels[-1]["values"].append(item[originalIndex] if item[originalIndex] is not None else self.fill_value);
 			datesFull = True;
 
 		return {
@@ -272,6 +272,28 @@ class EarthEngine(Datasource):
 					filteredPixels[-1]["pixels"].append({"values": [0 for _ in xrange(len(values))], "lon": longitude, "lat": latitude});
 
 		return filteredPixels;	
+
+	def calcTrend(self, resultMean):
+		filters = loader.getFilters(self.layer_id);
+
+		bfastIndex = utils.findIndexByAttribute(filters, 'id', 'Bfast')
+		origSeriesProp = utils.findIndexByAttribute(resultMean['series'], 'type', 'original');
+		
+		originalValues = utils.oneArray(resultMean['values'], resultMean['series'][origSeriesProp]['position']-1)
+		filteredValues = filters[bfastIndex].run(originalValues, None, None);
+		filteredValues = filteredValues if type(filteredValues) == list else filteredValues.tolist();
+		
+		result = {
+			'series': {
+				'id': "Bfast",
+				'label': 'BFAST',
+				'position': len(resultMean['values'][0])+1,
+				'type': 'trend'
+			},
+			'values': filteredValues
+		}
+		
+		return result
 
 	def calculateMean(self, pixelsStruct):
 		series = [];
@@ -360,7 +382,7 @@ class EarthEngine(Datasource):
 				if altCacheResult is not None:
 					hasCache = True;
 					resultCache = ast.literal_eval(altCacheResult);
-					pixelsStruct = self.createPixelStructure([resultCache["values"]]);
+					pixelsStruct = self.createPixelStructure([resultCache["values"]], 1);
 				
 		if not hasCache:
 			dates = self.splitDate()
@@ -382,15 +404,25 @@ class EarthEngine(Datasource):
 			groupedValues = self.dateJulianToGregorian(groupedValues);
 			groupedValues =  self.removeDuplicate(groupedValues);
 
-			pixelsStruct = self.createPixelStructure(groupedValues);
+			pixelsStruct = self.createPixelStructure(groupedValues, 4);
 
 		dates = pixelsStruct["dates"];
 		pixelsOriginal = pixelsStruct["series"][0]["pixels"];
 
-		if not self.ignore_filter:
-			pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
+		result = None
+		if mode == 'series' or mode is None:
+			if not self.ignore_filter:
+				pixelsStruct["series"].extend(self.calcFilters(pixelsOriginal, mode));
 
-		result = self.calculateMean(pixelsStruct["series"]);
+			result = self.calculateMean(pixelsStruct["series"]);
+
+		elif mode == 'trend':
+			result = self.calculateMean(pixelsStruct["series"]);
+			resTrend = self.calcTrend(result);
+
+			if len(resTrend['values']) == len(result['values']):	
+				utils.joinArray(result['values'], resTrend['values']);
+				result['series'].append(resTrend['series'])
 
 		for i, dtRow in enumerate(result["values"]):
 			dtRow.insert(0, dates[i])

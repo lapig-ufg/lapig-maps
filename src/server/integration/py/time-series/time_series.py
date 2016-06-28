@@ -8,9 +8,8 @@ from lib import bfast_utils
 def time_series(layerId, mode, geoJsonGeometry):
 
 	datasourceInstance = loader.getDatasource(layerId)
-
 	timeserieData = datasourceInstance.lookup(geoJsonGeometry, mode)
-	
+
 	return timeserieData;
 	
 def trend(layerId, startYear, endYear, interpolation, groupData, timeChange, timeChangeUnits, geoJsonGeometry):
@@ -69,12 +68,12 @@ def trend(layerId, startYear, endYear, interpolation, groupData, timeChange, tim
 	utils.joinArray(datesList, result)
 	result = datesList
 	utils.joinArray(result, values)
-
+	
 	return {
 		'series': series,
 		'values': result
 	}
-
+	
 result = [];
 
 # for i in xrange(len(argv)):
@@ -87,4 +86,4 @@ elif argv[1] == 'BFAST':
  	# layerId, startYear, endYear, interpolation, groupData, timeChange, timeChangeUnits, geoJsonGeometry
 	result = trend(argv[2], utils.num(argv[3]), utils.num(argv[4]), argv[5], argv[6], utils.num(argv[7]), argv[8], argv[9]);
 
-print(result);
+print(result)

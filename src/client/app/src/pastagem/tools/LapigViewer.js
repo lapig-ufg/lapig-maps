@@ -41,6 +41,7 @@
  * @requires tools/LapigWMSGetFeatureInfo.js
  * @requires tools/LapigDownloadAll.js
  * @requires tools/LapigLogin.js
+ * @requires tools/LapigUtils.js
  */
 
 globalInstance = this;
@@ -90,6 +91,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           globalInstance.i18n = result.lang;
           globalInstance.isAnyoneHome = false;
           globalInstance.lapigAnalytics = gxp.plugins.LapigAnalytics;
+          globalInstance.Utils = lapigUtils;
           i18n.lang = language;
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
@@ -272,7 +274,16 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapseMode: "mini",
                   header: true,
                   title: i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES,
-                  autoScroll: true
+                  autoScroll: true,
+                  listeners: {
+                    beforeexpand: function (pnl, animate) {
+                      var flashProperties = lapigUtils.checkFlashVersion();
+                      if (!flashProperties.hasFlash) {
+                        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
+                        return false;
+                      }
+                    }
+                  }
                 },
                 {
                   id: "eastpanel",
