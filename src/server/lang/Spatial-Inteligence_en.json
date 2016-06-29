@@ -1,91 +1,209 @@
 {
 	"fields": {
-		"AGR_AREAHA": {
-			"title": "Annual Crop (2014)"
+		"DECLIV": {
+			"title": "Mean Slope",
+			"layerTitle": "Hillshade",
+			"description": "Data produced by LAPIG/UFG using SRTM images with a spatial resolution of 30m and covering all Brazil."
 		},
-		"ALG_PROD": {
-			"title": "Cotton - Production (2014)"
+		"POL_HA": {
+			"title": "Total Area",
+			"description": "Data produced by the Territorial Base of IBGE."
+		},
+		"AGR_AREAHA": {
+			"title": "Annual Crop (2014)",
+			"description": "Agriculture compilation map organized by Agrosatélite company, including data produced by the company in the context of various projects and the agriculture class of product MCD12Q1. This map covers all Brazil."
+		},
+		"ALG_AREAHA": {
+			"title": "Cotton - Map (2014)",
+			"description": "Map produced by Agrosatélite company under the Project \"Geospatial analyzes of the annual crops dynamic in the Brazilian Cerrado biome: 2000 to 2014\" funded by \"Gordon and Betty Moore Foundation.\" Its covers only the Cerrado biome."
+		},
+		"ALG_APLAN": {
+			"title": "Cotton - Planted Area (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"ALG_TON": {
+			"title": "Cotton - Production (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"ALG_VL": {
+			"title": "Cotton - Production Value (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"ALG_RENMED": {
-			"title": "Cotton - Average Income (2014)"
+			"title": "Cotton - Average Income (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"PPE_AREAHA": {
-			"title": "Permanent Protection Area - INCRA"
+			"title": "Permanent Protection Area ",
+			"description": "Data produced by INCRA covering all Brazil."
 		},
-		"RLG_AREAHA": {
-			"title": "Legal Reserve Area- INCRA"
+		"RLGM_AREAHA": {
+			"title": "Legal Reserve Area",
+			"description": "Data produced by the CSR / UFMG and LAGES / UFMG with the support of Climate and Land Use Alliance covering all Brazil."
 		},
 		"ASS_AREAHA": {
-			"title": "Rural Settlements - INCRA"
+			"title": "Rural Settlements",
+			"description": "Data produced by INCRA covering all Brazil."
+		},
+		"ATV_AMBIEN": {
+			"title": "Environmental Assets",
+			"description": "Data produced by the CSR / UFMG and LAGES / UFMG with the support of Climate and Land Use Alliance covering all Brazil."
 		},
 		"BFU_AREAHA": {
-			"title": "Land Basis - INCRA"
+			"title": "Land Basis (INCRA)",
+			"description": "Data produced by INCRA covering all Brazil."
 		},
 		"BOV_ABAT": {
-			"title": "Cattle - Slaughtered (2006)"
+			"title": "Cattle - Slaughtered (2006)",
+			"description": "Data produced by IBGE through the Agricultural Census covering all Brazil."
 		},
 		"BOV_QTDE": {
-			"title": "Cattle - Herd (2014)"
+			"title": "Cattle - Herd (2014)",
+			"description": "Data produced by IBGE through the Municipal Livestock Research covering all Brazil."
 		},
-		"CAN_PROD": {
-			"title": "Sugar Cane - Production (2014)"
+		"SCA_AREAHA": {
+			"title": "Sugar Cane - Map (2014)",
+			"description": "Data produced by Agrosatélite company under the Canasat - remote monitoring satellite system in the areas of sugarcane production in the Center-South region of Brazil."
+		},
+		"CAN_APLAN": {
+			"title": "Sugar Cane - Planted Area (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"CAN_TON": {
+			"title": "Sugar Cane - Production (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"CAN_VL": {
+			"title": "Sugar Cane - Production Value (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"CAN_RENMED": {
-			"title": "Sugar Cane - Average Income (2014)"
+			"title": "Sugar Cane - Average Income (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"COM_TRADIC": {
-			"title": "Traditional Communities (Fund. Palmares)"
+			"title": "Traditional Communities",
+			"description": "Data produced by the Palmares Cultural Foundation covering all Brazil."
 		},
 		"CON_TERRA": {
-			"title": "Land Conflicts - Registered (2014)"
+			"title": "Land Conflicts - Registered",
+			"description": "Data produced by the Pastoral Land Commission (CPT), with reference in 2014 and covering all Brazil."
 		},
 		"CON_TERPES": {
-			"title": "Land Conflicts - People Involved (2014)"
+			"title": "Land Conflicts - People Involved",
+			"description": "Data produced by the Pastoral Land Commission (CPT), with reference in 2014 and covering all Brazil."
+		},
+		"DFAPP_AREAHA": {
+			"title": "PPA Déficit",
+			"description": "Data produced by the CSR / UFMG and LAGES / UFMG with the support of Climate and Land Use Alliance covering all Brazil."
+		},
+		"DFRL_AREAHA": {
+			"title": "Legal Reserve Déficit",
+			"description": "Data produced by the CSR / UFMG and LAGES / UFMG with the support of Climate and Land Use Alliance covering all Brazil."
 		},
 		"DES_AREAHA": {
-			"title": "Deforestation (Most recent)"
+			"title": "Deforestation (Most recent)",
+			"description": "Compilation map organized by LAPIG/UFG considering only the Brazilian deforestation monitoring programs. For the Amazon biome considered PRODES data produced by INPE, with the reference period 2014/2015. For the Cerrado was used the SIAD data produced by LAPIG/UFG, with the reference period 2014/2015. The data with reference period 2013/2014, produced by the SOS Mata Atlântica were used in the Atlantic Forest. In the Caatinga, Pampa and Pantanal was considered the data produced under the PMDBBS, reference period 2008/2009."
+		},
+		"DES08_AREAHA": {
+			"title": "Accumulated Deforestation (2008-2015)",
+			"description": "Compilation map organized by LAPIG / UFG considering  only the Brazilian deforestation monitoring programs. For the Amazon biome considered PRODES data produced by INPE, with the reference period 2008/2009 to 2014/2015. For the Cerrado was used the SIAD data produced by LAPIG / UFG, with the reference period 2008/2009 to 2014/2015. This data has territorial scope only to the Amazon and Cerrado."
 		},
 		"FIG_QTD": {
-			"title": "Slaughterhouses"
+			"title": "Slaughterhouses",
+			"description": "Data produced from the addresses geocoding of registered slaughterhouses."
 		},
 		"FOR_AREAHA": {
-			"title": "Planted Forest"
+			"title": "Planted Forest",
+			"description": "Data produced by the NGO Transparent World with support from WRI, with territorial covering all Brazil."
+		},
+		"IDHM": {
+			"title": "HDI",
+			"description": "Data produced by the UNDP Brazil, the IPEA and the João Pinheiro Foundation using Censuses IBGE."
 		},
 		"LEI_LITROS": {
-			"title": "Milk - Production (2006)"
+			"title": "Milk - Production (2014)",
+			"description": "Data produced by IBGE through the Municipal Livestock Research covering all Brazil."
 		},
-		"MIL_PROD": {
-			"title": "Corn - Production (2014)"
+		"MIL_AREAHA": {
+			"title": "Corn - Map (2014)",
+			"description": "Map produced by Agrosatélite company under the Project \"Geospatial analyzes of the annual crops dynamic in the Brazilian Cerrado biome: 2000 to 2014\" funded by \"Gordon and Betty Moore Foundation.\" Its covers only the Cerrado biome."
+		},
+		"MIL_APLAN": {
+			"title": "Corn - Planted Area (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"MIL_TON": {
+			"title": "Corn - Production (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"MIL_VL": {
+			"title": "Corn - Production Value (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"MIL_RENMED": {
-			"title": "Corn - Average Income (2014)"
+			"title": "Corn - Average Income (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"PIV_AREAHA": {
-			"title": "Central Pivots"
+			"title": "Central Pivots",
+			"description": "Data produced by ANA and EMBRAPA, with territorial covering all Brazil."
 		},
 		"QUI_AREAHA": {
-			"title": "Maroons - INCRA"
+			"title": "Maroons",
+			"description": "Data produced by INCRA covering all Brazil."
 		},
 		"PAS_AREAHA": {
-			"title": "Pastures"
+			"title": "Pastures",
+			"description": "Compilation pasture map organized by LAPIG / UFG, including data produced by the laboratory itself and TerraClass Amazon, Cerrado TerraClass, Upper Paraguay River Basin Mapping, you named. It's cover all Brazil."
+		},
+		"CAP_CATTLE": {
+			"title": "Carrying Capacity",
+			"description": "Data produced (BETA version) by LAPIG / UFG using MOD17A2H product as well as data from several field campaigns. It's cover all Brazil."
+		},
+		"IND_AREAHA": {
+			"title": "Indigenous Reserve",
+			"description": "Data produced by FUNAI covering all Brazil."
 		},
 		"SIL_CAPTON": {
-			"title": "Silos - Max Capacity"
+			"title": "Silos - Max Capacity.",
+			"description": "Data produced by AGROICONE company under the INPUT project.It's cover only to the states of Bahia, Maranhao, Mato Grosso, Mato Grosso do Sul, Piaui, Sao Paulo and Tocantins."
 		},
-		"SOJ_PROD": {
-			"title": "Soy - Production (2014)"
+		"SOJ_AREAHA": {
+			"title": "Soy - Map (2014)",
+			"description": "Map produced by Agrosatélite company under the Project \"Geospatial analyzes of the annual crops dynamic in the Brazilian Cerrado biome: 2000 to 2014\" funded by \"Gordon and Betty Moore Foundation.\" Its covers only the Cerrado biome."
+		},
+		"SOJ_APLAN": {
+			"title": "Soy - Planted Area (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"SOJ_TON": {
+			"title": "Soy - Production (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
+		},
+		"SOJ_VL": {
+			"title": "Soy - Production Value (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"SOJ_RENMED": {
-			"title": "Soy - Average Income (2014)"
+			"title": "Soy - Average Income (2014)",
+			"description": "Data produced by IBGE through Research Municipal Agricultural Production (PAM) covering all Brazil."
 		},
 		"TRB_ESCRAV": {
-			"title": "Slave Work - People"
+			"title": "Slave Work - People",
+			"description": "Data produced by the Pastoral Land Commission (CPT), with reference in 2014, covering all Brazil."
 		},
 		"PSU_AREAHA": {
-			"title": "U.C. - Sustainable Use"
+			"title": "U.C. - Sustainable Use",
+			"description": "Data produced by IBGE, with reference in 2014 and covering all Brazil."
 		},
 		"PIN_AREAHA": {
-			"title": "U.C. - Full Protection"
+			"title": "U.C. - Full Protection",
+			"description": "Data produced by IBGE, with reference in 2014 and covering all Brazil."
+		},
+		"REM_AREAHA": {
+			"title": "Native Vegetation",
+			"description": "Native vegetation compilation map organized by LAPIG / UFG. For the Amazon biome considered data from TerraClass Amazon, with reference in 2012. For the Cerrado was used the TerraClass Cerrado, with reference in 2012. The data produced by SOS Mata Atlântica, with reference in 2014, was used in the Atlantic Forest. Vegetation cover map in the Upper Paraguay Basin, with reference in 2014, was used for the Pantanal. Biomes Caatinga and Pampa considered the data produced under the PMDBBS, with reference in 2008."
 		}
 	}
 }

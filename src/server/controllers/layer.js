@@ -228,11 +228,12 @@ module.exports = function(app) {
 						if(language !='pt-br'){
 								idLayer = result._id;
 								translateNameDesc = translateEN.layers[idLayer];
-								
-								result.name = translateNameDesc.name;
-								result.description = translateNameDesc.description;
-								result.subject = translateEN.subjects[result.subject]
-								result.search = result.name + ' ' + result.description + ' ' + result.subject + ' ' + result._id
+								if(translateEN.layers[idLayer]) {
+									result.name = translateNameDesc.name;
+									result.description = translateNameDesc.description;
+									result.subject = translateEN.subjects[result.subject]
+									result.search = result.name + ' ' + result.description + ' ' + result.subject + ' ' + result._id
+								}
 						}
 
 						response.send(result);

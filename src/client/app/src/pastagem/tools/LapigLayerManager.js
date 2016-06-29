@@ -162,7 +162,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 
 	        		var lastIndex = (comboDate.store.getTotalCount() - 1);
 	        		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : lastIndex;
-	        		if(btn.getText() == '<')
+	        		if(btn.id == 'lapig_layermanager::btn_prevdate')
 	        			var newIndex = index - 1
 	        		else
 	        			var newIndex = index + 1
@@ -177,6 +177,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 							var prevBtn = ownerCt.items.itemAt(0);
 							var comboDate = ownerCt.items.itemAt(1);
 							var nextBtn = ownerCt.items.itemAt(2);
+							var playBtn = Ext.getCmp("lapig_layermanager::btn_play");
 
 							var lastIndex = (comboDate.store.getTotalCount() - 1);
 	        		var index = comboDate.selectedIndex;
@@ -186,10 +187,13 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 	        		else
 	        			prevBtn.enable();
 
-	        		if(index == lastIndex)
+	        		if(index == lastIndex) {
 	        			nextBtn.disable();
-	        		else
+	        			playBtn.disable();
+	        		} else {
 	        			nextBtn.enable();
+								playBtn.enable();
+	        		}
 	        			
 						}
 
@@ -270,6 +274,8 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						        },
 						        {
 						            xtype: 'button',
+						            id: "lapig_layermanager::btn_play",
+						            disabled: true,
 						            width: 20,
 						            icon   : 'theme/app/img/play.png',
 						            listeners: {

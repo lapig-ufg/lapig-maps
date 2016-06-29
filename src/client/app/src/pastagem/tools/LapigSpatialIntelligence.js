@@ -192,6 +192,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         this.layerCollection[type][name].endEdit();
         this.layerCollection[type][name].commit();
 
+        console.log(this.layerCollection[type][name].data.layer.name);
+        console.log(this.layerCollection[type][name]);
+
         mapPanel.layers.add(this.layerCollection[type][name]);
       }.bind(this) );
     
@@ -531,7 +534,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                   
                   if(instance.cityHasGeoData[key]) {
                     var layerName = field.layer;
-                    var layerTitle = attr['info'] + " - " + field.label;
+                    var layerTitle = attr['info'] + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
                     filter += " AND '[" + columnCity + "]' = '" + attr[columnCity] + "'";
                     var bbox = attr.bbox;
 
