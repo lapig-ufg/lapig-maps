@@ -127,10 +127,9 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
       this.fireEvent('afteredit', this, changes, r, this.rowIndex);
     } else {
       this.fireEvent('canceledit', this, false, this.rowIndex);
-      keep = true;
     }
 
-    if(!keep) this.hide();
+    this.hide();
   },
 
   positionButtons: function(){
@@ -143,14 +142,8 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
         width = Math.min(g.getWidth(), g.getColumnModel().getTotalWidth());
 
       var rowNum = this.grid.getStore().getCount();
-      var top = 0;
-      if(rowNum - this.rowIndex <= 2){
-      	top = -h;
-      }else{
-      	top = h - 2;
-      }
 
-      this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: top, stopFx: true, duration:0.2});
+      this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: h - 2, stopFx: true, duration:0.2});
 
       this.doLayout();
     }
@@ -272,8 +265,14 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
     if(t && t.rendered && t.isVisible()){
       t.hide();
     }
-  }
+  },
 
+  onKey: function(f, e){
+    if(e.getKey() === e.ENTER && this.isValid()){
+      this.stopEditing(true);
+      e.stopPropagation();
+    }
+  }
 });
 
 Ext.preg(gxp.plugins.LapigRowEditor.ptype, gxp.plugins.LapigRowEditor);
