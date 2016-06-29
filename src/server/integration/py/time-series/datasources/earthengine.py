@@ -227,10 +227,11 @@ class EarthEngine(Datasource):
 
 		return groupedValues;
 
-	def createPixelStructure(self, eeResultList, originalIndex):
+	def createPixelStructure(self, eeResultList):
 		pixels = [];
 		dates = [];
 		datesFull = False;
+		originalIndex = 4;
 
 		for pixelSeries in eeResultList:
 			pixelSeries.sort(key=itemgetter(0));
@@ -360,33 +361,19 @@ class EarthEngine(Datasource):
 
 	def lookup(self, geoJsonGeometry, mode=None):
 
-		cacheStr = self.layer_id + geoJsonGeometry + (str(mode) if mode is not None else '');
+		cacheStr = ",ts-"+self.layer_id + geoJsonGeometry;
 		cacheKey = sha1(cacheStr.encode()).hexdigest();
 
-		cacheResult = None;
 		pixelsStruct = None;
-		hasCache = False;
 
 		if(self.cache.enable == '1'):
 			cacheResult = self.cache.get(cacheKey)
-			if cacheResult is not None:
-				result = ast.literal_eval(cacheResult);
-				return result;
-			elif mode is not None:
-				altMode = ('series' if mode == 'trend' else ('trend' if mode == 'series' else ''));
 
-				altCacheStr = self.layer_id + geoJsonGeometry + altMode;
-				altCacheKey = sha1(altCacheStr.encode()).hexdigest();
-				altCacheResult = self.cache.get(altCacheKey)
-
-				if altCacheResult is not None:
-					hasCache = True;
-					resultCache = ast.literal_eval(altCacheResult);
-					pixelsStruct = self.createPixelStructure([resultCache["values"]], 1);
-				
-		if not hasCache:
+		if cacheResult is not None:
+			pixelsStruct = ast.literal_eval(cacheResult)
+		else:
 			dates = self.splitDate()
-			eeResultList = []
+			eeResult = []
 
 			# Todas as threads usam a mesma queue
 			q = Queue.Queue();
@@ -397,14 +384,17 @@ class EarthEngine(Datasource):
 
 			# Pega os resultados bloqueando ate as threads teminarem
 			for i in dates:
-				eeResultList.extend(q.get());
+				eeResult.extend(q.get());
 
-			groupedValues = self.groupValuesByCoord(eeResultList);
+			groupedValues = self.groupValuesByCoord(eeResult);
 
 			groupedValues = self.dateJulianToGregorian(groupedValues);
 			groupedValues =  self.removeDuplicate(groupedValues);
 
-			pixelsStruct = self.createPixelStructure(groupedValues, 4);
+			pixelsStruct = self.createPixelStructure(groupedValues);
+
+			if(self.cache.enable == '1'):
+				self.cache.set(cacheKey, pixelsStruct);
 
 		dates = pixelsStruct["dates"];
 		pixelsOriginal = pixelsStruct["series"][0]["pixels"];
@@ -426,8 +416,5 @@ class EarthEngine(Datasource):
 
 		for i, dtRow in enumerate(result["values"]):
 			dtRow.insert(0, dates[i])
-
-		if(self.cache.enable == '1'):
-			self.cache.set(cacheKey, result);
 
 		return result;

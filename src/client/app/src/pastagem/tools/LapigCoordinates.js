@@ -651,7 +651,6 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 						],
 						stripeRows: true,
 						autoExpandColumn: 'coordinate_name',
-						// autoHeight: true, //!!!
 						height: gridHeight,
 						autoWidth : true, //!!!
 						listeners: {
