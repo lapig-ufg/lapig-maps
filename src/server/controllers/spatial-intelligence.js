@@ -554,7 +554,6 @@ module.exports = function(app) {
 
 	Internal.getSpatialDb = function(callback) {
 		var spatialDb = new sqlite3.Database(config.spatialIntelligenceDb);
-		console.log(config.spatialIntelligenceDb)
 		spatialDb.spatialite(function() {
 			callback(spatialDb);
 		});
@@ -632,7 +631,7 @@ module.exports = function(app) {
 				if(field['excludeFromRegions']) {
 					for(var key in field['excludeFromRegions']) {
 						var r = field['excludeFromRegions'][key];
-						console.log((r == region), r,region);
+						
 						if(r == region) {
 							next();
 							return;
@@ -652,7 +651,6 @@ module.exports = function(app) {
 				};
 				
 				var sql = Internal.getQuerySql(field.name, regionFilter, field.operation, field.sort, field.applyOperationInSql);
-				console.log(sql);
 				
 				var rowEach = function(err, row) {
 					row.leaf = true;
@@ -707,7 +705,6 @@ module.exports = function(app) {
 				if(field['excludeFromRegions']) {
 					for(var key in field['excludeFromRegions']) {
 						var r = field['excludeFromRegions'][key];
-						console.log((r == region), r,region);
 						if(r == region) {
 							next();
 							return;
@@ -773,7 +770,8 @@ module.exports = function(app) {
 		var regionType = request.param('regionType', 'state');
 		var region = request.param('region', 'GO');
 
-		var metadata = Internal.metadata;
+		var metadata = JSON.parse(JSON.stringify(Internal.metadata));  
+
 		metadata.filter = Internal.getRegionFilter(regionType, region, '', true);
 		metadata.filterRaster = Internal.getRegionFilterForRaster(regionType, region);
 		metadata.titlePrefix = 'Municípios do(a) ';
@@ -849,8 +847,6 @@ module.exports = function(app) {
 			if(response){
 					var result = request.finalizeResultQuery;
 					var language = request.param('lang');
-
-					console.log(language)
 
 					if (language.toLowerCase() != 'pt-br'){
 
