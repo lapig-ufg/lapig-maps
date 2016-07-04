@@ -31,6 +31,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     ]
   },
 
+  bfastApplicableLayers:[
+    'TRMM_PRECIPITATION',
+    'MOD16_NOR_EVAPOTRANSPIRATION',
+    'MOD16_POT_EVAPOTRANSPIRATION',
+    'MOD16_EVAPOTRANSPIRATION',
+    'MOD13Q1_NDVI',
+    'MOD13Q1_EVI',
+    'MOD13Q1_EVI2'
+  ],
+
   constructor: function(config) {
     lapig.tools.RasterSeries.superclass.constructor.apply(this, arguments);
 
@@ -1261,7 +1271,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     var endYear = Ext.getCmp('lapig-raster-series-tab-trend-cmb-end-year').getValue();
 
     if (endYear - startYear < 1){
-      return Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_ERROR1);
+      return Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_SMLTIMECHANGE);
     }
 
     var interpolation = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation').getValue();
@@ -1501,8 +1511,22 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       var startValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value');
       var endValueCmb = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value');
     }else if(activeTab.index == instance.tabProperties.trend){
-      if (timeseriesId.indexOf('MOD13Q1') == -1) {
-        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_ERROR2);
+      var trendSupported = false;
+      var layersLength = instance.bfastApplicableLayers.length;
+      
+      for(i=0;i<layersLength;i++){
+        if(timeseriesId === instance.bfastApplicableLayers[i]){
+          trendSupported = true
+          break;
+        }
+      }
+
+      if (!trendSupported) {
+        Ext.Msg.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, 
+          i18n.LAPIGRASTERSERIES_ALERT_VLDTRENDDATA+timeseriesId+
+          i18n.LAPIGRASTERSERIES_ALERT_VLDTRENDDATA_CONT);
+        /*Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_ALERT_VLDTRENDDATA+
+          instance.bfastApplicableLayers);*/
         instance.restartChart();
         return;
       }

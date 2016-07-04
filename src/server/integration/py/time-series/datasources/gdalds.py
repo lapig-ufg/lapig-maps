@@ -4,6 +4,8 @@ import gdal, ogr, osr, numpy;
 from subprocess import Popen, PIPE, STDOUT;
 from _datasource import Datasource;
 import ast;
+import loader;
+import utils;
 
 
 
@@ -73,7 +75,22 @@ class Gdalds(Datasource):
 			count.append(float(i))
 			result.append(count)
 
-		series = [{'position': 1, 'type': 'original', 'id': 'original', 'label': 'Valores originais'}, {'position': 2, 'type': 'filter', 'id': 'Wiener', 'label': 'Wiener'}, {'position': 3, 'type': 'filter', 'id': 'Savgol', 'label': 'Savitzky Golay'}]
+		series = [{'position': 1, 'type': 'original', 'id': 'original', 'label': 'Valores originais'}]
+
+		if mode == 'trend':
+			filters = loader.getFilters(self.layer_id)
+			bfastIndex = utils.findIndexByAttribute(filters, 'id', 'Bfast')
+			filteredValues = filters[bfastIndex].run(mean, None, None);
+			filteredValues = filteredValues if type(filteredValues) == list else filteredValues.tolist();
+			
+			if len(filteredValues) == len(mean):
+				series.append({
+					'id': "Bfast",
+					'label': 'BFAST',
+					'position': len(result[0]), #2
+					'type': 'trend'
+				});
+				utils.joinArray(result, filteredValues);
 				
 		return {
 			"series": series,
