@@ -45,7 +45,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       border: false,
       flex:1,
       style:{
-        'margin-top':'10px'
+        'margin-top':'5px'
       },
       items: [
         this.getOptionsCmp(),
@@ -95,7 +95,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     gridInfo.setRootNode(newNode);
   },
 
-  handleLayer: function(layerName, layerTitle, filter, bbox, setupOthers, type, visibility) {
+  handleLayer: function(layerName, layerTitle, bbox, setupOthers, type, visibility, json) {
     var tool = this;
     var layerManager = tool._layers;
     var app = tool.target;
@@ -106,7 +106,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     if(layerManager.exists(layerName, type)) {
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.update(layerName, layerTitle, filter, type, visibility, bounds)
+      layerManager.update(layerName, layerTitle, type, visibility, bounds, json)
       
     } else {
           
@@ -115,7 +115,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.add(app, layerName, layerTitle, filter, type, visibility, bounds)
+      layerManager.add(app, layerName, layerTitle, type, visibility, bounds, json)
     }
 
     
@@ -150,10 +150,11 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         this.layerCollection[type][name] = null;
       }
     },
-    update: function(name, title, filter, type, visibility, bounds) {
+    update: function(name, title, type, visibility, bounds, json) {
       this.layerCollection[type][name].beginEdit();
+      this.layerCollection[type][name].json = json;
       this.layerCollection[type][name].data.layer.name = title;
-      this.layerCollection[type][name].data.layer.params['cql_filter'] = filter;
+      this.layerCollection[type][name].data.layer.params['MSFILTER'] = json['msfilter'];
 
       this.layerCollection[type][name].data.layer.maxExtent = bounds;
       this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
@@ -165,31 +166,34 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       this.layerCollection[type][name].endEdit();
       this.layerCollection[type][name].commit();
     },
-    add: function(app, name, title, filter, type, visibility, bounds) {
+    add: function(app, name, title, type, visibility, bounds, json) {
 
       if( this.layerCollection[type] == undefined )
         this.layerCollection[type] = {}
 
       var layerConfig = { 
         source: 'ows', 
-        cql_filter: filter, 
         name: name, 
         title: title,
         visibility: visibility
       }
 
       app.createLayerRecord(layerConfig, function(record) {
-        record.json = {};
+        record.json = json;
 
         this.layerCollection[type][name] = record;
         this.layerCollection[type][name].beginEdit();
         
         this.layerCollection[type][name].data.layer.maxExtent = bounds;
         this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
+        this.layerCollection[type][name].data.layer.params['MSFILTER'] = json['msfilter'];
 
         this.layerCollection[type][name].data.layer.name = layerConfig.title;
         this.layerCollection[type][name].endEdit();
         this.layerCollection[type][name].commit();
+
+        console.log(this.layerCollection[type][name].data.layer.name);
+        console.log(this.layerCollection[type][name]);
 
         mapPanel.layers.add(this.layerCollection[type][name]);
       }.bind(this) );
@@ -271,13 +275,13 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     }
 
     return {
-      layout: 'form',
+      layout:'hbox',
       border: false,
       xtype: 'panel',
       flex: 1, 
       autoScroll:false,
-      labelWidth:130,
-      height: 70,
+      height: 30,
+      labelAlign: 'top',
       items: [
         {
           xtype:'combo',
@@ -289,7 +293,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           typeAhead: true,
           editable: false,
           triggerAction: 'all',
-          flex: 1,
+          value: "Selecione uma região",
           listeners: {
             select: checkSubmitBtn
           },
@@ -342,13 +346,14 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               ['TO', 'Tocantins', '-50.74160818574438,-13.46727761938996,-45.69711366617483,-5.167998438250915', 'state']
             ]
           }
-        }
-      ],
-      buttons: [
+        },
         {
           text: i18n.LAPIGSPATIALINTELLIGENCE_BTNTXT_CONSULT,
           id: 'lapig_spatialintelligence::btn-submit',
           disabled: true,
+          xtype: 'button',
+          margins: {top:0, bottom:0, left:20},
+          width: '110px',
           listeners: {
             click: function() {
               submit();
@@ -450,12 +455,26 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         listeners: {
           'load': function(node) {
             if(node.text == 'Root') {
+
+              instance.cityHasGeoData = {};
+
+              node.childNodes.forEach(function(child) {
+                if(child.attributes.children) {
+                  child.attributes.children.forEach(function(grandchild) {
+                    if(child.attributes['layer']) {
+                      var key = child.attributes['layer']+"_"+grandchild['COD_MUNICI'];
+                      instance.cityHasGeoData[key] = true;
+                    }
+                  });
+                }
+              });
+
               var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
               var cmbCities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
 
               instance.loadMask.hide();
               gridInfo.setDisabled(false);
-              
+
               var layerName = instance.queryMetadata.layer;
               var layerTitle = instance.queryMetadata.titlePrefix + instance.selectedRegion.data.label;
               var filter = instance.queryMetadata.filter;
@@ -468,10 +487,17 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                 bbox = instance.selectCity.bbox;
                 layerTitle = instance.selectCity.info;
                 filter += " AND '[" + columnCity + "]' = '" + city + "'";
-                instance.handleLayer(layerName, layerTitle, filter, bbox, true, 'state', true);
-              } else {
-                instance.handleLayer(layerName, layerTitle, filter, bbox, true, 'state', true);
               }
+              
+              var json = {
+                type: 'VECTOR',
+                name: layerName,
+                msfilter: filter
+              };
+
+
+              
+              instance.handleLayer(layerName, layerTitle, bbox, true, 'state', true, json);
             }
           },
           'dblclick': function(node) {
@@ -503,14 +529,27 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                 var filter = instance.queryMetadata.filter;
 
                 if(field.layer) {
-                  var layerName = field.layer;
-                  var layerTitle = attr['info'] + " - " + field.label;
-                  filter += " AND '[" + columnCity + "]' = '" + attr[columnCity] + "'";
-                  var bbox = attr.bbox;
+                  
+                  var key = field.layer+"_"+attr['COD_MUNICI'];
+                  
+                  if(instance.cityHasGeoData[key]) {
+                    var layerName = field.layer;
+                    var layerTitle = attr['info'] + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
+                    filter += " AND '[" + columnCity + "]' = '" + attr[columnCity] + "'";
+                    var bbox = attr.bbox;
 
-                  var visibility = (parentAttr.layer == layerName) ? true : false;
+                    var filterRaster = instance.queryMetadata.filterRaster.replace("{CITY_CODE}", attr['COD_MUNICI']);
 
-                  instance.handleLayer(layerName, layerTitle, filter, bbox, false, 'city', visibility);
+                     var json = {
+                      type: field.type,
+                      name: field.layer,
+                      msfilter: ((field.type == 'RASTER') ? filterRaster : filter)
+                    };
+
+                    var visibility = (parentAttr.layer == layerName) ? true : false;
+
+                    instance.handleLayer(layerName, layerTitle, bbox, false, 'city', visibility, json);
+                  }
                 }
 
               });

@@ -25,7 +25,7 @@ module.exports = function(app) {
 		return params;
 	}
 
-	Internal.setHeaders = function(request, response) {
+	Internal.setHeaders = function(params, request, response) {
 		var requestType = request.param('REQUEST');
 
 		var headers = {};
@@ -34,12 +34,15 @@ module.exports = function(app) {
 			headers['content-type'] = 'application/xml';
 		} else if(requestType == 'GetLegendGraphic' || requestType == 'GetMap') {
 			headers['content-type'] = 'image/png';
-			//headers['content-disposition'] = 'inline; filename=geoserver-GetLegendGraphic.image';
-		} else if(requestType == 'GetCoverage') {
+		} else if(Internal.isWfsGetShp(params, true)) {
+			var filename = params['TYPENAME'];
+			headers['Content-Disposition'] = 'attachment; filename='+filename+'.zip';
+		} else if(Internal.isWcsGetTif(params, true)) {
+			var filename = (params['MSFILTER']) ?  params['COVERAGEID'] + '_' + params['MSFILTER'] : params['COVERAGEID'];
 			headers['Content-Description'] = 'coverage data';
 			headers['Content-Transfer-Encoding'] = 'binary';
 			headers['Content-ID'] = 'coverage/out.tif';
-			headers['Content-Disposition'] = 'INLINE; filename=out.tif';
+			headers['Content-Disposition'] = 'INLINE; filename='+filename+'.tif';
 		}
 
 		for (key in headers)
@@ -195,22 +198,25 @@ module.exports = function(app) {
 					&& params['VERSION'].toUpperCase() == '1.1.1';
 	}
 
-	Internal.isWfsGetShp = function(params) {
+	Internal.isWfsGetShp = function(params, ignoreFilter) {
 		return 	 params['SERVICE'].toUpperCase() == 'WFS' 
 					&& params['REQUEST'].toUpperCase() == 'GETFEATURE' 
-					&& params['OUTPUTFORMAT'].toUpperCase() == 'SHAPE-ZIP';
+					&& params['OUTPUTFORMAT'].toUpperCase() == 'SHAPE-ZIP'
+					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
-	Internal.isWcsGetTif = function(params) {
+	Internal.isWcsGetTif = function(params, ignoreFilter) {
 		return 	 params['SERVICE'].toUpperCase() == 'WCS' 
 					&& params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
-					&& params['FORMAT'].toUpperCase() == 'IMAGE/TIFF';
+					&& params['FORMAT'].toUpperCase() == 'IMAGE/TIFF'
+					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
-	Internal.isWcsGetTifZip = function(params) {
+	Internal.isWcsGetTifZip = function(params, ignoreFilter) {
 		return 	 params['SERVICE'].toUpperCase() == 'WCS' 
 					&& params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
-					&& params['FORMAT'].toUpperCase() == 'TIFF-ZIP';
+					&& params['FORMAT'].toUpperCase() == 'TIFF-ZIP'
+					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
 	OgcServer.ows = function(request, response) {
@@ -218,15 +224,15 @@ module.exports = function(app) {
 
 		if(params['LAYER'] == 'ogcserver') {
 			response.sendfile(config['path_undefined_img'])
-		} else if ( Internal.isWfsGetShp(params) ) {
+		} else if ( Internal.isWfsGetShp(params, false) ) {
 			Internal.downloadShp(params, response);
-		} else if ( Internal.isWcsGetTif(params) ) {
+		} else if ( Internal.isWcsGetTif(params, false) ) {
 			Internal.downloadTif(params, response);
-		} else if ( Internal.isWcsGetTifZip(params) ) {
+		} else if ( Internal.isWcsGetTifZip(params, false) ) {
 			Internal.downloadZipTif(params, response);
 		} else {
-			
-			Internal.setHeaders(request, response);
+
+			Internal.setHeaders(params, request, response);
 			var cacheKey = Internal.getCacheKey(params);
 			
 			if(cacheKey && (config['cacheEnable'] || Internal.isWmsGetCap(params)) ) {

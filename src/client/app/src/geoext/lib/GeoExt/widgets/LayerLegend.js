@@ -64,7 +64,7 @@ GeoExt.LayerLegend = Ext.extend(Ext.Container, {
         });
         if (this.layerRecord && this.layerRecord.store) {
             this.layerStore = this.layerRecord.store;
-            this.layerStore.on("update", this.onStoreUpdate, this);
+            //this.layerStore.on("update", this.onStoreUpdate, this);
             this.layerStore.on("add", this.onStoreAdd, this);
             this.layerStore.on("remove", this.onStoreRemove, this);
         }
@@ -167,7 +167,7 @@ GeoExt.LayerLegend = Ext.extend(Ext.Container, {
      */
     beforeDestroy: function() {
         if (this.layerStore) {
-            this.layerStore.un("update", this.onStoreUpdate, this);
+            //this.layerStore.un("update", this.onStoreUpdate, this);
             this.layerStore.un("remove", this.onStoreRemove, this);
             this.layerStore.un("add", this.onStoreAdd, this);
         }

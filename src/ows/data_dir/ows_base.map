@@ -2,6 +2,7 @@ MAP
   CONFIG "MS_ERRORFILE" "{path_logfile}"
   EXTENT -73.992931 -33.752061 -28.835884 5.271808
   DEBUG {log_level}
+  MAXSIZE 204800
 
   NAME "ogcserver"
   CONFIG "PROJ_LIB" "{path_projlib}"

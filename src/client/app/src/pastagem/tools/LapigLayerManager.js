@@ -53,7 +53,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 				var instance = this;
 
 				gxp.plugins.LapigLayerManager.superclass.configureLayerNode.apply(this, arguments);
-				
+
 				if (attr.layer instanceof OpenLayers.Layer.WMS) {
 
 					attr.expanded = true;
@@ -112,6 +112,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 														format: "image/png"
 												},
 												layerRecord: this.target.mapPanel.layers.getByLayer(attr.layer),
+												useScaleParameter: false,
 												showTitle: false
 										}
 					        ]
@@ -136,12 +137,32 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 								'</div></tpl>'
 						);
 
+						var btnAnimation = function() {
+							var btnNextDate = Ext.getCmp("lapig_layermanager::btn_nextdate");
+							var prevNextDate = Ext.getCmp("lapig_layermanager::btn_prevdate");
+
+							var instance = this;
+							
+							var evtFn = function() {
+								if(!btnNextDate.disabled) {
+									setTimeout(function(){
+					        	btnNextPrevDate(btnNextDate);
+									}, 1000);
+					      } else {
+					      	layerRecord.data.layer.events.unregister('loadend', instance, evtFn);
+					      }
+							}
+
+							layerRecord.data.layer.events.register('loadend', instance, evtFn);
+							evtFn();
+						}
+
 						var btnNextPrevDate = function(btn) {
 							var comboDate = btn.ownerCt.items.itemAt(1);
 
 	        		var lastIndex = (comboDate.store.getTotalCount() - 1);
 	        		var index = (comboDate.selectedIndex >= 0) ? comboDate.selectedIndex : lastIndex;
-	        		if(btn.getText() == '<')
+	        		if(btn.id == 'lapig_layermanager::btn_prevdate')
 	        			var newIndex = index - 1
 	        		else
 	        			var newIndex = index + 1
@@ -156,6 +177,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 							var prevBtn = ownerCt.items.itemAt(0);
 							var comboDate = ownerCt.items.itemAt(1);
 							var nextBtn = ownerCt.items.itemAt(2);
+							var playBtn = Ext.getCmp("lapig_layermanager::btn_play");
 
 							var lastIndex = (comboDate.store.getTotalCount() - 1);
 	        		var index = comboDate.selectedIndex;
@@ -165,10 +187,13 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 	        		else
 	        			prevBtn.enable();
 
-	        		if(index == lastIndex)
+	        		if(index == lastIndex) {
 	        			nextBtn.disable();
-	        		else
+	        			playBtn.disable();
+	        		} else {
 	        			nextBtn.enable();
+								playBtn.enable();
+	        		}
 	        			
 						}
 
@@ -180,8 +205,9 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 						    items: [
 						        {
 						            xtype: 'button',
+						            id: "lapig_layermanager::btn_prevdate",
 						            width: 20,
-						            text: '<',
+						            icon   : 'theme/app/img/arrow-left.png',
 						            listeners: {
 						            	click: btnNextPrevDate
 						            }
@@ -238,11 +264,22 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 										},
 										{
 						            xtype: 'button',
+						            id: "lapig_layermanager::btn_nextdate",
 						            width: 20,
-						            text: '>',
+						            icon   : 'theme/app/img/arrow-right.png',
 						            disabled: true,
 						            listeners: {
 						            	'click': btnNextPrevDate
+						            }
+						        },
+						        {
+						            xtype: 'button',
+						            id: "lapig_layermanager::btn_play",
+						            disabled: true,
+						            width: 20,
+						            icon   : 'theme/app/img/play.png',
+						            listeners: {
+						            	'click': btnAnimation
 						            }
 						        }
 						    ]

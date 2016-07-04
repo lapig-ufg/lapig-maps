@@ -412,7 +412,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
               infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
               actionTarget: {target: "map.tbar"},
-              layerParams: ['CQL_FILTER']
+              layerParams: ['MSFILTER']
             },
             { 
               actionTarget: { target: "map.tbar" },
@@ -507,8 +507,16 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   var mousePositionCtrl = new OpenLayers.Control.MousePosition({
                       displayProjection: new OpenLayers.Projection("EPSG:4326")
                   });
-                  mapPanel.map.addControl(mousePositionCtrl)  
+                  mapPanel.map.addControl(mousePositionCtrl);
                 }
+
+                /*mapPanel.map.events.register('addlayer', this, function(evt) {
+                  if(evt.layer) {
+                    evt.layer.events.register('loadend', this, function() {
+                      console.log('loadend', arguments);
+                    });
+                  }
+                });*/
 
                 addMapControls();
             }
