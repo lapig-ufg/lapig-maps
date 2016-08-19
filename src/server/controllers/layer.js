@@ -207,9 +207,9 @@ module.exports = function(app) {
 												if (translateEN.layers[idLayer] != undefined){
 													layer.layers[i].name = translateNameDesc.name
 													layer.layers[i].description = translateNameDesc.description
-													layer.layers[i].subject = translateEN.subjects[layer.layers[i].subject]
 													layer.layers[i].search = layer.layers[i].name + ' ' + layer.layers[i].description + ' ' + layer.layers[i].subject + ' ' + layer.layers[i]._id
 												}
+												layer.layers[i].subject = translateEN.subjects[layer.layers[i].subject]
 										}
 								})
 								response.send(result[0]);
