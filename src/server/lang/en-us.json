@@ -98,6 +98,8 @@
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "meters",
 	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "The Flash plugin needs to be installed and updated on your browser to use this tool!",
 	"LAPIGRASTERSERIES_GROUPCB_ONLY": "Only",
+	"LAPIGRASTERSERIES_HELP":"As séries temporais são...",
+	"LAPIGRASTERSERIES_TREND_HELP":"As tendências são....",
 
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_ROI": "Region of interest",
 	"LAPIGSPATIALINTELLIGENCE_BTNTXT_CONSULT": "Consult",

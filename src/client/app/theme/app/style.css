@@ -120,6 +120,10 @@ div.olControlMousePosition {
     background-image: url(img/file-xls.png) !important;
 }
 
+.lapig-icon-help {
+    background-image: url(img/help.png) !important;
+}
+
 .lapig-icon-refresh {
     background-image: url(img/refresh.png) !important;
 }
@@ -158,7 +162,7 @@ div.olControlMousePosition {
 }
 
 .x-form-cb-label {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .spatial-intelligence-geomap {
