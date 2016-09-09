@@ -84,8 +84,9 @@
 	"LAPIGRASTERSERIES_GROUPCB_TIME": "Tempo em que ocorre mudança:",
 	"LAPIGRASTERSERIES_BTNTOOLTIP_RECALCULATE":"Recalcular tendência",
 	"LAPIGRASTERSERIES_ALERT_VALIDATION": "LAPIG-Maps - Validação",
-	"LAPIGRASTERSERIES_ALERT_ERROR1": "O período a ser analisado deve possuir pelo menos 1 ano.",
-	"LAPIGRASTERSERIES_ALERT_ERROR2": "A tendência pode ser calculada apenas para dados MOD13Q1",
+	"LAPIGRASTERSERIES_ALERT_SMLTIMECHANGE": "O período a ser analisado deve possuir pelo menos 1 ano.",
+	"LAPIGRASTERSERIES_ALERT_VLDTRENDDATA": "A tendência não pode ser calculada para dados ",
+	"LAPIGRASTERSERIES_ALERT_VLDTRENDDATA_CONT": " ainda...",
 	"LAPIGRASTERSERIES_TXT_ORIGINAL": "Original",
 	"LAPIGRASTERSERIES_TXT_FILTRATED": "Filtrado",
 	"LAPIGRASTERSERIES_TXT_TREND": "Tendência",
@@ -97,7 +98,8 @@
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "metros",
 	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "É necessário ter o plugin Flash instalado e atualizado no seu navegador para usar esta ferramenta!",
 	"LAPIGRASTERSERIES_GROUPCB_ONLY": "Apenas",
-
+	"LAPIGRASTERSERIES_HELP":"As séries temporais são...",
+	"LAPIGRASTERSERIES_TREND_HELP":"As tendências são....",
 
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_ROI": "Região de interesse",
 	"LAPIGSPATIALINTELLIGENCE_BTNTXT_CONSULT": "Consultar",

@@ -786,7 +786,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 			var y = screenSize.height/2 - height/2;
 
 			var fbar = buttons==undefined ? new Ext.Toolbar([]) : buttons;
-			var gridHeight = buttons==undefined ? height-33 : height-63;
+			var gridHeight = buttons==undefined ? height-33 : height-68;
 
 			return new Ext.Window({
 				id: 'lapig-coordinates-window',

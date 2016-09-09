@@ -72,6 +72,40 @@ module.exports = function(app) {
 				});
 		};
 
+		Layer.listAllRegions = function(projects, callback) {
+
+				var _idRegions = []
+
+				layerCollection.distinct('_id', { 'project': { $in: projects } }, function(err, _id) {
+						_id.forEach(function(l){
+								var _idString = l.toString();
+								var split = _idString.split('_');
+								var prefix = split[0];
+
+								if(_idString.indexOf('or_mp_')>=0)
+										prefix = 'or_mp'
+
+								if(_idRegions.indexOf(prefix)<0)
+						       			_idRegions.push(prefix)
+						});
+						callback(_idRegions);
+				});
+		};
+
+		Layer.findByRegion = function(_idRegions, projects, callback) {
+				layerCollection.find({ '_id': { $regex : '^'+_idRegions, $options: 'm' }, 'project': { $in: projects } }).toArray(function (err, layers){
+						
+						if (_idRegions == 'or'){
+								for(var i=0; i < layers.length; i++){
+										if (layers[i]._id.match(/or_mp/)){
+											delete layers[i]
+										}
+								}
+							}
+						callback(layers);
+				});
+		};
+
 		Layer.findByRegexWithPagination = function(search, projects, skip, limit, lang, callback) {
 
 			var query = {	'project': { $in: projects } };

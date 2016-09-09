@@ -78,7 +78,7 @@ module.exports = function(app) {
 				});
 		};
 
-		Layer.tree = function(request, response, next) {
+		Layer.treeSubjects = function(request, response, next) {
 
 				var projects = request.param('projects', '');
 				projects = projects.toUpperCase().split(',');
@@ -143,6 +143,86 @@ module.exports = function(app) {
 				});
 		};
 
+		Layer.treeRegions = function(request, response, next) {
+
+				var projects = request.param('projects', '');
+				projects = projects.toUpperCase().split(',');
+
+				layerModel.listAllRegions(projects, function(regions) {
+					
+						var result = [];
+
+						var interate = function(region, next){
+
+								if(region == 'bi')
+									regionStr = 'Biomas'
+								else if (region == 'es')
+									regionStr = 'Estados'
+								else if (region == 'mu')
+									regionStr = 'Municípios'
+								else if (region == 'or')
+									regionStr = 'Outras Regiões'
+								else if (region == 'pa')
+									regionStr = 'Brasil'
+								else if (region == 'or_mp')
+									regionStr = 'Matopiba'
+
+								var regionObj = {
+											text:regionStr,
+											iconCls: 'task-folder'
+								};
+
+
+								layerModel.findByRegion(region, projects, function(layers) {
+									
+										var childrens = [];
+										layers.sort(function(a,b) {
+												var aName = unidecode(a.name);
+												var bName = unidecode(b.name);
+
+												if(aName < bName) return -1;
+										    if(aName > bName) return 1;
+										    return 0;
+										})
+
+										for(i in layers){
+												var layer = layers[i];
+												var children = {
+												    text: layer.name,
+												    id: layer._id,
+												    leaf:true,
+												    iconCls:'task'
+											 	}
+
+												childrens.push(children);
+										}
+
+										regionObj['children'] = childrens;
+
+										result.push(regionObj);
+										next();
+								});
+						};
+
+						var finalize = function(){
+
+								result.sort(function(a,b) {
+										var aText = unidecode(a.text);
+										var bText = unidecode(b.text);
+
+										if(aText < bText) return -1;
+								    if(aText > bText) return 1;
+								    return 0;
+								})
+								request.finalizeResultTree = result;
+								next();
+						}
+
+						async.each(regions, interate, finalize);
+
+				});
+		};
+
 		Layer.search = function(request, response, next){
 
 				var skip = request.param('start');
@@ -152,14 +232,14 @@ module.exports = function(app) {
 				var lang = request.param('lang');
 				var result = [];
 			
-						layerModel.findByRegexWithPagination(search, projects, skip, limit, lang, function(totalCount, layers) {
-								result.push({
-								    totalCount: totalCount,
-								    layers: layers
-								})
-								request.finalizeResultSearch = result;
-								next();
-						});
+				layerModel.findByRegexWithPagination(search, projects, skip, limit, lang, function(totalCount, layers) {
+						result.push({
+						    totalCount: totalCount,
+						    layers: layers
+						})
+						request.finalizeResultSearch = result;
+						next();
+				});
 		};
 
 		Layer.translateTree = function(request, response){
@@ -172,6 +252,10 @@ module.exports = function(app) {
 								result.forEach(function(layer) {
 										nameCat = layer.text;
 										categoriaEn = translateEN.subjects[nameCat];
+
+										if (categoriaEn == undefined)
+											categoriaEn = translateEN.regions[nameCat];
+
 										layer.text = categoriaEn;
 
 										for(i=0; i<layer.children.length; i++){
@@ -207,9 +291,9 @@ module.exports = function(app) {
 												if (translateEN.layers[idLayer] != undefined){
 													layer.layers[i].name = translateNameDesc.name
 													layer.layers[i].description = translateNameDesc.description
-													layer.layers[i].subject = translateEN.subjects[layer.layers[i].subject]
 													layer.layers[i].search = layer.layers[i].name + ' ' + layer.layers[i].description + ' ' + layer.layers[i].subject + ' ' + layer.layers[i]._id
 												}
+												layer.layers[i].subject = translateEN.subjects[layer.layers[i].subject]
 										}
 								})
 								response.send(result[0]);

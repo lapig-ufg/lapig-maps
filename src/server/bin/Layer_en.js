@@ -27,6 +27,7 @@ var parseCsv = function(filepath, callback) {
 
     result = {
               "subjects": {},
+              "regions": {},
               "layers": {}
     }
       instance.objLayers = [];
@@ -42,8 +43,12 @@ var parseCsv = function(filepath, callback) {
         "categoria": col[3],
         "categories":col[4],
         "_id":col[5],
-        "searchEn": col[0] + " " + col[1] + " " + col[3] + " " + col[4] + " " + col[5]
+        "searchEn": col[0] + " " + col[1] + " " + col[3] + " " + col[4] + " " + col[5],
+        "regioes": col[8],
+        "regions": col[9]
       };
+
+      console.log(objeto.regioes)
 
       var catPT = objeto.categoria;
       var catEN = objeto.categories;
@@ -51,8 +56,11 @@ var parseCsv = function(filepath, callback) {
       var name = objeto.name;
       var description = objeto.description;
       var searchEn = objeto.searchEn;
+      var regioesPT = objeto.regioes;
+      var regionsEn = objeto.regions;
 
       result.subjects[catPT] = catEN,
+      result.regions[regioesPT] = regionsEn,
       result.layers[layerId] = {
                   "name": name,
                   "description": description,
