@@ -239,7 +239,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                         hideLabel: true,
                         items: [{
                             checked: true,
-                            boxLabel: 'Assunto', 
+                            boxLabel: i18n.LAPIGADDLAYER_BTNTXT_SUBJECT, 
                             name: 'treeRadio', 
                             inputValue: 1,
                             listeners: {
@@ -256,7 +256,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                 }
                             }
                         },{
-                            boxLabel: 'Região', 
+                            boxLabel: i18n.LAPIGADDLAYER_BTNTXT_REGION, 
                             name: 'treeRadio', 
                             inputValue: 2,
                             listeners: {
