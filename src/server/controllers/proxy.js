@@ -53,6 +53,5 @@ module.exports = function(app) {
 		var baseUrl = config.tms;
 		Internal.doRequest(request, response, baseUrl);
 	}
-	
 	return Proxy;
 }

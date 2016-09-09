@@ -10,29 +10,113 @@
 
     <link href="thirdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="thirdparty/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="thirdparty/OpenLayers/theme/default/style.css" rel="stylesheet">
 
+    <style>
+        .olControlScaleLineTop {
+          font-size: 9px;
+        }
+        .olControlScaleLineBottom {
+          font-size: 9px;
+        }
+    </style>
   </head>
 
   <body>
-    <img style="position: absolute; top: -3px; height: 40px; left: 0px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
-    <span style="position:absolute; font-size: 15px; left: 120px; top: 15px; right: 200px; font-weight: bold; text-align: center; height: 25px; overflow: hidden;"><%= title %></span>
+    <!-- Mapa -->
+    <div style="border: 1px solid gray; width: 680px; height: 539px; margin-top: 40px !important; margin-left: 1px !important; position: absolute; overflow: hidden;" id="map"></div>
 
-    <img src="<%= map %>" style="border: 1px solid gray; margin-right: 10px; position:absolute; top: 40px;" />
+    <!-- Logos -->
+    <img style="position: absolute; height: 40px; left: 1px; padding-bottom: 8px; " class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
+    <img style="position: absolute; height: 40px; left: 815px; padding-bottom: 8px; " class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros2.png" />
 
-    <span style="position:absolute; border: 1px solid gray; padding: 5px 10px 5px 10px; top: 40px; left: 710px; height: 490px; overflow: hidden;">
+    <!-- Titulo -->
+    <span style="position: absolute; font-size: 15px; left: 100px; top: 10px; font-weight: bold; width: 630px; text-align: center; height: 25px; overflow: hidden;"><%= title %></span>
+
+    <!-- Lengendas-->
+    <span style="position:absolute; border: 1px solid gray; padding: 5px 1px 431px 10px; display: block; width: 215px; height: 0px; top: 40px; left: 685px; overflow: hidden;">
       <h4 style = "font-color:gray; font-weight: bold; font-size: 15px"><%= lang.LAPIGPRINT_TTLAREAMAP_LEGENDASMAP %>: </h4>
-      <% for(var i=0; i<legends.length; i++) {%>
-          <span style="padding-bottom:5px; font-size: 12px"><%= legends[i].label %></span>
+      <% for(var i=0; i<layers.length; i++) {%>
+          <span style="padding-bottom:5px; font-size: 12px; font-weight: bold"><%= layers[i].label %></span>
         <p>
-         <img src="<%= legends[i].url %>" />
+         <img src="<%= layers[i].legendUrl %>" />
         </p>
       <% } %>
     </span>
-
-    <span style="top: 535px;left: 0px;position: absolute;font-size: 13px; font-style: italic; width:580px; height: 40px; overflow: hidden;"><%= description %></span>
-    <img style="position: absolute; top: 535px; height: 40px; left: 598;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros.png" />
     
+    <!-- Escala -->
+    <span style="position:absolute; margin-top: 490px; margin-left: 800px;">
+      <div id="scale" style="height: 5px"></div>
+    </span>
+
+    <!-- Sub-Legendas -->
+    <span style="position: absolute; border: 1px solid gray; padding: 3px 148px 50px 5px; display: block; top: 477px; left: 685px; overflow: hidden;">
+        <!-- Imagem -->
+        <img style=" width: 51px; height: 45px; margin-top: 3px; margin-left: 10px;" src="theme/app/img/rosaDosVentos.png" >
+
+        <!-- Projeçao -->
+        <span style="position:absolute; margin-top: -2px; margin-left: 0px;">
+          <h6> Projeção: DATUM WGS84 </h6>
+        </span>
+
+        <!-- Fonte -->
+        <span style="position:absolute; margin-top: 15px; margin-left: 0px;"> 
+          <h6> Fontes: <%= fonte %> </h6>
+        </span>
+    </span>
+
+    <!--  Ferramentas do Mapa -->
+    <script src="thirdparty/OpenLayers/OpenLayers.js"></script>    
     <script src="thirdparty/jquery/jquery.min.js"></script>
 	  <script src="thirdparty/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var lon = <%= lon %>;
+        var lat = <%= lat %>;
+        var zoom = <%= zoom %>;
+        var map, layer;
+
+        map = new OpenLayers.Map('map', {
+          "controls": [
+            new OpenLayers.Control.ScaleLine({ 
+              div: $('#scale')[0],
+              geodesic: true,
+            })
+          ],
+          maxResolution: 75000,
+          projection: new OpenLayers.Projection("EPSG:900913"),
+          units: "m",
+          allOverlays: true
+        });
+       
+        <% for(var i=layers.length-1; i>=0; i--) {%>
+          map.addLayer(new OpenLayers.Layer.WMS( "<%= layers[i].label %>",
+                  "<%= layers[i].host %>", {
+                    'layers': '<%= layers[i].layername %>',
+                    'format': 'image/png',
+                    'version': '1.1.1',
+                    'transparent': 'true'
+                  },{
+                    'isBaseLayer': false,
+                    'tileSize': new OpenLayers.Size(512,512)
+                  } 
+          ));
+        <% } %> 
+        
+        map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+        map.addControl(new OpenLayers.Control.Graticule({
+          lineSymbolizer: {
+            'strokeDashstyle': 'dot',
+            'strokeColor': '#000000',
+            'strokeWidth': 1,
+            'strokeOpacity': 0.5,
+          },
+          labelSymbolizer: {
+            'fontSize': '10px'
+          },
+          numPoints: 2,
+          labelled: true
+        }));
+        map.addControl();
+    </script>
 	</body>
 </html>

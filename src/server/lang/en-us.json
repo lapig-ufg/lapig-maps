@@ -140,6 +140,7 @@
 	"LAPIGPRINT_TTLAREA_MNPMAP": "Manipulate the map",
 	"LAPIGPRINT_TXTHTML_WELCOME": ["<h1>Welcome to Maps Print Tool!</h1>","<br>","<p>It is 3 simple and quick steps , see:</p>","<br>","<ul>","<li><b>Step 1</b> - Adjust the map region to be printed;</li>","<li><b>Step 2</b> - Choose the legend to describe on the map;</li>","<li><b>Step 3</b> - Finish customizing the title and description of your map!</li>","</ul>","<br>","<p>Let's start with the first step:</p>","<p>To select the map area to be printed , just use the mouse or touchpad of your computer, to reduce , enlarge and drag the map area! </p>","<br>","<p><b>The Bing map is visible only for location, not being permitted to print according to the terms of use from the Microsoft Corporation</b><br> Learn more at, <a href='http://www.microsoft.com/maps/product/terms.html' target='_blank'>terms of use</a>.</p>"],
 	"LAPIGPRINT_BTN_NEXT": "Next Step",
+	"LAPIGPRINT_BTN_BACK": "Back Step",
 	"LAPIGPRINT_TTLAREA_PREVIEW": "Preview",
 	"LAPIGPRINT_TTLAREAMAP_LEGENDAS": "<h2>Legend:</h2>",
 	"LAPIGPRINT_TTLAREA_SELECTLEG": "Choose Legend",

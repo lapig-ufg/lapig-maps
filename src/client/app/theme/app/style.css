@@ -1,4 +1,4 @@
-/* setting font fixes combobox rendering issues in IE. See
+ setting font fixes combobox rendering issues in IE. See
  * http://extjs.com/forum/showthread.php?t=72505 */
 body {
     font-family:helvetica,tahoma,verdana,sans-serif;
@@ -160,11 +160,41 @@ div.olControlMousePosition {
 .x-form-cb-label {
     font-size: 12px;
 }
-/*
-.lapig-login{
-    width: '15%',
-    margin-left: '640px',
-}*/
+
+#description_map {
+    overflow: hidden;
+    position: absolute;
+    height: 112px !important;
+    width: 198px !important;
+    top: 458px;
+    left: 594px;
+}
+
+#scale_map_internalMap3 {
+    overflow: hidden;
+    position: absolute;
+    left: 100px !important;
+    top: 25px !important;
+    width: 98px !important;
+    height: 26px !important;
+}
+
+#rosa-dos-ventos_map_internalMap3 {
+    left: 20px;
+    top: 15px;
+    width: 50px;
+}
+
+#projection_map_internalMap3 {
+    top: 70px;
+    left: 5px;
+}
+
+#title_map {
+    overflow: hidden;
+    height: 15px !important;
+    width: 560px !important;
+}
 
 /* gxp_metadatalayer
 .x-btn .gxp-icon-imagestats, .x-menu-item .gxp-icon-imagestats, .x-tree-node .gxp-icon-imagestats {
@@ -180,4 +210,4 @@ div.olControlMousePosition {
 
 .x-btn .gxp-icon-lapig-delete-point, .x-menu-item .gxp-icon-lapig-delete-point, .x-tree-node .gxp-icon-lapig-delete-point {
     background-image: url(img/shape_square_delete.png) !important;
-} */
+} 

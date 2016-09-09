@@ -11,80 +11,71 @@ module.exports = function(app) {
 	var Print = {};
 
 	Print.map = function(request, response) {
-		var url = '/ows';
+		var host = '/ows';
 		
 		var lang = require(config.langDir + '/en-us.json')
 		
 		var srs = request.param('srs', 'EPSG:900913');
-		var layers = request.param('layers', '');
-		var labels = request.param('labels', '');
-		var bbox = request.param('bbox', '');
-		var size = request.param('size', '');
+		var layersParam = request.param('layers', '');
+		var labelsParam = request.param('labels', '');
 		var title = request.param('title', 'Fernanda');
-		var description = request.param('description', 'Descrição...');
+		var lon = request.param('lon', lon);
+		var lat = request.param('lat', lat);
+		var zoom = request.param('zoom', zoom);
+		var layers = [];
 
-		if(size) {
-			var sizeSplit = size.split(',');
-			var h = sizeSplit[0];
-			var w = sizeSplit[1];
+		var layerArray = layersParam.split(';;');
+		var labelsArray = labelsParam.split(';;');
 
-			var mapHeight = h;
-			var mapWidth = w;
+		for(var i=0; i < layerArray.length; i++) {
 
-			var bboxSplit = bbox.split(',');
-			var left = Number(bboxSplit[0]);
-			var bottom = Number(bboxSplit[1]);
-			var right = Number(bboxSplit[2]);
-			var top = Number(bboxSplit[3]);
+			var layer = layerArray[i];
+			var label = unescape(labelsArray[i]);
 
-			var xOffset = (((right - left) * mapWidth) / w);
-			var yOffset = (((top - bottom) * mapHeight) / h);
-
-			bbox =  left + ',' + bottom + ',' 
-			      + (left + xOffset) + ',' + (bottom + yOffset);
-		}
-
-
-		var map = url  + '?SERVICE=WMS'
-		            + '&LAYERS=' + layers.split(';;').join(',')
-		            + '&FORMAT=image%2Fpng'
-		            + '&TRANSPARENT=TRUE'
-		            + '&VERSION=1.1.1'
-		            + '&REQUEST=GetMap'
-		            + '&STYLES='
-		            + '&SRS=' + srs
-		            + '&BBOX=' + bbox
-		            + '&WIDTH=700'
-		            + '&HEIGHT=490'
-		            + '&title='
-			          + '&description=';
-
-		var legends = [];
-
-		var split = layers.split(';;');
-		var labelsSplit = labels.split(';;');
-
-		for(var i=0; i < split.length; i++) {
-
-			var layer = split[i];
-			var label = unescape(labelsSplit[i]);
-
-			legends.push({
+			layers.push({
 			    "label": label
-			  , "url": url  + '?SERVICE=WMS'
-			  							+ '&VERSION=1.1.1'
-			  							+ '&request=GetLegendGraphic'
+			  ,	"host": host
+			  ,	"layername": layer
+			  , "legendUrl": host  + '?SERVICE=WMS'
+							+ '&VERSION=1.1.1'
+							+ '&request=GetLegendGraphic'
 			                + '&format=image/png'
 			                + '&width=20'
 			                + '&height=20'
 			                + '&layer=' + layer
 			                + '&format=image/png'
-			                + '&SCALE=34942571.6116478'
-			                
+			                + '&SCALE=34942571.6116478'			                
 			});
 		}
 
-		response.render('print-map.ejs', { title: title, map: map, legends: legends, description: description, lang: lang });
+		var strFonte = [];
+		var fontes = layerArray.toString().split(',');
+
+		for(var i=0; i<fontes.length; i++) {
+			fonte = fontes[i].split('_')
+			fonte = fonte.reverse();
+			fonte = fonte[0]
+			strFonte.push(fonte);
+		}
+
+		var listFonte = [];
+		var splitFonte = strFonte.toString();
+		splitFonte = splitFonte.split(',');
+
+		for(var i=0; i<splitFonte.length; i++) {
+			if(listFonte.indexOf(splitFonte[i]) != -1) {
+				console.log("Fonte equals");
+			} else {
+				listFonte.push(splitFonte[i])
+			}
+		}
+
+		listFonte = listFonte.toString()
+		var fonte = listFonte.toUpperCase();
+		fonte = fonte.replace(/,/g, "/ ");
+		fonte = request.param('fonte', fonte);
+
+		response.render('print-map.ejs', { title: title, layers: layers.reverse(), lang: lang, lon: lon, lat: lat, zoom: zoom, fonte: fonte});
 	};
 
 	Print.mapPdf = function(request, response) {
@@ -92,16 +83,15 @@ module.exports = function(app) {
 		var params  = querystring.stringify(request.query);
 		var url = config.hostUrl + '/print?' + params;
 
-		console.log('url: ', url);
-
 		temp.open('map', function(err, info) {
 			console.log(info.path);
 			var pdf = new nodePdf(url, info.path, {
 			    'viewportSize': {
-			        'width': 3000,
-			        'height': 9000
+			    	'margin': '10px',    	
+			        'width': 700,
+			        'height': 800
 			    },
-			    'paperSize': {
+		   		'paperSize': {
 			        'pageFormat': 'A4',
 			        'orientation': 'landscape',
 			        'margin': {
@@ -114,34 +104,30 @@ module.exports = function(app) {
 			            }
 			        }
 			    },
-			    'zoomFactor': 1.1
-			    ,'args': '--debug=true'
+				'captureDelay': 0,
+			    'zoomFactor': 1.1,
+			    'args': '--debug=true'
 			});
+			
 
 			pdf.on('error', function(msg){
-			  console.log(msg);
 			  response.end();
 			});
 
 			pdf.on('done', function(pathToFile){
-				console.log(pathToFile)
 			  var readStream = fs.createReadStream(pathToFile);
 			  readStream.pipe(response);
 			});
 
 			pdf.on('stdout', function(stdout){
-			     // handle
-			     console.log(stdout)
+			    // handle
 			});
 
 			// listen for stderr from phantomjs
 			pdf.on('stderr', function(stderr){
 			    // handle
-			    console.log(stderr)
 			});
-
 		});
-
 	}
 
 	return Print;
