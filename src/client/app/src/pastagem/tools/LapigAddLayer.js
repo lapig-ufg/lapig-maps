@@ -224,7 +224,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                 layout: 'form',
                 items: [{
                     xtype: 'fieldset',
-                    title: 'Organizar por:',
+                    title: i18n.LAPIGADDLAYER_TTLFIELDSET,
                     border: true,
                     style: {
                         paddingTop: '4px',
@@ -294,14 +294,14 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                             text: 'Extensions', 
                             draggable:false, 
                             width: 100,
-                            id:'ux',
+                            id:'ux'
                     }),
                     dataUrl: instance.layersTreeSubjectsURL,
                     requestMethod: 'GET',
                     columns:[{
                             header: 'Assuntos',
                             dataIndex: 'task',
-                            width: 200,
+                            width: 200
                     }],
                     listeners: {
                         click: function(node, e ) {
@@ -390,7 +390,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                         cls: 'form-preview-field',
                                         style:{
                                             marginBottom: '3px',
-                                            margingTop: '2px',
+                                            margingTop: '2px'
                                         }
                                     },
                                     {
