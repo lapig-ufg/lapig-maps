@@ -5,7 +5,7 @@ module.exports = function(app) {
 
 	var config = app.config;
 
-	var redisClient = redis.createClient(config.redisPort, config.redisHost);
+	var redisClient = redis.createClient(config.redis.port, config.redis.host);
 	var Cache = {};
 
 	Cache.get = function(cacheKey, callback) {

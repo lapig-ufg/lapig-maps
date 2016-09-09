@@ -8,7 +8,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         var form = Ext.getCmp('lapig_login::frm-user')
         var formPanel = form.getForm()
         var jsonData = formPanel.getValues()
-        var jsonResult = {jsonData}
+        var jsonResult = { "jsonData": jsonData }
         var firstName = []
         firstName = (jsonData.name).split(' ')
 
@@ -133,7 +133,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                         callback();
                     }
                 }
-            },
+            }
         })
     },
 
@@ -199,7 +199,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 var form = Ext.getCmp('lapig_login::frm-user')
                                 var formPanel = form.getForm()
                                 var jsonData = formPanel.getValues()
-                                var keysLogin = {jsonData}
+                                var keysLogin = { "jsonData": jsonData }
                                 instance.userLogin(keysLogin)
                             })
                         }
@@ -214,12 +214,12 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             var form = Ext.getCmp('lapig_login::frm-user')
                             var formPanel = form.getForm()
                             var jsonData = formPanel.getValues()
-                            var keysLogin = {jsonData}
+                            var keysLogin = { "jsonData": jsonData }
                             instance.userLogin(keysLogin)
                         })
                     }
                 }
-            }],
+            }]
         });
 
         var screenCadaster = new Ext.Window({
@@ -275,7 +275,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                             var login = Ext.getCmp('lapig_login::frm-panel-login')
                                             var formLogin = login.getForm()
                                             var jsonData = formLogin.getValues()
-                                            var keysLogin = {jsonData}
+                                            var keysLogin = { "jsonData": jsonData }
                                             instance.userLogin(keysLogin, function(){
                                                 Ext.getCmp('lapig_login::panel-login').close()                                        
                                             })
@@ -287,11 +287,11 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                             text: i18n.LAPIGLOGIN_BTNTXT_CONFIRM,
                             listeners: {
                                 click:  function(n) {
-                                    lapigAnalytics.clickTool('Login', 'click-Login', '')
+                                    lapigAnalytics.clickTool("Login", "click-Login", "")
                                     var login = Ext.getCmp('lapig_login::frm-panel-login')
                                     var formLogin = login.getForm()
                                     var jsonData = formLogin.getValues()
-                                    var keysLogin = {jsonData}
+                                    var keysLogin = { "jsonData": jsonData }
                                     instance.userLogin(keysLogin, function(){
                                         Ext.getCmp('lapig_login::panel-login').close()                                        
                                     })
@@ -305,7 +305,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                     Ext.getCmp('lapig_login::panel-login').close()
                                 }
                             }
-                        }],
+                        }]
                     })
 
                     var win = new Ext.Window({
@@ -321,7 +321,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                     });
                     win.show(this)
                 },
-                scope: this,
+                scope: this
             }
         ])
 
@@ -355,7 +355,7 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                             Ext.getCmp('lapig_login::panel-logout').close()
                                         }
                                     }
-                                }],
+                                }]
                             });
 
                             var winLogout = new Ext.Window({
@@ -366,15 +366,15 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
                                 height:65,
                                 border:false,
                                 plain:true,
-                                items: [panelLogout],
+                                items: [panelLogout]
                             })
                             winLogout.show(this)
                         }
                     }]
-                }),
+                })
             }
         ])
-    },
+    }
 })
 
 Ext.preg(gxp.plugins.LapigLogin.prototype.ptype, gxp.plugins.LapigLogin)

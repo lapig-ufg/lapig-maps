@@ -1,4 +1,4 @@
- setting font fixes combobox rendering issues in IE. See
+/* setting font fixes combobox rendering issues in IE. See
  * http://extjs.com/forum/showthread.php?t=72505 */
 body {
     font-family:helvetica,tahoma,verdana,sans-serif;
@@ -120,6 +120,10 @@ div.olControlMousePosition {
     background-image: url(img/file-xls.png) !important;
 }
 
+.lapig-icon-help {
+    background-image: url(img/help.png) !important;
+}
+
 .lapig-icon-refresh {
     background-image: url(img/refresh.png) !important;
 }
@@ -195,7 +199,25 @@ div.olControlMousePosition {
     height: 15px !important;
     width: 560px !important;
 }
+.spatial-intelligence-geomap {
+    background-image: url(img/spatial-intelligence-geomap.png) !important;
+}
 
+.spatial-intelligence-nomap {
+    background-image: url(img/spatial-intelligence-nomap.png) !important;
+}
+
+.spatial-intelligence-geosection {
+    background-image: url(img/spatial-intelligence-geosection.png) !important;
+}
+
+.spatial-intelligence-nogeosection {
+    background-image: url(img/spatial-intelligence-nogeosection.png) !important;
+}
+
+.spatial-intelligence-clear-filter {
+    background-image: url(img/spatial-intelligence-clear-filter.png) !important;
+}
 /* gxp_metadatalayer
 .x-btn .gxp-icon-imagestats, .x-menu-item .gxp-icon-imagestats, .x-tree-node .gxp-icon-imagestats {
     background-image: url(img/image-stats.jpg);
@@ -210,4 +232,4 @@ div.olControlMousePosition {
 
 .x-btn .gxp-icon-lapig-delete-point, .x-menu-item .gxp-icon-lapig-delete-point, .x-tree-node .gxp-icon-lapig-delete-point {
     background-image: url(img/shape_square_delete.png) !important;
-} 
+} */

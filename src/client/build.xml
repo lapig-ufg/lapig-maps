@@ -95,7 +95,7 @@
 			</classpath>
 			<sysproperty key="ringo.home" path="${sdk.home}/ringo/"/>
 			<arg path="${sdk.home}/ringo/lib/buildkit/lib/buildkit/build.js"/>
-			<arg value="-u"/>
+			<!--arg value="-u"/-->
 			<arg value="-o"/>
 			<arg path="${app.build}/lib"/>
 			<arg path="${app.fullpath}/buildjs.cfg"/>

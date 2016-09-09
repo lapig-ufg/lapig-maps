@@ -66,11 +66,12 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
         relativeUploadOnly: true,
 
-        startSourceId: null,
+        startSourceId: undefined,
         
-        selectedSource: null,
+        selectedSource: undefined,
 
         constructor: function(config) {
+            var instance = this;
                 this.addEvents(
                         /** api: event[sourceselected]
                          *  Fired when a new source is selected.
@@ -85,7 +86,8 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
 
                 this.projectsParam = config.project.join(',');
-                this.layersTreeURL = 'layers/tree?projects=' + this.projectsParam + '&lang='+i18n.lang;
+                instance.layersTreeSubjectsURL = 'layers/treeSubjects?projects=' + this.projectsParam + '&lang='+i18n.lang;
+                instance.layersTreeRegionsURL = 'layers/treeRegions?projects=' + this.projectsParam + '&lang='+i18n.lang;
                 this.layersSearchURL = 'layers/search';
                 this.layerWindow = this.getWindow();
 
@@ -120,7 +122,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
 
 
             var resultTpl = new Ext.XTemplate(
-                '<tpl for="."><div class="search-item" style="height: 80px;">',
+                '<tpl for="."><div class="search-item" style="height: 75px;">',
                     '<div style="padding-left: 6px; padding-right: 6px;">',
                         '<h4 style="padding-top: 3px; padding-bottom: 6px;">{name}',
                             '<span style="float: right; text-align: right;"><img style="width: 50%;" src="theme/app/img/sources/{source}.png"/></span>',
@@ -149,7 +151,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                     loadingText: 'Searching...',
                     anchor:'100%',
                     minChars: 3,
-                    pageSize:5,
+                    pageSize:4,
                     tpl: resultTpl,
                     queryParam: 'search',
                     itemSelector: 'div.search-item',
@@ -159,66 +161,168 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                         
                             var id = record.data._id;
                             var subject = record.data.subject;
+                            var region = record.data._id.split('_')[0];
+                            var regionmp = region+'_'+record.data._id.split('_')[1]
+
+                                if (regionmp == 'or_mp'){
+                                    region = 'Matopiba'
+                                }else{
+                                    if(region == 'bi')
+                                        region = 'Biomas'
+                                    else if (region == 'es')
+                                        region = 'Estados'
+                                    else if (region == 'mu')
+                                        region = 'Municípios'
+                                    else if (region == 'or')
+                                        region = 'Outras Regiões'
+                                    else if (region == 'pa')
+                                        region = 'Brasil'
+                                }
+
+                            var language = i18n.lang;
+
+                                if(language != 'pt-br'){
+                                    if(region == 'Biomas')
+                                        region = 'Biomes'
+                                    else if (region == 'Estados')
+                                        region = 'States'
+                                    else if (region == 'Municípios')
+                                        region = 'Municipality'
+                                    else if (region == 'Outras Regiões')
+                                        region = 'Other Regions'
+                                    else if (region == 'Brasil')
+                                        region = 'Brazil'
+                                }
 
                             var treeLayer = Ext.getCmp('tree-layer');
+                            var searchNode = treeLayer.getRootNode().findChild('text', subject);
 
-                            var subjectNode = treeLayer.getRootNode().findChild('text', subject);
-                            subjectNode.expand();
+                            if(searchNode == null){
+                                searchNode = treeLayer.getRootNode().findChild('text', region);
+                            };
 
-                            var layerNode = subjectNode.findChild('id', id);
+                            searchNode.expand();                  
+
+                            var layerNode = searchNode.findChild('id', id);
                             layerNode.select();
                             layerNode.fireEvent('click', layerNode);
                         }
                     }
                 }
             ]};
+
             
             var layers = {
-                xtype: 'treepanel',
-                id: 'tree-layer',
-                useArrows: true,
-                autoScroll: true,
-                animate: true,
-                enableDD: false,
-                containerScroll: true,
-                rootVisible: false,
-                        height: 300,
-                        width: 250,
-                        region: 'west',
-                        title: i18n.LAPIGADDLAYER_TTLTREEPNL,
-                root: new Ext.tree.AsyncTreeNode({
-                  text: 'Extensions', 
-                  draggable:false, 
-                  id:'ux'
-                }),
-                dataUrl: this.layersTreeURL,
-                requestMethod: 'GET',
-                columns:[{
-                        header: 'Assuntos',
-                        dataIndex: 'task',
-                        width: 200
-                }],
-                listeners: {
-                  click: function(node, e ) {
-                    if(node.leaf) {
-                        var id = node.attributes.id;
-                        lapigAnalytics.clickTool('Add Layers','select-Layer',node.attributes.id)
-                        var url = 'layers/'+ id + '?lang='+i18n.lang;
+                xtype: 'form',
+                width: 380,
+                style: {
+                    backgroundColor: 'white'
+                },
+                region: 'west',
+                title: i18n.LAPIGADDLAYER_TTLTREEPNL,
+                frame:true,
+                layout: 'form',
+                items: [{
+                    xtype: 'fieldset',
+                    title: 'Organizar por:',
+                    border: true,
+                    style: {
+                        paddingTop: '4px',
+                        paddingBottom: '2px',
+                        paddingLeft: '5px',
+                        marginBottom:'0px',
+                        backgroundColor: 'white'
+                    },
+                    defaultType: 'radio',
+                    items: {
+                        xtype: 'radiogroup',
+                        hideLabel: true,
+                        items: [{
+                            checked: true,
+                            boxLabel: i18n.LAPIGADDLAYER_BTNTXT_SUBJECT, 
+                            name: 'treeRadio', 
+                            inputValue: 1,
+                            listeners: {
+                                check: function (ctl, val) {
+                                    var treePanel = Ext.getCmp('tree-layer');
 
-                        var formLayer = Ext.getCmp('form-layer');
-
-                        formLayer.load({
-                            url:url, 
-                            method:'GET', 
-                            waitMsg:'Loading',
-                            success: function() {
-                                node.ui.focus();
+                                    if (val == true){
+                                        treePanel.getLoader().dataUrl = instance.layersTreeSubjectsURL;
+                                        treePanel.getRootNode().reload();
+                                    } else {
+                                        treePanel.getLoader().dataUrl = instance.layersTreeRegionsURL;
+                                        treePanel.getRootNode().reload();
+                                    }
+                                }
                             }
-                        });                                     
-                    }
+                        },{
+                            boxLabel: i18n.LAPIGADDLAYER_BTNTXT_REGION, 
+                            name: 'treeRadio', 
+                            inputValue: 2,
+                            listeners: {
+                                check: function (ctl, val) {
+                                    var treePanel = Ext.getCmp('tree-layer');
 
-                  }
-                }
+                                    if (val == true){
+                                        treePanel.getLoader().dataUrl = instance.layersTreeRegionsURL;
+                                        treePanel.getRootNode().reload();
+                                    } else {
+                                        treePanel.getLoader().dataUrl = instance.layersTreeSubjectsURL;
+                                        treePanel.getRootNode().reload();
+                                    }
+                                }
+                            }
+                        }]
+                    }
+                },{
+                    xtype: 'treepanel',
+                    id: 'tree-layer',
+                    useArrows: true,
+                    autoScroll: true,
+                    animate: true,
+                    enableDD: false,
+                    containerScroll: true,
+                    rootVisible: false,
+                    height: 345,
+                    border: false,
+                    region: 'west',
+                    style: {
+                            backgroundColor: 'white',
+                            paddingTop: '10px'
+                    },
+                    root: new Ext.tree.AsyncTreeNode({
+                            text: 'Extensions', 
+                            draggable:false, 
+                            width: 100,
+                            id:'ux',
+                    }),
+                    dataUrl: instance.layersTreeSubjectsURL,
+                    requestMethod: 'GET',
+                    columns:[{
+                            header: 'Assuntos',
+                            dataIndex: 'task',
+                            width: 200,
+                    }],
+                    listeners: {
+                        click: function(node, e ) {
+                            if(node.leaf) {
+                                var id = node.attributes.id;
+                                lapigAnalytics.clickTool('Add Layers','select-Layer',node.attributes.id)
+                                var url = 'layers/'+ id + '?lang='+i18n.lang;
+                                var formLayer = Ext.getCmp('form-layer');
+
+                                formLayer.load({
+                                    url:url, 
+                                    method:'GET', 
+                                    waitMsg:'Loading',
+                                    success: function() {
+                                        node.ui.focus();
+                                    }
+                                });                                     
+                            }
+                        }
+                    }
+                }]
             };
                 
             var info = {
@@ -254,100 +358,99 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                     ]
                 }),
                 items: [
-                        {
-                            fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_NAME,
-                            name: 'name',
-                            width: '95%',
-                            readOnly: true,
-                            layout:'form',
-                            padding: "0px 0px 50px 0px"
-                        },
-                        {
-                            layout:'column',
-                            xtype: 'panel',
-                            width: '100%',
-                            hideLabel: true,
-                            items:[
+                    {
+                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_NAME,
+                        name: 'name',
+                        width: '95%',
+                        readOnly: true,
+                        layout:'form',
+                        padding: "0px 0px 50px 0px"
+                    },
+                    {
+                        layout:'column',
+                        xtype: 'panel',
+                        width: '100%',
+                        hideLabel: true,
+                        items:[
+                            {
+                                columnWidth:.5,
+                                layout: 'form',
+                                padding: "0px 10px 0px 0px",
+                                labelAlign: 'top',
+                                readOnly: true,
+                                items: [
                                     {
-                                        columnWidth:.5,
-                                        layout: 'form',
-                                        padding: "0px 10px 0px 0px",
-                                        labelAlign: 'top',
-                                        readOnly: true,
-                                        items: [
-                                            {
-                                                xtype:'panel',
-                                                id:'field-layer-preview',
-                                                html: "",
-                                                height: 204,
-                                                width: '95%',
-                                                border: true,
-                                                fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_PREVIEW,
-                                                cls: 'form-preview-field',
-                                                style:{
-                                                    marginBottom: '3px',
-                                                    margingTop: '2px'
-                                                }
-                                            },
-                                            {
-                                                    xtype:'panel',
-                                                    id: 'field-layer-source',
-                                                    html: "",
-                                                    height: 69,
-                                                    fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SOURCE,
-                                                    readOnly: true,
-                                                    border: true,
-                                                    cls: 'form-logo-field'
-                                            }
-                                        ]
+                                        xtype:'panel',
+                                        id:'field-layer-preview',
+                                        html: "",
+                                        height: 204,
+                                        width: '95%',
+                                        border: true,
+                                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_PREVIEW,
+                                        cls: 'form-preview-field',
+                                        style:{
+                                            marginBottom: '3px',
+                                            margingTop: '2px',
+                                        }
                                     },
                                     {
-                                        columnWidth:.5,
-                                        layout: 'form',
-                                        labelAlign: 'top',
-                                        padding: "0px 10px 0px 0px",
-                                        items: [
-                                            {
-                                                xtype:'textarea',
-                                                height: 150,
-                                                padding: "0px 0px 0px 0px",
-                                                width: '95%',
-                                                readOnly: true,
-                                                fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_DESCRIPTION,
-                                                name: 'description',
-                                                anchor:'100%'
+                                        xtype:'panel',
+                                        id: 'field-layer-source',
+                                        html: "",
+                                        height: 69,
+                                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SOURCE,
+                                        readOnly: true,
+                                        border: true,
+                                        cls: 'form-logo-field'
+                                    }
+                                ]
+                            },{
+                                columnWidth:.5,
+                                layout: 'form',
+                                labelAlign: 'top',
+                                padding: "0px 10px 0px 0px",
+                                items: [
+                                    {
+                                        xtype:'textarea',
+                                        height: 150,
+                                        padding: "0px 0px 0px 0px",
+                                        width: '95%',
+                                        readOnly: true,
+                                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_DESCRIPTION,
+                                        name: 'description',
+                                        anchor:'100%'
 
-                                            },
-                                            {
-                                                    xtype:'textfield',
-                                                    fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_REGION,
-                                                    readOnly: true,
-                                                    name: 'region',
-                                                    anchor:'100%'
-                                            },
-                                            {
-                                                xtype:'textfield',
-                                                fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_YEAR,
-                                                name: 'year',
-                                                readOnly: true,
-                                                anchor:'100%'
-                                            },
-                                            {
-                                                xtype:'textfield',
-                                                fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SCALE,
-                                                name: 'scale',
-                                                readOnly: true,
-                                                anchor:'100%'
-                                            }
-                                    ]
-                                } 
-                            ]
-                        }
+                                    },
+                                    {
+                                            xtype:'textfield',
+                                            fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_REGION,
+                                            readOnly: true,
+                                            name: 'region',
+                                            anchor:'100%'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_YEAR,
+                                        name: 'year',
+                                        readOnly: true,
+                                        anchor:'100%'
+                                    },
+                                    {
+                                        xtype:'textfield',
+                                        fieldLabel: i18n.LAPIGADDLAYER_FIELDLBL_SCALE,
+                                        name: 'scale',
+                                        readOnly: true,
+                                        anchor:'100%'
+                                    }
+                                ]
+                            } 
+                        ]
+                    }
                 ],
                 buttons: [{
-                        text: i18n.LAPIGADDLAYER_BTNTXT_TOVIEW,
-                        listeners: {
-                            'click': function() {
+                    text: i18n.LAPIGADDLAYER_BTNTXT_TOVIEW,
+                    listeners: {
+                        'click': function() {
                             var formLayer = Ext.getCmp('form-layer');
                             var layerData = formLayer.getForm().reader.jsonData;
 
@@ -357,83 +460,81 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                 var layerConfig = { source: 'ows' }
                             }
 
-                if (layerData.type == 'MULTIPLE'){
-                    layerConfig.oldName = layerData.name;
-                    layerConfig.oldDescription = layerData.description;
-                    layerConfig.name = layerData.last_name;
-                        }else{
-                            layerConfig.oldName = layerData.name;
-                            layerConfig.oldDescription = layerData.description;
-                            layerConfig.name = layerData._id;
-                        }
-
-                        instance.target.createLayerRecord(layerConfig, function(record) {
-                            var mapPanel = instance.target.mapPanel;
-                            record.json = layerData;
-                            lapigAnalytics.clickTool('Add Layers','view-Layer',record.json._id)
-
-                            mapPanel.layers.add([record]);
-                    mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
-                        });
-
+                            if (layerData.type == 'MULTIPLE'){
+                                layerConfig.oldName = layerData.name;
+                                layerConfig.oldDescription = layerData.description;
+                                layerConfig.name = layerData.last_name;
+                            }else{
+                                layerConfig.oldName = layerData.name;
+                                layerConfig.oldDescription = layerData.description;
+                                layerConfig.name = layerData._id;
                             }
+
+                            instance.target.createLayerRecord(layerConfig, function(record) {
+                                var mapPanel = instance.target.mapPanel;
+                                record.json = layerData;
+                                lapigAnalytics.clickTool('Add Layers','view-Layer',record.json._id)
+
+                                mapPanel.layers.add([record]);
+                                mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
+                            });
                         }
+                    }
                 }],
                 listeners: {
-            'afterlayout': {
-                fn: function(p) {
-                            p.disable();
-                        },
-                single: true
-            },
-          'actioncomplete': function(basicFormLayer, actionLayer) {
-            var formLayer = Ext.getCmp('form-layer');
-            formLayer.enable();
+                    'afterlayout': {
+                        fn: function(p) {
+                                    p.disable();
+                                },
+                        single: true
+                    },
+                    'actioncomplete': function(basicFormLayer, actionLayer) {
+                        var formLayer = Ext.getCmp('form-layer');
+                        formLayer.enable();
 
-              var layer = actionLayer.result.data;
-            layerName = (layer.type == 'MULTIPLE') ? layer.last_name : layer._id
-            var urlPreview = 'ows?LAYERS=' + layerName
-                            + '&FORMAT=image/png'
-                            + '&TRANSPARENT=TRUE'
-                            + '&VERSION=1.1.1'
-                            + '&SERVICE=WMS'
-                            + '&REQUEST=GetMap'
-                            + '&STYLES='
-                            + '&SRS=EPSG:' + layer.epsgCode
-                            + '&BBOX=' + layer.extent.join(',')
-                            + '&WIDTH=196'
-                            + '&HEIGHT=202';
-            
-            if (layer.type == 'MULTIPLE'){
+                          var layer = actionLayer.result.data;
+                        layerName = (layer.type == 'MULTIPLE') ? layer.last_name : layer._id
+                        var urlPreview = 'ows?LAYERS=' + layerName
+                                        + '&FORMAT=image/png'
+                                        + '&TRANSPARENT=TRUE'
+                                        + '&VERSION=1.1.1'
+                                        + '&SERVICE=WMS'
+                                        + '&REQUEST=GetMap'
+                                        + '&STYLES='
+                                        + '&SRS=EPSG:' + layer.epsgCode
+                                        + '&BBOX=' + layer.extent.join(',')
+                                        + '&WIDTH=196'
+                                        + '&HEIGHT=202';
+                        
+                        if (layer.type == 'MULTIPLE'){
 
-                var fileObj = basicFormLayer.reader.jsonData.fileObj;
+                            var fileObj = basicFormLayer.reader.jsonData.fileObj;
 
-                fileObj.forEach(function(fileObj) {
-                    var idFileObj = fileObj['name'];
-                    var typeFileObj = fileObj['type'];
+                            fileObj.forEach(function(fileObj) {
+                                var idFileObj = fileObj['name'];
+                                var typeFileObj = fileObj['type'];
 
-                    if (typeFileObj == "EE"){
-                        urlPreview = 'map/' + idFileObj + '/1/0/1';
+                                if (typeFileObj == "EE"){
+                                    urlPreview = 'map/' + idFileObj + '/1/0/1';
+                                }
+                            });
+                            
+                        }
+
+                        var fieldPreview = Ext.getCmp('field-layer-preview');
+                        fieldPreview.update('<img style="display:block; margin-left:auto; margin-right:auto" src = '+urlPreview+'>');
+
+                        var urlSource = 'theme/app/img/sources/' + actionLayer.result.data.source + '.png';
+                        var fieldSource = Ext.getCmp('field-layer-source');
+                        fieldSource.update('<img src = '+urlSource+'>');
                     }
-                });
-                
-            }
-
-                    var fieldPreview = Ext.getCmp('field-layer-preview');
-            fieldPreview.update('<img src = '+urlPreview+'>');
-
-            var urlSource = 'theme/app/img/sources/' + actionLayer.result.data.source + '.png';
-            var fieldSource = Ext.getCmp('field-layer-source');
-            fieldSource.update('<img src = '+urlSource+'>');
-
-          }
                 }
             };
 
             return new Ext.Window({
                 title: i18n.LAPIGADDLAYER_TTLAREA,
                 closable:true,
-                width:700,
+                width:900,
                 height:500,
                 border:false,
                 plain:true,
@@ -443,7 +544,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                     'beforeclose': function() {
                         this.hide();
                         return false;
-                      },
+                      }
                 },
                 items: [search, layers, info]
             });

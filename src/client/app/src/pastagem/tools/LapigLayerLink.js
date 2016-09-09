@@ -16,10 +16,14 @@ gxp.plugins.LapigLayerLink = Ext.extend(gxp.plugins.Tool, {
             disabled: true,
             tooltip: this.actionTip,
             handler: function() {
+                lapigAnalytics.clickTool('Tools', 'Layer Link', '');
                 var record = selectedLayer;
                 if(record) {
                     var url = document.URL.split("?")[0];
-                    url = url + '?layers=' + record.json._id;
+                    var layerName = record.json._id;
+                    url = url + '?layers=' + layerName;
+
+                    lapigAnalytics.clickTool('Layer Link', 'select-layer', layerName);
 
                     var msg = i18n.LAPIGLAYERLINK_DESCRIPTION 
                         + "<br><br>" + url;

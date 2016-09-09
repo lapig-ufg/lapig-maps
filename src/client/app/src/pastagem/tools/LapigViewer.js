@@ -41,6 +41,7 @@
  * @requires tools/LapigWMSGetFeatureInfo.js
  * @requires tools/LapigDownloadAll.js
  * @requires tools/LapigLogin.js
+ * @requires tools/LapigUtils.js
  */
 
 globalInstance = this;
@@ -90,6 +91,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           globalInstance.i18n = result.lang;
           globalInstance.isAnyoneHome = false;
           globalInstance.lapigAnalytics = gxp.plugins.LapigAnalytics;
+          globalInstance.Utils = lapigUtils;
           i18n.lang = language;
 
           var config = instance.createLapigConfig(result.layers, lon, lat, zoomLevel, project);
@@ -255,7 +257,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   id: "westpanel",
                   border: false,
                   region: "west",
-                  width: 320,
+                  width: 350,
                   split: true,
                   collapsible: true,
                   collapseMode: "mini",
@@ -272,20 +274,29 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapseMode: "mini",
                   header: true,
                   title: i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES,
-                  autoScroll: true
+                  autoScroll: true,
+                  listeners: {
+                    beforeexpand: function (pnl, animate) {
+                      var flashProperties = lapigUtils.checkFlashVersion();
+                      if (!flashProperties.hasFlash) {
+                        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
+                        return false;
+                      }
+                    }
+                  }
                 },
                 {
                   id: "eastpanel",
                   border: false,
                   region: "east",
-                  width: 330,
-                  split: true,
+                  width: 350,
+                  split: false,
                   collapsed: true,
                   collapsible: true,
                   collapseMode: "mini",
                   header: true,
                   layout:'fit',
-                  title: i18n.LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS,
+                  title: i18n.LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS
                 }
             ],
             bbar: {
@@ -312,7 +323,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               outputTarget: "southpanel",
               project: project,
               outputConfig: {
-                height: 215,
+                height: 215
               }
             },
             { 
@@ -367,16 +378,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
 
             /********** Map ContextMenu */
             {
-              ptype: "gxp_lapigprint",
-              actionTarget: {target: "map.tbar"},
-              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
-            },
-            {
-              ptype: "gxp_lapigcoordinates",
-              tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
-              actionTarget: {target: "map.tbar"}
-            },
-            {
               ptype: "lapig_spatialintelligencebtn",
               menuText: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT,
               actionTip: i18n.LAPIGVIEWER_SPATIALINTELLIGENCEBTN_ACTTIP,
@@ -388,12 +389,43 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               Tooltip: i18n.LAPIGVIEWER_RASTERSERIESBTN_TLTP,
               actionTarget: {target: "map.tbar"}
             },
+            { 
+              actionTarget: { target: "map.tbar" },
+              actions: {
+                text: "-"
+              }
+            },
+            {
+              ptype: "gxp_lapigprint",
+              actionTarget: {target: "map.tbar"},
+              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
+            },
+            {
+              ptype: "gxp_lapigcoordinates",
+              tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
+              actionTarget: {target: "map.tbar"}
+            },
+            {
+              ptype: "gxp_lapigwmsgetfeatureinfo", 
+              format: 'grid', 
+              toggleGroup: this.toggleGroup,
+              popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
+              infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
+              actionTarget: {target: "map.tbar"},
+              layerParams: ['MSFILTER']
+            },
+            { 
+              actionTarget: { target: "map.tbar" },
+              actions: {
+                text: "-"
+              }
+            },
             {
               ptype: "gxp_navigationhistory",
-              nextMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTMENUTXT,
-              nextTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTTLTP,
               previousMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVMENUTXT,
               previousTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_PREVTLTP,
+              nextMenuText: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTMENUTXT,
+              nextTooltip: i18n.LAPIGVIEWER_NAVIGATIONHISTORY_NEXTTLTP,
               actionTarget: {target: "map.tbar"}
             },
             {
@@ -406,14 +438,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               showZoomBoxAction: true,
               actionTarget: {target: "map.tbar"}
             }, 
-            {
-              ptype: "gxp_lapigwmsgetfeatureinfo", 
-              format: 'grid', 
-              toggleGroup: this.toggleGroup,
-              popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
-              infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
-              actionTarget: {target: "map.tbar"}
-            },
             {
               ptype: "gxp_navigation", 
               tooltip: i18n.LAPIGVIEWER_NAVIGATION_TLTP,
@@ -435,7 +459,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           sources: {
             ows: {
               url: '/ows/',
-              title: "LAPIG-OWS",
+              title: "LAPIG-OWS"
             },
             wmts: {
               url: '/tms/',
@@ -483,8 +507,16 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   var mousePositionCtrl = new OpenLayers.Control.MousePosition({
                       displayProjection: new OpenLayers.Projection("EPSG:4326")
                   });
-                  mapPanel.map.addControl(mousePositionCtrl)  
+                  mapPanel.map.addControl(mousePositionCtrl);
                 }
+
+                /*mapPanel.map.events.register('addlayer', this, function(evt) {
+                  if(evt.layer) {
+                    evt.layer.events.register('loadend', this, function() {
+                      console.log('loadend', arguments);
+                    });
+                  }
+                });*/
 
                 addMapControls();
             }

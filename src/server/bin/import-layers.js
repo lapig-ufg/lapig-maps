@@ -493,11 +493,10 @@ var createMapFile = function(layers, callback) {
   var onComplete = function() {
     callback(resultLayers);
   }
-
   async.eachSeries(layers, onEach, onComplete);
 }
 
-var layersDir = "/home/leandro/Tmp/Dados Novos/Catalog/"
+var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.11\,share\=mapa_interativo\,user\=fernanda.stefani/PROCESSO/DADOS\ GEOGRÁFICOS/DADOS\ PRONTOS/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';

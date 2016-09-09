@@ -33,7 +33,7 @@ echo 'Starting CLIENT'
 pushd 'lapig-maps/src/client'
 ./start.sh 2> ../../../client_err.log &
 CLIENTPS=$!
-sleep 6
+sleep 15
 popd
 
 echo 'Starting SERVER'

@@ -9,7 +9,6 @@ EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
 
 ee.Initialize(EE_CREDENTIALS)
 
-
 def setCoordinates(rectangle):
 	rct = [];
 	for i in rectangle.split(',',3):
@@ -25,7 +24,7 @@ def run(collection, startDate, endDate, composites, rectangleSides):
 	coordinates = setCoordinates(rectangleSides);
 
 	img = ee.ImageCollection(collection).filterBounds(ee.Geometry.Rectangle(coordinates[0], coordinates[1], coordinates[2], coordinates[3])).filterDate(startDate, endDate).max();
-	mapId = img.getMapId({ "bands": composites, "min":"0.1,0,0", "max":"0.7,0.55,0.6", "gamma": "1.3,0.9,1.3" });
+	mapId = img.getMapId({ "bands": composites, "min":"0,0,0", "max":"0.7,0.6,0.6", "gamma": "1.3,0.9,1.3" });
 
 	for i in mapId:
 		

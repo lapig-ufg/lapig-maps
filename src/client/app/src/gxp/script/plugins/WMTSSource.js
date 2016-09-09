@@ -32,7 +32,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                     {name: "tileMapUrl", type: "string"},
                     {name: "properties", type: "string"},
                     {name: "formats", type: "auto"},
-                    {name: "styles", type: "auto"},
+                    {name: "styles", type: "auto"}
                 ]);
         }
         gxp.data.WMTSCapabilitiesReader.superclass.constructor.call(
@@ -211,7 +211,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                             records.push(new this.recordType({
                                                 layer: olLayer, //new OpenLayers.Layer.WMTS(config),
                                                 title: layer.title,
-                                                abstract: layer.abstract,
+                                                "abstract": layer['abstract'],
                                                 source: null,
                                                 name: layer.identifier,
                                                 tileMapUrl: config.url,
@@ -291,8 +291,8 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
             if (rawResponse.serviceIdentification.title) {
                 return rawResponse.serviceIdentification.title;
             }
-            else if (rawResponse.serviceIdentification.abstract) {
-                return rawResponse.serviceIdentification.abstract;
+            else if (rawResponse.serviceIdentification['abstract']) {
+                return rawResponse.serviceIdentification['abstract'];
             }
         }
         return null;

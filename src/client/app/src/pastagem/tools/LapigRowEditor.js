@@ -117,6 +117,7 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
         }
       }
     }
+    var keep = false;
     if(hasChange && this.fireEvent('validateedit', this, changes, r, this.rowIndex) !== false){
       r.beginEdit();
       Ext.iterate(changes, function(name, value){
@@ -127,6 +128,7 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
     } else {
       this.fireEvent('canceledit', this, false, this.rowIndex);
     }
+
     this.hide();
   },
 
@@ -140,14 +142,8 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
         width = Math.min(g.getWidth(), g.getColumnModel().getTotalWidth());
 
       var rowNum = this.grid.getStore().getCount();
-      var top = 0;
-      if(rowNum - this.rowIndex <= 2){
-      	top = -h;
-      }else{
-      	top = h - 2;
-      }
 
-      this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: top, stopFx: true, duration:0.2});
+      this.btns.el.shift({left: (width/2)-(bw/2)+scroll, top: h - 2, stopFx: true, duration:0.2});
 
       this.doLayout();
     }
@@ -222,8 +218,61 @@ gxp.plugins.LapigRowEditor = Ext.extend(Ext.ux.grid.RowEditor, {
         return false;
       }
     }
-  }
+  },
 
+  showTooltip: function(ttl, msg){
+      var t = this.tooltip;
+      msg = !msg ? ttl:msg;
+      ttl = msg==ttl ? this.errorText:ttl;
+      if(!t){
+          t = this.tooltip = new Ext.ToolTip({
+              maxWidth: 600,
+              cls: 'errorTip',
+              width: 300,
+              title: ttl,
+              autoHide: false,
+              anchor: 'left',
+              anchorToTarget: true,
+              mouseOffset: [40,0]
+          });
+      }
+      var v = this.grid.getView(),
+          top = parseInt(this.el.dom.style.top, 10),
+          scroll = v.scroller.dom.scrollTop,
+          h = this.el.getHeight();
+
+      if(top + h >= scroll){
+          t.initTarget(this.lastVisibleColumn().getEl());
+          if(!t.rendered){
+              t.show();
+              t.hide();
+          }
+
+          if(!t.isVisible()){
+            t.body.update(msg);
+            t.setTitle(ttl);
+            t.doAutoWidth(20);
+            t.show();              
+          }
+      }else if(t.rendered){
+          t.hide();
+      }
+  },
+
+  hideTooltip: function () {
+    var t = this.tooltip;
+
+    if(t && t.rendered && t.isVisible()){
+      t.hide();
+    }
+  },
+
+  onKey: function(f, e){
+    if(e.getKey() === e.ENTER && this.isValid()){
+      this.stopEditing(true);
+      e.stopPropagation();
+    }
+  }
 });
 
 Ext.preg(gxp.plugins.LapigRowEditor.ptype, gxp.plugins.LapigRowEditor);

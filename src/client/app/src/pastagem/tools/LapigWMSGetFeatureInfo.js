@@ -130,6 +130,7 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 if(pressed) {
                     OpenLayers.Element.addClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
                 } else {
+                    lapigAnalytics.clickTool('Tools', 'Feature Info', '');
                     OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigWmsGetFeatureInfo");
                     OpenLayers.Element.removeClass(map.viewPortDiv, "olControlLapigLoading");
                 }
@@ -175,6 +176,7 @@ gxp.plugins.LapigWMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                     // TODO: this will not work for WMS 1.3 (text/xml instead for GML)
                     infoFormat = this.format == "html" ? "text/html" : "application/vnd.ogc.gml";
                 }
+                
                 var control = new OpenLayers.Control.WMSGetFeatureInfo(Ext.applyIf({
                     url: layer.url,
                     queryVisible: true,
