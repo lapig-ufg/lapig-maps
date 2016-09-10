@@ -51,11 +51,11 @@ case $1 in
 
 			echo " 6) Replacing production enviroment"
 			rm -fR $PROD_DIR/*
-			cp -R $TMP_PROD_DIR/* $PROD_DIR/
+			mv $TMP_PROD_DIR $PROD_DIR
 
 			echo " 7) Restarting LAPIG-MAPS"
-			ows-restart
-			server-restart
+			pgrep -f /data/lapig-maps/prod/ows/app-cluster.js | xargs kill
+			pgrep -f /data/lapig-maps/prod/server/app-cluster.js | xargs kill
 		;;
 		
 esac

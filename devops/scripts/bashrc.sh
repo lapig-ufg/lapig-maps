@@ -21,7 +21,7 @@ alias rep='cd $REPOSITORY_DIR'
 
 alias ows-clear-cache=clear-cache
 alias ows-pid='pgrep -f $OWS_PID_PATTERN'
-alias ows-restart="sudo pgrep -f $$OWS_PID_PATTERN | xargs kill"
+alias ows-restart="sudo pgrep -f $OWS_PID_PATTERN | xargs kill"
 alias ows-start="sudo svc -u /etc/service/ows/"
 alias ows-stop="sudo svc -d /etc/service/ows/; sudo pgrep -f $OWS_PID_PATTERN | xargs kill"
 alias ows-log="tail -f /var/log/lapig-maps/ows.log"
