@@ -10,7 +10,7 @@ OWS_PID_PATTERN='/data/lapig-maps/prod/ows/app-cluster.js'
 SERVER_PID_PATTERN='/data/lapig-maps/prod/server/app-cluster.js'
 
 clear-cache() {
-    redis-cli -h lapig-redis keys "*$1*" | xargs redis-cli DEL
+    redis-cli -h lapig-redis keys "*$1*" | xargs redis-cli -h lapig-redis DEL
 }
 
 alias update='cd $REPOSITORY_DIR; git pull'
