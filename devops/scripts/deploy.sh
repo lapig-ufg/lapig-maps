@@ -51,7 +51,8 @@ case $1 in
 
 			echo " 6) Replacing production enviroment"
 			rm -fR $PROD_DIR/*
-			mv $TMP_PROD_DIR $PROD_DIR
+			mv $TMP_PROD_DIR/* $PROD_DIR/*
+			rm -fR $TMP_PROD_DIR
 
 			echo " 7) Restarting LAPIG-MAPS"
 			pgrep -f /data/lapig-maps/prod/ows/app-cluster.js | xargs kill
