@@ -33,8 +33,6 @@ Ext.namespace("gxp.plugins");
  */
 gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
-		addGrid: true,
-		addGrid2: true,
 		ptype: "gxp_lapigprint",
 
 		addActions: function() {
@@ -100,11 +98,11 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					xtype:'label',
 					style:{
 						fontSize:'14px',
-						paddingTop:'10px',
+						paddingTop:'10px'
 					},
 					html: [
-						i18n.LAPIGPRINT_TTLAREAMAP_LEGENDAS,
-					],
+						i18n.LAPIGPRINT_TTLAREAMAP_LEGENDAS
+					]
 			});
 			pnlLegendImg.add(titleLegends);
 			
@@ -125,7 +123,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 									html:htmlLeg,
 									style:{
 											paddingBottom:'6px',
-											paddingTop:'4px',
+											paddingTop:'4px'
 									}
 							});
 							pnlLegendImg.add(legendMap);
@@ -238,8 +236,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						width: 700,
 						height: 595,
 						region: "center",
-						layers: instance.getLayersFromAppMap(),
-				})
+						layers: instance.getLayersFromAppMap()
+				});
 
 				var nav = new Ext.Panel({
 						title: i18n.LAPIGPRINT_TTLAREA_MNPMAP,
@@ -254,17 +252,17 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 										xtype:'label',
 										style:{
 												fontSize:'12px',
-												paddingTop:'45px',
+												paddingTop:'45px'
 										},
-										html: i18n.LAPIGPRINT_TXTHTML_WELCOME,
-								},
+										html: i18n.LAPIGPRINT_TXTHTML_WELCOME
+								}
 						],
 						buttons: [
 								{
 										text: i18n.LAPIGPRINT_BTN_NEXT,
 										style: {
 												paddingLeft: '10px',
-												paddingRight:'10px',
+												paddingRight:'10px'
 										},
 										handler: function(){
 												instance.createProximoPasso2(true);
@@ -292,35 +290,23 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				var pnlLegend = Ext.getCmp('gxp_lapigprint::ckeck-legend');
 
 				/* Atualizacao da legenda checkbox ******************************/
-				pnlLegend.removeAll();
-
 				if(updateLegendPnlFlag) {
-						var pnlLabel = new Ext.form.Label({
-								xtype:'label',
-								style:{
-									fontSize:'12px',
-									paddingTop:'10px',
-								},
-								html: i18n.LAPIGPRINT_TXTHTML_SELECTLEG,
-						});
-						pnlLegend.add(pnlLabel);
+						pnlLegend.removeAll();
 
 						for(var i= (instance.layers.length - 1); i >= 0; i--) {
 							var layer = instance.layers[i];
 							var composite = new Ext.form.CompositeField({
 									style:{
 											paddingTop:'10px',
-											paddingBottom:'10px',
+											paddingBottom:'10px'
 									},
-									//-------------------AJUSTAR----------------------//
-									cls: "adjust-icon-legend",
 									items: [
 									{
 											xtype: 'button',
 											id:'lapig-icon-seta-verde',
 											style:{
 													paddingTop:"4px",
-													width:'15px',
+													width:'15px'
 											},
 											layer: layer,
 											html:'<img src="/theme/app/img/seta.png"/>',
@@ -332,7 +318,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 															instance.layers[posicao + 1] = instance.layers[posicao];
 															instance.layers[posicao] = aux;
 															instance.createProximoPasso2(true);
-													},
+													}
 											}
 									},
 									{
@@ -350,7 +336,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 															instance.createProximoPasso2(false);
 													}
 											}
-									},
+									}
 									]
 							});
 
@@ -363,6 +349,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						}
 						pnlLegend.doLayout();
 				}
+				instance.clearMap(instance.internalMap2);
 
 				instance.addLegends(pnlLegendImg);
 				tabSection2.enable();
@@ -370,14 +357,13 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				tabPrint.doLayout();
 				/*******************************/
 
-				instance.clearMap(instance.internalMap2);
 				instance.addLayers(instance.internalMap2);
 				instance.internalMap2.map.addControl(new OpenLayers.Control.Graticule({
 					lineSymbolizer: {
 						'strokeDashstyle': 'dot',
 						'strokeColor': '#000000',
 						'strokeWidth': 1,
-						'strokeOpacity': 0.5,
+						'strokeOpacity': 0.5
 					},
 					labelSymbolizer: {
 						'fontSize': '10px'
@@ -407,9 +393,9 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								height:40,
 								style:{
 										borderColor: 'white transparent',
-										backgroundColor: 'white',
+										backgroundColor: 'white'
 								}
-						}],
+						}]
 				});		
 
 				instance.internalMap2 = new GeoExt.MapPanel({
@@ -417,8 +403,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								projection: "EPSG:900913",
 								controls: [],
 								maxResolution: 75000,
-			          units: "m",
-			          allOverlays: true
+						        units: "m",
+						        allOverlays: true
 						},
 						border: false,
 						width: 700,
@@ -432,7 +418,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 							})
 						],
 						style:{
-								border: '1px solid gray',
+								border: '1px solid gray'
 						}
 				});
 
@@ -450,9 +436,9 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								paddingLeft: '5px',
 								paddingRight: '5px',
 								border: '1px solid gray',
-								fontWeight: 'bold',
+								fontWeight: 'bold'
 						},
-						html:'',
+						html:''
 				});
 
 				var mapLegend = new Ext.Panel({
@@ -462,9 +448,20 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						region: "center",
 						split: true,
 						style:{
-								backgroundColor: 'white',
+								backgroundColor: 'white'
 						},
 						items:[title, instance.internalMap2, legend]					
+				});
+
+				var titleLegendsLayers = new Ext.Panel({
+						id: 'title_legend_description',
+						border: false,
+						style:{
+							fontSize:'12px',
+							paddingTop:'10px'
+						},
+
+						html: i18n.LAPIGPRINT_TXTHTML_SELECTLEG
 				});
 
 				var checkLegend = new Ext.Panel({
@@ -476,8 +473,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								defaultType: 'checkbox',
 								style:{
 										paddingTop: '15px',
-										paddingLeft:'10px',
-								},
+										paddingLeft:'10px'
+								}
 						}
 				});
 
@@ -487,12 +484,12 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						region: "east",
 						split: true,
 						width: 220,
-						items:[checkLegend],
+						items:[titleLegendsLayers, checkLegend],
 						buttons: [{
 								text: i18n.LAPIGPRINT_BTN_NEXT,
 								style: {
 										paddingLeft: '10px',
-										paddingRight:'10px',
+										paddingRight:'10px'
 								},
 								handler: function(){
 										instance.createProximoPasso3(true);
@@ -560,14 +557,14 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				instance.addLayers(instance.internalMap3);
 				instance.internalMap3.map.addControl(new OpenLayers.Control.ScaleLine({ 
 						div: document.getElementById('scale_map_internalMap3'),
-						geodesic: true,
+						geodesic: true
 				}));
 				instance.internalMap3.map.addControl(new OpenLayers.Control.Graticule({
 						lineSymbolizer: {
 								'strokeDashstyle': 'dot',
 								'strokeColor': '#000000',
 								'strokeWidth': 1,
-								'strokeOpacity': 0.5,
+								'strokeOpacity': 0.5
 						},
 						labelSymbolizer: {
 								'fontSize': '10px'
@@ -614,7 +611,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								html: '<img src="/theme/app/img/logo-pastagem.png"/>',
 								border: false,
 								height: 40,
-								width: 120,
+								width: 120
 						},{
 								xtype:'panel',
 								name: 'logo-parceiros',
@@ -622,8 +619,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								html: '<img src="/theme/app/img/logo-parceiros2.png"/>',
 								border: false,
 								height: 40,
-								width: 110,
-						}],
+								width: 110
+						}]
 				});
 
 				var descricao = new Ext.Panel({
@@ -636,18 +633,18 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								name: 'rosa-dos-ventos',
 								id: 'rosa-dos-ventos_map_internalMap3',
 								html: '<img src="/theme/app/img/rosa-dos-ventos.png"/>',
-								border: false,
+								border: false
 						},{
 								xtype:'label',
 								id: 'scale_map_internalMap3',
-								region: 'center',
+								region: 'center'
 						},{
 								border: false,
 								name: 'escala-Map3',
 								xtype:'label',
 								id: 'projection_map_internalMap3',
-								html: '',
-						}],
+								html: ''
+						}]
 				});
 
 				instance.internalMap3 = new GeoExt.MapPanel({
@@ -655,8 +652,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								projection: "EPSG:900913",
 								controls: [],
 								maxResolution: 75000,
-			          units: "m",
-			          allOverlays: true
+					            units: "m",
+					            allOverlays: true
 						},
 						border: false,
 						width: 700,
@@ -670,7 +667,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 							})
 						],
 						style:{
-								border: '1px solid gray',
+								border: '1px solid gray'
 						}
 				});
 
@@ -688,9 +685,9 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								paddingLeft: '5px',
 								paddingRight: '5px',
 								border: '1px solid gray',
-								fontWeight: 'bold',
+								fontWeight: 'bold'
 						},
-						html:'',
+						html:''
 				});
 
 				var mapLegend = new Ext.Panel({
@@ -700,7 +697,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						region: "center",
 						split: true,
 						style:{
-								backgroundColor: 'white',
+								backgroundColor: 'white'
 						},
 						items:[title, instance.internalMap3, legend, descricao]
 				});
@@ -740,16 +737,16 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 																var keys = key.getValue();
 																titleArea.setText(keys);
-														},
-												},
+														}
+												}
 										}]
-								}],
+								}]
 						}],
 						buttons: [{
 								text: i18n.LAPIGPRINT_BTN_PDF,
 								style: {
 										paddingLeft: '10px',
-										paddingRight:'10px',
+										paddingRight:'10px'
 								},
 								handler: function(){
 										instance.printMap()
@@ -797,7 +794,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								disabled:false,
 								items: [ 
 									instance.getContentItem1() 
-								],
+								]
 						},{
 								title: i18n.LAPIGPRINT_TTLABA_LEGEND,
 								id: 'gxp_lapigprint::tab-section2',
@@ -828,7 +825,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				});
 
 			 return win.show(this);
-		},
+		}
 });
 
 Ext.preg(gxp.plugins.LapigPrint.prototype.ptype, gxp.plugins.LapigPrint);

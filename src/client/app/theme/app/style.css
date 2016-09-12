@@ -165,6 +165,10 @@ div.olControlMousePosition {
     font-size: 12px;
 }
 
+#title_legend_description {
+    margin-top: 3px !important;
+}
+
 #description_map {
     overflow: hidden;
     position: absolute;
