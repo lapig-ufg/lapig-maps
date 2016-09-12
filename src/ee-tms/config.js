@@ -37,7 +37,7 @@ module.exports = function(app) {
 	if(process.env.NODE_ENV == 'prod') {
 		config.redis.host = '200.137.217.157'
 		config['port'] = '3300'
-		config['hostName'] = 'http://maps.lapig.iesa.ufg.br/tms'
+		config['hostName'] = 'http://maps.lapig.iesa.ufg.br'
 	}
 
 	return config;

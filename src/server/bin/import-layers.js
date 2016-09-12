@@ -70,6 +70,7 @@ var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
       });
 
       db.collection(layerCollectionName, function(err, layersCollection) {
+        console.log(existedLayers)
         layersCollection.insert(existedLayers, null, function() {
           db.close();
 
@@ -496,7 +497,7 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.11\,share\=mapa_interativo\,user\=fernanda.stefani/PROCESSO/DADOS\ GEOGRÁFICOS/DADOS\ PRONTOS/"
+var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.11\,share\=mapa_interativo\,user\=leandro.leal/PROCESSO/DADOS\ GEOGRÁFICOS/DADOS\ PRONTOS/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"
 var dbUrl = 'mongodb://localhost:27017/lapig-maps';
