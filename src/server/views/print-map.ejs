@@ -24,20 +24,20 @@
 
   <body>
     <!-- Mapa -->
-    <div style="border: 1px solid gray; width: 680px; height: 539px; margin-top: 40px !important; margin-left: 1px !important; position: absolute; overflow: hidden;" id="map"></div>
+    <div style="border: 1px solid silver; width: 680px; height: 620px; margin-top: 40px !important; margin-left: 1px !important; position: absolute; overflow: hidden; border-radius: 15px;" id="map"></div>
 
     <!-- Logos -->
-    <img style="position: absolute; height: 40px; left: 1px; padding-bottom: 8px; " class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
-    <img style="position: absolute; height: 40px; left: 815px; padding-bottom: 8px; " class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros2.png" />
+    <img style="position: absolute; height: 40px; left: 1px; padding-bottom: 8px; top: 2px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-pastagem.png" />
+    <img style="position: absolute; height: 40px; left: 858px; padding-bottom: 8px; top: 2px;" class="pull-right img-responsive img-foot" src="/theme/app/img/print/logo-parceiros2.png" />
 
     <!-- Titulo -->
-    <span style="position: absolute; font-size: 15px; left: 100px; top: 10px; font-weight: bold; width: 630px; text-align: center; height: 25px; overflow: hidden;"><%= title %></span>
+    <span style="position: absolute; font-size: 15px; left: 100px; top: 10px; font-weight: bold; width: 740px; text-align: center; height: 25px; overflow: hidden;"><%= title %></span>
 
     <!-- Lengendas-->
-    <span style="position:absolute; border: 1px solid gray; padding: 5px 1px 431px 10px; display: block; width: 215px; height: 0px; top: 40px; left: 685px; overflow: hidden;">
-      <h4 style = "font-color:gray; font-weight: bold; font-size: 15px"><%= lang.LAPIGPRINT_TTLAREAMAP_LEGENDASMAP %>: </h4>
+    <span style="position:absolute;border: 1px solid silver;padding: 5px 1px 431px 10px;display: block;width: 258px;height: 520px;top: 40px;left: 685px;overflow: hidden;border-top-right-radius: 15px;border-top-left-radius: 15px;">
+      <h4 style = "font-color:gray; font-weight: bold; font-size: 13px; margin-bottom: 10px; margin-top: 0px;"><%= lang.LAPIGPRINT_TTLAREAMAP_LEGENDASMAP %>: </h4>
       <% for(var i=0; i<layers.length; i++) {%>
-          <span style="padding-bottom:5px; font-size: 12px; font-weight: bold"><%= layers[i].label %></span>
+          <span style="padding-bottom:5px; font-size: 10px;"><%= layers[i].label %></span>
         <p>
          <img src="<%= layers[i].legendUrl %>" />
         </p>
@@ -45,23 +45,23 @@
     </span>
     
     <!-- Escala -->
-    <span style="position:absolute; margin-top: 490px; margin-left: 800px;">
+    <span style="position:absolute; margin-top: 570px; margin-left: 850px;">
       <div id="scale" style="height: 5px"></div>
     </span>
 
     <!-- Sub-Legendas -->
-    <span style="position: absolute; border: 1px solid gray; padding: 3px 148px 50px 5px; display: block; top: 477px; left: 685px; overflow: hidden;">
+    <span style="position: absolute;border-left: 1px solid silver;padding: 3px 148px 50px 5px;display: block;top: 559px;left: 685px;overflow: hidden;width: 258px;height: 102px;border-right: 1px solid silver;border-bottom: 1px solid silver;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px;">
         <!-- Imagem -->
-        <img style=" width: 51px; height: 45px; margin-top: 3px; margin-left: 10px;" src="theme/app/img/rosaDosVentos.png" >
+        <img style="width: 51px;height: 45px;margin-top: 4px;margin-left: 21px;position: absolute;" src="theme/app/img/rosaDosVentos.png" >
 
         <!-- Projeçao -->
-        <span style="position:absolute; margin-top: -2px; margin-left: 0px;">
-          <h6> Projeção: DATUM WGS84 </h6>
+        <span style="position:absolute;margin-top: 43px;margin-left: 0px;">
+          <h6 style="font-size: 10px"> Projeção: DATUM WGS84 </h6>
         </span>
 
         <!-- Fonte -->
-        <span style="position:absolute; margin-top: 15px; margin-left: 0px;"> 
-          <h6> Fontes: <%= fonte %> </h6>
+        <span style="position:absolute;margin-top: 60px;margin-left: 0px; padding-right: 5px;"> 
+          <h6 style="font-size: 10px"> Fontes: <%= fonte %> </h6>
         </span>
     </span>
 
@@ -76,12 +76,6 @@
         var map, layer;
 
         map = new OpenLayers.Map('map', {
-          "controls": [
-            new OpenLayers.Control.ScaleLine({ 
-              div: $('#scale')[0],
-              geodesic: true,
-            })
-          ],
           maxResolution: 75000,
           projection: new OpenLayers.Projection("EPSG:900913"),
           units: "m",
@@ -94,7 +88,8 @@
                     'layers': '<%= layers[i].layername %>',
                     'format': 'image/png',
                     'version': '1.1.1',
-                    'transparent': 'true'
+                    'transparent': 'true',
+                    'msfilter': "<%- layers[i].filter %>"
                   },{
                     'isBaseLayer': false,
                     'tileSize': new OpenLayers.Size(512,512)
@@ -106,9 +101,10 @@
         map.addControl(new OpenLayers.Control.Graticule({
           lineSymbolizer: {
             'strokeDashstyle': 'dot',
-            'strokeColor': '#000000',
+            'strokeLinecap': 'round',
+            'strokeColor': 'gray',
             'strokeWidth': 1,
-            'strokeOpacity': 0.5,
+            'strokeOpacity': 1,
           },
           labelSymbolizer: {
             'fontSize': '10px'
@@ -116,7 +112,7 @@
           numPoints: 2,
           labelled: true
         }));
-        map.addControl();
+        
     </script>
 	</body>
 </html>

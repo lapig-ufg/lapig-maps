@@ -18,6 +18,7 @@ module.exports = function(app) {
 		var srs = request.param('srs', 'EPSG:900913');
 		var layersParam = request.param('layers', '');
 		var labelsParam = request.param('labels', '');
+		var filtersParam = request.param('filters', '');
 		var title = request.param('title', 'Fernanda');
 		var lon = request.param('lon', lon);
 		var lat = request.param('lat', lat);
@@ -26,16 +27,20 @@ module.exports = function(app) {
 
 		var layerArray = layersParam.split(';;');
 		var labelsArray = labelsParam.split(';;');
+		var filtersArray = filtersParam.split(';;')
 
 		for(var i=0; i < layerArray.length; i++) {
 
 			var layer = layerArray[i];
 			var label = unescape(labelsArray[i]);
+			var filter = filtersArray[i];
 
+			console.log(filter);
 			layers.push({
 			    "label": label
 			  ,	"host": host
 			  ,	"layername": layer
+			  , "filter": filter
 			  , "legendUrl": host  + '?SERVICE=WMS'
 							+ '&VERSION=1.1.1'
 							+ '&request=GetLegendGraphic'
@@ -52,11 +57,16 @@ module.exports = function(app) {
 		var fontes = layerArray.toString().split(',');
 
 		for(var i=0; i<fontes.length; i++) {
-			fonte = fontes[i].split('_')
-			fonte = fonte.reverse();
-			fonte = fonte[0]
-			strFonte.push(fonte);
-		}
+					fonte = fontes[i].split('_')
+					if(fonte.length >= 5) {
+						fonte = fonte.reverse();
+						fonte = fonte[0]
+						strFonte.push(fonte);
+					} else {
+						strFonte.push('LAPIG');
+					}
+					
+			}
 
 		var listFonte = [];
 		var splitFonte = strFonte.toString();
@@ -95,13 +105,10 @@ module.exports = function(app) {
 			        'pageFormat': 'A4',
 			        'orientation': 'landscape',
 			        'margin': {
-			            'top': '1cm'
-			        },
-			        'footer': {
-			            'height': '1cm',
-			            'contents': function() {
-			              return '<h1 class="float: right;">opaaaaaaaaaaa</h1>'
-			            }
+			            'top': '0.2cm',
+			            'bottom': '0.2cm',
+			            'left': '0.2cm',
+			            'right': '0.2cm'
 			        }
 			    },
 				'captureDelay': 0,
