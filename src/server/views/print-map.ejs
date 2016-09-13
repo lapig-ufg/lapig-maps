@@ -76,6 +76,12 @@
         var map, layer;
 
         map = new OpenLayers.Map('map', {
+          "controls": [
+            new OpenLayers.Control.ScaleLine({ 
+              div: $('#scale')[0],
+              geodesic: true,
+            })
+          ],
           maxResolution: 75000,
           projection: new OpenLayers.Projection("EPSG:900913"),
           units: "m",
