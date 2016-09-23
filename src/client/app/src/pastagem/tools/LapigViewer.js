@@ -476,7 +476,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             },
             bing: {
               ptype: "gxp_bingsource",
-              apiKey: "AgGtGpUH9SjzBV5Cf6ZSRIDws0e2nSaLxZwPvx3uWSxV5wz43AxMzBHMSa9eiWdx"
+              apiKey: "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY"
             },
             mapbox: {
               ptype: "gxp_mapboxsource",
