@@ -160,6 +160,7 @@
 	"LAPIGPRINT_TTLAREA_SELECTLEG": "Choose Legend",
 	"LAPIGPRINT_TXTHTML_SELECTLEG": ["<h3>Choose the legend that will appear on printed map to move  them , use the green button with an arrow indicated :</h3>"],
 	"LAPIGPRINT_TTLAREA_TTLDESC": "Customizing the Title and Description",
+	"LAPIGPRINT_TTLAREA_TTLAYERS": "Customize Layer",
 	"LAPIGPRINT_FIELDLBL_TTL": "Enter Title",
 	"LAPIGPRINT_FIELDLBL_DESC": "Enter Description",
 	"LAPIGPRINT_BTN_PDF": "Create PDF",

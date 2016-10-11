@@ -76,13 +76,21 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			var strLayers = [];
 			var strLabels = [];
 			var strFilters = [];
-			instance.layers.forEach(function(l) {
-					if(l.enable){
-							strLayers.push(l.id);
-							strLabels.push(l.label)
-							strFilters.push(l.filter);
+
+			for(var i=0; i<instance.layers.length; i++) {
+				var layer = instance.layers[i]
+				if(layer.enable) {
+					strLayers.push(layer.id);
+					strFilters.push(layer.filter);
+
+					if(instance.customLayer[layer.id]) {
+						strLabels.push(instance.customLayer[layer.id])
+					} else {
+						strLabels.push(layer.label)
 					}
-			})
+				}
+				console.log('labels final: ',strLabels)
+			}
 
 			var strLayers = strLayers.join(';;');
 			var labels = strLabels.join(';;');
@@ -117,6 +125,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 						var legendMap = new Ext.Panel({
 								title: layer.label,
+								id: layer.label,
 								headerCfg: {
 										tag: 'span',
 										cls: 'x-header-legends',
@@ -139,24 +148,27 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		var instance = this;
 
 		instance.layers.forEach(function(layer) {
-			internalMap.map.addLayer(new OpenLayers.Layer.WMS(
-				layer.label, 
-				layer.url, 
-					{ 
-						layers: layer.id, 
-						format: layer.format,
-						transparent: layer.transparent,
-						msfilter: layer.filter
-					}, 
-					{ 
-						maxExtent: layer.maxExtent,
-						projection: layer.projection,
-						visibility: layer.enable,
-						tileSize: layer.tileSize
-					}
-			));
+			if(layer.enable == false) {
+				console.log('Dont addLayer')
+			} else {
+				internalMap.map.addLayer(new OpenLayers.Layer.WMS(
+					layer.label, 
+					layer.url, 
+						{ 
+							layers: layer.id, 
+							format: layer.format,
+							transparent: layer.transparent,
+							msfilter: layer.filter
+						}, 
+						{ 
+							maxExtent: layer.maxExtent,
+							projection: layer.projection,
+							visibility: layer.enable,
+							tileSize: layer.tileSize
+						}
+				));
+			}
 		});
-
 	},
 
 	clearMap: function(internalMap) {
@@ -171,13 +183,13 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		}
 	},
 
-	getLayersFromAppMap: function() {		
+	getLayersFromAppMap: function() {
 			var instance = this;
 			var appMap = this.target.mapPanel.map;
 
 			var bing = new OpenLayers.Layer.Bing({
 					name: "Road",
-					key: "AgGtGpUH9SjzBV5Cf6ZSRIDws0e2nSaLxZwPvx3uWSxV5wz43AxMzBHMSa9eiWdx",
+					key: "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY",
 					type: "Road"
 			});
 
@@ -240,7 +252,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					zoom: appMap.zoom,
 					border:false,
 					width: 700,
-					height: 595,
+					height: 500,
 					region: "center",
 					layers: instance.getLayersFromAppMap()
 			});
@@ -249,8 +261,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					title: i18n.LAPIGPRINT_TTLAREA_MNPMAP,
 					border:false,
 					region: 'east',
-					split: true,
-					width: 220,
+					split: false,
+					width: 418,
 					height: 595,
 					padding:10,
 					items:[
@@ -279,8 +291,9 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 			return {
 					layout: 'border',
-					border:false,
-					height: 595,
+					id: 'update_internalMap1_display',
+					border: false,
+					height: 530,
 					items: [ instance.internalMap, nav ]
 			}
 	},
@@ -302,7 +315,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					for(var i= (instance.layers.length - 1); i >= 0; i--) {
 						var layer = instance.layers[i];
 						var composite = new Ext.form.CompositeField({
-								style:{
+								style: {
 										paddingTop:'10px',
 										paddingBottom:'10px'
 								},
@@ -316,7 +329,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 										},
 										layer: layer,
 										html:'<img src="/theme/app/img/seta.png"/>',
-										listeners:{
+										listeners: {
 												click: function(n){
 														var posicao = instance.layers.indexOf(n.layer);
 														var aux = instance.layers[posicao + 1];
@@ -350,6 +363,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 								Ext.getCmp('lapig-icon-seta-verde').setDisabled(true);
 								Ext.getCmp('lapig-icon-seta-verde').html ='<img src="/theme/app/img/seta-invisivel.png"/>';
 						}
+
 					pnlLegend.add(composite);
 
 					}
@@ -382,7 +396,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
  			/*******************************/
 	},
 
-	getContentItem2 : function(){
+	getContentItem2 : function() {
 			var instance = this;
 
 			var title = new Ext.Panel({
@@ -402,7 +416,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 									backgroundColor: 'white'
 							}
 					}]
-			});		
+			});
 
 			instance.internalMap2 = new GeoExt.MapPanel({
 					map: {
@@ -419,7 +433,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					layers: [
 						new OpenLayers.Layer.Bing({
 								name: "Road",
-								key: "AgGtGpUH9SjzBV5Cf6ZSRIDws0e2nSaLxZwPvx3uWSxV5wz43AxMzBHMSa9eiWdx",
+								key: "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY",
 								type: "Road"
 						})
 					],
@@ -452,7 +466,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					layout: "border",
 					border:false,
 					region: "center",
-					split: true,
+					split: false,
 					style:{
 							backgroundColor: 'white'
 					},
@@ -472,8 +486,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 			var checkLegend = new Ext.Panel({
 					id: 'gxp_lapigprint::ckeck-legend',
-					border:false,
-					padding:10,
+					border: false,
+					padding: 10,
 					items: {
 							border: false,
 							defaultType: 'checkbox',
@@ -488,7 +502,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					title: i18n.LAPIGPRINT_TTLAREA_SELECTLEG,
 					border:false,
 					region: "east",
-					split: true,
 					width: 220,
 					autoScroll: true,
 					items:[titleLegendsLayers, checkLegend],
@@ -518,11 +531,12 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			var tabPrint = Ext.getCmp('gxp_lapigprint::tab-print');
 			var tabSection3 = Ext.getCmp('gxp_lapigprint::tab-section3');
 			var pnlLegend = Ext.getCmp('gxp_lapigprint::pnl-legend-section3');
+			instance.flagLayerCustom = false;
 
-			/* Atualizacao da figura leg|enda ******************************/
+			/* Atualizacao da figura leg|enda ******************************/	
 			instance.fontArrayId = [];
 			
-			instance.layers.forEach(function(layer){
+			instance.layers.forEach(function(layer) {
 				if (layer.enable) {
 					instance.fontArrayId.push(layer.id);
 				}
@@ -546,7 +560,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					} else {
 						fontArray.push('LAPIG');
 					}
-					
 			}
 
 			var strFont = [];
@@ -567,6 +580,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			/* Atualizacao dos Layers e Controls ******************************/
 			instance.clearMap(instance.internalMap3);
 			instance.addLayers(instance.internalMap3);
+
 			instance.internalMap3.map.addControl(new OpenLayers.Control.ScaleLine({ 
 					div: document.getElementById('scale_map_internalMap3'),
 					geodesic: true
@@ -584,12 +598,42 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					numPoints: 2,
 					labelled: true
 			}));
-
 			instance.internalMap3.map.setCenter(new OpenLayers.LonLat(instance.internalMap.map.getCenter().lon,instance.internalMap.map.getCenter().lat), instance.internalMap.map.zoom);
-			/********************************/
+
+			var labelLegends = Ext.getCmp('gxp_lapigprint::label-legends');
+			labelLegends.removeAll();
+
+			for(var i=(instance.layers.length - 1); i >= 0; i--) {
+				var layer = instance.layers[i];
+				instance.customLayer = [];
+
+				if(layer.enable) {
+					var textfield = new Ext.form.TextField({
+						xtype: 'textfield',
+						value: layer.label,
+						layer: layer,
+						enableKeyEvents: true,
+						listeners: {
+								keyup : function (obj, evnt) {
+									var titleLayer = Ext.getCmp(obj.layer.label)
+									titleLayer.setTitle(evnt.target.value)
+
+									var newTitle = evnt.target.value;
+									var myKey = obj.layer.id;
+
+									instance.customLayer[myKey] = newTitle
+									console.log(instance.customLayer);
+									
+								}
+						}
+					});
+					labelLegends.add(textfield);
+				}
+			}
+			labelLegends.doLayout();
 	},
 
-	getContentItem3: function(){
+	getContentItem3: function() {
 			var instance = this;
 
 			var title = new Ext.Panel({
@@ -674,7 +718,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					layers: [
 						new OpenLayers.Layer.Bing({
 								name: "Road",
-								key: "AgGtGpUH9SjzBV5Cf6ZSRIDws0e2nSaLxZwPvx3uWSxV5wz43AxMzBHMSa9eiWdx",
+								key: "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY",
 								type: "Road"
 						})
 					],
@@ -705,9 +749,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			var mapLegend = new Ext.Panel({
 					title: i18n.LAPIGPRINT_TTLAREA_PREVIEW,
 					layout: "border",
-					border:false,
+					border: false,
 					region: "center",
-					split: true,
 					style:{
 							backgroundColor: 'white'
 					},
@@ -719,7 +762,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					layout: "border",
 					border:false,
 					region: "east",
-					split: true,
+					split: false,
 					width: 220,
 					items:[{
 							border:false,
@@ -734,7 +777,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 											paddingTop: '20px',
 											paddingLeft: '5px'
 									},
-									items: [{
+									items: [
+									{
 											xtype:'textarea',
 											fieldLabel: i18n.LAPIGPRINT_FIELDLBL_TTL,
 											name: 'titulo',
@@ -751,26 +795,42 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 															titleArea.setText(keys);
 													}
 											}
+									},{
+											id: 'gxp_lapigprint::label-legends',
+											fieldLabel: i18n.LAPIGPRINT_TTLAREA_TTLAYERS,
+											labelStyle: 'font-weight:bold;',
+											border: false,
+											items: {
+													border: false,
+													height: 10,
+													width: 210,
+													marginBottom: 10,
+													defaultType: 'textfield',
+													style:{
+															paddingTop: '15px',
+															paddingLeft:'10px'
+													}
+											}
 									}]
 							}]
 					}],
 					buttons: [{
-							text: i18n.LAPIGPRINT_BTN_PDF,
-							style: {
-									paddingLeft: '10px',
-									paddingRight:'10px'
-							},
-							handler: function(){
-									instance.printMap()
-							}
+						text: i18n.LAPIGPRINT_BTN_PDF,
+						style: {
+								paddingLeft: '10px',
+								paddingRight:'10px'
+						},
+						handler: function(){
+								instance.printMap()
+						}
 					}]
-					});
+			});
 
-					return {
-					layout: "border",
-					border:false,
-					height: 595,
-					items: [mapLegend, pnlTituloeDescricao]
+			return {
+				layout: "border",
+				border:false,
+				height: 595,
+				items: [mapLegend, pnlTituloeDescricao]
 			}
 	},
 
@@ -824,15 +884,14 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					}]
 			});
 
-			
-
 			var win = new Ext.Window({
 					title: i18n.LAPIGPRINT_TTL_WINDOW,
-					closable:true,
+					layout: 'fit',
+					closable: true,
+					resizable: false,
 					width:1030,
 					height:650,
 					border:false,
-					layout: 'fit',
 					items: [tabs]
 			});
 

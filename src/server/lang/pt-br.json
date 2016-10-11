@@ -159,6 +159,7 @@
 	"LAPIGPRINT_TTLAREA_SELECTLEG": "Selecione as Legendas",
 	"LAPIGPRINT_TXTHTML_SELECTLEG": ["<h3>Escolha as legendas que aparecerão na impressão do mapa, para movê-las, utilize o botão verde com uma seta indicada:</h3>"],
 	"LAPIGPRINT_TTLAREA_TTLDESC": "Personalização do Título e Descrição",
+	"LAPIGPRINT_TTLAREA_TTLAYERS": "Personalizar Camada",
 	"LAPIGPRINT_FIELDLBL_TTL": "Digite o Título",
 	"LAPIGPRINT_FIELDLBL_DESC": "Digite a Descrição",
 	"LAPIGPRINT_BTN_PDF": "Gerar PDF",

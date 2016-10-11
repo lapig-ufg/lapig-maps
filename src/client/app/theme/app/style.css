@@ -161,12 +161,23 @@ div.olControlMousePosition {
     padding: 2px 5px;
 }
 
+.ext-strict .x-form-text {
+    height: 18px;
+    margin-bottom: 5px;
+    width: 203px;
+}
+
 .x-form-cb-label {
     font-size: 12px;
 }
 
+#update_internalMap1_display {
+    margin-top: 58px !important;
+}
+
 #title_legend_description {
     margin-top: 3px !important;
+    margin-left: 5px !important;
 }
 
 #description_map {
@@ -175,7 +186,7 @@ div.olControlMousePosition {
     height: 112px !important;
     width: 198px !important;
     top: 458px;
-    left: 594px;
+    left: 599px;
 }
 
 #scale_map_internalMap3 {
