@@ -39,12 +39,14 @@ var parseCsv = function(filepath, callback) {
         "_id":col[4].trim(),
         "search":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4],
         "project": col[5].toUpperCase(),
-        "metadata": col[6]
+        "metadata": col[6],
+        "searchEnglish":col[0]+" "+col[1]+" "+col[2]+" "+col[3]+" "+col[4]
       }
       
       layers.push(objeto);
   
     }
+    console.log(layers);
 
     callback(layers);
 
