@@ -46,7 +46,6 @@ var parseCsv = function(filepath, callback) {
       layers.push(objeto);
   
     }
-    console.log(layers);
 
     callback(layers);
 
@@ -197,6 +196,8 @@ var getSource = function(layer) {
 var getScale = function(layer) {
   var nameTitle = layer._id.split('_');
   var scaleTitle = nameTitle[nameTitle.length-3];
+  var teste1 = scaleTitle.toString();
+  var teste = teste1.substring(0,1) + "," + teste1.substring(1);
 
   if (scaleTitle == 'ni')
     scaleTitle= "Nao informada";
@@ -204,11 +205,11 @@ var getScale = function(layer) {
     scaleTitle= "Nao se aplica";
   else {
     if (layer.type == 'RASTER')
-      scaleTitle = Number(scaleTitle).toString() + " m";
+      scaleTitle = scaleTitle.toString() + " m";
     else if (layer.type == 'VECTOR')
       scaleTitle="1:"+(scaleTitle+"000").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   };
-
+  
   return scaleTitle;
 };
 
