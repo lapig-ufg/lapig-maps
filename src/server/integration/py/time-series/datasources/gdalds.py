@@ -6,6 +6,8 @@ from _datasource import Datasource;
 import ast;
 import loader;
 import utils;
+import datetime;
+from dateutil.relativedelta import relativedelta;
 
 
 
@@ -27,14 +29,15 @@ class Gdalds(Datasource):
 
 		p = startYearVariable
 
-		while(startYearVariable.year < endYearVariable.year):
+		while(startYearVariable < endYearVariable):
 
 			result.append(str(p))
 
 			p = p + datetime.timedelta(days)
 
 			if p.year > startYearVariable.year:
-				startYearVariable = startYearVariable + relativedelta(years=1)
+				strDate = str(startYearVariable.year)+'-01-01'
+				startYearVariable = datetime.datetime.strptime(strDate, '%Y-%m-%d').date() + relativedelta(years=1)
 				p = startYearVariable
 
 		return result
@@ -53,8 +56,15 @@ class Gdalds(Datasource):
 			for j in range(1,13):
 
 				result.append(str(i)+'-'+str(j).zfill(2)+'-'+'01');
-				if (str(j) in str(endMonth)) & (str(i) in str(endYear)):
+				if (str(j) in str(endMonth)) & (str(i) in str(endYear+1)):
 					break;
+
+		if self.file == "pa_br_et_1000_lapig.tif":
+			indexResult = result.index('2014-10-01')
+			result.pop(indexResult)
+		if self.file == "pa_br_trmm_3000_lapig.tif":
+			indexResult = result.index('2008-03-01')
+			result.pop(indexResult)
 
 		return result
 
@@ -62,6 +72,7 @@ class Gdalds(Datasource):
 		result = []
 		filepath = os.path.join(self.imageDbPath, self.file);
 		mean = self.zonalStatistics(geoJsonGeometry, filepath);
+
 		if('month' == self.temporal_resolution_type):
 			date = self.localDateByMonth()
 		else:
@@ -75,8 +86,30 @@ class Gdalds(Datasource):
 			count.append(float(i))
 			result.append(count)
 
+
 		series = [{'position': 1, 'type': 'original', 'id': 'original', 'label': 'Valores originais'}]
 
+		for filter in loader.getFilters(self.layer_id):
+			if filter.id == 'Bfast' and mode == 'series':
+				continue;
+			elif filter.id != 'Bfast' and mode == 'trend':
+				continue;
+
+			filters = loader.getFilters(self.layer_id)
+			bfastIndex = utils.findIndexByAttribute(filters, 'id', filter.id)
+			filteredValues = filters[bfastIndex].run(mean, None, None)
+			filteredValues = filteredValues if type(filteredValues) == list else filteredValues.tolist();
+
+
+			if len(filteredValues) == len(mean):
+					series.append({
+						'id': filter.id,
+						'label': filter.label,
+						'position': len(result[0]),
+						'type': 'filter'
+					});
+					utils.joinArray(result, filteredValues);		
+		
 		if mode == 'trend':
 			filters = loader.getFilters(self.layer_id)
 			bfastIndex = utils.findIndexByAttribute(filters, 'id', 'Bfast')
@@ -91,7 +124,7 @@ class Gdalds(Datasource):
 					'type': 'trend'
 				});
 				utils.joinArray(result, filteredValues);
-				
+
 		return {
 			"series": series,
 			"values": result
@@ -152,7 +185,7 @@ class Gdalds(Datasource):
 		target_ds.SetProjection(raster_srs.ExportToWkt());
 
 		# Rasterize zone polygon to raster
-		gdal.RasterizeLayer(target_ds, [1], layer, options = ["ALL_TOUCHED=TRUE", "BURN_VALUE_FROM=[1]"]);
+		gdal.RasterizeLayer(target_ds, [1], layer, options = ["ALL_TOUCHED=TRUE", "BURN_VALUE_FROM"]);
 
 		# Read raster as arrays
 		mean = [];
@@ -161,7 +194,7 @@ class Gdalds(Datasource):
 		bands = raster.RasterCount;
 
 		#get all rasters
-		for i in range(1, bands):
+		for i in range(1, bands+1):
 			banddataraster = raster.GetRasterBand(i);
 			dataraster = banddataraster.ReadAsArray(xoff, yoff, xcount, ycount).astype(numpy.float);			
 			bandmask = target_ds.GetRasterBand(1);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
@@ -170,13 +203,13 @@ class Gdalds(Datasource):
 			for line in zoneraster:
 				for colum in line:
 					if(colum != 'NaN'):
-						valor = valor+colum;
+						if (str(colum) != self.fill_value+'.0'):
+							valor = valor+colum;
 						iteration = iteration+1;
 			mean.append(valor/iteration);
 			valor = 0;
 			iteration = 0;
 
 		return mean;
-
 
 		#verificar saida da aplicação do guilherme no google earth engine;

@@ -38,7 +38,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     'MOD16_EVAPOTRANSPIRATION',
     'MOD13Q1_NDVI',
     'MOD13Q1_EVI',
-    'MOD13Q1_EVI2'
+    'MOD13Q1_EVI2',
+    'MOD13Q1_B01',
+    'MOD13Q1_B02',
+    'MOD13Q1_B07'
   ],
 
   constructor: function(config) {
@@ -320,7 +323,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       id: 'lapig_rasterseries::wdw-info',
       layout:'fit',
       border:false,
-      width:700,
+      width:740,
       height:440,
       closeAction:'hide',
       plain: true,
@@ -346,7 +349,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
               containerScroll: true,
               rootVisible: false,
               height: 350,
-              width: 260,
+              width: 300,
               region: 'west',
               root: new Ext.tree.AsyncTreeNode({
                 text: 'Extensions', 
