@@ -153,8 +153,8 @@ var getLayerMultipleFiles = function(layersDir, layer, callback) {
     })
     .on('done', function() {
       files.sort(function(a,b) {
-        var aDate = a.date;
-        var bDate = b.date;
+        var aDate = a.name;
+        var bDate = b.name;
 
         if(aDate < bDate) return -1;
         if(aDate > bDate) return 1;
