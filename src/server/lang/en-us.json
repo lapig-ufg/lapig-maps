@@ -28,7 +28,7 @@
 	"LAPIGVIEWER_ZOOM_ZMINTLP": "Zoom In",
 	"LAPIGVIEWER_ZOOM_ZMOUTTLP": "Zoom Out",
 	"LAPIGVIEWER_RASTERSERIESBTN_MENUTXT": "Time Series",
-	"LAPIGVIEWER_RASTERSERIESBTN_TLTP": "Visualize time series (MODIS, Landsat, etc.) by a point or radius of interest",
+	"LAPIGVIEWER_RASTERSERIESBTN_TLTP": "View time series (MODIS, Landsat, etc.) by a point or radius of interest",
 	"LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT": "Spatial Intelligence",
 	"LAPIGVIEWER_SPATIALINTELLIGENCEBTN_ACTTIP": "Information about annual crop, pasture, planted forest, irrigation pivots, protected areas, deforestation, crop production , meat and milk production, grain storage capacity, land conflicts and much more",
 	"LAPIGVIEWER_COORDINATES_TLTP": "Add Coordinates",
