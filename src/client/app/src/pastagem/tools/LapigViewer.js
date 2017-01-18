@@ -461,18 +461,14 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               url: '/ows/',
               title: "LAPIG-OWS"
             },
-            wmts: {
-              url: '/tms/',
-              ptype: "gxp_wmtssource",
-              title: "LAPIG-WMTS"
-            },
             mapquest: {
               ptype: "gxp_mapquestsource",
               title: "Mapas de fundo (MapQuest)"
             },
             google: {
               ptype: "gxp_googlesource",
-              title: "Mapas de fundo (Google)"
+              title: "Mapas de fundo (Google)",
+              apiKey: "AIzaSyD_KZ4-4MO3Pjga881F_EDWDsFBuQY8CCY"
             },
             bing: {
               ptype: "gxp_bingsource",
