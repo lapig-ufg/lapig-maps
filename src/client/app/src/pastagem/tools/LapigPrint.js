@@ -151,7 +151,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 		instance.layers.forEach(function(layer) {
 			if(layer.enable == false) {
-				//Nao adicionar o layer
+				//Nao adicionar o layer nenhum 
 			} else {
 				internalMap.map.addLayer(new OpenLayers.Layer.WMS(
 					layer.label, 

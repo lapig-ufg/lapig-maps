@@ -168,20 +168,20 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                     region = 'Matopiba'
                                 }else{
                                     if(region == 'bi')
-                                        region = 'Biomas'
+                                        region = i18n.LAPIGADDLAYER_REGION_BIOMES
                                     else if (region == 'es')
-                                        region = 'Estados'
+                                        region = i18n.LAPIGADDLAYER_REGION_STATES
                                     else if (region == 'mu')
-                                        region = 'Municípios'
+                                        region = i18n.LAPIGADDLAYER_REGION_MUNICIPALITY
                                     else if (region == 'or')
-                                        region = 'Outras Regiões'
+                                        region = i18n.LAPIGADDLAYER_REGION_OTHERREGIONS
                                     else if (region == 'pa')
-                                        region = 'Brasil'
+                                        region = i18n.LAPIGADDLAYER_REGION_BRAZIL
                                 }
 
-                            var language = i18n.lang;
+                            //var language = i18n.lang;
 
-                                if(language != 'pt-br'){
+                                /*if(language != 'pt-br'){
                                     if(region == 'Biomas')
                                         region = 'Biomes'
                                     else if (region == 'Estados')
@@ -192,7 +192,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                         region = 'Other Regions'
                                     else if (region == 'Brasil')
                                         region = 'Brazil'
-                                }
+                                }*/
 
                             var treeLayer = Ext.getCmp('tree-layer');
                             var searchNode = treeLayer.getRootNode().findChild('text', subject);

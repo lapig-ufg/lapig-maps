@@ -166,6 +166,8 @@ module.exports = function(app) {
 									regionStr = 'Brasil'
 								else if (region == 'or_mp')
 									regionStr = 'Matopiba'
+								else if (region = 'co')
+									regionStr =  'Continentes'
 
 								var regionObj = {
 											text:regionStr,
@@ -264,8 +266,27 @@ module.exports = function(app) {
 
 												if (translateEN.layers[idLayer] != undefined){
 														layer.children[i].text = nameEn.name
+
+														var childrenObj = layer.children;
+
+														childrenObj.sort(function(a,b){
+																var aText = unidecode(a.text);
+																var bText = unidecode(b.text);
+
+																if(aText < bText) return -1;
+														    if(aText > bText) return 1;
+														    return 0;
+														})
 												}
 										}
+								})
+								result.sort(function(a,b) {
+										var aText = unidecode(a.text);
+										var bText = unidecode(b.text);
+
+										if(aText < bText) return -1;
+								    if(aText > bText) return 1;
+								    return 0;
 								})
 						}
 				    response.send(result);
