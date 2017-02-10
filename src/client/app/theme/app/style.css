@@ -214,6 +214,20 @@ div.olControlMousePosition {
     height: 15px !important;
     width: 560px !important;
 }
+
+#lapig_spatialintelligence_checkbox_municipality {
+    margin-top: 27px !important;
+}
+
+/*Imagens alteradas da ferramenta Spattial Intelligence*/
+.x-treegrid-root-table > .x-tree-node > .idQueryAllRegion > .x-treegrid-col > .x-tree-ec-icon {
+    background-image: url(img/seta-invisivel.png);
+}
+
+.x-toolbar-ct {
+    height: 25px;
+}
+
 .spatial-intelligence-geomap {
     background-image: url(img/spatial-intelligence-geomap.png) !important;
 }

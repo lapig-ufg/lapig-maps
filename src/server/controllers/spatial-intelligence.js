@@ -560,7 +560,6 @@ module.exports = function(app) {
 	}
 
 	Internal.getRegionFilterForRaster = function(regionType, region) {
-
 		if (regionType == 'state') {
 			return "{CITY_CODE}";
 		} else if (regionType == 'biome') {
@@ -572,8 +571,7 @@ module.exports = function(app) {
 		}
 	}
 
-	Internal.getRegionFilter = function(regionType, region, city, toMapserver) {
-		
+	Internal.getRegionFilter = function(regionType, region, city, toMapserver) {	
 		var filterPreffix = '';
 		var filterSuffix = '';
 
@@ -605,11 +603,10 @@ module.exports = function(app) {
 						+ " ORDER BY info ASC"
 	}
 
-	Internal.getQuerySql = function(field, regionFilter, operation, sort, applyOperationInSql) {
-		
+	Internal.getQuerySql = function(field, regionFilter, operation, sort, applyOperationInSql) {		
 		var sqlOperation = 'sum';
 		if(applyOperationInSql)
-			sqlOperation = operation;
+			sqlOperation = operation;	
 
 		return 		"SELECT COD_MUNICI, (MUNICIPIO || ' - ' || UF)  info, bbox, " + sqlOperation + "(" + field + ") as value"
 						+ " FROM \"regions\" "
@@ -618,16 +615,24 @@ module.exports = function(app) {
 						+ " ORDER BY value " + sort
 	}
 
+	Internal.getQuerySqlAllRegion = function(field, regionFilter, operation, applyOperationInSql) {	
+		var sqlOperation = 'sum';
+		if(applyOperationInSql)
+			sqlOperation = operation;
+
+		return 		"SELECT BIOMA, bbox, " + sqlOperation + "(" + field + ") as value "
+						+ "FROM \"regions\" "
+						+ "WHERE " + regionFilter + " AND " + field + " > 0"
+	}
+
 	Internal.queryLayers = function(regionType, region, city, language, callback) {
 		var metadata = Internal.metadata;
 
 		Internal.getSpatialDb(function(spatialDb) {
-
 			var result = [];
 			var regionFilter = Internal.getRegionFilter(regionType, region, city, false);
 
 			var fieldEach = function(field, next) {
-
 				if(field['excludeFromRegions']) {
 					for(var key in field['excludeFromRegions']) {
 						var r = field['excludeFromRegions'][key];
@@ -651,14 +656,15 @@ module.exports = function(app) {
 				};
 				
 				var sql = Internal.getQuerySql(field.name, regionFilter, field.operation, field.sort, field.applyOperationInSql);
-				
+				//console.log(sql)
+
 				var rowEach = function(err, row) {
 					row.leaf = true;
 					row.iconCls = (field.layer) ? 'spatial-intelligence-geomap' : 'spatial-intelligence-nomap';
 					section['value'] += row['value'];
 					section['count'] += 1;
 					row['value'] = Utils.numberFormat(row['value'], field.precision, '.', ',') + " " + field.unit;
-					row['qtip'] = ( field.layer ) ? 'Clique duas vezes para visualizar essa informação no mapa.' : 'Informação disponível apenas em formato tabular. Clique duas vezes para localizar esse município no mapa.'
+					row['qtip'] = ( field.layer ) ? 'Clique duas vezes para visualizar essa informação no mapa.' : 'Informação disponível apenas em formato tabular. Clique duas vezes para localizar esse município no mapa.';
 					section.children.push(row);
 				}
 
@@ -685,9 +691,76 @@ module.exports = function(app) {
 			}
 
 			async.eachSeries(metadata.fields, fieldEach, fieldComplete);
-
 		});
+	}
 
+	Internal.queryAllRegion = function(regionType, region, language, callback) {
+		var metadata = Internal.metadata;
+
+		Internal.getSpatialDb(function(spatialDb) {
+			var result = [];
+			var regionFilter = Internal.getRegionFilter(regionType, region, false);
+
+			var fieldEach = function(field, next) {
+				if(field['excludeFromRegions']) {
+					for(var key in field['excludeFromRegions']) {
+						var r = field['excludeFromRegions'][key];
+						
+						if(r == region) {
+							next();
+							return;
+						}
+					}
+				}
+
+				var section = {
+					info: field.label,
+					layer: field.layer,
+					name: field.name,
+					cls: 'idQueryAllRegion',
+					value: 0,
+					count: 0,
+					iconCls: (field.layer) ? 'spatial-intelligence-geosection' : 'spatial-intelligence-nogeosection',
+					qtip: field.metadata,
+					children: []
+				};
+				
+				var sql = Internal.getQuerySqlAllRegion(field.name, regionFilter, field.operation, field.applyOperationInSql);
+				//console.log(sql)
+
+				var rowEach = function(err, row) {
+					row.leaf = true;
+					row.iconCls = (field.layer) ? 'spatial-intelligence-geomap' : 'spatial-intelligence-nomap';
+					section['value'] += row['value'];
+					section['count'] += 1;
+					row['qtip'] = ( field.layer ) ? 'Clique duas vezes para visualizar essa informação no mapa.' : 'Informação disponível apenas em formato tabular. Clique duas vezes para localizar esse município no mapa.';
+					section.children.push(row);
+				}
+
+				var rowComplete = function() {
+					if(field.operation == 'avg' && section['value']) {
+						section['value'] = section['value'] / section['count'];
+						delete section['count'];
+					}
+					if(!section['value']) {
+						section['value'] = (language && language.toLowerCase() == 'pt-br') ? 'Sem inform.' : 'No info';
+						section['disabled'] = true;
+					} else {
+						section['value'] = Utils.numberFormat(section['value'], field.precision, '.', ',') + " " + field.unit;
+					}
+					result.push(section);
+					next();
+				}
+
+				spatialDb.each(sql, rowEach, rowComplete)
+			}
+
+			var fieldComplete = function() {
+				callback(result);
+			}
+
+			async.eachSeries(metadata.fields, fieldEach, fieldComplete);
+		});
 	}
 
 	Internal.queryLayersForCsv = function(regionType, region, city, callback) {
@@ -787,40 +860,46 @@ module.exports = function(app) {
 			})
 
 		});
-
 	}
 
 	Spatial.query = function(request, response, next) {
-		
 		var regionType = request.param('regionType', 'state');
 		var region = request.param('region', 'GO');
 		var language = request.param('lang');
 		var city = request.param('city', '');
 
 		Internal.queryLayers(regionType, region, city, language, function(result) {
-			request.finalizeResultQuery = result,
+			request.finalizeResultQuery = result;
 			next();
 		});
+	}
 
-	};
+	Spatial.queryAllRegion = function(request, response, next) {
+		var regionType = request.param('regionType', 'state');
+		var region = request.param('region', 'GO');
+		var language = request.param('lang');
+
+		Internal.queryAllRegion(regionType, region, language, function(result) {
+			request.finalizeResultQuery = result;
+			next();
+		});
+	}
 
 	Spatial.csv = function(request, response) {
-
 		var regionType = request.param('regionType', 'state');
 		var region = request.param('region', 'GO');
 		var city = request.param('city', '');
 
 		Internal.queryLayersForCsv(regionType, region, city, function(filename, result) {
-
 			response.set('Content-Type', 'text/csv');
 			response.set('Content-Disposition', 'attachment;filename=' + filename + '.csv');
 
 			var writer = csvWriter({
-					separator: ';',
-					newline: '\n',
-					headers: undefined,
-					sendHeaders: true
-				});
+				separator: ';',
+				newline: '\n',
+				headers: undefined,
+				sendHeaders: true
+			});
 
 			var encoder = new iconv.Iconv('utf-8', 'latin1');
 
@@ -837,63 +916,58 @@ module.exports = function(app) {
 			})
 
 			writer.end();
-
 		});
-
 	}
 
 	Spatial.translateQuery = function(request, response){
+		if(response){
+			var result = request.finalizeResultQuery;
+			var language = request.param('lang');
 
-			if(response){
-					var result = request.finalizeResultQuery;
-					var language = request.param('lang');
+			if (language.toLowerCase() != 'pt-br'){
+				for(i=0; i<result.length; i++){
+					name = result[i].name;
+					translateTitleMetadata = translateEN.fields[name];
 
-					if (language.toLowerCase() != 'pt-br'){
-
-							for(i=0; i<result.length; i++){
-									name = result[i].name;
-									translateTitleMetadata = translateEN.fields[name];
-
-									if (translateEN.fields[name] != undefined){
-											result[i].info = translateTitleMetadata.title;
-											result[i].qtip = translateTitleMetadata.description;
-											if(result[i].layerLabel) {
-												result[i].layerLabel = translateTitleMetadata.layerTitle
-											}
-									}
-							}
+					if (translateEN.fields[name] != undefined){
+						result[i].info = translateTitleMetadata.title;
+						result[i].qtip = translateTitleMetadata.description;
+						if(result[i].layerLabel) {
+							result[i].layerLabel = translateTitleMetadata.layerTitle
+						}
 					}
-					
-					response.send(result)
-					response.end()
+				}
 			}
+			
+			response.send(result)
+			response.end()
+		}
 	}
 
 	Spatial.translateMetadata = function(request, response){
+		if(response){
+			var result = request.finalizeResultMetadata;
+			var language = request.param('lang');
 
-			if(response){
-					var result = request.finalizeResultMetadata;
-					var language = request.param('lang');
+			if (language.toLowerCase() != 'pt-br'){
 
-					if (language.toLowerCase() != 'pt-br'){
+				for(i=0; i<result.fields.length; i++){
+					name = result.fields[i].name;
+					translateTitleMetadata = translateEN.fields[name];
 
-							for(i=0; i<result.fields.length; i++){
-									name = result.fields[i].name;
-									translateTitleMetadata = translateEN.fields[name];
-
-									if (translateEN.fields[name] != undefined){
-											result.fields[i].label = translateTitleMetadata.title;
-											result.fields[i].metadata = translateTitleMetadata.description;
-											if(result.fields[i].layerLabel) {
-												result.fields[i].layerLabel = translateTitleMetadata.layerTitle
-											}
-									}
-							}
+					if (translateEN.fields[name] != undefined){
+						result.fields[i].label = translateTitleMetadata.title;
+						result.fields[i].metadata = translateTitleMetadata.description;
+						if(result.fields[i].layerLabel) {
+							result.fields[i].layerLabel = translateTitleMetadata.layerTitle
+						}
 					}
-					
-					response.send(result)
-					response.end()
+				}
 			}
+			
+			response.send(result)
+			response.end()
+		}
 	}
 
 	return Spatial;
