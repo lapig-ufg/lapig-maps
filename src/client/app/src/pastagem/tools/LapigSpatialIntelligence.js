@@ -447,11 +447,10 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                   idResultsMun.hide();
                 
                 } else {
-                  console.log('resultado: ',idResultsMun)
                   instance.checkBoxFlag = true;
                   idResultsMun.show();
                 }
-              },
+              }
             }
           },
           {
