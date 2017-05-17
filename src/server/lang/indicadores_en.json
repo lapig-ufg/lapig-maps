@@ -1,0 +1,28 @@
+{
+	"fields": {
+		"area_soja": {
+			"nome": "Soy Planted Area",
+			"descricao": "Areas of soy planting in grains, per hectare, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"desmatamento": {
+			"nome": "Deforestation",
+			"descricao": "Data from deforestation occurred, produced from the compilation of data from PRODES (2005 - 2016), SIAD (2003 - 2016) and SOS Mata Atlântica (2011 - 2014)",
+			"categ": ["Agriculture", "Livestock"],
+			"unidade": "ha"
+		},
+		"trabalho_escravo": {
+			"nome": "Slave Work",
+			"descricao": "Number of persons involved per municipality, in forced labor actions, exhaustive working day, or for subjecting it to degrading working conditions, in the period 2000/2002 and 2008 to 2015. Produced by the CPT - Comissão Pastoral da Terra - spatialized by Lapig.",
+			"categ": ["Social"],
+			"unidade": "people"
+		},
+		"unidades_conservacao_integral": {
+			"nome": "Integral Protection Conservation Units",
+			"descricao": "Location of Brazilian integral protection conservation units, including the Base to the Millionth of IBGE of 2014.",
+			"categ": ["Natural"],
+			"unidade": "ha"
+		}
+	}
+}
