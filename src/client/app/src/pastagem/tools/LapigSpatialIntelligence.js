@@ -269,8 +269,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       if(selectedRegion == 'BRASIL') {
         Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').hide();
-        Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').disable();
-        Ext.getCmp('lapig_spatialintelligence::cmb-cities').hide();
       } else {
         Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').show();
         Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').enable();
