@@ -65,6 +65,7 @@ div.olControlMousePosition {
     border: 1px solid #C1C1C1;
 }
 
+
 /* gxp_downloadLapiglayer */
 .x-btn .gxp-icon-downloadlayer, .x-menu-item .gxp-icon-downloadlayer, .x-tree-node .gxp-icon-downloadlayer {
     background-image: url(img/save-layer.png);
@@ -216,11 +217,35 @@ div.olControlMousePosition {
 }
 
 #lapig_spatialintelligence_checkbox_municipality {
-    margin-top: 27px !important;
+    height: 64px;
+    position: absolute;
+    top: -24px;
+    left: 0px;
 }
 
-/*Imagens alteradas da ferramenta Spattial Intelligence*/
+.x-toolbar-cell .x-form-cb-label {
+    position: absolute;
+    top: 3px;
+    left: 11px;
+}
+
+.idCheckboxCities {
+    display: transparent; 
+}
+
+.ext-strict .ext-webkit .x-small-editor .x-form-text {
+    margin-top: 16px;
+}
+
+.x-small-editor .x-form-field-wrap .x-form-trigger {
+    margin-top: 16px
+}
+
 .x-treegrid-root-table > .x-tree-node > .idQueryAllRegion > .x-treegrid-col > .x-tree-ec-icon {
+    background-image: url(img/seta-invisivel.png);
+}
+
+.x-treegrid-root-table > .x-tree-node > .idQueryLayers > .x-treegrid-col > .x-tree-ec-icon {
     background-image: url(img/seta-invisivel.png);
 }
 
@@ -245,6 +270,7 @@ div.olControlMousePosition {
 }
 
 .spatial-intelligence-clear-filter {
+    top: 10px !important;
     background-image: url(img/spatial-intelligence-clear-filter.png) !important;
 }
 /* gxp_metadatalayer

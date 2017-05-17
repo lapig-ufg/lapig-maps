@@ -2,7 +2,7 @@
 	"LAPIGVIEWER_TTL_LAYER":"Camadas",
 	"LAPIGVIEWER_TTL_MAP":"Mapa",
 	"LAPIGVIEWER_TTL_TOOL_TIME_SERIES": "Análise de Series Temporais",
-	"LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS": "Análise de Informações Territoriais",
+	"LAPIGVIEWER_TTL_TOOL_TERRITORIAL_INFORMATIONS": "Análise de Informações Geográficas",
 
 	"LAPIGVIEWER_PRINT_TLTP": "Imprimir Mapa",
 	"LAPIGVIEWER_ADDLAYER_BTNTXT":"Camadas",
@@ -29,7 +29,7 @@
 	"LAPIGVIEWER_ZOOM_ZMOUTTLP": "Zoom Out",
 	"LAPIGVIEWER_RASTERSERIESBTN_MENUTXT": "Séries Temporais",
 	"LAPIGVIEWER_RASTERSERIESBTN_TLTP": "Visualize séries temporais (MODIS, Landsat, etc) por um ponto ou raio de interesse",
-	"LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT": "Inteligência Territorial",
+	"LAPIGVIEWER_SPATIALINTELLIGENCEBTN_MENUTXT": "Inteligência Geográfica",
 	"LAPIGVIEWER_SPATIALINTELLIGENCEBTN_ACTTIP": "Acesse informações referentes a agricultura anual, pastagem, floresta plantada, pivôs de irrigação, áreas protegidas, desmatamento, produtividade por tipo de plantio, produção de carne e leite, capacidade de armazenamento de grão, conflitos por terra e muito mais",
 	"LAPIGVIEWER_COORDINATES_TLTP": "Adicionar Coordenadas",
 
@@ -109,6 +109,9 @@
 	"LAPIGRASTERSERIES_HELP":"As séries temporais são...",
 	"LAPIGRASTERSERIES_TREND_HELP":"As tendências são....",
 
+	"LAPIGSPATIALINTELLIGENCE_FIELDNAME_DECLIV": "Declividade Média",
+
+	"LAPIGSPATIALINTELLIGENCE_CHECKBOX_TITLE": "Informações dos municípios",
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_SELECT": "Selecione uma região",
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_ROI": "Região de interesse",
 	"LAPIGSPATIALINTELLIGENCE_FIELDLBL_BIOMES": "Biomas",
