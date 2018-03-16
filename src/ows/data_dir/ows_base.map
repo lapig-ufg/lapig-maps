@@ -69,6 +69,16 @@ MAP
     FORMATOPTION "FILENAME=basename.ext.zip"
   END
 
+  OUTPUTFORMAT
+    NAME "utfgrid"
+    DRIVER UTFGRID
+    MIMETYPE "application/json"
+    EXTENSION "json"
+    FORMATOPTION "LABELS=true"
+    FORMATOPTION "UTFRESOLUTION=8"
+    FORMATOPTION "DUPLICATES=false"
+  END
+
   WEB
     FOOTER ""
     HEADER ""
@@ -87,7 +97,7 @@ MAP
       "ows_sld_enabled" "TRUE"
       "wcs_srs" "{ows_srs}"
       "wcs_enable_request" "*"
-      "wms_getmap_formatlist" "image/png"
+      "wms_getmap_formatlist" "image/png,application/json"
     END
   END
 

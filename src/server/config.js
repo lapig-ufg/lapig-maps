@@ -6,10 +6,11 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": "/home/fernanda/Documentos/Projeto/Dados_local/Ocultos/spatial-intelligence.sqlite",
+		"spatialIntelligenceDb": "/home/fernanda/Documentos/Projeto/lapig-maps/src/ows/data_dir/Dados/Ocultos/spatial-intelligence.sqlite",
 		"indicadoresDb":"/home/fernanda/Documentos/WWF/indicadores.sqlite",
+		"geocampoDb":"/home/fernanda/Documentos/Projeto/Dados_local/Ocultos/geocampo.sqlite",
 		"hostUrl": 'http://localhost:5000',
-		"ows": "http://localhost:5500",
+		"ows": "http://maps.lapig.iesa.ufg.br/",
 		"tms": "http://localhost:5555",
 		"clientDir": appRoot + "/../client/build",
 		"langDir": appRoot + "/lang",
@@ -41,6 +42,7 @@ module.exports = function(app) {
 		config.redis['enable'] = true;
 		config["spatialIntelligenceDb"] = "/data/catalog/Ocultos/spatial-intelligence.sqlite"
 		config["indicadoresDb"] = "/data/catalog/Ocultos/indicadores.sqlite"
+		config["geocampoDb"] = "/data/catalog/Ocultos/geocampo.sqlite"
 	}
 
 	return config;

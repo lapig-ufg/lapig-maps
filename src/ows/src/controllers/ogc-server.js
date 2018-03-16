@@ -27,13 +27,16 @@ module.exports = function(app) {
 
 	Internal.setHeaders = function(params, request, response) {
 		var requestType = request.param('REQUEST');
+		var requestFormat = request.param('FORMAT');
 
 		var headers = {};
 
 		if(requestType == 'GetCapabilities') {
 			headers['content-type'] = 'application/xml';
-		} else if(requestType == 'GetLegendGraphic' || requestType == 'GetMap') {
-			headers['content-type'] = 'image/png';
+		} else if(requestType == 'GetLegendGraphic' || requestType == 'GetMap' && requestFormat == "image/png") {
+			headers['content-type'] = "image/png";
+		}else if(requestType == 'GetLegendGraphic' || requestType == 'GetMap' && requestFormat == "application/json") {
+			headers['content-type'] = "application/json";
 		} else if(Internal.isWfsGetShp(params, true)) {
 			var filename = params['TYPENAME'];
 			headers['Content-Disposition'] = 'attachment; filename='+filename+'.zip';
@@ -63,8 +66,17 @@ module.exports = function(app) {
 			var width = params['WIDTH'];
 			var height = params['HEIGHT'];
 			var msfilter = params['MSFILTER'];
+			var format = params['FORMAT'];
+			var startyear = params['STARTYEAR'];
+			var endyear = params['ENDYEAR'];
 			
-			return [prefix, layers, srs, bbox, width, height, msfilter].join(',');
+			var parts = [prefix, layers, srs, bbox, width, height, msfilter, format];
+			if(startyear)
+				parts.push(startyear);
+			if(endyear)
+				parts.push(endyear);
+
+			return parts.join(',');
 		} else if(requestType == 'GetCapabilities') {
 
 			var capPrefix = 'CAPABILITIES'
@@ -193,35 +205,35 @@ module.exports = function(app) {
 	}
 
 	Internal.isWmsGetCap = function(params) {
-		return 	 params['SERVICE'].toUpperCase() == 'WMS' 
-					&& params['REQUEST'].toUpperCase() == 'GETCAPABILITIES' 
-					&& params['VERSION'].toUpperCase() == '1.1.1';
+		return 	 params['SERVICE'] && params['SERVICE'].toUpperCase() == 'WMS' 
+					&& params['REQUEST'] && params['REQUEST'].toUpperCase() == 'GETCAPABILITIES' 
+					&& params['VERSION'] && params['VERSION'].toUpperCase() == '1.1.1';
 	}
 
 	Internal.isWfsGetShp = function(params, ignoreFilter) {
-		return 	 params['SERVICE'].toUpperCase() == 'WFS' 
-					&& params['REQUEST'].toUpperCase() == 'GETFEATURE' 
-					&& params['OUTPUTFORMAT'].toUpperCase() == 'SHAPE-ZIP'
+		return 	 params['SERVICE'] && params['SERVICE'].toUpperCase() == 'WFS' 
+					&& params['REQUEST'] && params['REQUEST'].toUpperCase() == 'GETFEATURE' 
+					&& params['OUTPUTFORMAT'] && params['OUTPUTFORMAT'].toUpperCase() == 'SHAPE-ZIP'
 					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
 	Internal.isWcsGetTif = function(params, ignoreFilter) {
-		return 	 params['SERVICE'].toUpperCase() == 'WCS' 
-					&& params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
-					&& params['FORMAT'].toUpperCase() == 'IMAGE/TIFF'
+		return 	 params['SERVICE'] && params['SERVICE'].toUpperCase() == 'WCS' 
+					&& params['REQUEST'] && params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
+					&& params['FORMAT'] && params['FORMAT'].toUpperCase() == 'IMAGE/TIFF'
 					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
 	Internal.isWcsGetTifZip = function(params, ignoreFilter) {
-		return 	 params['SERVICE'].toUpperCase() == 'WCS' 
-					&& params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
-					&& params['FORMAT'].toUpperCase() == 'TIFF-ZIP'
+		return 	 params['SERVICE'] && params['SERVICE'].toUpperCase() == 'WCS' 
+					&& params['REQUEST'] && params['REQUEST'].toUpperCase() == 'GETCOVERAGE' 
+					&& params['FORMAT'] && params['FORMAT'].toUpperCase() == 'TIFF-ZIP'
 					&& ( (ignoreFilter) ? true : (!params['MSFILTER']) );
 	}
 
 	OgcServer.ows = function(request, response) {
 		var params = Internal.getParams(request);
-
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		if(params['LAYER'] == 'ogcserver') {
 			response.sendfile(config['path_undefined_img'])
 		} else if ( Internal.isWfsGetShp(params, false) ) {

@@ -8,13 +8,13 @@
 		},
 		"desmatamento": {
 			"nome": "Deforestation",
-			"descricao": "Data from deforestation occurred, produced from the compilation of data from PRODES (2005 - 2016), SIAD (2003 - 2016) and SOS Mata Atlântica (2011 - 2014)",
+			"descricao": "Data from deforestation occurred, produced from the compilation of data from PRODES (Biome Amazônia: 2005 - 2016), SIAD (Biome Cerrado: 2003 - 2016) and SOS Mata Atlântica (Biome Mata Atlântica: 2011 - 2016)",
 			"categ": ["Agriculture", "Livestock"],
 			"unidade": "ha"
 		},
 		"trabalho_escravo": {
 			"nome": "Slave Work",
-			"descricao": "Number of persons involved per municipality, in forced labor actions, exhaustive working day, or for subjecting it to degrading working conditions, in the period 2000/2002 and 2008 to 2015. Produced by the CPT - Comissão Pastoral da Terra - spatialized by Lapig.",
+			"descricao": "Number of persons involved per municipality, in forced labor actions, exhaustive working day, or for subjecting it to degrading working conditions, in the period 2000/2002 and 2008 to 2016. Produced by the Comissão Pastoral da Terra (CPT), spatialized by Lapig.",
 			"categ": ["Social"],
 			"unidade": "people"
 		},
@@ -22,6 +22,240 @@
 			"nome": "Integral Protection Conservation Units",
 			"descricao": "Location of Brazilian integral protection conservation units, including the Base to the Millionth of IBGE of 2014.",
 			"categ": ["Natural"],
+			"unidade": "ha"
+		},
+		"area_queimada": {
+			"nome": "Fires areas",
+			"descricao": "Data of fires occurred in Brazil for the period 2002 to 2014, produced from MODIS images (MCD45A1).",
+			"categ": ["Agriculture", "Livestock"],
+			"unidade": "ha"
+		},
+		"areas_terras_indigenas": {
+			"nome": "Areas of indigenous lands",
+			"descricao": "Areas of Brazilian indigenous lands including situation (regularized, delimited, etc.), produced by the National Indian Foundation (FUNAI).",
+			"categ": ["Social"],
+			"unidade": "ha"
+		},
+		"terras_indigenas": {
+			"nome": "Indigenous lands",
+			"descricao": "Number of indigenous lands by municipality of Brazil up to 2015, according to data produced by the National Indian Foundation (FUNAI) and spatialized by LAPIG.",
+			"categ": ["Social"],
+			"unidade": "units"
+		},
+		"vegetacao": {
+			"nome": "Vegetation",
+			"descricao": "Compilation of native vegetation mappings organized by LAPIG / UFG. For the Amazon biome data from TerraClass Amazônia was considered, with reference in 2012. For the Cerrado biome, the data TerraClass Cerrado was used, with reference in 2012. The data produced By SOS Mata Atlântica, with reference in 2014, were used in the Atlantic Forest biome. The mapping of the vegetation cover of the Upper Paraguay Basin, with reference in 2014, was used for the Pantanal biome. In the Caatinga and Pampa biomes the data produced under the PMDBBS were considered, with reference in 2008",
+			"categ": ["Natural"],
+			"unidade": "ha"
+		},
+		"areas_prioritarias_biodiversidade": {
+			"nome": "Priority areas for Biodiversity Conservation",
+			"descricao": "Review of priority areas for biodiversity conservation classified according to biological importance. Produced by the Ministry of the Environment (MMA)",
+			"categ": ["Natural"],
+			"unidade": "ha"
+		},
+		"centrais_hidreletricas": {
+			"nome": "Hydroelectric power stations",
+			"descricao": "Location of small hydroelectric power stations, data produced by the National Electric Energy Agency (ANEEL).",
+			"categ": ["Economic"],
+			"unidade": "units"
+		},
+		"deficit_app": {
+			"nome": "APP deficit",
+			"descricao": "Data produced by CSR / UFMG and LAGESA / UFMG with the support of Climate and Land Use Alliance, with territorial coverage for all Brazil.",
+			"categ": ["Economic"],
+			"unidade": "ha"
+		},
+		"deficit_rl": {
+			"nome": "Legal Reserve Deficit",
+			"descricao": "Data produced by CSR / UFMG and LAGESA / UFMG with the support of Climate and Land Use Alliance, with territorial coverage for all Brazil.",
+			"categ": ["Economic"],
+			"unidade": "ha"
+		},
+		"deficit_hidrico": {
+			"nome": "Hydric deficit",
+			"descricao": "Data accumulated for 2012 of the maximum fresh water available for infiltration and drainage (Blue Water) for the ottobacias of level 6 located in Brazil, produced from images of the product MOD16A2 and satellite TRMM.",
+			"categ": ["Natural"],
+			"unidade": "mm"
+		},
+		"corpos_agua": {
+			"nome": "Bodies of Water",
+			"descricao": "Mapping of the water bodies of the biomes: Caatinga (2008/2009), Mata Atlântica (2008/2009), Cerrado (2008/2009/2010), Pampa (2008/2009) and Pantanal (2008/2009) based on the Monitoring of Deforestation of Brazilian Biomes by Satellite (PMDBBS).",
+			"categ": ["Natural"],
+			"unidade": "km"
+		},
+		"quilombos": {
+			"nome": "Quilombos",
+			"descricao": "Areas of Quilombos that have titled quilombola territories, produced by the National Institute of Colonization and Agrarian Reform (INCRA).",
+			"categ": ["Social"],
+			"unidade": "ha"
+		},
+		"pivos_centrais": {
+			"nome": "Central pivots",
+			"descricao": "Mapping by Embrapa of the irrigated area and number of irrigation equipment by central pivot in Brazil in 2013.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"pastagem": {
+			"nome": "Pasture areas",
+			"descricao": "Mapping of pasture areas, from Amazon TerraClass data compilation; Funcate; PROBIO; Canasat and TNC. The mapped pasture area is 175,396,874 ha, the mappings that make up are: Bioma Pantanal - Mapping of the Upper Paraguay Basin to 2014; This mapping classified the areas of clean pasture, dirty pasture and degraded area (exposed soil); Atlantic Rainforest Biome (Lapig Mapping 2014-2016) - This mapping classified the areas of clean pasture, rangeland and degraded area (exposed soil); Bioma Pampa - Mapping conducted by IBGE for the state of Rio Grande do Sul (2012); Amazon Biome - TerraClass Mapping Amazon 2014; Closed Biome - TerraClass Mapping Closed 2013.",
+			"categ": ["Livestock"],
+			"unidade": "ha"
+		},
+		"frigorificos": {
+			"nome": "Fridges and slaughterhouses",
+			"descricao": "Given produced from information of Slaughterhouses and / or Fridges Cattle of Brazil suitable for export, inspected visually by LAPIG.",
+			"categ": ["Livestock"],
+			"unidade": "units"
+		},
+		"floresta_plantada": {
+			"nome": "Planted forest",
+			"descricao": "Data produced by ONG Transparent World with the support of WRI, with territorial coverage for the whole Brazil.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"armazens": {
+			"nome": "Warehouses",
+			"descricao": "Number of warehouses for warehousing and production control in Brazil. Generated from the compilation of data from Agrosatélite and CONAB - National Supply Company, spatialized by LAPIG - Laboratory of Image Processing and Geo-processing.",
+			"categ": ["Livestock"],
+			"unidade": "units"
+		},
+		"assentamentos_rurais": {
+			"nome": "Rural settlements",
+			"descricao": "Location of rural settlements, produced by the National Institute of Colonization and Agrarian Reform (INCRA).",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"rebanho_bovino": {
+			"nome": "Cattle Herd",
+			"descricao": "Number of cattle in Brazilian municipalities. Information produced by the Brazilian Institute of Geography and Statistics (IBGE) and spatialized by LAPIG.",
+			"categ": ["Livestock"],
+			"unidade": "heads"
+		},
+		"idh": {
+			"nome": "Human development Index",
+			"descricao": "Municipal Human Development Index, calculated by the geometric mean of the indices of the Income, Education and Longevity dimensions. This calculation was carried out based on information from the last 3 Demographic Census of IBGE - 1991, 2000 and 2010 and spatialized by LAPIG.",
+			"categ": ["Social"],
+			"unidade": "index"
+		},
+		"conflitos_terras_ocorrencias": {
+			"nome": "Conflicts by land (n° occurrences)",
+			"descricao": "Number of conflicts per municipality in actions of resistance and confrontation by possession, use and ownership of land and access to natural resources, produced by CPT - Pastoral Land Commission - in the period from 2010 to 2015.",
+			"categ": ["Social"],
+			"unidade": "occurrences"
+		},
+		"conflitos_terras_pessoas": {
+			"nome": "Conflicts by land (n° People)",
+			"descricao": "Number of people involved in conflicts that occurred per municipality, in actions of resistance and confrontation for the possession, use and ownership of land and access to natural resources, produced by the CPT - Pastoral Land Commission - in 2010-2015, and spacialized by LAPIG..",
+			"categ": ["Social"],
+			"unidade": "people"
+		},
+		"conflitos_agua_ocorrencias": {
+			"nome": "Conflicts by water (n° occurrences)",
+			"descricao": "Number of occurrences of resistance actions per municipality, generally collective, aimed at guaranteeing the use and preservation of water, produced by the CPT - Pastoral Land Commission - from 2006 to 2015, as spacialised by Lapig.",
+			"categ": ["Social"],
+			"unidade": "occurrences"
+		},
+		"area_plantada_cana": {
+			"nome": "Area planted with sugarcane",
+			"descricao": "Areas of sugarcane plantation by municipalities of Brazil, per hectare, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"producao_cana_quantidade": {
+			"nome": "Production of sugarcane - ton",
+			"descricao": "Amount of sugarcane produced by municipalities of Brazil, in Tonnes, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ton"
+		},
+		"producao_cana_valor": {
+			"nome": "Production of sugarcane - R$",
+			"descricao": "Value of Cane production in Reais, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "R$"
+		},
+		"producao_soja_quantidade": {
+			"nome": "Soy production - ton",
+			"descricao": "Amount of soy produced by municipalities in Brazil, in Tonnes, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ton"
+		},
+		"producao_soja_valor": {
+			"nome": "Soy production - R$",
+			"descricao": "Value of soy production in Reais, in the period from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "R$"
+		},
+		"area_plantada_milho": {
+			"nome": "Corn Planted Area",
+			"descricao": "Areas of plantation of Maize in grain by municipalities of Brazil, by hectares, in the period of 2000 to 2015, according to census data of IBGE.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"producao_milho_quantidade": {
+			"nome": "Corn Production - ton",
+			"descricao": "Quantity of maize in grain produced by municipalities of Brazil, in Tonnes, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ton"
+		},
+		"producao_milho_valor": {
+			"nome": "Corn Production - R$",
+			"descricao": "Value of Maize production in Reais, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "R$"
+		},
+		"producao_leite_quantidade": {
+			"nome": "Milk production - lt",
+			"descricao": "Quantity of milk in liters produced by municipalities of Brazil, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture, Livestock"],
+			"unidade": "l"
+		},
+		"producao_leite_valor": {
+			"nome": "Milk production - R$",
+			"descricao": "Value of milk production in Reais, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture, Livestock"],
+			"unidade": "R$"
+		},
+		"area_plantada_algodao": {
+			"nome": "Planted Cotton Area",
+			"descricao": "Areas of planting of cotton seed by municipalities of Brazil, per hectare, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ha"
+		},
+		"producao_algodao_quantidade": {
+			"nome": "Cotton Production - ton",
+			"descricao": "Quantity of seed cotton produced by municipalities of Brazil, in Tonnes, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "ton"
+		},
+		"producao_algodao_valor": {
+			"nome": "Cotton Production - R$",
+			"descricao": "Value of the production of Cotton in Reals, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "R$"
+		},
+		"producao_lenha_quantidade": {
+			"nome": "Firewood Production - m³",
+			"descricao": "Quantity of firewood produced by municipalities in Brazil, in cubic meters, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "m³"
+		},
+		"producao_lenha_valor": {
+			"nome": "Firewood Production - R$",
+			"descricao": "Value of the production of firewood by municipalities of Brazil in Reais, from 2000 to 2015, according to IBGE census data.",
+			"categ": ["Agriculture"],
+			"unidade": "R$"
+		},
+		"areas_embargadas": {
+			"nome": "Embedded Areas",
+			"descricao": "Areas that will be subject to administrative sanctions and / or precautionary measures, with the aim of facilitating the regeneration of the environment and rendering the degraded area viable, IBAMA source.",
+			"categ": ["Economic"],
+			"unidade": "ha"
+		},
+		"desmatamento_acumulado": {
+			"nome": "Accumulated Deforestation",
+			"descricao": "Deforestation accumulated in the last 5 years (2012 to 2016), in the Amazon, Cerrado and Atlantic Forest Biomes. Using data from PRODES / INPE for the Amazon, SIAD / LAPIG for the Cerrado, SOS Atlantic Forest for the Atlantic Forest.",
+			"categ": ["Agriculture", "Livestock"],
 			"unidade": "ha"
 		}
 	}

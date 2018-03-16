@@ -63,7 +63,7 @@ module.exports = function(app) {
 
 		console.log(cmd)
 
-		ChildProcess.exec(cmd, function (error, stdout, stderr) {
+		ChildProcess.exec(cmd, { maxBuffer: 1024 * 5000 }, function (error, stdout, stderr) {
 				
 			if(stderr){
 				console.log(stderr)
@@ -335,14 +335,17 @@ module.exports = function(app) {
 							idLayer = result._id;
 							translateNameDesc = translateEN.layers[idLayer];
 							
-							result.name = translateNameDesc.name;
-							result.description = translateNameDesc.description;
-							result.date = result.date.replace("Atualmente", "Currently")
+							if(translateNameDesc) {
+								result.name = translateNameDesc.name;
+								result.description = translateNameDesc.description;
+								result.date = result.date.replace("Atualmente", "Currently")
 
-							if (result.pixelMeasure=='Não se aplica')
-									result.pixelMeasure = 'Not applicable'
-							else if(result.pixelMeasure=='mm de água')
-									result.pixelMeasure = 'mm of water'
+								if (result.pixelMeasure=='Não se aplica')
+										result.pixelMeasure = 'Not applicable'
+								else if(result.pixelMeasure=='mm de água')
+										result.pixelMeasure = 'mm of water'
+								
+							}
 					}
 
 					response.send(result);

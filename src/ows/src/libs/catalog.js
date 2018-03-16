@@ -154,6 +154,10 @@ module.exports = function(app) {
 		return sldContent;
 	}
 
+	Catalog.sldExists = function(filename) {
+		return (Internal.getSldPath(filename) != undefined);
+	}
+
 	Catalog.prefetchWmsCapabilities = function() {
 		var capUrl = 'http://localhost:' + app.config.port + '/ows?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.1.1'
 		requester(capUrl, function (error, response, body) {})
@@ -164,9 +168,16 @@ module.exports = function(app) {
 		var cacheKeyCapabilities = config['cachePrefix'] + ',CAPABILITIES*'
 		cache.del(cacheKeyCapabilities);
 
-		Internal.createBaseMapfile(function() {
+		var prefetchCatalog = function() {
 			async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters],onComplete);
-		});
+		}
+
+		if(process.env.PRIMARY_WORKER) {
+			Internal.createBaseMapfile(prefetchCatalog);
+		} else{
+			prefetchCatalog();
+		}
+
 	};
 
 	Catalog.sldContent = function(filename, onComplete) {

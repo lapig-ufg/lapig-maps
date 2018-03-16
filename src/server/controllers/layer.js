@@ -355,10 +355,12 @@ module.exports = function(app) {
 								for(i=0; i<result.layers.length; i++){
 										idLayer = result.layers[i]._id;
 										translateNameDesc = translateEN.layers[idLayer];
-										result.layers[i].name = translateNameDesc.name;
-										result.layers[i].description = translateNameDesc.description
-										result.layers[i].subject = translateEN.subjects[result.layers[i].subject]
-										result.layers[i].search = result.layers[i].name + ' ' + result.layers[i].description + ' ' + result.layers[i].subject + ' ' + result.layers[i]._id
+										if(translateNameDesc) {
+											result.layers[i].name = translateNameDesc.name;
+											result.layers[i].description = translateNameDesc.description
+											result.layers[i].subject = translateEN.subjects[result.layers[i].subject]
+											result.layers[i].search = result.layers[i].name + ' ' + result.layers[i].description + ' ' + result.layers[i].subject + ' ' + result.layers[i]._id
+										}
 								}
 						};
 						response.send(result);

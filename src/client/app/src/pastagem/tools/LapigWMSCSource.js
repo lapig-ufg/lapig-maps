@@ -85,7 +85,8 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
                 STYLES: config.styles,
                 FORMAT: config.format,
                 TRANSPARENT: config.transparent,
-                FILTER: config.filter
+                FILTER: config.filter,
+                MSFILTER: config.msfilter
             });
             
             var singleTile = false;

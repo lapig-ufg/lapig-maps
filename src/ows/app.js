@@ -15,7 +15,6 @@ load('libs/utils', { 'verbose': false, cwd: 'src' })
 .then('libs')
 .into(app);
 
-
 app.libs.catalog.init(function() {
 
 	app.config = app.config;

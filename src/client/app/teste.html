@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet debug page</title>
+	<meta charset="ISO-8859-1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+	<script src="http://maps.google.com/maps/api/js?key=AIzaSyD_KZ4-4MO3Pjga881F_EDWDsFBuQY8CCY&v=3.2&sensor=false"></script>
+	<script src='https://unpkg.com/leaflet.gridlayer.googlemutant@latest/Leaflet.GoogleMutant.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-plugins/3.0.0/layer/tile/Bing.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="corslite.js"></script>
+	<script src="L.UTFGridWMS.js"></script>
+
+</head>
+<body>
+
+	<div id="mouseover"></div>
+	<div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+	<script type="text/javascript">
+    
+    //Google
+
+    var Googleroads = L.gridLayer.googleMutant({
+		    type: 'roadmap' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+		});
+
+		var GoogleSatellite = L.gridLayer.googleMutant({
+		    type: 'satellite' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+		});
+
+		var Googlehybrid = L.gridLayer.googleMutant({
+		    type: 'hybrid' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+		});
+
+		var Googleterrain = L.gridLayer.googleMutant({
+		    type: 'terrain' // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+		});
+		 
+		 //Bing
+
+		var keyBing = "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY"; //Essa chave é a que utilizamos em nosso portal, o idela seria criar uma nova Key no site do bing para a plataforma de Risco Socioambientais.
+
+    var bingAerial = new L.BingLayer(keyBing, {type: "Aerial"}); 
+    var bingAerialWithLabels = new L.BingLayer(keyBing, {type: "AerialWithLabels"});
+    var bingRoad = new L.BingLayer(keyBing, {type: "Road"});
+
+    //Street e Grayscale
+		var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+				mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+		var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
+				streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
+    //Layer
+		var wmsLayer = new L.TileLayer.WMS("http://maps.lapig.iesa.ufg.br/ows?", {
+			layers: 'area_soja', //desmatamento area_soja trabalho_escravo
+			format: 'image/png',
+			transparent: true,
+			width:512,
+			height:512,
+			srs:'EPSG:900913',
+			MSFILTER:'"[ANO]"="2014"' //A camada não aparece sem ao menos um filtro
+		});
+
+		//map config
+		var map = new L.map('map', {
+		    crs: L.CRS.EPSG900913,
+		    layers: [Googleroads, wmsLayer],
+		    center: [-16, -55], 
+				zoom: 5
+		});
+		
+		//set Base Layers		
+		var baseLayers = {
+			"Google Roads": Googleroads,
+			"Google Satelite": GoogleSatellite,
+			"Google Hibrid": Googlehybrid,
+			"Google Terrain": Googleterrain,
+			"Bing Road": bingRoad,
+			"Bing Aerial": bingAerial,
+			"Bing Aerial With Labels": bingAerialWithLabels,
+			"Streets": streets,
+			"Grayscale": grayscale
+		};
+
+		//Set Layers
+		var overlayMaps = {
+		    "Layer": wmsLayer
+		};
+		
+		//Controle de Layers
+		L.control.layers(baseLayers, overlayMaps).addTo(map);
+
+		//UTFGRID
+		var utfgrid = new L.utfGridWMS("http://maps.lapig.iesa.ufg.br/ows?", {
+			layers: 'area_soja', //desmatamento area_soja trabalho_escravo
+			MSFILTER:'"[ANO]"="2014"'
+		});
+
+		utfgrid.addTo(map);
+
+		utfgrid.on("mouseover", function(e){
+		    document.getElementById('mouseover').innerHTML = 'Município: ' + e.data.MUNICIPIO + " - " + e.data.UF+ " || Valor: " + e.data.VALOR;
+		});
+
+		utfgrid.on("click", function(e){
+		    if (e.data) {
+					alert('Município: ' + e.data.MUNICIPIO + " - " + e.data.UF+ " || Valor: " + e.data.VALOR);
+				} else {
+					alert('Sem dados');
+				}
+		});
+	</script>
+</body>

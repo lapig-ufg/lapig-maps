@@ -21,6 +21,7 @@
     "generic-pool": "~2.0.4",
     "iconv": "^2.1.11",
     "jade": "*",
+    "json2csv": "^3.11.4",
     "mime": "~1.2.11",
     "moment": "~2.6.0",
     "mongodb": "^2.0.42",

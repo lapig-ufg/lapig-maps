@@ -4,6 +4,7 @@ var spawn = require('child_process').spawn
 
 module.exports = function(app) {
 
+	var catalog = app.libs.catalog;
 	var utils = app.libs.utils;
 	var config = app.config;
 
@@ -34,7 +35,12 @@ module.exports = function(app) {
 
 		var sldUrl = utils.printf("{0}/sld/{1}", [hostname, layers]);
 
-		return "&SLD=" + sldUrl;
+		if(catalog.sldExists(layers)) {
+			return "&SLD=" + sldUrl;
+		} else {
+			return ""
+		}
+
 	};
 
 	Mapserver.run = function(params, onDataFn, onCloseFn) {
@@ -51,13 +57,9 @@ module.exports = function(app) {
 		console.log(config['path_mapserv'], '-nh', cmdParams);
 
 		var mapserv = spawn(config['path_mapserv'], ['-nh', cmdParams ]);
-		var grep = spawn('grep', ['-a', '-v', '^Content-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*-*[A-Z]*[a-z]*:']);
-		var sed = spawn('sed', ['1,1d']);
-
-		mapserv.stdout.pipe(grep.stdin);
-		grep.stdout.pipe(sed.stdin);
-		sed.stdout.on('data', onDataFn);
-		sed.stdout.on('close', onCloseFn);
+		
+		mapserv.stdout.on('data', onDataFn);
+		mapserv.stdout.on('close', onCloseFn);
 		
 	}
 	

@@ -14,16 +14,17 @@ module.exports = function(app) {
 			if(!err && data) {
 		    	var bitmap = new Buffer(data, 'base64');
 		    	callback(bitmap);
+		    	redisClient.expire(cacheKey, 2592000);
 		    } else {
 		    	callback(undefined);
 		    }
-
 	  });
 	};
 
 	Cache.set = function(cacheKey, data){
 		var img = new Buffer(data || '').toString('base64');
 		redisClient.set(cacheKey, img, function(){});
+		redisClient.expire(cacheKey, 2592000);
 	}
 
 	Cache.del = function(keyPattern, data) {

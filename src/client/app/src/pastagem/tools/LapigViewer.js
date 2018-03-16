@@ -29,6 +29,7 @@
  * @requires tools/LapigLayerLink.js
  * @requires tools/LapigDownload.js
  * @requires tools/LapigMetadata.js
+ * @requires tools/LapigGeoCampo.js
  * @requires tools/LapigGoogleSatellite.js
  * @requires tools/LapigCoordinates.js
  * @requires tools/LapigLayerManager.js
@@ -370,6 +371,12 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               project: project
             },
             {
+              ptype: "gxp_lapiggeocampo",
+              actionTarget: "tree.tbar",
+              text: i18n.LAPIGVIEWER_GEOCAMPO_BTNTXT,
+              tooltip: i18n.LAPIGVIEWER_GEOCAMPO_TLTP
+            },
+            {
               ptype: "gxp_lapigdownload",
               menuText: i18n.LAPIGVIEWER_DOWNLOAD_BTNMENUTXT,
               actionTarget: ["tree.tbar"],
@@ -467,8 +474,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             },
             google: {
               ptype: "gxp_googlesource",
-              title: "Mapas de fundo (Google)",
-              apiKey: "AIzaSyD_KZ4-4MO3Pjga881F_EDWDsFBuQY8CCY"
+              title: "Mapas de fundo (Google)"
             },
             bing: {
               ptype: "gxp_bingsource",

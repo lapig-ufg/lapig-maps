@@ -6,8 +6,6 @@ Ext.namespace("lapig.tools");
 
 lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
-  checkBoxFlag: false,
-
   ptype: "lapig_spatialintelligence",
 
   GOOGLE_PROJ: new OpenLayers.Projection("EPSG:900913"),
@@ -57,23 +55,18 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
   },
 
   getParams: function() {
-    var instance = this;
+  	var instance = this;
 
-    if (instance.checkBoxFlag == false) {
-      return 'region=' + instance.selectedRegion.data.id 
-           + '&regionType=' + instance.selectedRegion.data.regionType
-           + '&lang=' + i18n.lang;
-    } else {
-      return 'region=' + instance.selectedRegion.data.id 
-           + '&regionType=' + instance.selectedRegion.data.regionType
-           + '&city=' + Ext.getCmp('lapig_spatialintelligence::cmb-cities').getValue()
-           + '&lang=' + i18n.lang;
-    }
+    return 'region=' + instance.selectedRegion.data.id 
+         + '&regionType=' + instance.selectedRegion.data.regionType
+         + '&city=' + Ext.getCmp('lapig_spatialintelligence::cmb-cities').getValue()
+         + '&lang=' + i18n.lang;
   },
 
   updateGrid: function() {
-    var instance = this;
-    var gridInfoId = 'lapig_spatialintelligence::grid-info';
+  	var instance = this;
+
+  	var gridInfoId = 'lapig_spatialintelligence::grid-info';
     var cmbCities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
     var btnClearFilter = Ext.getCmp('lapig_spatialintelligence::btn-clear-filter');
 
@@ -94,14 +87,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
     instance.loadMask = createLoadDataMask(gridInfoId)
     instance.loadMask.show()
-
-    if(instance.checkBoxFlag == false) {
-      gridInfo.loader.dataUrl = 'spatial/queryAllRegion?' + instance.getParams();          
-      instance.csvUrl = 'spatial/csvAllRegion?' + instance.getParams();
-    } else {
-      gridInfo.loader.dataUrl = 'spatial/query?' + instance.getParams();
-      instance.csvUrl = 'spatial/csv?' +  instance.getParams();
-    }
+    
+    gridInfo.loader.dataUrl = 'spatial/query?' + instance.getParams();
+    instance.csvUrl = 'spatial/csv?' +  instance.getParams();
 
     var newNode = new Ext.tree.AsyncTreeNode({text: 'Root'});
     gridInfo.setRootNode(newNode);
@@ -113,20 +101,24 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     var app = tool.target;
     var mapPanel = tool.target.mapPanel;
 
+    //instance._layers.remove(type)
+
     if(layerManager.exists(layerName, type)) {
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.update(layerName, layerTitle, type, visibility, bounds, json)  
+      layerManager.update(layerName, layerTitle, type, visibility, bounds, json)
+      
     } else {
           
-      if(setupOthers == true) {
+      if(setupOthers == true)
         layerManager.setupOthers()
-      }
 
       var bounds = layerManager.zoomToExtent(bbox);
 
       layerManager.add(app, layerName, layerTitle, type, visibility, bounds, json)
     }
+
+    
   },
 
   _layers: {
@@ -200,6 +192,9 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         this.layerCollection[type][name].endEdit();
         this.layerCollection[type][name].commit();
 
+        console.log(this.layerCollection[type][name].data.layer.name);
+        console.log(this.layerCollection[type][name]);
+
         mapPanel.layers.add(this.layerCollection[type][name]);
       }.bind(this) );
     
@@ -207,7 +202,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     setupOthers: function() {
       mapPanel.layers.each(function(layerRec) {
         var layer = layerRec.data.layer;
-
+        
         if(layer instanceof OpenLayers.Layer.WMS) {
           layer.setVisibility(false);
         } else if(layerRec.data.title == "Google Terrain") {
@@ -217,66 +212,64 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     }
   },
 
-  getOptionsCmp: function() {
+  getOptionsCmp: function(){
+
     var instance = this;
 
-    instance.requestMetadata = function(callback) {      
+    var requestMetadata = function(callback) {
+      
       var metadataUrl = 'spatial/metadata?' + instance.getParams();
 
       Ext.Ajax.request({
-        url: metadataUrl,
-        method: 'GET',
-        timeout: 360000,
-        success: function(request) {
-          instance.queryMetadata = JSON.parse(request.responseText);
+      url: metadataUrl,
+      method: 'GET',
+      timeout: 360000,
+	      success: function(request) {
+	        instance.queryMetadata = JSON.parse(request.responseText);
 
-          instance.queryMetadata.cities.unshift({
-            'COD_MUNICI': '',
-            'info': i18n.LAPIGSPATIALINTELLIGENCE_ALL_CITIE
-          })
-
-          instance._layers.removeAll(instance.typeRegion)
+	        instance.queryMetadata.cities.unshift({
+	        	'COD_MUNICI': '',
+	        	'info': i18n.LAPIGSPATIALINTELLIGENCE_ALL_CITIE
+	        })
+					
           var cities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
+          
           cities.store.removeAll();
           cities.store.loadData(instance.queryMetadata.cities);
-          cities.setValue('');
+					cities.setValue('');
 
-          callback()
-        }
-      });
+	        callback()
+	      }
+    	});
+
     }
 
     var checkSubmitBtn = function(obj, record) {
+      
       if(obj.id == 'lapig_spatialintelligence::cmb-regions') {
-        instance.selectedRegion = record;
+        instance.selectedRegion = record  
       
         recValue = record.json[0].substring(0,(record.json[0].length - 1));
-
         if(recValue == 'undefined') {
-          Ext.getCmp('lapig_spatialintelligence::cmb-regions').setValue('');
+          Ext.getCmp('lapig_spatialintelligence::cmb-regions').setValue('')
         }
       }
 
       var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
       var selectedRegion = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
       var btnSubmit = Ext.getCmp('lapig_spatialintelligence::btn-submit');
-      var checkBox = Ext.getCmp('lapig_spatialintelligence_checkbox_municipality');
+
+      instance._layers.removeAll('city');
+      instance._layers.removeAll('state');
 
       gridInfo.getRootNode().removeAll();
+
       btnSubmit.setDisabled( !(selectedRegion) );
       gridInfo.setDisabled(true);
-      checkBox.setValue(false);
-
-      if(selectedRegion == 'BRASIL') {
-        Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').hide();
-      } else {
-        Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').show();
-        Ext.getCmp('lapig_spatialintelligence_checkbox_municipality').enable();
-      }
     }
 
     var submit = function(evt) {
-      instance.requestMetadata(function() {
+      requestMetadata(function() {
         instance.updateGrid();
       });
     }
@@ -287,7 +280,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       xtype: 'panel',
       flex: 1, 
       autoScroll:false,
-      height: 25,
+      height: 30,
       labelAlign: 'top',
       items: [
         {
@@ -300,7 +293,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           typeAhead: true,
           editable: false,
           triggerAction: 'all',
-          value: i18n.LAPIGSPATIALINTELLIGENCE_FIELDLBL_SELECT,
+          value: "Selecione uma região",
           listeners: {
             select: checkSubmitBtn
           },
@@ -313,19 +306,17 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               {name: 'regionType'}
             ],
             data: [
-              ['undefined1', '---- <b>Pais</b> ----'],
-              ['BRASIL', 'Brasil', '-73.794489,-33.752414,-35.117489,5.047586', 'biome'],
-              ['undefined2', '---- <b>Regiões de interesse</b> ----'],
+              ['undefined1', '---- <b>Regiões de interesse</b> ----'],
               ['ARC_DEFORESTATION', 'Arco do desmatamento',  '-70.6208697166754,-13.8706697433894,-44.8983096783213,-1.04397682863616', 'ROI'],
               ['MATOPIBA', 'Matopiba',  '-50.742063982783,-15.2647043201696,-41.7958843801099,-2.2193566757778', 'ROI'],
-              ['undefined3', '---- <b>Biomas</b> ----'],
+              ['undefined2', '---- <b>Biomas</b> ----'],
               ['AMAZÔNIA', 'Amazônia',  '-73.9904499596311,-16.2905190391443,-43.0177679425571,5.27184107515087', 'biome'],
               ['CAATINGA', 'Caatinga',  '-44.5084182970686,-16.0884759016231,-35.0985861479423,-2.78423064952074', 'biome'],
               ['CERRADO', 'Cerrado',  '-60.1094168432324,-24.6846259981298,-41.5221150102917,-2.32633300152119', 'biome'],
               ['MATA-ATLÂNTICA', 'Mata Atlântica',  '-55.7812928486603,-29.9727657537398,-28.835907628963,-3.83006497691515', 'biome'],
               ['PAMPA', 'Pampa',  '-57.6433158444357,-33.751583006014,-49.6776313399901,-28.0951804998136', 'biome'],
               ['PANTANAL', 'Pantanal',  '-59.186801362403,-22.1504419255242,-54.9218143293872,-15.1329088319936', 'biome'],
-              ['undefined4','---- <b>Estados</b> ----'],
+              ['undefined3','---- <b>Estados</b> ----'],
               ['AC', 'Acre',  '-73.990943646787,-11.14483312889739,-66.61936007121035,-7.111457313901811', 'state'],
               ['AL', 'Alagoas', '-38.23723765847232,-10.49991242751231,-35.15226052810746,-8.812707713946306', 'state'],
               ['AM', 'Amazonas',  '-73.80098229366574,-9.817660810954109,-56.09707466533389,2.24657473081615', 'state'],
@@ -361,23 +352,13 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
           id: 'lapig_spatialintelligence::btn-submit',
           disabled: true,
           xtype: 'button',
-          margins: {
-            top:0,
-            bottom:0,
-            left:12
-          },
-          width: '100px',
+          margins: {top:0, bottom:0, left:20},
+          width: '110px',
           listeners: {
             click: function() {
+              submit();
               var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
               lapigAnalytics.clickTool('Spatial Intelligence','click-Consult',clickSelectedState);
-    
-              if(clickSelectedState == 'BRASIL') {
-                instance.checkBoxFlag = false;
-              }
-
-              instance._layers.removeAll(instance.typeRegion)
-              submit();
             }
           }
         }
@@ -385,103 +366,64 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     }
   },
 
-  getGridCmp: function () {
+  getGridCmp: function (){
+    
     var instance = this;
-    
-    var submit = function(evt) {
-      instance.requestMetadata(function() {
-        instance.updateGrid();
-      });
-    }
-    
+
     return {
         xtype: 'treegrid',
         id: 'lapig_spatialintelligence::grid-info',
         tbar: [
           {
-            xtype:'combo',
-            displayField:'info',
-            fieldLabel: '',
-            id: 'lapig_spatialintelligence::cmb-cities',
-            valueField: 'COD_MUNICI',
-            hidden: true,
-            mode: 'local',
-            typeAhead: true,
-            editable: true,
-            triggerAction: 'all',
-            listeners: {
-              select: function(evt, record) {
+					  xtype:'combo',
+					  displayField:'info',
+					  fieldLabel: '',
+					  id: 'lapig_spatialintelligence::cmb-cities',
+					  valueField: 'COD_MUNICI',
+					  mode: 'local',
+					  typeAhead: true,
+					  editable: true,
+					  triggerAction: 'all',
+					  listeners: {
+	            select: function(evt, record) {
+                instance._layers.removeAll('city');
                 instance.selectCity = record.data;
                 lapigAnalytics.clickTool('Spatial Intelligence', 'click-cityFilter', instance.selectCity.info);
-                
-                var regionType = instance.selectedRegion.data.regionType;
                 instance.updateGrid();
-                instance._layers.removeAll('city');
               }.bind(instance)
-            },
+	          },
             store: {
               xtype: 'jsonstore',
-              id: 'lapig_spatialintelligence_result-fields',
-              fields: [
+              fields: [ 
                   {type: 'string', name: 'COD_MUNICI'},
                   {type: 'string', name: 'info'},
                   {type: 'string', name: 'bbox'}
               ]
             }
-          },
-          {
-            xtype: 'checkbox',
-            disabled: true,
-            boxLabel: i18n.LAPIGSPATIALINTELLIGENCE_CHECKBOX_TITLE,
-            id: 'lapig_spatialintelligence_checkbox_municipality',
-            listeners: {
-              check: function(cb) {
-                var idResultsMun = Ext.getCmp('lapig_spatialintelligence::cmb-cities')
-                submit();
-
-                if(cb.checked == false) {
-                  instance._layers.removeAll('city')
-                  instance.checkBoxFlag = false;
-                  idResultsMun.hide();
-                
-                } else {
-                  instance.checkBoxFlag = true;
-                  idResultsMun.show();
-                }
-              }
-            }
-          },
+					},
           {
             xtype: 'button',
             id: 'lapig_spatialintelligence::btn-clear-filter',
-            style: {
-              'margin-top':'11px'
-            },
             iconCls: "spatial-intelligence-clear-filter",
             hidden: true,
             listeners: {
               click: function() {
+                lapigAnalytics.clickTool('Spatial Intelligence', 'click-clearFilter', '')
                 var cities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
-                lapigAnalytics.clickTool('Spatial Intelligence', 'click-clearFilter', '');
-                
                 instance._layers.removeAll('city');
                 cities.setValue('');
-                instance.updateGrid();
+                instance.updateGrid()
               }.bind(instance)
             }
           },
           '->',
           {
             xtype: 'button',
-            style: {
-              'margin-top':'10px'
-            },
             iconCls: 'lapig-icon-csv',
             listeners: {
               click: function() {
                 var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
                 lapigAnalytics.clickTool('Spatial Intelligence', 'click-csvDownloads',clickSelectedState);
-                
                 window.open(instance.csvUrl)
               }
             }
@@ -513,53 +455,33 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         listeners: {
           'load': function(node) {
             if(node.text == 'Root') {
+
               instance.cityHasGeoData = {};
-              var listInfo = [];
 
-              //Cria um array com as camadas sem valores e remove o elemento filho quando checkBox estiver desabilitado
-              if(instance.checkBoxFlag == false) {
-                node.childNodes.forEach(function(child) {
-                  if(child.attributes.value == 'No info' || child.attributes.value == 'Sem inform.') {
-                    listInfo.push(child);
-                  }
-
-                  instance.loadMask.hide();
-                });
-
-              } else {
-                node.childNodes.forEach(function(child) {
-                  if(child.attributes.children.length == 1) {                    
-                    child.attributes.children[0].hidden = true;
-                    var key = child.attributes['layer']+"_"+child.attributes.children[0]['COD_MUNICI'];
-                    instance.cityHasGeoData[key] = true;
-
-                  } else {
-                    if(child.attributes.children) {
-                      child.attributes.children.forEach(function(grandchild) {
-                        if(child.attributes['layer']) {
-                          var key = child.attributes['layer']+"_"+grandchild['COD_MUNICI'];
-                          instance.cityHasGeoData[key] = true;
-                        }
-                      });
+              node.childNodes.forEach(function(child) {
+                if(child.attributes.children) {
+                  child.attributes.children.forEach(function(grandchild) {
+                    if(child.attributes['layer']) {
+                      var key = child.attributes['layer']+"_"+grandchild['COD_MUNICI'];
+                      instance.cityHasGeoData[key] = true;
                     }
-                  }
-                });
-              }
-              
-              instance.listNoInfo = listInfo;
+                  });
+                }
+              });
 
               var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
               var cmbCities = Ext.getCmp('lapig_spatialintelligence::cmb-cities');
-              
+
               instance.loadMask.hide();
               gridInfo.setDisabled(false);
-            
+
               var layerName = instance.queryMetadata.layer;
               var layerTitle = instance.queryMetadata.titlePrefix + instance.selectedRegion.data.label;
               var filter = instance.queryMetadata.filter;
               var bbox = instance.selectedRegion.data.bbox;
               var columnCity = instance.queryMetadata.columnCity;
-              var city = cmbCities.getValue();
+
+              var city =cmbCities.getValue();
               
               if( city != '') {
                 bbox = instance.selectCity.bbox;
@@ -573,154 +495,68 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                 msfilter: filter
               };
 
+
+              
               instance.handleLayer(layerName, layerTitle, bbox, true, 'state', true, json);
             }
           },
           'dblclick': function(node) {
             var attr = node.attributes;
             var parentAttr = node.parentNode.attributes;
+
             var clickSelectedState = Ext.getCmp('lapig_spatialintelligence::cmb-regions').getValue();
-            lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.layer, attr.layer+'-'+clickSelectedState);
-            var gridInfo = Ext.getCmp('lapig_spatialintelligence::grid-info');
-            
-            if(instance.checkBoxFlag == false) {
-              var dataRegion = Ext.getCmp('lapig_spatialintelligence::cmb-regions');
+            lapigAnalytics.clickTool('Spatial Intelligence', 'dbclick-'+parentAttr.layer, attr.layer+'-'+clickSelectedState)
 
-              instance.updateGrid();
+            if(attr.bbox) {
+              var bbox = attr.bbox;
+              var fields = instance.queryMetadata.fields;
+              var columnCity = instance.queryMetadata.columnCity;
               
-              dataRegion.store.data.items.forEach(function(bboxRegion) {
-                if(bboxRegion.json[0] == dataRegion.value) {
-                  attr.bbox = bboxRegion.json[2];
-                  instance.typeRegion = "'"+bboxRegion.json[3]+"'";
-                }
-              })
-
-              if(attr.bbox) {
-                var bbox = attr.bbox;
-                var fields = instance.queryMetadata.fields;
+               var createLoadDataMask = function(elementId) {
+                var gridPanel = Ext.getDom(elementId);
+                var msgText = i18n.LAPIG_WAITING_MSG;
                 
-                var createLoadDataMask = function(elementId) {
-                  var gridPanel = Ext.getDom(elementId);
-                  var msgText = i18n.LAPIG_WAITING_MSG;
+                return new Ext.LoadMask(gridPanel, { msg: msgText });
+              }
+
+              loadMask = createLoadDataMask('westpanel')
+              loadMask.show()
+
+              instance._layers.removeAll('city');
+
+              fields.forEach(function(field) {
+                
+                var filter = instance.queryMetadata.filter;
+
+                if(field.layer) {
                   
-                  return new Ext.LoadMask(gridPanel, { msg: msgText });
-                }
-
-                loadMask = createLoadDataMask('westpanel')
-                loadMask.show()
-
-                fields.forEach(function(field) {
-                  var filter = instance.queryMetadata.filter;
-
-                  if(field.layer) {
+                  var key = field.layer+"_"+attr['COD_MUNICI'];
+                  
+                  if(instance.cityHasGeoData[key]) {
                     var layerName = field.layer;
-                    var layerTitle = dataRegion.lastSelectionText + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
+                    var layerTitle = attr['info'] + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
+                    filter += " AND '[" + columnCity + "]' = '" + attr[columnCity] + "'";
                     var bbox = attr.bbox;
-                    var filterRaster = instance.queryMetadata.filterRaster.replace(attr['COD_MUNICI']);
 
-                    var json = {
+                    var filterRaster = instance.queryMetadata.filterRaster.replace("{CITY_CODE}", attr['COD_MUNICI']);
+
+                     var json = {
                       type: field.type,
                       name: field.layer,
                       msfilter: ((field.type == 'RASTER') ? filterRaster : filter)
                     };
-                    var visibility = (node.attributes.layer == layerName) ? true : false;
 
-                    instance.handleLayer(layerName, layerTitle, bbox, true, instance.typeRegion, visibility, json);
+                    var visibility = (parentAttr.layer == layerName) ? true : false;
+
+                    instance.handleLayer(layerName, layerTitle, bbox, false, 'city', visibility, json);
                   }
-                });                
-              }
-              loadMask.hide();
-            
-            } else {
-              if(attr.bbox) {
-                var bbox = attr.bbox;
-                var fields = instance.queryMetadata.fields;
-                var columnCity = instance.queryMetadata.columnCity;
-
-                var createLoadDataMask = function(elementId) {
-                  var gridPanel = Ext.getDom(elementId);
-                  var msgText = i18n.LAPIG_WAITING_MSG;
-
-                  return new Ext.LoadMask(gridPanel, { msg: msgText });
                 }
 
-                loadMask = createLoadDataMask('westpanel');
-                loadMask.show();
-                
-                instance._layers.removeAll('city');
-
-                fields.forEach(function(field) {
-                  var filter = instance.queryMetadata.filter;
-                  
-                  if(field.layer) {
-                    var key = field.layer+"_"+attr['COD_MUNICI'];
-
-                    if(instance.cityHasGeoData[key]) {
-                      var layerName = field.layer;
-                      var layerTitle = attr['info'] + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
-                      var bbox = attr.bbox;
-                      var filterRaster = instance.queryMetadata.filterRaster.replace("{CITY_CODE}", attr['COD_MUNICI']);
-                      filter += " AND '[" + columnCity + "]' = '" + attr[columnCity] + "'";
-
-                      var json = {
-                        type: field.type,
-                        name: field.layer,
-                        msfilter: ((field.type == 'RASTER') ? filterRaster : filter)
-                      };
-
-                      var visibility = (parentAttr.layer == layerName) ? true : false;
-
-                      instance.handleLayer(layerName, layerTitle, bbox, false, 'city', visibility, json);
-                    }
-                  }
-                });
-                loadMask.hide();
-
-              } else {
-                var bbox = node.attributes.children[0].bbox;
-                var fields = instance.queryMetadata.fields;
-                var columnCity = instance.queryMetadata.columnCity;
-
-                var createLoadDataMask = function(elementId) {
-                  var gridPanel = Ext.getDom(elementId);
-                  var msgText = i18n.LAPIG_WAITING_MSG;
-
-                  return new Ext.LoadMask(gridPanel, { msg: msgText });
-                }
-
-                loadMask = createLoadDataMask('westpanel');
-                loadMask.show();
-                
-                instance._layers.removeAll('city');
-
-                fields.forEach(function(field) {
-                  var filter = instance.queryMetadata.filter;
-                  
-                  if(field.layer) {
-                    var key = field.layer+"_"+node.attributes.children[0]['COD_MUNICI'];
-
-                    if(instance.cityHasGeoData[key]) {
-                      var layerName = field.layer;
-                      var layerTitle = node.attributes.children[0]['info'] + " - " + ((field.layerLabel) ? field.layerLabel : field.label);
-                      var bbox = node.attributes.children[0]['bbox'];
-                      var filterRaster = instance.queryMetadata.filterRaster.replace("{CITY_CODE}", node.attributes.children[0]['COD_MUNICI']);
-                      filter += " AND '[" + columnCity + "]' = '" + node.attributes.children[0][columnCity] + "'";
-
-                      var json = {
-                        type: field.type,
-                        name: field.layer,
-                        msfilter: ((field.type == 'RASTER') ? filterRaster : filter)
-                      };
-
-                      var visibility = (node.attributes.layer == layerName) ? true : false;
-
-                      instance.handleLayer(layerName, layerTitle, bbox, false, 'city', visibility, json);
-                    }
-                  }
-                });
-                loadMask.hide();
-              }
+              });
             }
+
+            loadMask.hide();
+
           }
         }
     };

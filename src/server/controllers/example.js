@@ -8,7 +8,7 @@ module.exports = function(app) {
 
 		//layerCollection.find({}).toArray(function(err, docs) {
 				//response.send(docs);
-				response.end('Hello World Fernanda!');
+				response.end('Hello World!');
 		//});
 
 	};

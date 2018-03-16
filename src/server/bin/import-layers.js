@@ -343,7 +343,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
                   + '  TEMPLATE "DUMMY"\n'
                   + filter
                   + offsite
-                  //+ processingScale
+                  + processingScale
                   + 'END\n';
   
 
