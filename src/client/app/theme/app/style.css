@@ -65,6 +65,37 @@ div.olControlMousePosition {
     border: 1px solid #C1C1C1;
 }
 
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
+}
+.ux-mselect-item{
+    font:normal 12px tahoma, arial, helvetica, sans-serif;
+    padding:2px;
+    border:1px solid #fff;
+    white-space: nowrap;
+    cursor:pointer;
+}
+.ux-mselect-selected{
+    border:1px dotted #a3bae9 !important;
+    background:#DFE8F6;
+    cursor:pointer;
+}
+
+.x-view-drag-insert-above { 
+    border-top:1px dotted #3366cc; 
+} 
+.x-view-drag-insert-below { 
+    border-bottom:1px dotted #3366cc; 
+} 
+
+.ext-ie .ux-form-multiselect .x-fieldset legend {
+    margin-bottom: 0;
+}
+
 /* gxp_downloadLapiglayer */
 .x-btn .gxp-icon-downloadlayer, .x-menu-item .gxp-icon-downloadlayer, .x-tree-node .gxp-icon-downloadlayer {
     background-image: url(img/save-layer.png);
@@ -140,6 +171,10 @@ div.olControlMousePosition {
     background-image: url(img/edit.gif) !important;
 }
 
+.lapig-icon-geocampo {
+    background-image: url(img/open-latlon.png) !important;
+}
+
 .gxp-icon-lapiglayerlink {
     background-image: url(img/layer-link.png) !important;
 }
@@ -153,10 +188,6 @@ div.olControlMousePosition {
 .lapig-slider {
     width: 230px;
     margin-left: 35px;
-}
-
-.lapig-icon-geocampo {
-    background-image: url(img/open-latlon.png) !important;
 }
 
 .x-collapsed-title {
@@ -218,6 +249,44 @@ div.olControlMousePosition {
     height: 15px !important;
     width: 560px !important;
 }
+
+#lapig_spatialintelligence_checkbox_municipality {
+    height: 64px;
+    position: absolute;
+    top: -24px;
+    left: 0px;
+}
+
+.x-toolbar-cell .x-form-cb-label {
+    position: absolute;
+    top: 3px;
+    left: 11px;
+}
+
+.idCheckboxCities {
+    display: transparent; 
+}
+
+.ext-strict .ext-webkit .x-small-editor .x-form-text {
+    margin-top: 16px;
+}
+
+.x-small-editor .x-form-field-wrap .x-form-trigger {
+    margin-top: 16px
+}
+
+.x-treegrid-root-table > .x-tree-node > .idQueryAllRegion > .x-treegrid-col > .x-tree-ec-icon {
+    background-image: url(img/seta-invisivel.png);
+}
+
+.x-treegrid-root-table > .x-tree-node > .idQueryLayers > .x-treegrid-col > .x-tree-ec-icon {
+    background-image: url(img/seta-invisivel.png);
+}
+
+.x-toolbar-ct {
+    height: 25px;
+}
+
 .spatial-intelligence-geomap {
     background-image: url(img/spatial-intelligence-geomap.png) !important;
 }
@@ -235,6 +304,7 @@ div.olControlMousePosition {
 }
 
 .spatial-intelligence-clear-filter {
+    top: 10px !important;
     background-image: url(img/spatial-intelligence-clear-filter.png) !important;
 }
 /* gxp_metadatalayer

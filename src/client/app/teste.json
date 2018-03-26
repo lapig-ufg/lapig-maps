@@ -1,0 +1,145 @@
+[
+{
+id: "area_soja",
+categ: [
+"Agricultura"
+],
+nome: "Área Plantada de Soja",
+descricao: "Áreas de plantação de Soja em grão, por hectares, no período de 2000 a 2015, conforme dados censitários do IBGE.",
+unidade: "ha",
+regiao: "Brasil",
+valor: [
+13265024,
+13575167,
+15906255,
+18012037,
+21017331,
+22800431,
+21506442,
+19999172,
+20683698,
+21186080,
+22722744,
+23408817,
+24458576,
+25612865,
+27787130,
+29571309
+],
+ano: [
+2000,
+2001,
+2002,
+2003,
+2004,
+2005,
+2006,
+2007,
+2008,
+2009,
+2010,
+2011,
+2012,
+2013,
+2014,
+2015
+],
+tipo: "numerico"
+},
+{
+id: "desmatamento",
+categ: [
+"Agricultura",
+"Pecuária"
+],
+nome: "Desmatamento",
+descricao: "Dados de desmatamentos ocorridos, produzidos a partir de compilação de dados do PRODES (2005 - 2016), SIAD (2003 - 2016) e SOS Mata Atlântica (2011 - 2014)",
+unidade: "ha",
+regiao: "Brasil",
+valor: [
+817060.8827170008,
+891085.7045103306,
+2625392.480285232,
+1333505.9245038056,
+1520009.027449459,
+1596346.9588585123,
+882031.0335001672,
+950676.3439403311,
+1211078.04662165,
+1170755.8442928328,
+912983.9167041027,
+890109.9053851682,
+846403.3446728276,
+1157315.6714267093
+],
+ano: [
+2003,
+2004,
+2005,
+2006,
+2007,
+2008,
+2009,
+2010,
+2011,
+2012,
+2013,
+2014,
+2015,
+2016
+],
+tipo: "espacial"
+},
+{
+id: "trabalho_escravo",
+categ: [
+"Social"
+],
+nome: "Trabalho Escravo",
+descricao: "Número de pessoas envolvidas por município, em ações de trabalhos forçados, jornada exaustiva, ou por sujeitá-lo a condições degradantes de trabalho, no período de 2000/ 2002 e de 2008 á 2015, produzidos pela CPT - Comissão Pastoral da Terra - espacializados pelo Lapig.",
+unidade: "pessoas",
+regiao: "Brasil",
+valor: [
+437,
+5327,
+6838,
+5931,
+3901,
+3802,
+2813,
+1628,
+2354,
+1739
+],
+ano: [
+2000,
+2002,
+2008,
+2009,
+2010,
+2011,
+2012,
+2013,
+2014,
+2015
+],
+tipo: "espacial"
+},
+{
+id: "unidades_conservacao_integral",
+categ: [
+"Natural"
+],
+nome: "Unidades de Conservação de Proteção Integral",
+descricao: "Localização das unidades de conservação de proteção integral brasileiras, incluindo a Base ao Milionésimo do IBGE de 2014.",
+unidade: "ha",
+regiao: "Brasil",
+valor: [
+51764480.27325787
+],
+ano: [
+2014
+],
+tipo: "espacial"
+}
+]

@@ -1,0 +1,26 @@
+#map { 
+height: 500px; 
+width:960px; 
+cursor: pointer;
+}
+.info {
+    color:#555;
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255,0.6);
+    box-shadow: 0 0 15px rgba(0,0,0,0.7);
+    border-radius: 10px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #000;
+}
+.info rank {
+    color: #f00;
+    font-style:italic;
+}
+body {
+  background: #555;
+  margin: 1em auto 4em auto;
+  width: 960px;
+}

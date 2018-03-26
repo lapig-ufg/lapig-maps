@@ -1177,7 +1177,7 @@ module.exports = function(app) {
 				});
 		}
 
-		Indicadores.csv = function(request, response){
+		Indicadores.csv = function(request, response, next){
 			var json2csv = require('json2csv');
 			var table = request.param('id', '');
 			var sql = 'SELECT * FROM "'+table+'_regions_view"';

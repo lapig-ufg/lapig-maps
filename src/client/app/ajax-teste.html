@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$.ajax({
+    	url: "http://localhost:5000/ows", 
+    	type: "GET",
+ 		crossDomain: true,
+    	dataType: 'application/json', 
+    	success: function(result){
+            console.log(result)
+    	},
+    	error:function(xhr, status){
+     		 console.log("error", status)
+ 		} 
+   });
+</script>
+</head>
+<body>
+
+</body>
+</html>

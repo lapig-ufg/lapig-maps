@@ -1,3 +1,3 @@
 #!/bin/bash
 
-NODE_ENV=dev always app.js
+NODE_ENV=dev PRIMARY_WORKER=1 always app.js

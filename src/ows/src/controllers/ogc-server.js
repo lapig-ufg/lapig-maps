@@ -47,7 +47,7 @@ module.exports = function(app) {
 			headers['Content-ID'] = 'coverage/out.tif';
 			headers['Content-Disposition'] = 'INLINE; filename='+filename+'.tif';
 		}
-
+		
 		for (key in headers)
 			response.setHeader(key, headers[key]);
 		
