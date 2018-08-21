@@ -1685,17 +1685,29 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     return [
       {
         xtype: 'checkbox',
-        boxLabel: i18n.LAPIGCOORDINATES_CHKBOXLBL_USERADIUS,
+        //boxLabel: i18n.LAPIGCOORDINATES_CHKBOXLBL_USERADIUS,
         id: 'lapig-coordinates-chk-use-radius',
         width: 'auto',
+        style: {
+          position: 'static'
+        },
         disabled: true,
         enableOnSelect: true/*(source == 'lapig') ? true : false,*/,
         listeners:{
           check: function(checkbox, checked) {
             Ext.getCmp('lapig-coordinates-cmb-radius').setDisabled(!checked);
             Ext.getCmp('lapig-coordinates-label-radius').setDisabled(!checked);
+            Ext.getCmp('lapig-coordinates-label-useradius').setDisabled(!checked);
           }
         }
+      },
+      {
+        xtype: 'label',
+        id: 'lapig-coordinates-label-useradius',
+        text: 'Usar raio',
+        width: 'auto',
+        height: 'auto',
+        disabled: true
       },
       {
         xtype:'combo',
@@ -1732,7 +1744,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
       {
         xtype: 'label',
         id: 'lapig-coordinates-label-radius',
-        text: i18n.LAPIGRASTERSERIES_TXT_RADUNIT_METER,
+        text: 'm',
         width: 'auto',
         height: 'auto',
         disabled: true

@@ -58,7 +58,7 @@ app.middleware.repository.init(function() {
 	app.use(responseTime());
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
-	app.use(multer());
+	//app.use(multer());
 
 	app.use(function(error, request, response, next) {
 		console.log('ServerError: ', error.stack);

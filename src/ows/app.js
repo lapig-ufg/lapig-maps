@@ -33,7 +33,7 @@ app.libs.catalog.init(function() {
 		}
 	}));
 	
-	app.use(multer());
+	//app.use(multer());
 	app.use(requestParam());
 	app.use(morgan('combined'));
 

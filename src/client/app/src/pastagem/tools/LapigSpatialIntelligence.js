@@ -322,7 +322,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               ['AMAZÔNIA', 'Amazônia',  '-73.9904499596311,-16.2905190391443,-43.0177679425571,5.27184107515087', 'biome'],
               ['CAATINGA', 'Caatinga',  '-44.5084182970686,-16.0884759016231,-35.0985861479423,-2.78423064952074', 'biome'],
               ['CERRADO', 'Cerrado',  '-60.1094168432324,-24.6846259981298,-41.5221150102917,-2.32633300152119', 'biome'],
-              ['MATA-ATLÂNTICA', 'Mata Atlântica',  '-55.7812928486603,-29.9727657537398,-28.835907628963,-3.83006497691515', 'biome'],
+              ['MATA ATLÂNTICA', 'Mata Atlântica',  '-55.7812928486603,-29.9727657537398,-28.835907628963,-3.83006497691515', 'biome'],
               ['PAMPA', 'Pampa',  '-57.6433158444357,-33.751583006014,-49.6776313399901,-28.0951804998136', 'biome'],
               ['PANTANAL', 'Pantanal',  '-59.186801362403,-22.1504419255242,-54.9218143293872,-15.1329088319936', 'biome'],
               ['undefined4','---- <b>Estados</b> ----'],
@@ -557,7 +557,6 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
               var layerName = instance.queryMetadata.layer;
               var layerTitle = instance.queryMetadata.titlePrefix + instance.selectedRegion.data.label;
               var filter = instance.queryMetadata.filter;
-              console.log('fer no cliente', instance.queryMetadata);
               var bbox = instance.selectedRegion.data.bbox;
               var columnCity = instance.queryMetadata.columnCity;
               var city = cmbCities.getValue();
@@ -610,9 +609,18 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
                 loadMask = createLoadDataMask('westpanel')
                 loadMask.show()
 
+                for(var i = 0; i <instance.listNoInfo.length; i++){
+                    for(var x = 0; x < fields.length; x++){
+                      if(instance.listNoInfo[i].attributes.layer == fields[x].layer){
+                        fields.splice(x, 1);
+                      }
+                    }
+                };
+
+                fields =  fields.reverse();
+
                 fields.forEach(function(field) {
                   var filter = instance.queryMetadata.filter+" AND '[ANO]'='"+field.ano+"'";
-                  console.log('fer no filter', filter)
 
                   if(field.layer) {
                     var layerName = field.layer;

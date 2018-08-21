@@ -911,7 +911,6 @@ module.exports = function(app) {
 		Internal.getSpatialDb(function(spatialDb) {
 			var result = [];
 			var regionFilter = Internal.getRegionFilter(regionType, region, city, false);
-
 			var fieldEach = function(field, next) {
 				if(field['excludeFromRegions']) {
 					for(var key in field['excludeFromRegions']) {
@@ -937,7 +936,7 @@ module.exports = function(app) {
 				};
 				
 				var sql = Internal.getQuerySql(field.table, field.ano, field.name, regionFilter, field.operation, field.sort, field.applyOperationInSql);
-				console.log(sql)
+				console.log('sql queryLayers: ', sql);
 				var rowEach = function(err, row) {
 					row.leaf = true;
 					row.iconCls = (field.layer) ? 'spatial-intelligence-geomap' : 'spatial-intelligence-nomap';
@@ -1006,7 +1005,7 @@ module.exports = function(app) {
 				};
 
 				var sql = Internal.getQuerySql(field.table, field.ano, field.name, regionFilter, field.operation, field.sort, field.applyOperationInSql);
-				console.log('fer', sql)
+				console.log('sql queryAllRegion', sql)
 				var rowEach = function(err, row) {
 					row.leaf = true;
 					row.iconCls = (field.layer) ? 'spatial-intelligence-geomap' : 'spatial-intelligence-nomap';
@@ -1208,7 +1207,7 @@ module.exports = function(app) {
 		Internal.getSpatialDb(function(spatialDb) {
 			var sqlRegionFilter = Internal.getRegionFilter(regionType, region, '', false);
 			var sql = Internal.getCitieSql(sqlRegionFilter);
-			console.log('metadata sql::::::', sql)
+
 			spatialDb.all(sql, function(err, rows) {
 				metadata.cities = rows;
 				request.finalizeResultMetadata = metadata,

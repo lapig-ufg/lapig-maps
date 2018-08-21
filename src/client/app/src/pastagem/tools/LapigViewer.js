@@ -474,7 +474,8 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             },
             google: {
               ptype: "gxp_googlesource",
-              title: "Mapas de fundo (Google)"
+              title: "Mapas de fundo (Google)",
+              otherParams: "sensor=false&key=AIzaSyBb80nS_pkxIfNOhI8MwDsQBqORW2FZ4as"
             },
             bing: {
               ptype: "gxp_bingsource",

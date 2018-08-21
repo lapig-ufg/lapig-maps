@@ -1,33 +1,29 @@
 
 var util = require('util')
-	,   mongodb = require('mongodb')
+	,	MongoClient = require('mongodb').MongoClient
 	,   async = require('async');
 
 module.exports = function(app) {
 
-		var Db = mongodb.Db,
-				Connection = mongodb.Connection,
-				Server = mongodb.Server,
-				config = app.config,
-				Repository = {
+		var config = app.config;
+		var Repository = {
 					collections: {}
 				};
-
-		Repository.db = new Db(config.mongo.dbname
-				, new Server(config.mongo.host, config.mongo.port, {'auto_reconnect': true, 'pool_size': 5 })
-				, { safe: true }
-		);
+		var url = 'mongodb://'+config.mongo.host+':'+config.mongo.port;
 
 		Repository.id = function(id) {
 				return new mongodb.ObjectID(id);
 		};
 
 		Repository.init = function(callback) {
-				
-				Repository.db.open(function(err) {
+
+				MongoClient.connect(url, {'poolSize': 20, useNewUrlParser: true}, function(err, client) {
+						console.log(url)
 						if (err) {
 								return callback(err);
 						}
+						
+						Repository.db = client.db(config.mongo.dbname);
 
 						Repository.db.listCollections({}).toArray(function(err, names) {
 
