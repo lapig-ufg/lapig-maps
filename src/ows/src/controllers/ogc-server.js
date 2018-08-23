@@ -56,6 +56,7 @@ module.exports = function(app) {
 	Internal.getCacheKey = function(params) {
 		
 		var requestType = ('REQUEST' in params) ? params['REQUEST'] : '';
+		var mode = ('MODE' in params) ? params['MODE'] : '';
 		var prefix = config.cachePrefix;
 		
 		if(requestType == 'GetMap') {
@@ -84,6 +85,24 @@ module.exports = function(app) {
 			var version = params['VERSION'];
 
 			return [prefix, capPrefix, requestType, service, version].join(',');
+		} else if(mode = 'tile') {
+			var tile = params['TILE']
+			var msfilter = params['MSFILTER'];
+			var imagetype = params['MAP.IMAGETYPE'];
+			var startyear = params['STARTYEAR'];
+			var endyear = params['ENDYEAR'];
+
+			var zoom = (tile) ? tile.split(' ')[0] : '0';
+			var layers = params['LAYERS']+'/'+zoom;
+			
+			var parts = [prefix, layers, tile, msfilter, imagetype];
+			if(startyear)
+				parts.push(startyear);
+			if(endyear)
+				parts.push(endyear);
+
+			return parts.join(',');
+
 		}
 
 		return undefined;
