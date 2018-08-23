@@ -175,7 +175,7 @@ module.exports = function(app) {
 			});
 			
 		} else {
-			onComplete()
+			async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters], onComplete)
 		}
 
 	};

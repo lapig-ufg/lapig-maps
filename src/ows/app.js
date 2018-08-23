@@ -50,7 +50,9 @@ app.libs.catalog.init(function() {
 		console.log('OGC-Server Server @ [port %s] [pid %s]', app.config.port, process.pid.toString());
 	});
 	
-	app.libs.catalog.prefetchWmsCapabilities();
+	if(process.env.PRIMARY_WORKER) {
+		app.libs.catalog.prefetchWmsCapabilities();
+	}
 });
 
 process.on('uncaughtException', function (err) {
