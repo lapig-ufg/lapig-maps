@@ -8,12 +8,12 @@ module.exports = function(app) {
 			  'path_tmp': pathTmp
 			,	'path_static': appRoot + 'public'
 			,	'path_basemapfile': appRoot + '/data_dir/ows_base.map'
-			, 'path_catalog': '/home/fernanda/Documentos/Projeto/Dados_local/'
-  		,	'path_metadata': '/home/fernanda/Documentos/Projeto/Dados_local/Metadados'
+			, 'path_catalog': '/home/data/catalog/'
+  		,	'path_metadata': '/home/data/catalog/'
 			,	'path_logfile': appRoot + '/log/ows-mapserv.log'
 			,	'path_mapfile': pathTmp + 'ows_runtime.map'
 			,	'path_undefined_img': appRoot + '/img/undefined.png'
-			, 'path_mapserv': '/usr/src/mapserver-7.0.6/build/mapserv'
+			, 'path_mapserv': '/usr/bin/mapserv'
 			,	'path_fonts_list': appRoot + '/data_dir/ows_fonts.list'
 
 			,	'path_projlib': '/usr/share/proj'
@@ -23,7 +23,7 @@ module.exports = function(app) {
 			, 'default_epsgproj': '4674'
 
 			,	'ows_onlineresource': 'http://localhost:5000/ows'
-			,	'ows_srs': 'EPSG:4674 EPSG:4326 EPSG:900913'
+			,	'ows_srs': 'EPSG:900913'
 			,	'ows_title': 'LAPIG-OWS'
 
 			, 'wms_getfeatureinfo_formatlist': 'gml'
@@ -32,8 +32,7 @@ module.exports = function(app) {
 
 			, 'pattern_mapfile': '*.map'
 
-			, 'redisHost': 'localhost'
-			, 'redisPort': '6379'
+			,	'cacheDir': '/data/ows-cache/layers'
 			, 'cachePrefix': "pastagem.org"
 			,	'cacheEnable': false
 
@@ -46,11 +45,12 @@ module.exports = function(app) {
 	};
 
 	if(process.env.NODE_ENV == 'prod') {
+		config['path_catalog'] = '/data/catalog/'
+		config['path_metadata'] = config['path_catalog']
 		config['path_fonts_list'] =  appRoot + '/data_dir/ows_fonts_prod.list';
 		config['path_logfile'] = '/var/log/lapig-maps/mapserver.log'
 		config['path_mapserv'] = 'mapserv'
-		config['ows_onlineresource'] = 'http://maps.lapig.iesa.ufg.br/ows';
-		config['redisHost'] = '200.137.217.157'
+		config['ows_onlineresource'] = 'http://ows.lapig.iesa.ufg.br/ows';
 		config['cacheEnable'] = true;
 	}
 

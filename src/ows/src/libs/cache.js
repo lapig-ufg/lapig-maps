@@ -1,38 +1,52 @@
-var util  = require('util')
-	, redis = require('redis')
+var crypto = require('crypto')
+	,	fsextra = require('fs-extra')
+	,	fs = require('fs')
 	;
 
 module.exports = function(app) {
 
 	var config = app.config;
 
-	var redisClient = redis.createClient(config.redisPort, config.redisHost);
 	var Cache = {};
 
+	config.cacheDir
+
+	Cache.cacheFile = function(cacheKey, callback) {
+		var md5Key = crypto.createHash('md5').update(cacheKey).digest("hex");
+
+		var layerName = cacheKey.split(',')[1]
+		var cacheDir = config.cacheDir+'/'+layerName
+		var cacheFile = cacheDir+'/'+md5Key+'.cache'
+
+		fsextra.ensureDir(cacheDir, function(err) { 
+			callback(cacheDir, cacheFile)
+		});
+	}
+
 	Cache.get = function(cacheKey, callback) {
-		redisClient.get(cacheKey, function(err, data) {
-			if(!err && data) {
-		    	var bitmap = new Buffer(data, 'base64');
-		    	callback(bitmap);
-		    	redisClient.expire(cacheKey, 2592000);
-		    } else {
-		    	callback(undefined);
-		    }
-	  });
+		Cache.cacheFile(cacheKey, function(cacheDir, cacheFile) {
+			fs.readFile(cacheFile, function (err,data) {
+			  if (!err && data) {
+			  	callback(data);	  	
+			  }else{
+			    callback(undefined);
+			  }
+			});
+		})
 	};
 
 	Cache.set = function(cacheKey, data){
-		var img = new Buffer(data || '').toString('base64');
-		redisClient.set(cacheKey, img, function(){});
-		redisClient.expire(cacheKey, 2592000);
+		if(data) {
+			Cache.cacheFile(cacheKey, function(cacheDir, cacheFile) {
+				fs.writeFile(cacheFile, data, 'base64');
+			})
+		}
 	}
 
-	Cache.del = function(keyPattern, data) {
-		redisClient.keys(keyPattern, function(err, keys) {
-			keys.forEach(function(key) {
-				redisClient.del(key);
-			})
-		});
+	Cache.del = function(keyPattern, callback) {
+		Cache.cacheFile(keyPattern, function(cacheDir, cacheFile) {
+			fsextra.remove(cacheDir, callback)
+		})
 	}
 
 	return Cache;

@@ -165,17 +165,17 @@ module.exports = function(app) {
 
 	Catalog.init = function(onComplete) {
 		
-		var cacheKeyCapabilities = config['cachePrefix'] + ',CAPABILITIES*'
-		cache.del(cacheKeyCapabilities);
-
-		var prefetchCatalog = function() {
-			async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters],onComplete);
-		}
+		var cacheKeyCapabilities = config['cachePrefix'] + ',CAPABILITIES,*'
 
 		if(process.env.PRIMARY_WORKER) {
-			Internal.createBaseMapfile(prefetchCatalog);
-		} else{
-			prefetchCatalog();
+			cache.del(cacheKeyCapabilities, function() {
+				Internal.createBaseMapfile(function() {
+					async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters], onComplete);
+				});
+			});
+			
+		} else {
+			onComplete()
 		}
 
 	};
