@@ -1,0 +1,19 @@
+#!/bin/bash
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2000_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2001_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2002_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2003_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2004_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2005_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2006_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2007_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2008_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2009_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2010_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2011_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2012_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2013_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2014_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2015_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2016_lapig
+node seed-layer-tms.js bi_ce_mosaico_landsat_30_2017_lapig

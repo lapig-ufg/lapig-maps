@@ -92,8 +92,8 @@ module.exports = function(app) {
 			var startyear = params['STARTYEAR'];
 			var endyear = params['ENDYEAR'];
 
-			var zoom = (tile) ? tile.split(' ')[0] : '0';
-			var layers = params['LAYERS']+'/'+zoom;
+			var zoom = (tile) ? tile.split(' ')[2] : '0';
+			var layers = params['LAYERS']+'-tiles'+'/'+zoom;
 			
 			var parts = [prefix, layers, tile, msfilter, imagetype];
 			if(startyear)
