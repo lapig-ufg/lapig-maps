@@ -15,6 +15,7 @@ import loader
 import utils
 from operator import itemgetter
 from itertools import groupby
+from oauth2client.service_account import ServiceAccountCredentials
 
 class EarthEngine(Datasource):
 
@@ -30,8 +31,8 @@ class EarthEngine(Datasource):
 		self.ignore_filter = ast.literal_eval(self.ignore_filter.capitalize()) if hasattr(self, "ignore_filter") else None;
 		
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
-
-		self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+		# self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+		self.credentials = ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 		self.cache = Cache()
 

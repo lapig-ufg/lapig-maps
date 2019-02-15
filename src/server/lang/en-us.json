@@ -113,7 +113,7 @@
 	"LAPIGRASTERSERIES_TXT_ALERTRELAXMORE": "The Google Earth Engine is taking longer than usual, better have another coffee...",
 	"LAPIGRASTERSERIES_TXT_ALERTATTENCION": "Attention",
 	"LAPIGRASTERSERIES_TXT_RADUNIT_METER": "meters",
-	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "The Flash plugin needs to be installed and updated on your browser to use this tool!",
+	"LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH": "The Flash plugin needs to be installed and updated on your browser to use this tool! Here's how to give flash permission: <a href='https://www.lapig.iesa.ufg.br/drive/index.php/s/l6U1mnXPMmUTqyV' target='_blank'>Click here!</a>",
 	"LAPIGRASTERSERIES_GROUPCB_ONLY": "Only",
 	"LAPIGRASTERSERIES_HELP":"As séries temporais são...",
 	"LAPIGRASTERSERIES_TREND_HELP":"As tendências são....",

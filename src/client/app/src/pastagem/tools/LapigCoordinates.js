@@ -594,7 +594,7 @@ gxp.plugins.LapigCoordinates = Ext.extend(gxp.plugins.Tool, {
 		                var row = grid.getSelectionModel().getSelected();
 		                rowEditor.startEditing(row);
 					}
-				},
+				}
 			],
 			columns: [
 				{

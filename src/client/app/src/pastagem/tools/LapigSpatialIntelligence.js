@@ -207,7 +207,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     setupOthers: function() {
       mapPanel.layers.each(function(layerRec) {
         var layer = layerRec.data.layer;
-
+        console.log('fer no layerRec:', layerRec)
         if(layer instanceof OpenLayers.Layer.WMS) {
           layer.setVisibility(false);
         } else if(layerRec.data.title == "Google Terrain") {

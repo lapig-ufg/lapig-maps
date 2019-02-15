@@ -64,7 +64,7 @@ MAP
   OUTPUTFORMAT
     NAME "SHAPE-ZIP"
     DRIVER "OGR/ESRI Shapefile"
-    FORMATOPTION "STORAGE=memory"
+    FORMATOPTION "STORAGE=filesystem"
     FORMATOPTION "FORM=zip"
     FORMATOPTION "FILENAME=basename.ext.zip"
   END

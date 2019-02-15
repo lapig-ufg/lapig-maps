@@ -34,6 +34,7 @@
  * @requires tools/LapigCoordinates.js
  * @requires tools/LapigLayerManager.js
  * @requires tools/LapigWMSCSource.js
+ * @requires tools/LapigTMSSource.js
  * @requires tools/LapigZoom.js
  * @requires tools/LapigRasterSeries.js
  * @requires tools/LapigSpatialIntelligence.js
@@ -173,13 +174,13 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
 
     createLapigConfig: function(userLayers, lon, lat, zoomLevel, project) {
       var layers = [
-            {
+            /*{
               source: "mapquest",
               title: "MapQuest Imagery",
               name: "naip",
               group: "background"
             }
-            ,{
+            ,*/{
               source: "mapbox",
               title: "Natural Earth |",
               name: "natural-earth-1",
@@ -203,7 +204,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               name: "Road",
               group: "background"
             }
-            ,{
+            /*,{
               source: "google",
               title: "Google Terrain",
               name: "TERRAIN",
@@ -220,7 +221,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               title: "Google Satellite",
               name: "SATELLITE",
               group: "background"
-            }
+            }*/
       ]
 
       for (i in userLayers) {
@@ -462,21 +463,21 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               actionTarget: { target: "map.tbar", index: 19 }
             }
           ],
-          defaultSourceType: "gxp_lapigwmscsource",
+          defaultSourceType: "gxp_lapigtmssource",
           sources: {
             ows: {
               url: '/ows/',
               title: "LAPIG-OWS"
             },
-            mapquest: {
+            /*mapquest: {
               ptype: "gxp_mapquestsource",
               title: "Mapas de fundo (MapQuest)"
-            },
-            google: {
+            },*/
+            /*google: {
               ptype: "gxp_googlesource",
               title: "Mapas de fundo (Google)",
               otherParams: "sensor=false&key=AIzaSyBb80nS_pkxIfNOhI8MwDsQBqORW2FZ4as"
-            },
+            },*/
             bing: {
               ptype: "gxp_bingsource",
               apiKey: "VmCqTus7G3OxlDECYJ7O~G3Wj1uu3KG6y-zycuPHKrg~AhbMxjZ7yyYZ78AjwOVIV-5dcP5ou20yZSEVeXxqR2fTED91m_g4zpCobegW4NPY"

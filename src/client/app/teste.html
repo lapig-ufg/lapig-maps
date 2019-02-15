@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
 	<link rel="stylesheet" href="http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css" />
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js"></script>
 	<script src="http://maps.google.com/maps/api/js?key=AIzaSyD_KZ4-4MO3Pjga881F_EDWDsFBuQY8CCY&v=3.2&sensor=false"></script>
 	<script src='https://unpkg.com/leaflet.gridlayer.googlemutant@latest/Leaflet.GoogleMutant.js'></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-plugins/3.0.0/layer/tile/Bing.js"></script>
@@ -98,7 +98,7 @@
 
 		map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-		var controlFeatureCollection;
+		/*var controlFeatureCollection;
 
 		var camadaImoveis = new L.layerGroup();
 
@@ -167,7 +167,7 @@
 			}
 		});
 
-		searchButton.addTo(map);
+		searchButton.addTo(map);*/
 
 		//UTFGRID
 		var utfgrid = new L.utfGridWMS("http://maps.lapig.iesa.ufg.br/ows?", {

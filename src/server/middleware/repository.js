@@ -18,7 +18,7 @@ module.exports = function(app) {
 		Repository.init = function(callback) {
 
 				MongoClient.connect(url, {'poolSize': 20, useNewUrlParser: true}, function(err, client) {
-						console.log(url)
+
 						if (err) {
 								return callback(err);
 						}

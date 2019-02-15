@@ -85,7 +85,7 @@ module.exports = function(app) {
 			var version = params['VERSION'];
 
 			return [prefix, capPrefix, requestType, service, version].join(',');
-		} else if(mode = 'tile') {
+		} else if(mode == 'tile') {
 			var tile = params['TILE']
 			var msfilter = params['MSFILTER'];
 			var imagetype = params['MAP.IMAGETYPE'];
@@ -100,6 +100,14 @@ module.exports = function(app) {
 				parts.push(startyear);
 			if(endyear)
 				parts.push(endyear);
+
+			return parts.join(',');
+			
+		}else if(requestType == 'GetLegendGraphic') {
+
+			var layer = 'layer-legend-tiles'+'/'+params['LAYER'];
+			
+			var parts = [prefix, layer];
 
 			return parts.join(',');
 

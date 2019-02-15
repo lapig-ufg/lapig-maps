@@ -56,7 +56,7 @@ var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
 
   var MongoClient = mongodb.MongoClient;
 
-  MongoClient.connect(dbUrl, function(err, db) {
+  MongoClient.connect(dbUrl, function(err, client) {
       if(err)
         return console.dir(err);
 
@@ -70,9 +70,11 @@ var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
           notExistedLayers.push(layer.name)
       });
 
+      db = client.db('lapig-maps');
+
       db.collection(layerCollectionName, function(err, layersCollection) {
         layersCollection.insert(existedLayers, null, function() {
-          db.close();
+          client.close();
 
           if(notExistedLayers.length > 0)
             console.log("The layers doesn't exist: ", notExistedLayers);
@@ -324,111 +326,41 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
             + '  FILTER (%CQL_FILTER%)\n';
   }*/
 
-  var style = 'CLASS\n'
-  +'NAME "0.00" \n'
-  +'EXPRESSION ([pixel] = 0.00)\n'
+  /*var style = 'CLASS\n'
+  +'NAME "16 - 46 mm"\n'
+  +'EXPRESSION ([pixel] >= 16 AND [pixel] <= 46)\n'
   +'STYLE\n'
-    +'COLOR "#ffffff" \n'
+    +'COLOR "#bfd2ff"\n'
   +'END\n'
 +'END\n'
 +'CLASS\n'
-  +'NAME "0.01 - 0.07" \n'
-  +'EXPRESSION ([pixel] > 0.01 AND [pixel] <= 0.07)\n'
+  +'NAME "47 - 64 mm"\n'
+  +'EXPRESSION ([pixel] >= 47 AND [pixel] <= 64)\n'
   +'STYLE\n'
-    +'COLOR "#cafa07" \n'
+    +'COLOR "#7492f2"\n'
   +'END\n'
 +'END\n'
 +'CLASS\n'
-  +'NAME "0.08 - 0.14" \n'
-  +'EXPRESSION ([pixel] > 0.07 AND [pixel] <= 0.14)\n'
+  +'NAME "65 - 79 mm"\n'
+  +'EXPRESSION ([pixel] >= 65 AND [pixel] <= 79)\n'
   +'STYLE\n'
-    +'COLOR "#f8b500" \n'
+    +'COLOR "#005ce6"\n'
   +'END\n'
 +'END\n'
 +'CLASS\n'
-  +'NAME "0.15 - 0.21" \n'
-  +'EXPRESSION ([pixel] > 0.14 AND [pixel] <= 0.21)\n'
+  +'NAME "80 - 97 mm"\n'
+  +'EXPRESSION ([pixel] >= 80 AND [pixel] <= 97)\n'
   +'STYLE\n'
-    +'COLOR "#f87b00" \n'
+    +'COLOR "#023fa8"\n'
   +'END\n'
 +'END\n'
 +'CLASS\n'
-  +'NAME "0.22 - 0.28" \n'
-  +'EXPRESSION ([pixel] > 0.21 AND [pixel] <= 0.28)\n'
+  +'NAME "98 - 153 mm"\n'
+  +'EXPRESSION ([pixel] >=98 AND [pixel] <= 153)\n'
   +'STYLE\n'
-    +'COLOR "#78fb03" \n'
+    +'COLOR "#002163"\n'
   +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.29 - 0.35" \n'
-  +'EXPRESSION ([pixel] > 0.28 AND [pixel] <= 0.35)\n'
-  +'STYLE\n'
-    +'COLOR "#1dca14" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.36 - 0.42" \n'
-  +'EXPRESSION ([pixel] > 0.35 AND [pixel] <= 0.42)\n'
-  +'STYLE\n'
-    +'COLOR "#00f800" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.43 - 0.49" \n'
-  +'EXPRESSION ([pixel] > 0.07 AND [pixel] <= 0.49)\n'
-  +'STYLE\n'
-    +'COLOR "#009700" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.50 - 0.56" \n'
-  +'EXPRESSION ([pixel] > 0.49 AND [pixel] <= 0.56)\n'
-  +'STYLE\n'
-    +'COLOR "#004000" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.57 - 0.63" \n'
-  +'EXPRESSION ([pixel] > 0.56 AND [pixel] <= 0.63)\n'
-  +'STYLE\n'
-    +'COLOR "#f65833" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.64 - 0.70" \n'
-  +'EXPRESSION ([pixel] > 0.63 AND [pixel] <= 0.70)\n'
-  +'STYLE\n'
-    +'COLOR "#fa0202" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.71 - 0.77" \n'
-  +'EXPRESSION ([pixel] > 0.70 AND [pixel] <= 0.77)\n'
-  +'STYLE\n'
-    +'COLOR "#600000" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.78 - 0.84" \n'
-  +'EXPRESSION ([pixel] > 0.56 AND [pixel] <= 0.84)\n'
-  +'STYLE\n'
-    +'COLOR "#f85f9d" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "0.85 - 0.91" \n'
-  +'EXPRESSION ([pixel] > 0.84 AND [pixel] <= 0.91)\n'
-  +'STYLE\n'
-    +'COLOR "#9f06ba" \n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "> 0.91" \n'
-  +'EXPRESSION ([pixel] > 0.91)\n'
-  +'STYLE\n'
-    +'COLOR "#710b70" \n'
-  +'END\n'
-+'END\n'
++'END\n'*/
 
   var mapContent =  'LAYER\n'
                   + '  NAME "{name}"\n'
@@ -450,7 +382,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
                   + filter
                   + offsite
                   //+ processingScale
-                  //+style
+                  /*+style*/
                   + 'END\n';
   
 
@@ -471,6 +403,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   var mapfilePath = getFilePath(layer,'.map')
 
   console.log(mapfilePath);
+  console.log(layer._id)
   fs.writeFileSync(mapfilePath, content);
   callback();
 
@@ -606,7 +539,7 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-var layersDir = '/home/fernanda/Documentos/Projeto/Dados_local'
+var layersDir = '/data/dados-lapig/catalog/'
 //var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.11\,share\=mapa_interativo\,user\=fernanda.stefani/PROCESSO/DADOS\ GEOGRÁFICOS/DADOS\ PRONTOS/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"

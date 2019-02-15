@@ -6,10 +6,11 @@ module.exports = function(app) {
 	var config = {
 		"appRoot": appRoot, 
 		"pathTimeSeries":appRoot+"/integration/py/time-series/time_series.py",
-		"spatialIntelligenceDb": "/home/fernanda/Documentos/Projeto/Dados_local/Ocultos/spatial-intelligence.sqlite",
-		"indicadoresDb":"/home/fernanda/Documentos/Projeto/Dados_local/Ocultos/indicadores.sqlite",
-		"geocampoDb":"/home/fernanda/Documentos/Projeto/Dados_local/Ocultos/geocampo.sqlite",
+		"spatialIntelligenceDb": "/data/dados-lapig/catalog/Ocultos/spatial-intelligence.sqlite",
+		"indicadoresDb":"/data/dados-lapig/catalog/Ocultos/indicadores.sqlite",
+		"geocampoDb":"/data/dados-lapig/catalog/Ocultos/geocampo.sqlite",
 		"hostUrl": 'http://localhost:5000',
+		/*"ows": "http://200.137.217.158:5500",*/
 		"ows": "http://localhost:5500",
 		"tms": "http://localhost:5555",
 		"clientDir": appRoot + "/../client/build",
@@ -36,7 +37,7 @@ module.exports = function(app) {
 
 	if(process.env.NODE_ENV == 'prod') {
 		config["port"] = 3000;
-		config["ows"] =  "http://localhost:5500",
+		config["ows"] =  "http://ows.lapig.iesa.ufg.br",
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
 		config.redis['host'] = '200.137.217.157'
 		config.redis['enable'] = true;

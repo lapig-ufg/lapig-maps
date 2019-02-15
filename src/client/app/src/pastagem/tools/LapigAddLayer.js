@@ -10,6 +10,7 @@
  * @requires plugins/Tool.js
  * @requires widgets/NewSourceWindow.js
  * @require tools/LapigWMSCSource.js
+ * @require tools/LapigTMSSource.js
  *
  * @require TreeGrid.js
  * @require TreeGridColumnResizer.js
@@ -469,7 +470,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                 layerConfig.oldDescription = layerData.description;
                                 layerConfig.name = layerData._id;
                             }
-
+                            
                             instance.target.createLayerRecord(layerConfig, function(record) {
                                 var mapPanel = instance.target.mapPanel;
                                 record.json = layerData;
