@@ -273,12 +273,15 @@ gxp.plugins.LapigGeoCampo = Ext.extend(gxp.plugins.Tool, {
                       layerConfig.oldDescription = layerData.description;
                       layerConfig.name = layerData.id;
                       layerConfig.msfilter = layerData.params;
+                      layerConfig.extent = layerData.extent;
+
 
                       instance.target.createLayerRecord(layerConfig, function(record) {
                         var mapPanel = instance.target.mapPanel;
                         record.json = layerData;
+                        record.data.layer.url = record.data.layer.url+'&MSFILTER='+layerConfig.msfilter
                         mapPanel.layers.add([record]);
-                        mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
+                        mapPanel.map.zoomToExtent(record.getLayer().extent);
                       });
 
                       win.close();

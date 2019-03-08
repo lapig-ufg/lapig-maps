@@ -118,6 +118,7 @@ gxp.plugins.ZoomToExtent = Ext.extend(gxp.plugins.Tool, {
                             Math.min(extent.top, restricted.top)
                         );
                     }
+                    
                     map.zoomToExtent(extent, this.closest);
                 }
             },

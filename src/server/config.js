@@ -10,8 +10,8 @@ module.exports = function(app) {
 		"indicadoresDb":"/data/dados-lapig/catalog/Ocultos/indicadores.sqlite",
 		"geocampoDb":"/data/dados-lapig/catalog/Ocultos/geocampo.sqlite",
 		"hostUrl": 'http://localhost:5000',
-		/*"ows": "http://200.137.217.158:5500",*/
-		"ows": "http://localhost:5500",
+		"ows": "http://200.137.217.158:5501",
+		/*"ows": "http://localhost:5500",*/
 		"tms": "http://localhost:5555",
 		"clientDir": appRoot + "/../client/build",
 		"langDir": appRoot + "/lang",

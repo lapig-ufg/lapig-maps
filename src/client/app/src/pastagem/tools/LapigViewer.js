@@ -34,6 +34,7 @@
  * @requires tools/LapigCoordinates.js
  * @requires tools/LapigLayerManager.js
  * @requires tools/LapigWMSCSource.js
+ * @requires tools/LapigZoomToLayerExtent.js
  * @requires tools/LapigTMSSource.js
  * @requires tools/LapigZoom.js
  * @requires tools/LapigRasterSeries.js
@@ -347,7 +348,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               actionTarget: ["tree.contextMenu"]
             },
             {
-              ptype: "gxp_zoomtolayerextent",
+              ptype: "gxp_lapigzoomtolayerextent",
               menuText: i18n.LAPIGVIEWER_ZOOMTOLAYEREXTENT_MENUTXT,
               actionTarget: {target: "tree.contextMenu"}
             },
@@ -563,8 +564,8 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
 
                 records.forEach(function(rec) {
                     var layer = rec.data.layer;
-
-                    if(layer instanceof OpenLayers.Layer.WMS)
+                    
+                    if(layer instanceof OpenLayers.Layer.XYZ)
                         wmsRec.push(rec)
                     else if(layer instanceof OpenLayers.Layer.Markers)
                         markerRec.push(rec)

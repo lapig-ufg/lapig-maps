@@ -116,7 +116,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
     if(layerManager.exists(layerName, type)) {
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.update(layerName, layerTitle, type, visibility, bounds, json)  
+      layerManager.update(layerName, layerTitle, type, visibility, bbox, json)  
     } else {
           
       if(setupOthers == true) {
@@ -125,7 +125,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       var bounds = layerManager.zoomToExtent(bbox);
 
-      layerManager.add(app, layerName, layerTitle, type, visibility, bounds, json)
+      layerManager.add(app, layerName, layerTitle, type, visibility, bbox, json)
     }
   },
 
@@ -140,7 +140,7 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
       var coord = bbox.split(',')
 
       var bounds = new OpenLayers.Bounds();
-      bounds.extend(new OpenLayers.LonLat(coord[0],coord[1]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
+      bounds.extend(new OpenLayers.LonLat(coord[0],coord[1]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913 ')));
       bounds.extend(new OpenLayers.LonLat(coord[2],coord[3]).transform(new OpenLayers.Projection('EPSG:4326'), new OpenLayers.Projection('EPSG:900913')));
       
       mapPanel.map.zoomToExtent(bounds);
@@ -158,14 +158,15 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         this.layerCollection[type][name] = null;
       }
     },
-    update: function(name, title, type, visibility, bounds, json) {
+    update: function(name, title, type, visibility, bbox, json) {
       this.layerCollection[type][name].beginEdit();
       this.layerCollection[type][name].json = json;
       this.layerCollection[type][name].data.layer.name = title;
       this.layerCollection[type][name].data.layer.params['MSFILTER'] = json['msfilter'];
+      this.layerCollection[type][name].data.layer.url = this.layerCollection[type][name].data.layer.url+'&MSFILTER='+json['msfilter']
 
-      this.layerCollection[type][name].data.layer.maxExtent = bounds;
-      this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
+      this.layerCollection[type][name].data.layer.extent = bbox.split(',');
+      this.layerCollection[type][name].data.layer.restrictedExtent = bbox.split(',');
       
       this.layerCollection[type][name].data.layer.setVisibility(visibility);
 
@@ -173,8 +174,10 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
 
       this.layerCollection[type][name].endEdit();
       this.layerCollection[type][name].commit();
+
+      mapPanel.map.zoomToExtent(new OpenLayers.Bounds.fromArray(this.layerCollection[type][name].data.layer.extent).transform("EPSG:4326", "EPSG:900913"));
     },
-    add: function(app, name, title, type, visibility, bounds, json) {
+    add: function(app, name, title, type, visibility, bbox, json) {
 
       if( this.layerCollection[type] == undefined )
         this.layerCollection[type] = {}
@@ -183,34 +186,37 @@ lapig.tools.SpatialIntelligence = Ext.extend(gxp.plugins.Tool, {
         source: 'ows', 
         name: name, 
         title: title,
-        visibility: visibility
+        visibility: visibility,
+        extent: bbox.split(',')
       }
-
+      
       app.createLayerRecord(layerConfig, function(record) {
         record.json = json;
 
         this.layerCollection[type][name] = record;
         this.layerCollection[type][name].beginEdit();
         
-        this.layerCollection[type][name].data.layer.maxExtent = bounds;
-        this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
+        //this.layerCollection[type][name].data.layer.extent = bounds;
+        //this.layerCollection[type][name].data.layer.restrictedExtent = bounds;
         this.layerCollection[type][name].data.layer.params['MSFILTER'] = json['msfilter'];
+        this.layerCollection[type][name].data.layer.url = this.layerCollection[type][name].data.layer.url+'&MSFILTER='+json['msfilter']
 
         this.layerCollection[type][name].data.layer.name = layerConfig.title;
         this.layerCollection[type][name].endEdit();
         this.layerCollection[type][name].commit();
 
         mapPanel.layers.add(this.layerCollection[type][name]);
+        mapPanel.map.zoomToExtent(record.getLayer().extent);
       }.bind(this) );
     
     },
     setupOthers: function() {
       mapPanel.layers.each(function(layerRec) {
         var layer = layerRec.data.layer;
-        console.log('fer no layerRec:', layerRec)
-        if(layer instanceof OpenLayers.Layer.WMS) {
+
+        if(layer instanceof OpenLayers.Layer.XYZ) {
           layer.setVisibility(false);
-        } else if(layerRec.data.title == "Google Terrain") {
+        } else if(layerRec.data.title == "Bing Roads") {
           layer.setVisibility(true);
         }
       });

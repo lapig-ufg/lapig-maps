@@ -16,36 +16,55 @@ gxp.plugins.LapigTMSSource = Ext.extend(gxp.plugins.LayerSource, {
     },
     
     createLayerRecord: function(config, callback, scope) {
-        console.log('TMS aqui!!', config.name)
         
-        layerName = config.name
-        recordType = GeoExt.data.LayerRecord.create([
+        layerID = config.name
+        layerName = config.oldName
+
+        Record = GeoExt.data.LayerRecord.create([
             {name: "name", type: "string"},
-            {name: "title", type: "string"}
+            {name: "title", type: "string"},
+            {name: "_id", type: "string"},
+            {name: "last_date", type: "string"},
+            {name: "type", type: "string"},
+            {name: "source", type: "string"},
+            {name: "epsgCode", type: "string"},
+            {name: "extent", type: "string"},
+            {name: "scale", type: "string"},
+            {name: "year", type: "string"}
+
         ]);
 
-        xyzParams = "?layers=" + layerName
+        xyzParams = "?layers=" + layerID
         + "&mode=tile&tile=${x}+${y}+${z}"
         + "&tilemode=gmap" 
         + "&map.imagetype=png"
 
-        return new recordType({
+        var data = {
             layer: new OpenLayers.Layer.XYZ(
                     layerName,
                     [
-                        'http://o1.lapig.iesa.ufg.br/ows'+xyzParams,
+                        /*'http://o1.lapig.iesa.ufg.br/ows'+xyzParams,
                         'http://o2.lapig.iesa.ufg.br/ows'+xyzParams,
                         'http://o3.lapig.iesa.ufg.br/ows'+xyzParams,
-                        'http://o4.lapig.iesa.ufg.br/ows'+xyzParams
+                        'http://o4.lapig.iesa.ufg.br/ows'+xyzParams*/
+                        'http://200.137.217.158:5501/ows'+xyzParams
                     ], 
                     {
-                       
+                       sphericalMercator: false,
+                       projection: new OpenLayers.Projection('EPSG:900913'),
+                       isLapigLayer: true,
+                       extent: new OpenLayers.Bounds.fromArray(config.extent).transform("EPSG:4326", "EPSG:900913"),
+                       visibility: config.visibility
                     }
             ),
-            title: layerName,
-            name: layerName
-        })
+            legendUrl:'http://200.137.217.158:5501/ows?TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER='+layerID+'&format=image%2Fpng',
+            name: layerID
+        }
 
+        var record = new Record(data, layerID)
+        record.json = config;
+
+       return record
     }
 
     

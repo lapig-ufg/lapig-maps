@@ -8,6 +8,7 @@ MAP
   CONFIG "PROJ_LIB" "{path_projlib}"
   SHAPEPATH "{path_catalog}"
   FONTSET "{path_fonts_list}"
+  SYMBOLSET "{path_symbols_list}"
 
   PROJECTION
     "init=epsg:{default_epsgproj}"

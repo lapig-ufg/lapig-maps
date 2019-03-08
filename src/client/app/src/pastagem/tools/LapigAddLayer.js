@@ -455,19 +455,16 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                             var formLayer = Ext.getCmp('form-layer');
                             var layerData = formLayer.getForm().reader.jsonData;
 
-                            if(layerData.last_type == 'EE'){
-                                var layerConfig = { source: 'wmts' }
-                            }else{
-                                var layerConfig = { source: 'ows' }
+                            var layerConfig = { 
+                                source: 'ows',
+                                oldName: layerData.name, 
+                                oldDescription: layerData.description,
+                                extent: layerData.extent
                             }
 
                             if (layerData.type == 'MULTIPLE'){
-                                layerConfig.oldName = layerData.name;
-                                layerConfig.oldDescription = layerData.description;
                                 layerConfig.name = layerData.last_name;
                             }else{
-                                layerConfig.oldName = layerData.name;
-                                layerConfig.oldDescription = layerData.description;
                                 layerConfig.name = layerData._id;
                             }
                             
@@ -477,7 +474,7 @@ gxp.plugins.LapigAddLayer = Ext.extend(gxp.plugins.Tool, {
                                 lapigAnalytics.clickTool('Add Layers','view-Layer',record.json._id)
 
                                 mapPanel.layers.add([record]);
-                                mapPanel.map.zoomToExtent(record.getLayer().maxExtent);
+                                mapPanel.map.zoomToExtent(record.getLayer().extent);
                             });
                         }
                     }

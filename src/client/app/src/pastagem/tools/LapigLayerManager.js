@@ -10,6 +10,8 @@
  * @require plugins/LayerTree.js
  * @require GeoExt/plugins/TreeNodeComponent.js
  * @require GeoExt/widgets/WMSLegend.js
+ *
+ * @requires tools/LapigWMSLegend.js
  */
 
 /** api: (define)
@@ -54,7 +56,8 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 
 				gxp.plugins.LapigLayerManager.superclass.configureLayerNode.apply(this, arguments);
 
-				if (attr.layer instanceof OpenLayers.Layer.WMS) {
+				
+				if (attr.layer.options && attr.layer.options.isLapigLayer) {
 
 					attr.expanded = true;
 					attr.allowDrop = false;
@@ -62,6 +65,8 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					layerRecord = this.target.mapPanel.layers.getByLayer(attr.layer);
 					layerId = layerRecord.json._id;
 					layerLastDate = layerRecord.json.last_date;
+					layerExtent = layerRecord.json.extent;
+
 					var url = '/layers/years/'+layerId;
 
 					layerOptions = {
@@ -107,7 +112,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					        },
 					        items: [
 										{
-												xtype: "gx_wmslegend",
+												xtype: "gx_lapigwmslegend",
 												baseParams: {
 														format: "image/png"
 												},
@@ -120,6 +125,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 								
 						]
 					};
+					
 					if (layerRecord.json.type == "MULTIPLE") {
 						var dateStore = new Ext.data.Store({
 							autoLoad: true,
@@ -127,7 +133,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 					    reader: new Ext.data.JsonReader({ root: 'years', totalProperty: 'totalCount' }, [
 								{name: 'name', mapping: 'name'},
 								{name: 'year', mapping: 'year'},
-								{name: 'last_date', mapping: 'last_date'}   
+								{name: 'last_date', mapping: 'last_date'}  
 							])
 						});
 
@@ -142,7 +148,6 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 							var prevNextDate = Ext.getCmp("lapig_layermanager::btn_prevdate");
 
 							var instance = this;
-							
 							var evtFn = function() {
 								if(!btnNextDate.disabled) {
 									setTimeout(function(){
@@ -230,7 +235,7 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 											listeners: {
 												select: function(combo, record, index) {
 													var layerConfig;
-														if(record.json.type == 'EE'){
+														if(record.data.type == 'EE'){
 															layerConfig = {
 																source: 'wmts',
 															  name: record.data.name
@@ -238,19 +243,18 @@ gxp.plugins.LapigLayerManager = Ext.extend(gxp.plugins.LayerTree, {
 														}else{
 															layerConfig = {
 																source: 'ows',
-														  	name: record.data.name
+														  	name: record.data.name,
+														  	extent: layerExtent
 															}
 														}
 
 														instance.target.createLayerRecord(layerConfig, function(newRecord) {
+
 															layerRecord = instance.target.mapPanel.layers.getByLayer(combo.initialConfig.wmsLayer);
 
 															layerRecord.beginEdit();
 															layerRecord.data.name = newRecord.data.name;
-															layerRecord.data.prefix = newRecord.data.prefix;
-															layerRecord.data.title = newRecord.data.title;
-															layerRecord.data.layer.name = newRecord.data.layer.name
-															layerRecord.data.layer.params = newRecord.data.layer.params
+															layerRecord.data.layer.url = newRecord.data.layer.url
 
 															layerRecord.data.layer.redraw(true);
 

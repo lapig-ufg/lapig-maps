@@ -3,6 +3,7 @@ var fs = require('fs')
 	  ,	spawn = require('child_process').spawn
 	  , path = require('path')
 	  ,	requester = require('request')
+	  , exec = require('child_process').exec
 	  ;
 
 module.exports = function(app) {
@@ -32,21 +33,43 @@ module.exports = function(app) {
 		});
 	}
 
+
 	Internal.getMapLayers = function(onComplete) {
 		var mapLayers = "";
 
 		Internal.getMapfiles(function(mapfiles) {
 			var eachTask = function(mapfile, next) {
+
 				mapfilePath = config['path_catalog'] + mapfile;
-				fs.readFile(mapfilePath, { encoding: 'utf8' }, function (err, mapfileContent) {
-					if(mapfileContent != undefined) {
-						mapLayers += mapfileContent + '\n\n';
-						console.log(mapfile);
-					} else {
-						console.log(err)
-					}
-					next();
-				});		
+				nameLayer = mapfile.split("/")
+				nameLayer = nameLayer[nameLayer.length-1].replace('.map', '')
+
+				if(Catalog.sldExists(nameLayer)) {
+					var cmd = 'python '+config['read_mapfile_with_sld']+' '+nameLayer+' '+mapfilePath+' '+config['path_catalog'];
+
+						exec(cmd, function(error, stdout, stderr) {
+							if(stdout.indexOf("Error") != -1){
+									console.log(stdout)
+							}else {
+							  if(stdout) {
+							  	mapLayers += stdout + '\n\n';
+							  	console.log(mapfile)
+							  }
+							}
+							next();
+						});
+				} else {
+					fs.readFile(mapfilePath, { encoding: 'utf8' }, function (err, mapfileContent) {
+						if(mapfileContent != undefined) {
+							mapLayers += mapfileContent + '\n\n';
+							console.log(mapfile);
+						} else {
+							console.log(err)
+						}
+						next();
+					});
+				} 
+
 			}
 
 			var eachComplete = function() {
@@ -169,8 +192,8 @@ module.exports = function(app) {
 
 		if(process.env.PRIMARY_WORKER) {
 			cache.del(cacheKeyCapabilities, function() {
-				Internal.createBaseMapfile(function() {
-					async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters], onComplete);
+				async.parallel([Internal.prefetchSld, Internal.prefetchVectors, Internal.prefetchRasters], function(){
+					Internal.createBaseMapfile(onComplete);
 				});
 			});
 			
