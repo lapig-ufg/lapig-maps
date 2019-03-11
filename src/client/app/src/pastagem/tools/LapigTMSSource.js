@@ -57,7 +57,7 @@ gxp.plugins.LapigTMSSource = Ext.extend(gxp.plugins.LayerSource, {
                        visibility: config.visibility
                     }
             ),
-            legendUrl:'http://200.137.217.158:5501/ows?TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER='+layerID+'&format=image%2Fpng',
+            legendUrl:'http://o1.lapig.iesa.ufg.br/ows?TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER='+layerID+'&format=image%2Fpng',
             name: layerID
         }
 

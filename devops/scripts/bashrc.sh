@@ -15,6 +15,8 @@ clear-cache() {
 
 alias update='cd $REPOSITORY_DIR; git pull'
 alias deploy='$REPOSITORY_DIR/devops/scripts/deploy.sh $@'
+alias deploy_ows='$REPOSITORY_DIR/devops/scripts/deploy_ows.sh $@'
+alias deploy_server='$REPOSITORY_DIR/devops/scripts/deploy_server.sh $@'
 
 alias prod='cd $PROD_DIR'
 alias rep='cd $REPOSITORY_DIR'
