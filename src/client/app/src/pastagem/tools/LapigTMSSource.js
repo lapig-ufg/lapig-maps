@@ -43,11 +43,11 @@ gxp.plugins.LapigTMSSource = Ext.extend(gxp.plugins.LayerSource, {
             layer: new OpenLayers.Layer.XYZ(
                     layerName,
                     [
-                        /*'http://o1.lapig.iesa.ufg.br/ows'+xyzParams,
+                        'http://o1.lapig.iesa.ufg.br/ows'+xyzParams,
                         'http://o2.lapig.iesa.ufg.br/ows'+xyzParams,
                         'http://o3.lapig.iesa.ufg.br/ows'+xyzParams,
-                        'http://o4.lapig.iesa.ufg.br/ows'+xyzParams*/
-                        'http://200.137.217.158:5501/ows'+xyzParams
+                        'http://o4.lapig.iesa.ufg.br/ows'+xyzParams
+                        /*'http://200.137.217.158:5501/ows'+xyzParams*/
                     ], 
                     {
                        sphericalMercator: false,
