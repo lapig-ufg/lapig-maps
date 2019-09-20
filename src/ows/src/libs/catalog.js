@@ -45,7 +45,7 @@ module.exports = function(app) {
 				nameLayer = nameLayer[nameLayer.length-1].replace('.map', '')
 
 				if(Catalog.sldExists(nameLayer)) {
-					var cmd = 'python '+config['read_mapfile_with_sld']+' '+nameLayer+' '+mapfilePath+' '+config['path_catalog'];
+					var cmd = 'python '+config['read_mapfile_with_sld']+' '+nameLayer+' "'+mapfilePath+'" "'+config['path_catalog']+'"';
 
 						exec(cmd, function(error, stdout, stderr) {
 							if(stdout.indexOf("Error") != -1){
