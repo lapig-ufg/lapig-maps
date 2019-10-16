@@ -21,6 +21,8 @@ module.exports = function(app) {
 			params[key.toUpperCase()] = request.query[key];
 
 		params['hostname'] = request.headers.host;
+		if (params['ENHANCE'])
+			params['ENHANCE'] = params['ENHANCE'].toUpperCase()
 
 		return params;
 	}
@@ -70,14 +72,19 @@ module.exports = function(app) {
 			var format = params['FORMAT'];
 			var startyear = params['STARTYEAR'];
 			var endyear = params['ENDYEAR'];
+			var enhance = params['ENHANCE']
 			
 			var parts = [prefix, layers, srs, bbox, width, height, msfilter, format];
+			
 			if(startyear)
 				parts.push(startyear);
 			if(endyear)
 				parts.push(endyear);
+			if (enhance)
+				parts.push(enhance);
 
 			return parts.join(',');
+
 		} else if(requestType == 'GetCapabilities') {
 
 			var capPrefix = 'CAPABILITIES'
