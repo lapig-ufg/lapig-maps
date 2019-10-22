@@ -47,6 +47,7 @@ module.exports = function(app) {
 
 		var sldParam = Internal.getSldParam(params);
 		var queryParams = querystring.stringify(params);
+		
 		params['CQL_FILTER'] = Internal.parseCqlFilter(params);
 
 		var cmdParams = "QUERY_STRING=map={0}&{1}{2}";
@@ -54,12 +55,18 @@ module.exports = function(app) {
 
 		fs.writeFileSync(config.path_logfile, cmdParams + '\n', { flag: 'a' });
 
-		console.log(config['path_mapserv'], '-nh', cmdParams);
-
 		var mapserv = spawn(config['path_mapserv'], ['-nh', cmdParams ]);
 		
-		mapserv.stdout.on('data', onDataFn);
-		mapserv.stdout.on('close', onCloseFn);
+		if (params['ENHANCE'] && params['ENHANCE'] == 'TRUE') {
+			var enhance = spawn(config['path_enhance_img'])
+			mapserv.stdout.pipe(enhance.stdin)
+			enhance.stdout.on('data', onDataFn);
+			enhance.stdout.on('close', onCloseFn);
+		} else {
+			mapserv.stdout.on('data', onDataFn);
+			mapserv.stdout.on('close', onCloseFn);
+		}
+
 		
 	}
 	

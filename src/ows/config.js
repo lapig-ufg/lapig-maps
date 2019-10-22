@@ -5,9 +5,10 @@ module.exports = function(app) {
 	var pathTmp = '/mnt/tmpfs/';
 
 	var config = {
-			  'path_tmp': pathTmp
+				'path_tmp': pathTmp
 			,	'path_static': appRoot + 'public'
 			,	'path_basemapfile': appRoot + '/data_dir/ows_base.map'
+<<<<<<< HEAD
 			/* , 'path_catalog': '/data/dados-lapig/catalog/' */
 			, 'path_catalog': '/home/fmalaquias/Documentos/Projeto/Dados_local/'
 			/* , 'path_catalog': '/data/catalog/'  */
@@ -16,6 +17,13 @@ module.exports = function(app) {
 			,	'path_mapfile': pathTmp + 'ows_runtime_teste.map'
 			,	'path_undefined_img': appRoot + '/img/undefined.png'
 			/* ,	'path_mapserv': '/usr/src/mapserver-7.0.6/build/mapserv' */
+=======
+			, 'path_catalog': '/data/catalog/' 
+			,	'path_metadata': '/data/catalog/Metadados'
+			,	'path_logfile': appRoot + '/log/ows-mapserv.log'
+			,	'path_mapfile': pathTmp + 'ows_runtime_teste.map'
+			,	'path_undefined_img': appRoot + '/img/undefined.png'
+>>>>>>> 23480a3443015a85c982bcdebb264c9de733048a
 			, 'path_mapserv': 'mapserv'
 			,	'path_fonts_list': appRoot + '/data_dir/ows_fonts.list'
 			, 'path_symbols_list': appRoot + '/data_dir/symbols/ows_symbols.sym'
@@ -26,7 +34,7 @@ module.exports = function(app) {
 			,	'log_level': '5'
 			, 'default_epsgproj': '4674'
 
-			,	'ows_onlineresource': 'http://localhost:5001/ows'
+			,	'ows_onlineresource': 'http://localhost:5501/ows'
 			,	'ows_srs': 'EPSG:900913'
 			,	'ows_title': 'LAPIG-OWS'
 
@@ -36,10 +44,11 @@ module.exports = function(app) {
 
 			, 'pattern_mapfile': '*.map'
 			, 'read_mapfile_with_sld': appRoot +'/src/integration/py/read_mapfile_with_sld.py'
+			, 'path_enhance_img': appRoot +'/src/integration/py/enhance_img_clahe.py'
 
 			,	'cacheDir': '/data/dados-lapig/ows-cache/layers'
 			, 'cachePrefix': "pastagem.org"
-			,	'cacheEnable': true
+			,	'cacheEnable': false
 
 			, 'vectorBaseExt': 'shp'
 			, 'vectorDownloadExts': ['.shp', '.shx', '.dbf', '.prj', '.sld']
