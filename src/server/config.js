@@ -21,13 +21,6 @@ module.exports = function(app) {
 			"dbname": "lapig-maps"
 		},
 		"port": 5000,
-		"redis": {
-			'host': 'localhost',
-			'port': '6379',
-			'expiration': 1800,
-			'prefix': "pastagem.org",
-			'enable': true,
-		},
 		"email": {
 			'gmailUser': passwords.gmailUser,
 			'gmailPassword': passwords.gmailPassword,
@@ -39,8 +32,6 @@ module.exports = function(app) {
 		config["port"] = 3000;
 		config["ows"] =  "http://ows.lapig.iesa.ufg.br",
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
-		config.redis['host'] = '200.137.217.157'
-		config.redis['enable'] = true;
 		config["spatialIntelligenceDb"] = "/data/catalog/Ocultos/spatial-intelligence.sqlite"
 		config["indicadoresDb"] = "/data/catalog/Ocultos/indicadores.sqlite"
 		config["geocampoDb"] = "/data/catalog/Ocultos/geocampo.sqlite"

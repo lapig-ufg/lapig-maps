@@ -8,13 +8,14 @@ module.exports = function(app) {
 			  'path_tmp': pathTmp
 			,	'path_static': appRoot + 'public'
 			,	'path_basemapfile': appRoot + '/data_dir/ows_base.map'
-			/*, 'path_catalog': '/data/dados-lapig/catalog/' */
-			, 'path_catalog': '/data/catalog/' 
+			/* , 'path_catalog': '/data/dados-lapig/catalog/' */
+			, 'path_catalog': '/home/fmalaquias/Documentos/Projeto/Dados_local/'
+			/* , 'path_catalog': '/data/catalog/'  */
   		,	'path_metadata': '/data/catalog/Metadados'
 			,	'path_logfile': appRoot + '/log/ows-mapserv.log'
 			,	'path_mapfile': pathTmp + 'ows_runtime_teste.map'
 			,	'path_undefined_img': appRoot + '/img/undefined.png'
-			/*,	'path_mapserv': '/usr/src/mapserver-7.0.6/build/mapserv'*/
+			/* ,	'path_mapserv': '/usr/src/mapserver-7.0.6/build/mapserv' */
 			, 'path_mapserv': 'mapserv'
 			,	'path_fonts_list': appRoot + '/data_dir/ows_fonts.list'
 			, 'path_symbols_list': appRoot + '/data_dir/symbols/ows_symbols.sym'
@@ -36,7 +37,7 @@ module.exports = function(app) {
 			, 'pattern_mapfile': '*.map'
 			, 'read_mapfile_with_sld': appRoot +'/src/integration/py/read_mapfile_with_sld.py'
 
-			,	'cacheDir': '/data/ows-cache/layers'
+			,	'cacheDir': '/data/dados-lapig/ows-cache/layers'
 			, 'cachePrefix': "pastagem.org"
 			,	'cacheEnable': true
 

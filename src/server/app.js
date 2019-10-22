@@ -13,9 +13,7 @@ var express = require('express')
 , async = require('async')
 , timeout = require('connect-timeout')
 , bodyParser = require('body-parser')
-, multer = require('multer')
-, session = require('express-session')
-, redisStore = require('connect-redis')(session);
+, multer = require('multer');
 
 var app = express();
 
@@ -27,15 +25,6 @@ load('config.js', {'verbose': false})
 app.middleware.repository.init(function() {
 
 	app.repository = app.middleware.repository;
-
-	app.use(
-		session({
-			secret: 'LAPIG-MAPS',
-			store: new redisStore({ host: app.config.redis.host, port: app.config.redis.port }),
-			saveUninitialized: false, // don't create session until something stored,
-			resave: false // don't save session if unmodified
-		})
-	);
 
 	app.use(compression());
 	app.use(express.static(app.config.clientDir));
