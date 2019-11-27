@@ -6,7 +6,7 @@ With the continuous advancement in Geographic Information Systems, ultimately tu
 
 Link to access: [https://maps.lapig.iesa.ufg.br/lapig.html](https://maps.lapig.iesa.ufg.br/lapig.html)
 
-![alt tag](https://raw.githubusercontent.com/lapig-ufg/lapig-maps/master/proj/app.png)
+![alt tag](https://raw.githubusercontent.com/lapig-ufg/lapig-maps/master/proj/application.png)
 
 ## Running:
  1. Start MongoDB
