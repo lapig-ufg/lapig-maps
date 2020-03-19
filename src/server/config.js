@@ -25,7 +25,20 @@ module.exports = function(app) {
 			'gmailUser': passwords.gmailUser,
 			'gmailPassword': passwords.gmailPassword,
 			'replyTo': 'contato@pastagem.org'
+		},
+		"database": {
+			"connectionParams": {
+				user: 'lapig',
+			  host: 'localhost',
+			  database: 'lapig',
+			  password: 'lapig',
+			  port: 5433,
+			},
+			"queries": {
+				"geo_car_imovel": "SELECT gid, area_ha::double precision, cod_car, modulo, tipo_imove, data_ref, ST_ASGEOJSON(geom) geojson FROM geo_car_imovel WHERE ST_INTERSECTS(geom,ST_SETSRID(ST_MAKEPOINT($1, $2),4674))"
+			}
 		}
+
 	};
 
 	if(process.env.NODE_ENV == 'prod') {
