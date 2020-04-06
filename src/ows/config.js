@@ -27,7 +27,7 @@ module.exports = function(app) {
 			, 'default_epsgproj': '4674'
 
 			,	'ows_onlineresource': 'http://localhost:5500/ows'
-			,	'ows_srs': 'EPSG:900913'
+			,	'ows_srs': 'EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857 EPSG:4674 EPSG:900913'
 			,	'ows_title': 'LAPIG-OWS'
 
 			, 'wms_getfeatureinfo_formatlist': 'gml'
