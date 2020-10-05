@@ -69,6 +69,22 @@ MAP
     FORMATOPTION "FORM=zip"
     FORMATOPTION "FILENAME=basename.ext.zip"
   END
+  
+  OUTPUTFORMAT
+    NAME "TIFF-ZIP"
+    DRIVER "GDAL/GTiff"
+    FORMATOPTION "STORAGE=filesystem"
+    FORMATOPTION "FORM=zip"
+    FORMATOPTION "FILENAME=basename.ext.zip"
+  END
+  
+  OUTPUTFORMAT
+    NAME "GTiff-RGB"
+    DRIVER GDAL/GTiff
+    MIMETYPE "image/tiff"
+    IMAGEMODE RGB
+    EXTENSION "tif"
+  END
 
   OUTPUTFORMAT
     NAME "utfgrid"
