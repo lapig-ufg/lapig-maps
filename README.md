@@ -8,6 +8,20 @@ Link to access: [https://maps.lapig.iesa.ufg.br/lapig.html](https://maps.lapig.i
 
 ![alt tag](https://raw.githubusercontent.com/lapig-ufg/lapig-maps/master/proj/application.png)
 
+## Prerequisites and necessary dependencies:
+
+-MapServer version 7.2.2 higher
+
+-GDAL 2.4.0 specific
+
+-Python 3.7.3 higher
+
+-Node.js v8.11.1 specific
+
+-npm 5.6.0 or higher
+
+-nvm 0.37.0 or higher
+
 ## Running:
  1. Start MongoDB
  ```
