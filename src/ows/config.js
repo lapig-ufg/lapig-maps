@@ -21,7 +21,7 @@ module.exports = function(app) {
 			, 'path_symbols_list': appRoot + '/data_dir/symbols/ows_symbols.sym'
 
 			,	'path_projlib': '/usr/share/proj'
-			, 'port': 5500
+			, 'port': 3000
 
 			,	'log_level': '5'
 			, 'default_epsgproj': '4674'
@@ -57,7 +57,7 @@ module.exports = function(app) {
 		config['path_mapfile']= pathTmp + 'ows_runtime.map';
 		/*config['path_logfile'] = '/var/log/lapig-maps/mapserver.log'*/
 		config['path_mapserv'] = 'mapserv';
-		config['port']= 5500;
+		config['port']= 3000;
 		config['ows_onlineresource'] = 'http://ows.lapig.iesa.ufg.br/ows';
 		config['cacheEnable'] = true;
 	}
