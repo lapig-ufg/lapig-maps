@@ -8,7 +8,7 @@ Link to access: [https://maps.lapig.iesa.ufg.br/lapig.html](https://maps.lapig.i
 
 ![alt tag](https://raw.githubusercontent.com/lapig-ufg/lapig-maps/master/proj/application.png)
 
-## Prerequisites and necessary dependencies:
+## Prerequisites and necessary dependencies!:
 
 -GDAL 2.4.0 specific
 
