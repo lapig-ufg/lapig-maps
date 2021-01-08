@@ -16,7 +16,7 @@ module.exports = function(app) {
 		"clientDir": appRoot + "/../client/build",
 		"langDir": appRoot + "/lang",
 		"mongo": {
-			"host": "localhost",
+			"host": "172.18.0.6",
 			"port": "27017",
 			"dbname": "lapig-maps"
 		},
