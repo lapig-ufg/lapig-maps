@@ -45,9 +45,9 @@ module.exports = function(app) {
 		config["port"] = 3000;
 		config["ows"] =  "http://ows.lapig.iesa.ufg.br",
 		config["hostUrl"] = 'http://maps.lapig.iesa.ufg.br';
-		config["spatialIntelligenceDb"] = "/data/catalog/Ocultos/spatial-intelligence.sqlite"
-		config["indicadoresDb"] = "/data/catalog/Ocultos/indicadores.sqlite"
-		config["geocampoDb"] = "/data/catalog/Ocultos/geocampo.sqlite"
+		config["spatialIntelligenceDb"] = "/STORAGE/catalog/Ocultos/spatial-intelligence.sqlite"
+		config["indicadoresDb"] = "/STORAGE/catalog/Ocultos/indicadores.sqlite"
+		config["geocampoDb"] = "/STORAGE/catalog/Ocultos/geocampo.sqlite"
 	}
 
 	return config;
