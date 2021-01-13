@@ -1,6 +1,6 @@
 
 var   fs = require('fs')
-    , mongodb = require('mongodb')
+    , MongoClient = require('mongodb').MongoClient
     , path = require('path')
     , async = require('async')
     , filewalker = require('filewalker')
@@ -54,9 +54,7 @@ var parseCsv = function(filepath, callback) {
 
 var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
 
-  var MongoClient = mongodb.MongoClient;
-
-  MongoClient.connect(dbUrl, function(err, client) {
+  MongoClient.connect(dbUrl, {'poolSize': 20, useNewUrlParser: true}, function(err, client) {
       if(err)
         return console.dir(err);
 
@@ -73,7 +71,8 @@ var insertLayers = function(dbUrl, layerCollectionName, layers, callback) {
       db = client.db('lapig-maps');
 
       db.collection(layerCollectionName, function(err, layersCollection) {
-        layersCollection.insert(existedLayers, null, function() {
+        layersCollection.insertMany(existedLayers, null, function () {
+          console.log("Layers inseridos: ", existedLayers)
           client.close();
 
           if(notExistedLayers.length > 0)
@@ -175,7 +174,13 @@ var checkLayerType = function(layersDir, layer, callback) {
 
   var layerPathPossibles = [layerTiffPath, layerShpPath, layerBasepath];
 
-  async.detect(layerPathPossibles, fs.exists, function(result){
+  async.detect(layerPathPossibles, function (filePath, callback) {
+    fs.access(filePath, function (err) {
+      callback(null, !err)
+    });
+
+    },
+    function (err, result) {
     result = ( result === undefined ) ? 'NOT-EXISTS' : path.extname(result);
 
     var layerType = result;
@@ -185,7 +190,6 @@ var checkLayerType = function(layersDir, layer, callback) {
       layerType = 'RASTER'
     else if(result == '')
       layerType = 'MULTIPLE'
-    
     callback(layerType);
   });
 }
@@ -326,69 +330,55 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
             + '  FILTER (%CQL_FILTER%)\n';
   }*/
 
-  /*var style = 'CLASS\n'
-  +'NAME "10 - 25 mm"\n'
-  +'EXPRESSION ([pixel] > 10 AND [pixel] <= 25)\n'
-  +'STYLE\n'
-    +'COLOR "#efedf5"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "25 - 50 mm"\n'
-  +'EXPRESSION ([pixel] > 25 AND [pixel] <= 50)\n'
-  +'STYLE\n'
-    +'COLOR "#dbdbeb"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "50 - 100 mm"\n'
-  +'EXPRESSION ([pixel] > 50 AND [pixel] <= 100)\n'
-  +'STYLE\n'
-    +'COLOR "#bfc0dd"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "100 - 200 mm"\n'
-  +'EXPRESSION ([pixel] > 100 AND [pixel] <= 200)\n'
-  +'STYLE\n'
-    +'COLOR "#a29fcb"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "200 - 300 mm"\n'
-  +'EXPRESSION ([pixel] > 200 AND [pixel] <= 300)\n'
-  +'STYLE\n'
-    +'COLOR "#8582bc"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "300 - 500 mm"\n'
-  +'EXPRESSION ([pixel] > 300 AND [pixel] <= 500)\n'
-  +'STYLE\n'
-    +'COLOR "#6a51a3"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "500 - 750 mm"\n'
-  +'EXPRESSION ([pixel] > 500 AND [pixel] <= 750)\n'
-  +'STYLE\n'
-    +'COLOR "#572e92"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "750 - 1000 mm"\n'
-  +'EXPRESSION ([pixel] > 750 AND [pixel] <= 1000)\n'
-  +'STYLE\n'
-    +'COLOR "#3f007d"\n'
-  +'END\n'
-+'END\n'
-+'CLASS\n'
-  +'NAME "> 1000 mm"\n'
-  +'EXPRESSION ([pixel] > 1000)\n'
-  +'STYLE\n'
-    +'COLOR "#4a0061"\n'
-  +'END\n'
-+'END\n'*/
+  var style = 'CLASS\n' +
+    'NAME "Menor vigor"\n' +
+    'EXPRESSION ([pixel] > 0.0001 AND [pixel] <= 0.15)\n' +
+    'STYLE\n' +
+    'COLOR "#922f05"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "0.15"\n' +
+    'EXPRESSION ([pixel] > 0.15 AND [pixel] <= 0.30)\n' +
+    'STYLE\n' +
+    'COLOR "#ff9602"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "0.30"\n' +
+    'EXPRESSION ([pixel] > 0.30 AND [pixel] <= 0.45)\n' +
+    'STYLE\n' +
+    'COLOR "#fcfbbd"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "0.45"\n' +
+    'EXPRESSION ([pixel] > 0.45 AND [pixel] <= 0.60)\n' +
+    'STYLE\n' +
+    'COLOR "#acfbcf"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "0.60"\n' +
+    'EXPRESSION ([pixel] > 0.60 AND [pixel] <= 0.75)\n' +
+    'STYLE\n' +
+    'COLOR "#a4e409"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "0.75"\n' +
+    'EXPRESSION ([pixel] > 0.75 AND [pixel] <= 1.15)\n' +
+    'STYLE\n' +
+    'COLOR "#41ac11"\n' +
+    'END\n' +
+    'END\n' +
+    'CLASS\n' +
+    'NAME "Maior vigor"\n' +
+    'EXPRESSION ([pixel] > 1.15)\n' +
+    'STYLE\n' +
+    'COLOR "#022a0f"\n' +
+    'END\n' +
+    'END\n'
 
   var mapContent =  'LAYER\n'
                   + '  NAME "{name}"\n'
@@ -409,8 +399,8 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
                   + '  TEMPLATE "DUMMY"\n'
                   + filter
                   + offsite
-                  //+ processingScale
-                  /*+style*/
+                  + processingScale
+                  + style
                   + 'END\n';
   
 
@@ -430,8 +420,7 @@ var writeMapFile = function(layer, info, isMultiple, callback) {
   var content = printf(mapContent, params);
   var mapfilePath = getFilePath(layer,'.map')
 
-  console.log(mapfilePath);
-  console.log(layer._id)
+  console.log('Criando Map file: ', mapfilePath);
   fs.writeFileSync(mapfilePath, content);
   callback();
 
@@ -567,7 +556,7 @@ var createMapFile = function(layers, callback) {
   async.eachSeries(layers, onEach, onComplete);
 }
 
-var layersDir = '/home/fmalaquias/Documentos/Projeto/Dados_local/'
+var layersDir = '/home/fmalaquias/Documentos/Projeto/dados-lapig/'
 //var layersDir = "/run/user/1000/gvfs/smb-share\:server\=10.0.0.11\,share\=mapa_interativo\,user\=fernanda.stefani/PROCESSO/DADOS\ GEOGRÁFICOS/DADOS\ PRONTOS/"
 var filepath = 'layers.csv';
 var layerCollectionName = "layers"

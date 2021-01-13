@@ -823,7 +823,7 @@ node seed-layer-tms.js pa_br_barragem_1000_2009_ibge '' 6 10
 node seed-layer-tms.js pa_br_base_fundiaria_ni_2018_incra '' 6 10
 node seed-layer-tms.js pa_br_bio_energia_1000_2010_aneel '' 6 10
 node seed-layer-tms.js pa_br_bio_geradoras_eolioeletricas_1000_2010_aneel '' 6 10
-node seed-layer-tms.js pa_br_bioma_5000_2004_ibge '' 6 10
+node seed-layer-tms.js pa_br_bioma_250_2019_ibge '' 6 10
 node seed-layer-tms.js pa_br_biomassa_abaixo_solo_1000_2000_nasa '' 6 10
 node seed-layer-tms.js pa_br_biomassa_acima_solo_1000_2000_nasa '' 6 10
 node seed-layer-tms.js pa_br_biomassa_acima_solo_500_2008_whrc '' 6 10

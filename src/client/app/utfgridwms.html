@@ -21,7 +21,7 @@
             } );
             var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                     "http://localhost:5000/ows?", {
-                        layers: 'pa_br_bioma_5000_2004_ibge', 
+                        layers: 'pa_br_bioma_250_2019_ibge', 
                         transparent: true
                     }, 
                     {
@@ -31,7 +31,7 @@
             map.addLayer(layer);
             var layer2 = new OpenLayers.Layer.UTFGridWMS("Utfgrid",
                 "http://localhost:5000/ows?", {
-                    layers: 'pa_br_bioma_5000_2004_ibge'
+                    layers: 'pa_br_bioma_250_2019_ibge'
                 },
                 {
                     utfgridResolution: 4,
