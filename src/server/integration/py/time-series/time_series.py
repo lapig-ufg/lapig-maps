@@ -8,8 +8,6 @@ from lib import bfast_utils
 
 def time_series(layerId, mode, geoJsonGeometry):
 
-    print(layerId)
-
     datasourceInstance = loader.getDatasource(layerId)
     timeserieData = datasourceInstance.lookup(geoJsonGeometry, mode)
 
