@@ -254,6 +254,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var originalPosition = -1;
         var trendPosition = -1;
 
+        console.log("instance - ", instance)
+
         for (var i in instance.chartData[activeTab.index].series) {
             var serie = instance.chartData[activeTab.index].series[i];
             if (serie.id == 'original') {
@@ -1626,6 +1628,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     endValue: endValue,
                     radius: radius
                 };
+
+                console.log("Series Properties: ", instance.seriesProperties)
 
                 instance.populateChart(startYear, endYear, startValue, endValue);
 
