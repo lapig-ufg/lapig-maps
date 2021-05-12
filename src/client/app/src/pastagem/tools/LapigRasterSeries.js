@@ -554,6 +554,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var groupType = groupValueSplited[0];
             var groupOperation = groupValueSplited[1];
 
+            console.log("------------- filter:")
+            console.log("start year - ", startYearCmb.getValue())
+            console.log("end year - ", endYearCmb.getValue())
+            console.log("start value - ", startValueCmb.getValue())
+            console.log("end value - ", endValueCmb.getValue())
+            console.log("interpolation - ", interpolationCmb.getValue())
+            console.log("groupSplitted - ", groupValueSplited)
+            console.log("groupType - ", groupType)
+            console.log("end year - ", groupOperation)
+
             instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
                 startValueCmb.getValue(), endValueCmb.getValue(), interpolationCmb.getValue(), groupType, groupOperation)
         }
