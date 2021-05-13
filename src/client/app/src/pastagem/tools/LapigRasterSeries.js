@@ -107,15 +107,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var maximum = (Number(endValue) + (Number(endValue) * axisPercent)).toFixed(2);
             var minimum = (Number(startValue) - (Number(startValue) * axisPercent)).toFixed(2);
 
-            // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
+            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
 
             console.log("chart do ELSE - ", chart)
 
-            // chart.setXAxis(new Ext.chart.TimeAxis({
-            //     labelRenderer: function(date) {
-            //         return date.format("m.Y");
-            //     }
-            // }));
+            chart.setXAxis(new Ext.chart.TimeAxis({
+                labelRenderer: function(date) {
+                    return date.format("m.Y");
+                }
+            }));
 
             return chartData;
         }
@@ -314,7 +314,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
-        //chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+        chart.setSeriesStyles(instance.getChartSeries(chartData.length));
         chart.store.loadData(chartData);
     },
 
