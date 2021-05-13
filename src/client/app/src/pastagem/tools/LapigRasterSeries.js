@@ -86,10 +86,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var datePos;
         var defaultDatePattern;
 
-        console.log("---- chartData", chartData)
-        console.log("---- groupType", groupType)
-        console.log(startValue, endValue)
-
         if (groupType == 'YEAR') {
             datePos = 0;
             defaultDatePattern = "{}/01/01";
@@ -111,19 +107,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var maximum = (Number(endValue) + (Number(endValue) * axisPercent)).toFixed(2);
             var minimum = (Number(startValue) - (Number(startValue) * axisPercent)).toFixed(2);
 
-            console.log("chart do ELSE - ", chart, maximum, minimum)
+            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
 
-            var test = new Ext.chart.TimeAxis();
-
-            console.log("test - ", test)
-
-            var test2 = new Ext.chart.TimeAxis({
-                labelRenderer: function(date) {
-                    return date.format("m.Y");
-                }
-            })
-
-            console.log("teste 2 - ", test2)
+            console.log("chart do ELSE - ", chart)
 
             chart.setXAxis(new Ext.chart.TimeAxis({
                 labelRenderer: function(date) {
@@ -131,7 +117,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 }
             }));
 
-            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
             return chartData;
         }
 
@@ -571,15 +556,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var groupType = groupValueSplited[0];
             var groupOperation = groupValueSplited[1];
 
-            console.log("------------- filter:")
-            console.log("start year - ", startYearCmb.getValue())
-            console.log("end year - ", endYearCmb.getValue())
-            console.log("start value - ", startValueCmb.getValue())
-            console.log("end value - ", endValueCmb.getValue())
-            console.log("interpolation - ", interpolationCmb.getValue())
-            console.log("groupSplitted - ", groupValueSplited)
-            console.log("groupType - ", groupType)
-            console.log("end year - ", groupOperation)
+            // console.log("------------- filter:")
+            // console.log("start year - ", startYearCmb.getValue())
+            // console.log("end year - ", endYearCmb.getValue())
+            // console.log("start value - ", startValueCmb.getValue())
+            // console.log("end value - ", endValueCmb.getValue())
+            // console.log("interpolation - ", interpolationCmb.getValue())
+            // console.log("groupSplitted - ", groupValueSplited)
+            // console.log("groupType - ", groupType)
+            // console.log("end year - ", groupOperation)
 
             instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
                 startValueCmb.getValue(), endValueCmb.getValue(), interpolationCmb.getValue(), groupType, groupOperation)
@@ -1644,19 +1629,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     radius: radius
                 };
 
-                console.log("Series Properties: ", instance.seriesProperties)
-
                 instance.populateChart(startYear, endYear, startValue, endValue);
-
-                console.log("fim populate")
 
                 instance.setSeriesActiveTabDisabled(false);
 
-                console.log("fim set series active tab")
-
                 loadMask.hide();
 
-                console.log("fim load mask")
             }
         });
     },
