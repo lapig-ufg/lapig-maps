@@ -289,6 +289,8 @@ Ext.override(Ext.chart.CartesianChart, {
             ref,
             old;
 
+        console.log("Label fn - ", this.labelFn)
+
         if (this[axis]) {
             old = this[axis].labelFunction;
             this.removeFnProxy(old);
