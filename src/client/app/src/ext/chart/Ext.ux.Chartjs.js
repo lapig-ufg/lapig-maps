@@ -23,8 +23,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             responsive: true
         });
         console.log(this)
-        // new Chart(ctx)[this.type](this.data, this.options);
-        new Chart(ctx, {type: this.type, data: this.data, options: this.options});
+        new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options: this.options});
     }
 });
 
