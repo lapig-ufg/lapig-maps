@@ -10,6 +10,34 @@
 
 Ext.namespace("lapig.tools");
 
+
+// override 3.4.0 to fix issue with chart labels losing their labelRenderer after hide/show
+Ext.override(Ext.chart.CartesianChart, {
+    createAxis: function(axis, value) {
+        var o = Ext.apply({}, value),
+            ref,
+            old;
+
+        if (this[axis]) {
+            old = this[axis].labelFunction;
+            this.removeFnProxy(old);
+            this.labelFn.remove(old);
+        }
+        if (o.labelRenderer) {
+            ref = this.getFunctionRef(o.labelRenderer);
+            o.labelFunction = this.createFnProxy(function(v) {
+                return ref.fn.call(ref.scope, v);
+            });
+            // delete o.labelRenderer; // <-- commented out this line
+            this.labelFn.push(o.labelFunction);
+        }
+        if (axis.indexOf('xAxis') > -1 && o.position == 'left') {
+            o.position = 'bottom';
+        }
+        return o;
+    }
+});
+
 lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     ptype: "lapig_rasterseries",
