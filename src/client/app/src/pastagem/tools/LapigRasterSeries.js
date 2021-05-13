@@ -1632,9 +1632,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
                 instance.populateChart(startYear, endYear, startValue, endValue);
 
+                console.log("fim populate")
+
                 instance.setSeriesActiveTabDisabled(false);
 
+                console.log("fim set series active tab")
+
                 loadMask.hide();
+
+                console.log("fim load mask")
             }
         });
     },
