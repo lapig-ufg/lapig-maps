@@ -113,6 +113,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
             chart.setXAxis(new Ext.chart.TimeAxis({
                 labelRenderer: function(date) {
+                    console.log(date)
+                    console.log(date.format("m.Y"))
                     return date.format("m.Y");
                 }
             }));
