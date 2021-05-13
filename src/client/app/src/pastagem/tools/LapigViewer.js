@@ -181,7 +181,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               name: "naip",
               group: "background"
             }
-            ,*/{
+            ,{
               source: "mapbox",
               title: "Natural Earth |",
               name: "natural-earth-1",
@@ -193,7 +193,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               name: "natural-earth-2",
               group: "background"
             }
-            ,{
+            ,*/{
               source: "bing",
               title: "Bing Satellite",
               name: "Aerial",
