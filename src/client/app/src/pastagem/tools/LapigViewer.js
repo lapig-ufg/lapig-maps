@@ -280,11 +280,11 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   autoScroll: true,
                   listeners: {
                     beforeexpand: function (pnl, animate) {
-                      var flashProperties = lapigUtils.checkFlashVersion();
-                      if (!flashProperties.hasFlash) {
-                        Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
-                        return false;
-                      }
+                      // var flashProperties = lapigUtils.checkFlashVersion();
+                      // if (!flashProperties.hasFlash) {
+                      //   Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
+                      //   return false;
+                      // }
                     }
                   }
                 },

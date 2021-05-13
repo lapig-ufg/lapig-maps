@@ -2,6 +2,7 @@
 *.sublime-project
 *.sublime-workspace
 *.pyc
+.idea
 node_modules
 ows_runtime.map
 src/client/build/*

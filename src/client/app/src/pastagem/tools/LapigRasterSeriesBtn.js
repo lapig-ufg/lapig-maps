@@ -46,14 +46,17 @@ lapig.tools.LapigRasterSeriesBtn = Ext.extend(gxp.plugins.Tool, {
       tooltip: this.Tooltip,
       icon   : 'theme/app/img/chart_xy.png',
       handler: function() {
-        var flashProperties = Utils.checkFlashVersion();
-        if(flashProperties.hasFlash){
-          lapigAnalytics.clickTool('Tools','Time Series','');
-          Ext.getCmp('southpanel').expand(true);
-          Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
-        }else{
-          Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
-        }
+        // var flashProperties = Utils.checkFlashVersion();
+        // if(flashProperties.hasFlash){
+        //   lapigAnalytics.clickTool('Tools','Time Series','');
+        //   Ext.getCmp('southpanel').expand(true);
+        //   Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
+        // }else{
+        //   Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION, i18n.LAPIGRASTERSERIES_ALERT_ERROR_NOFLASH);
+        // }
+        lapigAnalytics.clickTool('Tools','Time Series','');
+        Ext.getCmp('southpanel').expand(true);
+        Ext.getCmp('lapig_rasterseries::wdw-info').show(this);
       },
       scope: this
     }]);
