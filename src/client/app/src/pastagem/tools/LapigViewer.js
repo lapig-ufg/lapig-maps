@@ -271,7 +271,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   id: "southpanel",
                   border: false,
                   region: "south",
-                  height: 240,
+                  height: 320,
                   collapsed: true,
                   collapsible: true,
                   collapseMode: "mini",
