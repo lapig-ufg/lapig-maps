@@ -314,7 +314,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
-        chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+        //chart.setSeriesStyles(instance.getChartSeries(chartData.length));
         chart.store.loadData(chartData);
     },
 
