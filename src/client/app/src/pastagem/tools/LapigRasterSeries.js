@@ -123,7 +123,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             //     }
             // }));
 
-            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
+            // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
             return chartData;
         }
 
