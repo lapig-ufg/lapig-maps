@@ -111,17 +111,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var maximum = (Number(endValue) + (Number(endValue) * axisPercent)).toFixed(2);
             var minimum = (Number(startValue) - (Number(startValue) * axisPercent)).toFixed(2);
 
-            console.log("chart do ELSE - ", chart)
+            console.log("chart do ELSE - ", chart, maximum, minimum)
 
             // chart.setXAxis(new Ext.chart.TimeAxis());
 
-            // chart.setXAxis(new Ext.chart.TimeAxis({
-            //     labelRenderer: function(date) {
-            //         console.log("date - ", date)
-            //             // console.log("date format - ", date.format("m-Y"))
-            //         return date.format("m.Y");
-            //     }
-            // }));
+            chart.setXAxis(new Ext.chart.TimeAxis({
+                labelRenderer: function(date) {
+                    return date.format("m.Y");
+                }
+            }));
 
             // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
             return chartData;
