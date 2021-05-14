@@ -326,7 +326,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               outputTarget: "southpanel",
               project: project,
               outputConfig: {
-                height: 215
+                height: 450
               }
             },
             { 
