@@ -257,33 +257,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   items: ["mymap"]
                 },
                 {
-                    xtype: 'panel',
-                    border: false,
-                    region: "west",
-                    layout: {
-                        type: 'hbox',
-                        align: 'center',
-                        pack: 'center'
-                    },
-                    margin: 20,
-                    padding: 20,
-                    items: [
-                        {
-                            xtype: 'box',
-                            margins: {top:15, left:0, right: 5, bottom:0},
-                            width: 100,
-                            height: 35,
-                            cls: 'lapig',
-                        },
-                        {
-                            xtype: 'box',
-                            width: 70,
-                            height: 70,
-                            cls: 'ufg',
-                        },
-                    ]
-                },
-                {
                   id: "westpanel",
                   border: false,
                   region: "west",
@@ -335,6 +308,33 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           },
           tools: [
             /********** Border layout regions */
+            {
+                  xtype: 'panel',
+                  border: false,
+                  region: "west",
+                  layout: {
+                      type: 'hbox',
+                      align: 'center',
+                      pack: 'center'
+                  },
+                  margin: 20,
+                  padding: 20,
+                  items: [
+                      {
+                          xtype: 'box',
+                          margins: {top:15, left:0, right: 5, bottom:0},
+                          width: 100,
+                          height: 35,
+                          cls: 'lapig',
+                      },
+                      {
+                          xtype: 'box',
+                          width: 70,
+                          height: 70,
+                          cls: 'ufg',
+                      },
+                  ]
+              },
             {
               ptype: "gxp_lapiglayermanager",
               overlayNodeText: i18n.LAPIGVIEWER_LAYERMANAGER_OVERLAYNODETEXT,
