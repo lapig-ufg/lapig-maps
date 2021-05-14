@@ -871,83 +871,83 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                                         ]
                                     }
                                 }),
-                                // {
-                                //     xtype: 'linechart',
-                                //     id: 'lapig-coordinates-chart-series',
-                                //     store: new Ext.data.JsonStore({
-                                //         fields: ['date', 'original', 'interpolation']
-                                //     }),
-                                //     xField: 'date',
-                                //     yAxis: new Ext.chart.NumericAxis(),
-                                //     xAxis: new Ext.chart.TimeAxis({
-                                //         labelRenderer: function(date) {
-                                //             return date.format("m.Y");;
-                                //         }
-                                //     }),
-                                //     tipRenderer: function(chart, record, index, series) {
-                                //
-                                //         var numberFormat = '0.000'
-                                //         var serie = series.data[index];
-                                //
-                                //         var date = serie.date;
-                                //         if (typeof date === 'number')
-                                //             date = new Date(date).format("d/m/Y");
-                                //
-                                //         var originalValue = Ext.util.Format.number(serie.original, numberFormat);
-                                //
-                                //         if (serie.interpolation == null) {
-                                //             return date + ": " + originalValue
-                                //         } else {
-                                //             return date + "\n" +
-                                //                 i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + originalValue + "\n" +
-                                //                 i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
-                                //         }
-                                //     },
-                                //     chartStyle: {
-                                //         animationEnabled: true,
-                                //         xAxis: {
-                                //             color: 0xaaaaaa,
-                                //             labelSpacing: 5,
-                                //             labelDistance: 5,
-                                //             majorTicks: { color: 0xaaaaaa, length: 10 },
-                                //             minorTicks: { color: 0xdddddd, length: 5 },
-                                //             majorGridLines: { size: 1, color: 0xaaaaaa },
-                                //             minorGridLines: { size: 0.5, color: 0xdddddd }
-                                //         },
-                                //         yAxis: {
-                                //             color: 0xaaaaaa,
-                                //             labelDistance: 6,
-                                //             majorTicks: { color: 0xaaaaaa, length: 10 },
-                                //             minorTicks: { color: 0xdddddd, length: 5 },
-                                //             majorGridLines: { size: 1, color: 0xaaaaaa },
-                                //             minorGridLines: { size: 0.5, color: 0xdddddd }
-                                //         }
-                                //     },
-                                //     series: [{
-                                //         type: 'line',
-                                //         yField: 'original',
-                                //         displayField: 'original',
-                                //         style: {
-                                //             color: 0xfc4239,
-                                //             size: 4,
-                                //             lineSize: 2
-                                //         }
-                                //     }, {
-                                //         type: 'line',
-                                //         yField: 'interpolation',
-                                //         displayField: 'interpolation',
-                                //         style: {
-                                //             color: 0x5057a6,
-                                //             size: 0,
-                                //             lineSize: 2
-                                //         }
-                                //     }],
-                                //     listeners: {
-                                //         "initialize": function() {
-                                //             repopulateChart();
-                                //         }
-                                //     }
-                                // }
+                                {
+                                    xtype: 'linechart',
+                                    id: 'lapig-coordinates-chart-series',
+                                    store: new Ext.data.JsonStore({
+                                        fields: ['date', 'original', 'interpolation']
+                                    }),
+                                    xField: 'date',
+                                    yAxis: new Ext.chart.NumericAxis(),
+                                    xAxis: new Ext.chart.TimeAxis({
+                                        labelRenderer: function(date) {
+                                            return date.format("m.Y");;
+                                        }
+                                    }),
+                                    tipRenderer: function(chart, record, index, series) {
+
+                                        var numberFormat = '0.000'
+                                        var serie = series.data[index];
+
+                                        var date = serie.date;
+                                        if (typeof date === 'number')
+                                            date = new Date(date).format("d/m/Y");
+
+                                        var originalValue = Ext.util.Format.number(serie.original, numberFormat);
+
+                                        if (serie.interpolation == null) {
+                                            return date + ": " + originalValue
+                                        } else {
+                                            return date + "\n" +
+                                                i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + originalValue + "\n" +
+                                                i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
+                                        }
+                                    },
+                                    chartStyle: {
+                                        animationEnabled: true,
+                                        xAxis: {
+                                            color: 0xaaaaaa,
+                                            labelSpacing: 5,
+                                            labelDistance: 5,
+                                            majorTicks: { color: 0xaaaaaa, length: 10 },
+                                            minorTicks: { color: 0xdddddd, length: 5 },
+                                            majorGridLines: { size: 1, color: 0xaaaaaa },
+                                            minorGridLines: { size: 0.5, color: 0xdddddd }
+                                        },
+                                        yAxis: {
+                                            color: 0xaaaaaa,
+                                            labelDistance: 6,
+                                            majorTicks: { color: 0xaaaaaa, length: 10 },
+                                            minorTicks: { color: 0xdddddd, length: 5 },
+                                            majorGridLines: { size: 1, color: 0xaaaaaa },
+                                            minorGridLines: { size: 0.5, color: 0xdddddd }
+                                        }
+                                    },
+                                    series: [{
+                                        type: 'line',
+                                        yField: 'original',
+                                        displayField: 'original',
+                                        style: {
+                                            color: 0xfc4239,
+                                            size: 4,
+                                            lineSize: 2
+                                        }
+                                    }, {
+                                        type: 'line',
+                                        yField: 'interpolation',
+                                        displayField: 'interpolation',
+                                        style: {
+                                            color: 0x5057a6,
+                                            size: 0,
+                                            lineSize: 2
+                                        }
+                                    }],
+                                    listeners: {
+                                        "initialize": function() {
+                                            repopulateChart();
+                                        }
+                                    }
+                                }
                             ]
                         }]
                     },
