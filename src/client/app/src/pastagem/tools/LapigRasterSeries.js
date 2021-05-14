@@ -614,7 +614,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 activeItem: "lapig-raster-series-tab-series",
                 border: false,
                 region: "center",
-                layout: 'fit',
+                // layout: 'fit',
                 listeners: {
                     'tabchange': function(evt, tab) {
                         if (tab.id == "lapig-raster-series-tab-series") {
