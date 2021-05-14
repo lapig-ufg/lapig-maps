@@ -64,7 +64,7 @@ li.commit div {
 /* Pan- and Zoom- Panel Styles*/
 
 .olControlPanPanel div {
-    background-image:url(http://extjs.cachefly.net/ext-3.4.0/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(https://extjs.cachefly.net/ext-3.4.0/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */
@@ -96,7 +96,7 @@ li.commit div {
 }
 
 .olControlZoomPanel div {
-    background-image:url(http://extjs.cachefly.net/ext-3.4.0/resources/images/gray/panel/tool-sprites.gif);
+    background-image:url(https://extjs.cachefly.net/ext-3.4.0/resources/images/gray/panel/tool-sprites.gif);
     height:15px;
     width:15px;
     /* workaround for button height in IE */

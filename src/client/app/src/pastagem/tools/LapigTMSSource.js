@@ -43,10 +43,10 @@ gxp.plugins.LapigTMSSource = Ext.extend(gxp.plugins.LayerSource, {
             layer: new OpenLayers.Layer.XYZ(
                     layerName,
                     [
-                        'http://o1.lapig.iesa.ufg.br/ows'+xyzParams,
-                        'http://o2.lapig.iesa.ufg.br/ows'+xyzParams,
-                        'http://o3.lapig.iesa.ufg.br/ows'+xyzParams,
-                        'http://o4.lapig.iesa.ufg.br/ows'+xyzParams
+                        'https://o1.lapig.iesa.ufg.br/ows'+xyzParams,
+                        'https://o2.lapig.iesa.ufg.br/ows'+xyzParams,
+                        'https://o3.lapig.iesa.ufg.br/ows'+xyzParams,
+                        'https://o4.lapig.iesa.ufg.br/ows'+xyzParams
                         /*'http://200.137.217.158:5501/ows'+xyzParams*/
                     ], 
                     {
@@ -57,7 +57,7 @@ gxp.plugins.LapigTMSSource = Ext.extend(gxp.plugins.LayerSource, {
                        visibility: config.visibility
                     }
             ),
-            legendUrl:'http://o1.lapig.iesa.ufg.br/ows?TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER='+layerID+'&format=image%2Fpng',
+            legendUrl:'https://o1.lapig.iesa.ufg.br/ows?TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER='+layerID+'&format=image%2Fpng',
             name: layerID
         }
 
