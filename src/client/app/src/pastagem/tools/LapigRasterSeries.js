@@ -835,14 +835,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         items: [{
                             region: 'center',
                             border: false,
-                            // xtype: 'panel',
-                            xtype: 'container',
-                            margin: 6,
-                            padding: 6,
-                            style: 'border:2px solid #CCC;  background:white; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px',
-                            layout: {
-                                type: 'hbox'
-                            },
+                            xtype: 'panel',
+                            layout: "fit",
+                            canResize: true,
+                            heightIncrement: 5,
                             disabled: true,
                             id: 'lapig-raster-series-tab-series-chart-pnl',
                             items: [
