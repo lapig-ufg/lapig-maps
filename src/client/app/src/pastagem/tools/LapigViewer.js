@@ -271,21 +271,15 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                         {
                             xtype: 'box',
                             margins: {top:15, left:0, right: 5, bottom:0},
-                            autoEl: {
-                                tag: 'img',
-                                width: 100,
-                                height: 35,
-                                src:'theme/app/img/lapig.png'
-                            }
+                            width: 100,
+                            height: 35,
+                            cls: 'lapig',
                         },
                         {
                             xtype: 'box',
-                            autoEl: {
-                                tag: 'img',
-                                width: 70,
-                                height: 70,
-                                src:'theme/app/img/images/ufg.png'
-                            }
+                            width: 70,
+                            height: 70,
+                            cls: 'ufg',
                         },
                     ]
                 },
