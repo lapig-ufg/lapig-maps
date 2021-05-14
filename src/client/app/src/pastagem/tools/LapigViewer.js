@@ -45,7 +45,6 @@
  * @requires tools/LapigDownloadAll.js
  * @requires tools/LapigLogin.js
  * @requires tools/LapigUtils.js
- * @requires tools/LapigLogos.js
  */
 
 globalInstance = this;
