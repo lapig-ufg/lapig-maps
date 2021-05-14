@@ -836,9 +836,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             region: 'center',
                             border: false,
                             xtype: 'panel',
-                            layout: "fit",
-                            canResize: true,
-                            heightIncrement: 5,
+                            autoHeight: true,
                             disabled: true,
                             id: 'lapig-raster-series-tab-series-chart-pnl',
                             items: [
@@ -920,7 +918,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                                 //     }
                                 // }
                                 new Ext.ux.Chartjs({
-                                    type: "line",
+                                    type: "Line",
                                     data: {
                                         labels: ["January", "February", "March", "April", "May", "June", "July"],
                                         datasets: [
