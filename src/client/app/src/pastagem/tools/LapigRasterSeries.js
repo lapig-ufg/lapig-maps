@@ -627,328 +627,328 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     }
                 },
                 items: [
-                    new Ext.ux.Chartjs({
-                        type: "Line",
-                        data: {
-                            labels: ["January", "February", "March", "April", "May", "June", "July"],
-                            datasets: [
-                                {
-                                    label: "My First dataset",
-                                    fillColor: "rgba(220,220,220,0.2)",
-                                    strokeColor: "rgba(220,220,220,1)",
-                                    pointColor: "rgba(220,220,220,1)",
-                                    pointStrokeColor: "#fff",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(220,220,220,1)",
-                                    data: [65, 59, 80, 81, 56, 55, 40]
+                    {
+                        title: i18n.LAPIGRASTERSERIES_TITLE_TIMESERIES,
+                        id: "lapig-raster-series-tab-series",
+                        layout: "border",
+                        tbar: [{
+                                text: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
+                                iconCls: 'lapig-icon-add-2',
+                                xtype: "button",
+                                listeners: {
+                                    click: function(evt) {
+                                        lapigAnalytics.clickTool('Time Series', 'click-temporalData', '')
+                                        var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
+                                        wdwInfo.show(this)
+                                    }
+                                }
+                            },
+                            '-',
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
+                            {
+                                xtype: 'combo',
+                                id: "lapig-raster-series-tab-series-cmb-start-year",
+                                fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
+                                border: false,
+                                displayField: 'year',
+                                valueField: 'year',
+                                mode: 'local',
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                triggerAction: 'all',
+                                width: 70,
+                                store: {
+                                    xtype: 'arraystore',
+                                    fields: [
+                                        { name: 'year' }
+                                    ]
                                 },
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDcmbStartYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-year').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterDateStart', TDcmbStartYear)
+                                    }
+                                }
+                            },
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_A, {
+                                xtype: 'combo',
+                                id: "lapig-raster-series-tab-series-cmb-end-year",
+                                maxLength: 150,
+                                border: false,
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                triggerAction: 'all',
+                                displayField: 'year',
+                                valueField: 'year',
+                                mode: 'local',
+                                width: 70,
+                                store: {
+                                    xtype: 'arraystore',
+                                    fields: [
+                                        { name: 'year' }
+                                    ]
+                                },
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDcmbEndYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-year').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterDateEnd', TDcmbEndYear)
+                                    }
+                                }
+                            },
+                            '-',
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_VALUES,
+                            {
+                                xtype: 'combo',
+                                id: "lapig-raster-series-tab-series-cmb-start-value",
+                                border: false,
+                                displayField: 'value',
+                                valueField: 'value',
+                                mode: 'local',
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                triggerAction: 'all',
+                                width: 70,
+                                store: {
+                                    xtype: 'arraystore',
+                                    fields: [
+                                        { name: 'value' }
+                                    ]
+                                },
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDfilterStartValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterValueStart', TDfilterStartValue)
+                                    }
+                                }
+                            },
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_A, {
+                                xtype: 'combo',
+                                id: "lapig-raster-series-tab-series-cmb-end-value",
+                                maxLength: 150,
+                                border: false,
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                triggerAction: 'all',
+                                displayField: 'value',
+                                valueField: 'value',
+                                mode: 'local',
+                                width: 70,
+                                store: {
+                                    xtype: 'arraystore',
+                                    fields: [
+                                        { name: 'value' }
+                                    ]
+                                },
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDfilterEndValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterValueEnd', TDfilterEndValue)
+                                    }
+                                }
+                            },
+                            '-',
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_FILTER, {
+                                xtype: 'combo',
+                                id: 'lapig-raster-series-tab-series-cmb-interpolation',
+                                displayField: 'label',
+                                valueField: 'position',
+                                mode: 'local',
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                width: 200,
+                                triggerAction: 'all',
+                                store: {
+                                    xtype: 'jsonstore',
+                                    fields: ['label', 'position', 'id']
+                                },
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDfilterSoften = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterSoften', TDfilterSoften)
+                                    }
+                                }
+                            },
+                            '-',
+                            i18n.LAPIGRASTERSERIES_FIELDLBLCB_GROUP,
+                            {
+                                xtype: 'combo',
+                                id: 'lapig-raster-series-tab-series-cmb-group-data',
+                                displayField: 'label',
+                                valueField: 'id',
+                                mode: 'local',
+                                typeAhead: true,
+                                editable: false,
+                                disabled: true,
+                                width: 120,
+                                triggerAction: 'all',
+                                store: new Ext.data.ArrayStore({
+                                    fields: [
+                                        { name: 'id' },
+                                        { name: 'label' }
+                                    ],
+                                    data: [
+                                        ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE],
+                                        ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE],
+                                        ['YEAR_sum', i18n.LAPIGRASTERSERIES_GROUPCB_YEARSUM],
+                                        ['NPP_mean', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRAVER],
+                                        ['NPP_sum', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRSUM],
+                                        ['MONTH_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHAVER],
+                                        ['MONTH_sum', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHSUM],
+                                        ['DAY_mean', i18n.LAPIGRASTERSERIES_GROUPCB_DAYAVER],
+                                        ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM]
+                                    ]
+                                }),
+                                listeners: {
+                                    select: function() {
+                                        filterChartData();
+                                        var TDclassifyBy = Ext.getCmp('lapig-raster-series-tab-series-cmb-group-data').getValue();
+                                        lapigAnalytics.clickTool('Time Series', 'click-filterClassifyBy', TDclassifyBy)
+                                    }
+                                }
+                            },
+                            '->',
+                            {
+                                xtype: 'button',
+                                id: 'lapig-raster-series-tab-series-btn-csv',
+                                iconCls: 'lapig-icon-csv',
+                                disabled: true,
+                                listeners: {
+                                    click: function() {
+                                        var csvUrl = 'time-series/' + instance.seriesProperties.timeseriesId +
+                                            '/csv?longitude=' + instance.seriesProperties.longitude +
+                                            "&latitude=" + instance.seriesProperties.latitude + "&mode=series&radius=" +
+                                            instance.seriesProperties.radius;
+                                        lapigAnalytics.clickTool('Time Series', 'csv-Downloads', instance.seriesProperties.timeseriesId);
+                                        window.open(csvUrl)
+                                    }
+                                }
+                            }
+                        ],
+                        items: [{
+                            region: 'center',
+                            border: false,
+                            xtype: 'panel',
+                            disabled: true,
+                            id: 'lapig-raster-series-tab-series-chart-pnl',
+                            items: [
+                                new Ext.ux.Chartjs({
+                                    type: "Line",
+                                    data: {
+                                        labels: ["January", "February", "March", "April", "May", "June", "July"],
+                                        datasets: [
+                                            {
+                                                label: "My First dataset",
+                                                fillColor: "rgba(220,220,220,0.2)",
+                                                strokeColor: "rgba(220,220,220,1)",
+                                                pointColor: "rgba(220,220,220,1)",
+                                                pointStrokeColor: "#fff",
+                                                pointHighlightFill: "#fff",
+                                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                                data: [65, 59, 80, 81, 56, 55, 40]
+                                            },
+                                            {
+                                                label: "My Second dataset",
+                                                fillColor: "rgba(151,187,205,0.2)",
+                                                strokeColor: "rgba(151,187,205,1)",
+                                                pointColor: "rgba(151,187,205,1)",
+                                                pointStrokeColor: "#fff",
+                                                pointHighlightFill: "#fff",
+                                                pointHighlightStroke: "rgba(151,187,205,1)",
+                                                data: [28, 48, 40, 19, 86, 27, 90]
+                                            }
+                                        ]
+                                    }
+                                }),
                                 {
-                                    label: "My Second dataset",
-                                    fillColor: "rgba(151,187,205,0.2)",
-                                    strokeColor: "rgba(151,187,205,1)",
-                                    pointColor: "rgba(151,187,205,1)",
-                                    pointStrokeColor: "#fff",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(151,187,205,1)",
-                                    data: [28, 48, 40, 19, 86, 27, 90]
+                                    xtype: 'linechart',
+                                    id: 'lapig-coordinates-chart-series',
+                                    store: new Ext.data.JsonStore({
+                                        fields: ['date', 'original', 'interpolation']
+                                    }),
+                                    xField: 'date',
+                                    yAxis: new Ext.chart.NumericAxis(),
+                                    xAxis: new Ext.chart.TimeAxis({
+                                        labelRenderer: function(date) {
+                                            return date.format("m.Y");;
+                                        }
+                                    }),
+                                    tipRenderer: function(chart, record, index, series) {
+
+                                        var numberFormat = '0.000'
+                                        var serie = series.data[index];
+
+                                        var date = serie.date;
+                                        if (typeof date === 'number')
+                                            date = new Date(date).format("d/m/Y");
+
+                                        var originalValue = Ext.util.Format.number(serie.original, numberFormat);
+
+                                        if (serie.interpolation == null) {
+                                            return date + ": " + originalValue
+                                        } else {
+                                            return date + "\n" +
+                                                i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + originalValue + "\n" +
+                                                i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
+                                        }
+                                    },
+                                    chartStyle: {
+                                        animationEnabled: true,
+                                        xAxis: {
+                                            color: 0xaaaaaa,
+                                            labelSpacing: 5,
+                                            labelDistance: 5,
+                                            majorTicks: { color: 0xaaaaaa, length: 10 },
+                                            minorTicks: { color: 0xdddddd, length: 5 },
+                                            majorGridLines: { size: 1, color: 0xaaaaaa },
+                                            minorGridLines: { size: 0.5, color: 0xdddddd }
+                                        },
+                                        yAxis: {
+                                            color: 0xaaaaaa,
+                                            labelDistance: 6,
+                                            majorTicks: { color: 0xaaaaaa, length: 10 },
+                                            minorTicks: { color: 0xdddddd, length: 5 },
+                                            majorGridLines: { size: 1, color: 0xaaaaaa },
+                                            minorGridLines: { size: 0.5, color: 0xdddddd }
+                                        }
+                                    },
+                                    series: [{
+                                        type: 'line',
+                                        yField: 'original',
+                                        displayField: 'original',
+                                        style: {
+                                            color: 0xfc4239,
+                                            size: 4,
+                                            lineSize: 2
+                                        }
+                                    }, {
+                                        type: 'line',
+                                        yField: 'interpolation',
+                                        displayField: 'interpolation',
+                                        style: {
+                                            color: 0x5057a6,
+                                            size: 0,
+                                            lineSize: 2
+                                        }
+                                    }],
+                                    listeners: {
+                                        "initialize": function() {
+                                            repopulateChart();
+                                        }
+                                    }
                                 }
                             ]
-                        }
-                    }),
-                    // {
-                    //     title: i18n.LAPIGRASTERSERIES_TITLE_TIMESERIES,
-                    //     id: "lapig-raster-series-tab-series",
-                    //     layout: "border",
-                    //     tbar: [{
-                    //             text: i18n.LAPIGRASTERSERIES_TITLE_TEMPORALDATA,
-                    //             iconCls: 'lapig-icon-add-2',
-                    //             xtype: "button",
-                    //             listeners: {
-                    //                 click: function(evt) {
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-temporalData', '')
-                    //                     var wdwInfo = Ext.getCmp('lapig_rasterseries::wdw-info');
-                    //                     wdwInfo.show(this)
-                    //                 }
-                    //             }
-                    //         },
-                    //         '-',
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
-                    //         {
-                    //             xtype: 'combo',
-                    //             id: "lapig-raster-series-tab-series-cmb-start-year",
-                    //             fieldLabel: i18n.LAPIGRASTERSERIES_FIELDLBLCB_PERIOD,
-                    //             border: false,
-                    //             displayField: 'year',
-                    //             valueField: 'year',
-                    //             mode: 'local',
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             triggerAction: 'all',
-                    //             width: 70,
-                    //             store: {
-                    //                 xtype: 'arraystore',
-                    //                 fields: [
-                    //                     { name: 'year' }
-                    //                 ]
-                    //             },
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDcmbStartYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-year').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterDateStart', TDcmbStartYear)
-                    //                 }
-                    //             }
-                    //         },
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_A, {
-                    //             xtype: 'combo',
-                    //             id: "lapig-raster-series-tab-series-cmb-end-year",
-                    //             maxLength: 150,
-                    //             border: false,
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             triggerAction: 'all',
-                    //             displayField: 'year',
-                    //             valueField: 'year',
-                    //             mode: 'local',
-                    //             width: 70,
-                    //             store: {
-                    //                 xtype: 'arraystore',
-                    //                 fields: [
-                    //                     { name: 'year' }
-                    //                 ]
-                    //             },
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDcmbEndYear = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-year').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterDateEnd', TDcmbEndYear)
-                    //                 }
-                    //             }
-                    //         },
-                    //         '-',
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_VALUES,
-                    //         {
-                    //             xtype: 'combo',
-                    //             id: "lapig-raster-series-tab-series-cmb-start-value",
-                    //             border: false,
-                    //             displayField: 'value',
-                    //             valueField: 'value',
-                    //             mode: 'local',
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             triggerAction: 'all',
-                    //             width: 70,
-                    //             store: {
-                    //                 xtype: 'arraystore',
-                    //                 fields: [
-                    //                     { name: 'value' }
-                    //                 ]
-                    //             },
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDfilterStartValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-start-value').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterValueStart', TDfilterStartValue)
-                    //                 }
-                    //             }
-                    //         },
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_A, {
-                    //             xtype: 'combo',
-                    //             id: "lapig-raster-series-tab-series-cmb-end-value",
-                    //             maxLength: 150,
-                    //             border: false,
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             triggerAction: 'all',
-                    //             displayField: 'value',
-                    //             valueField: 'value',
-                    //             mode: 'local',
-                    //             width: 70,
-                    //             store: {
-                    //                 xtype: 'arraystore',
-                    //                 fields: [
-                    //                     { name: 'value' }
-                    //                 ]
-                    //             },
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDfilterEndValue = Ext.getCmp('lapig-raster-series-tab-series-cmb-end-value').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterValueEnd', TDfilterEndValue)
-                    //                 }
-                    //             }
-                    //         },
-                    //         '-',
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_FILTER, {
-                    //             xtype: 'combo',
-                    //             id: 'lapig-raster-series-tab-series-cmb-interpolation',
-                    //             displayField: 'label',
-                    //             valueField: 'position',
-                    //             mode: 'local',
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             width: 200,
-                    //             triggerAction: 'all',
-                    //             store: {
-                    //                 xtype: 'jsonstore',
-                    //                 fields: ['label', 'position', 'id']
-                    //             },
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDfilterSoften = Ext.getCmp('lapig-raster-series-tab-series-cmb-interpolation').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterSoften', TDfilterSoften)
-                    //                 }
-                    //             }
-                    //         },
-                    //         '-',
-                    //         i18n.LAPIGRASTERSERIES_FIELDLBLCB_GROUP,
-                    //         {
-                    //             xtype: 'combo',
-                    //             id: 'lapig-raster-series-tab-series-cmb-group-data',
-                    //             displayField: 'label',
-                    //             valueField: 'id',
-                    //             mode: 'local',
-                    //             typeAhead: true,
-                    //             editable: false,
-                    //             disabled: true,
-                    //             width: 120,
-                    //             triggerAction: 'all',
-                    //             store: new Ext.data.ArrayStore({
-                    //                 fields: [
-                    //                     { name: 'id' },
-                    //                     { name: 'label' }
-                    //                 ],
-                    //                 data: [
-                    //                     ['NONE_NONE', i18n.LAPIGRASTERSERIES_GROUPCB_NONE],
-                    //                     ['YEAR_mean', i18n.LAPIGRASTERSERIES_GROUPCB_YEARAVERAGE],
-                    //                     ['YEAR_sum', i18n.LAPIGRASTERSERIES_GROUPCB_YEARSUM],
-                    //                     ['NPP_mean', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRAVER],
-                    //                     ['NPP_sum', i18n.LAPIGRASTERSERIES_GROUPCB_OCTAPRSUM],
-                    //                     ['MONTH_mean', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHAVER],
-                    //                     ['MONTH_sum', i18n.LAPIGRASTERSERIES_GROUPCB_MONTHSUM],
-                    //                     ['DAY_mean', i18n.LAPIGRASTERSERIES_GROUPCB_DAYAVER],
-                    //                     ['DAY_sum', i18n.LAPIGRASTERSERIES_GROUPCB_DAYSUM]
-                    //                 ]
-                    //             }),
-                    //             listeners: {
-                    //                 select: function() {
-                    //                     filterChartData();
-                    //                     var TDclassifyBy = Ext.getCmp('lapig-raster-series-tab-series-cmb-group-data').getValue();
-                    //                     lapigAnalytics.clickTool('Time Series', 'click-filterClassifyBy', TDclassifyBy)
-                    //                 }
-                    //             }
-                    //         },
-                    //         '->',
-                    //         {
-                    //             xtype: 'button',
-                    //             id: 'lapig-raster-series-tab-series-btn-csv',
-                    //             iconCls: 'lapig-icon-csv',
-                    //             disabled: true,
-                    //             listeners: {
-                    //                 click: function() {
-                    //                     var csvUrl = 'time-series/' + instance.seriesProperties.timeseriesId +
-                    //                         '/csv?longitude=' + instance.seriesProperties.longitude +
-                    //                         "&latitude=" + instance.seriesProperties.latitude + "&mode=series&radius=" +
-                    //                         instance.seriesProperties.radius;
-                    //                     lapigAnalytics.clickTool('Time Series', 'csv-Downloads', instance.seriesProperties.timeseriesId);
-                    //                     window.open(csvUrl)
-                    //                 }
-                    //             }
-                    //         }
-                    //     ],
-                    //     items: [{
-                    //         region: 'center',
-                    //         border: false,
-                    //         xtype: 'panel',
-                    //         disabled: true,
-                    //         id: 'lapig-raster-series-tab-series-chart-pnl',
-                    //         items: [
-                    //             {
-                    //                 xtype: 'linechart',
-                    //                 id: 'lapig-coordinates-chart-series',
-                    //                 store: new Ext.data.JsonStore({
-                    //                     fields: ['date', 'original', 'interpolation']
-                    //                 }),
-                    //                 xField: 'date',
-                    //                 yAxis: new Ext.chart.NumericAxis(),
-                    //                 xAxis: new Ext.chart.TimeAxis({
-                    //                     labelRenderer: function(date) {
-                    //                         return date.format("m.Y");;
-                    //                     }
-                    //                 }),
-                    //                 tipRenderer: function(chart, record, index, series) {
-                    //
-                    //                     var numberFormat = '0.000'
-                    //                     var serie = series.data[index];
-                    //
-                    //                     var date = serie.date;
-                    //                     if (typeof date === 'number')
-                    //                         date = new Date(date).format("d/m/Y");
-                    //
-                    //                     var originalValue = Ext.util.Format.number(serie.original, numberFormat);
-                    //
-                    //                     if (serie.interpolation == null) {
-                    //                         return date + ": " + originalValue
-                    //                     } else {
-                    //                         return date + "\n" +
-                    //                             i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + originalValue + "\n" +
-                    //                             i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
-                    //                     }
-                    //                 },
-                    //                 chartStyle: {
-                    //                     animationEnabled: true,
-                    //                     xAxis: {
-                    //                         color: 0xaaaaaa,
-                    //                         labelSpacing: 5,
-                    //                         labelDistance: 5,
-                    //                         majorTicks: { color: 0xaaaaaa, length: 10 },
-                    //                         minorTicks: { color: 0xdddddd, length: 5 },
-                    //                         majorGridLines: { size: 1, color: 0xaaaaaa },
-                    //                         minorGridLines: { size: 0.5, color: 0xdddddd }
-                    //                     },
-                    //                     yAxis: {
-                    //                         color: 0xaaaaaa,
-                    //                         labelDistance: 6,
-                    //                         majorTicks: { color: 0xaaaaaa, length: 10 },
-                    //                         minorTicks: { color: 0xdddddd, length: 5 },
-                    //                         majorGridLines: { size: 1, color: 0xaaaaaa },
-                    //                         minorGridLines: { size: 0.5, color: 0xdddddd }
-                    //                     }
-                    //                 },
-                    //                 series: [{
-                    //                     type: 'line',
-                    //                     yField: 'original',
-                    //                     displayField: 'original',
-                    //                     style: {
-                    //                         color: 0xfc4239,
-                    //                         size: 4,
-                    //                         lineSize: 2
-                    //                     }
-                    //                 }, {
-                    //                     type: 'line',
-                    //                     yField: 'interpolation',
-                    //                     displayField: 'interpolation',
-                    //                     style: {
-                    //                         color: 0x5057a6,
-                    //                         size: 0,
-                    //                         lineSize: 2
-                    //                     }
-                    //                 }],
-                    //                 listeners: {
-                    //                     "initialize": function() {
-                    //                         repopulateChart();
-                    //                     }
-                    //                 }
-                    //             }
-                    //         ]
-                    //     }]
-                    // },
+                        }]
+                    },
                     {
                         title: i18n.LAPIGRASTERSERIES_TITLE_TREND,
                         id: "lapig-raster-series-tab-trend",
@@ -1197,7 +1197,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                                 yAxis: new Ext.chart.NumericAxis(),
                                 xAxis: new Ext.chart.TimeAxis({
                                     labelRenderer: function(date) {
-                                        return date.format("m.Y");;
+                                        return date.format("m.Y");
                                     }
                                 }),
                                 tipRenderer: function(chart, record, index, series) {
