@@ -22,8 +22,6 @@ Ext.ns("Ext.ux");
  * @class Ext.ux.Chartjs
  * @extends Ext.BoxComponent
  * @xtype chartjs
- *
- * @author Urs Wolfer
  */
 Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
     autoEl : "canvas",
