@@ -20,32 +20,32 @@ lapig.tools.logos = Ext.extend(gxp.plugins.Tool, {
     },
 
     createOutputConfig: function() {
-        return  {
-            xtype: 'panel',
-            border: false,
-            layout: {
-                type: 'hbox',
-                align: 'center',
-                pack: 'center'
-            },
-            margin: 20,
-            padding: 20,
-            items: [
-                {
-                    xtype: 'box',
-                    margins: {top:15, left:0, right: 5, bottom:0},
-                    width: 100,
-                    height: 35,
-                    cls: 'lapig',
-                },
-                {
-                    xtype: 'box',
-                    width: 70,
-                    height: 70,
-                    cls: 'ufg',
-                },
-            ]
-        };
+        return  {};
+        // { xtype: 'panel',
+        //     border: false,
+        //     layout: {
+        //         type: 'hbox',
+        //         align: 'center',
+        //         pack: 'center'
+        //     },
+        //     margin: 20,
+        //     padding: 20,
+        //     items: [
+        //         {
+        //             xtype: 'box',
+        //             margins: {top:15, left:0, right: 5, bottom:0},
+        //             width: 100,
+        //             height: 35,
+        //             cls: 'lapig',
+        //         },
+        //         {
+        //             xtype: 'box',
+        //             width: 70,
+        //             height: 70,
+        //             cls: 'ufg',
+        //         },
+        //     ]
+        // };
     },
 });
 
