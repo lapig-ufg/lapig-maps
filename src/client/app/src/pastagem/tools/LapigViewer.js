@@ -274,6 +274,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapsed: true,
                   collapsible: true,
                   collapseMode: "mini",
+                  autoHeight:true,
                   header: true,
                   title: i18n.LAPIGVIEWER_TTL_TOOL_TIME_SERIES,
                   autoScroll: true,

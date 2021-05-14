@@ -625,7 +625,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                 },
-                items: [{
+                items: [
+                    {
                         title: i18n.LAPIGRASTERSERIES_TITLE_TIMESERIES,
                         id: "lapig-raster-series-tab-series",
                         layout: "border",
