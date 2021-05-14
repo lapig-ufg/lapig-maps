@@ -22,8 +22,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         Ext.applyIf(this.options, {
             responsive: true
         });
-        console.log(this)
-        new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options: this.options});
+        new Chart(ctx)[this.type](this.data, this.options);
     }
 });
 
