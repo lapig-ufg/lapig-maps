@@ -23,7 +23,6 @@ lapig.tools.logos = Ext.extend(gxp.plugins.Tool, {
         return  {
             xtype: 'panel',
             border: false,
-            region: "west",
             layout: {
                 type: 'hbox',
                 align: 'center',

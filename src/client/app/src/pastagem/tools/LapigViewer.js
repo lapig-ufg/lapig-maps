@@ -309,14 +309,14 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
           },
           tools: [
             /********** Border layout regions */
-            // {
-            //   ptype: "lapig_logos",
-            //   outputTarget: "westpanel",
-            //   project: project,
-            //   outputConfig: {
-            //       height: 200
-            //   }
-            // },
+            {
+              ptype: "lapig_logos",
+              outputTarget: "westpanel",
+              project: project,
+              outputConfig: {
+                  height: 200
+              }
+            },
             {
               ptype: "gxp_lapiglayermanager",
               overlayNodeText: i18n.LAPIGVIEWER_LAYERMANAGER_OVERLAYNODETEXT,
