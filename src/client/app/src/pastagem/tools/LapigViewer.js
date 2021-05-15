@@ -268,6 +268,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   autoScroll: true,
                   items: [
                       {
+                          id: 'logo-panel',
                           xtype: 'panel',
                           border: false,
                           layout: {
