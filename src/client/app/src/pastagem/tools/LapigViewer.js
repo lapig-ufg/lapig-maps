@@ -296,7 +296,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                                       height: 70,
                                       src:'theme/app/img/ufg.png'
                                   }
-                              },
+                              }
                           ]
                       }
                   ]
