@@ -265,7 +265,41 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                   collapsible: true,
                   collapseMode: "mini",
                   header: false,
-                  autoScroll: true
+                  autoScroll: true,
+                  items: [
+                      {
+                          xtype: 'panel',
+                          border: false,
+                          layout: {
+                              type: 'hbox',
+                              align: 'center',
+                              pack: 'center'
+                          },
+                          margin: 20,
+                          padding: 20,
+                          items: [
+                              {
+                                  xtype: 'box',
+                                  margins: {top:15, left:0, right: 5, bottom:0},
+                                  autoEl: {
+                                      tag: 'img',
+                                      width: 100,
+                                      height: 35,
+                                      src:'theme/app/img/lapig.png'
+                                  }
+                              },
+                              {
+                                  xtype: 'box',
+                                  autoEl: {
+                                      tag: 'img',
+                                      width: 70,
+                                      height: 70,
+                                      src:'theme/app/img/ufg.png'
+                                  }
+                              },
+                          ]
+                      }
+                  ]
                 },
                 {
                   id: "southpanel",
