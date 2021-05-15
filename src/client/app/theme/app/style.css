@@ -322,9 +322,9 @@ div.olControlMousePosition {
 .x-btn .gxp-icon-lapig-delete-point, .x-menu-item .gxp-icon-lapig-delete-point, .x-tree-node .gxp-icon-lapig-delete-point {
     background-image: url(img/shape_square_delete.png) !important;
 } */
-.lapig {
-    background-image: url(img/lapig.png) !important;
-}
-.ufg {
-    background-image: url(img/ufg.png) !important;
+
+#logos-panel .hash{
+    border-radius: 5px;
+    box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12)!important;
+    margin: 15px;
 }
