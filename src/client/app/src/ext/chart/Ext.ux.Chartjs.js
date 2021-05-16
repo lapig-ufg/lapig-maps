@@ -41,6 +41,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             responsive: true
         });
         this.chart = new Chart(ctx)[this.type](this.data, this.options);
+        console.log(this.chart)
         this.chart.resize();
     },
 

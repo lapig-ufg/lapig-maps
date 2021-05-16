@@ -337,7 +337,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log("t1 - ", t1)
 
         var t2 = instance.MyMap(instance.globalChartData, function (element) {
-            return element.original
+            return Number(element.original).toFixed(3);
         })
         // var numberFormat = '0.000'
 
@@ -365,6 +365,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 }]
             }
         })
+
+        console.log("chart no LAPIG - ", instance.chartJS)
 
         // instance.chartJS.updateValues({
         //     labels: instance.MyMap(instance.globalChartData, function (element) {
