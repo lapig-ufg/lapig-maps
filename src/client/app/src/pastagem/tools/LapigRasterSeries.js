@@ -20,7 +20,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     globalChartData: [],
 
-    chartJS: new Ext.ux.Chartjs({ type: "Line" }),
+    chartJS: {},
 
     data: null,
 
@@ -345,23 +345,44 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("t2 - ", t2)
 
-        instance.chartJS.updateValues({
-            labels: instance.MyMap(instance.globalChartData, function (element) {
-                return new Date(element.dateStr).format("d/m/Y")
-            }),
-            datasets: [{
-                label: "Modis-Original",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: instance.MyMap(instance.globalChartData, function (element) {
-                    return element.original
-                })
-            }]
-        }, {})
+        instance.chartJS = new Ext.ux.Chartjs({
+            type: "Line",
+            data: {
+                labels: instance.MyMap(instance.globalChartData, function (element) {
+                    return new Date(element.dateStr).format("d/m/Y")
+                }),
+                datasets: [{
+                    label: "Modis-Original",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: instance.MyMap(instance.globalChartData, function (element) {
+                        return element.original
+                    })
+                }]
+            }
+        })
+
+        // instance.chartJS.updateValues({
+        //     labels: instance.MyMap(instance.globalChartData, function (element) {
+        //         return new Date(element.dateStr).format("d/m/Y")
+        //     }),
+        //     datasets: [{
+        //         label: "Modis-Original",
+        //         fillColor: "rgba(220,220,220,0.2)",
+        //         strokeColor: "rgba(220,220,220,1)",
+        //         pointColor: "rgba(220,220,220,1)",
+        //         pointStrokeColor: "#fff",
+        //         pointHighlightFill: "#fff",
+        //         pointHighlightStroke: "rgba(220,220,220,1)",
+        //         data: instance.MyMap(instance.globalChartData, function (element) {
+        //             return element.original
+        //         })
+        //     }]
+        // }, {})
 
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
