@@ -24,13 +24,15 @@ Ext.ns("Ext.ux");
  * @xtype chartjs
  */
 Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
-    autoEl : "canvas",
+    autoEl: "canvas",
 
     type: null,
     data: null,
     options: {},
 
-    afterRender: function() {
+    chart: {},
+
+    afterRender: function () {
         Ext.ux.Chartjs.superclass.afterRender.call(this);
 
         var el = Ext.getDom(this.id);
@@ -38,8 +40,15 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         Ext.applyIf(this.options, {
             responsive: true
         });
-       var chart = new Chart(ctx)[this.type](this.data, this.options);
-       chart.resize();
+        this.chart = new Chart(ctx)[this.type](this.data, this.options);
+        this.chart.resize();
+    },
+
+    updateValues: function (data, options) {
+
+        this.data = data;
+        this.options = options;
+        this.chart.update();
     }
 });
 

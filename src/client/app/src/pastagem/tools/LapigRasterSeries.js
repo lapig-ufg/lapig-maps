@@ -20,6 +20,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     globalChartData: [],
 
+    chartJS: new Ext.ux.Chartjs({ type: "Line" }),
+
     data: null,
 
     vectors: null,
@@ -342,6 +344,24 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         // var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
 
         console.log("t2 - ", t2)
+
+        instance.chartJS.updateValues({
+            labels: instance.MyMap(instance.globalChartData, function (element) {
+                return new Date(element.dateStr).format("d/m/Y")
+            }),
+            datasets: [{
+                label: "Modis-Original",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: instance.MyMap(instance.globalChartData, function (element) {
+                    return element.original
+                })
+            }]
+        }, {})
 
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
@@ -874,37 +894,39 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         padding: 10,
                         id: 'lapig-raster-series-tab-series-chart-pnl',
                         items: [
-                            new Ext.ux.Chartjs({
-                                type: "Line",
-                                data: {
-                                    labels: instance.MyMap(instance.globalChartData, function (element) {
-                                        return new Date(element.dateStr).format("d/m/Y")
-                                    }),
-                                    datasets: [{
-                                        label: "Modis-Original",
-                                        fillColor: "rgba(220,220,220,0.2)",
-                                        strokeColor: "rgba(220,220,220,1)",
-                                        pointColor: "rgba(220,220,220,1)",
-                                        pointStrokeColor: "#fff",
-                                        pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgba(220,220,220,1)",
-                                        data: instance.MyMap(instance.globalChartData, function (element) {
-                                            return element.original
-                                        })
-                                    }
-                                        // {
-                                        //     label: "My Second dataset",
-                                        //     fillColor: "rgba(151,187,205,0.2)",
-                                        //     strokeColor: "rgba(151,187,205,1)",
-                                        //     pointColor: "rgba(151,187,205,1)",
-                                        //     pointStrokeColor: "#fff",
-                                        //     pointHighlightFill: "#fff",
-                                        //     pointHighlightStroke: "rgba(151,187,205,1)",
-                                        //     data: [28, 48, 40, 19, 86, 27, 90]
-                                        // }
-                                    ]
-                                }
-                            })
+
+                            chartJS
+                            // new Ext.ux.Chartjs({
+                            //     type: "Line",
+                            //     data: {
+                            //         labels: instance.MyMap(instance.globalChartData, function (element) {
+                            //             return new Date(element.dateStr).format("d/m/Y")
+                            //         }),
+                            //         datasets: [{
+                            //             label: "Modis-Original",
+                            //             fillColor: "rgba(220,220,220,0.2)",
+                            //             strokeColor: "rgba(220,220,220,1)",
+                            //             pointColor: "rgba(220,220,220,1)",
+                            //             pointStrokeColor: "#fff",
+                            //             pointHighlightFill: "#fff",
+                            //             pointHighlightStroke: "rgba(220,220,220,1)",
+                            //             data: instance.MyMap(instance.globalChartData, function (element) {
+                            //                 return element.original
+                            //             })
+                            //         }
+                            //             // {
+                            //             //     label: "My Second dataset",
+                            //             //     fillColor: "rgba(151,187,205,0.2)",
+                            //             //     strokeColor: "rgba(151,187,205,1)",
+                            //             //     pointColor: "rgba(151,187,205,1)",
+                            //             //     pointStrokeColor: "#fff",
+                            //             //     pointHighlightFill: "#fff",
+                            //             //     pointHighlightStroke: "rgba(151,187,205,1)",
+                            //             //     data: [28, 48, 40, 19, 86, 27, 90]
+                            //             // }
+                            //         ]
+                            //     }
+                            // })
                             // ,{
                             //     xtype: 'linechart',
                             //     id: 'lapig-coordinates-chart-series',
