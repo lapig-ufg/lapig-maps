@@ -18,10 +18,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     WGS84_PROJ: new OpenLayers.Projection("EPSG:4326"),
 
-    globalChart: [],
-
-    chart: {},
-
     data: null,
 
     vectors: null,
@@ -111,15 +107,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var maximum = (Number(endValue) + (Number(endValue) * axisPercent)).toFixed(2);
             var minimum = (Number(startValue) - (Number(startValue) * axisPercent)).toFixed(2);
 
+            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
+
             console.log("chart do ELSE - ", chart)
-            // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
 
-
-            // chart.setXAxis(new Ext.chart.TimeAxis({
-            //     labelRenderer: function (date) {
-            //         return date.format("m.Y");
-            //     }
-            // }));
+            chart.setXAxis(new Ext.chart.TimeAxis({
+                labelRenderer: function (date) {
+                    return date.format("m.Y");
+                }
+            }));
 
             return chartData;
         }
@@ -318,15 +314,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
-        console.log("chartData - ", chartData)
-        instance.globalChart = chartData;
-
-        // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
-
-        // myLineChart.update();
-
-
-        // chart.store.loadData(chartData);
+        chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+        chart.store.loadData(chartData);
     },
 
     initWdwInfo: function () {
@@ -857,15 +846,27 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             new Ext.ux.Chartjs({
                                 type: "Line",
                                 data: {
-                                    labels: instance.globalChart.map(element => new Date(element.dateStr).format("d/m/Y")),
+                                    labels: ["January", "February", "March", "April", "May", "June", "July"],
                                     datasets: [{
-                                        label: 'MODIS Original',
-                                        fillColor: 'rgba(220,220,220,0.2)',
-                                        strokeColor: 'rgba(220,220,220,1)',
-                                        pointColor: 'rgba(220,220,220,1)',
-                                        data: instance.globalChart.map(element => (element.original).toFixed(4))
+                                        label: "My First dataset",
+                                        fillColor: "rgba(220,220,220,0.2)",
+                                        strokeColor: "rgba(220,220,220,1)",
+                                        pointColor: "rgba(220,220,220,1)",
+                                        pointStrokeColor: "#fff",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgba(220,220,220,1)",
+                                        data: [65, 59, 80, 81, 56, 55, 40]
+                                    },
+                                    {
+                                        label: "My Second dataset",
+                                        fillColor: "rgba(151,187,205,0.2)",
+                                        strokeColor: "rgba(151,187,205,1)",
+                                        pointColor: "rgba(151,187,205,1)",
+                                        pointStrokeColor: "#fff",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "rgba(151,187,205,1)",
+                                        data: [28, 48, 40, 19, 86, 27, 90]
                                     }
-
                                     ]
                                 }
                             })
