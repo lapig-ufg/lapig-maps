@@ -326,6 +326,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
         instance.globalChartData = chartData;
+        console.log(instance.globalChartData)
 
         var t1 = instance.MyMap(instance.globalChartData, function (element) {
             return new Date(element.dateStr).format("d/m/Y")
@@ -333,16 +334,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("t1 - ", t1)
 
-        var t2 = instance.MyMap(instance.globalChartData, function (element) {
-            return element.original
-        })
+        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
+        //     return element.original
+        // })
         var numberFormat = '0.000'
 
-        var t2formated = Ext.util.Format.number(t2, numberFormat);
+        var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
 
-        console.log("t2 - ", t2formated)
+        console.log("t2 - ", t2)
 
-        console.log(instance.globalChartData)
 
         chart.setSeriesStyles(instance.getChartSeries(chartData.length));
         chart.store.loadData(chartData);
