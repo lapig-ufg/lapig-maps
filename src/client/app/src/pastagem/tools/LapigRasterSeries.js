@@ -368,6 +368,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("chart no LAPIG - ", instance.chartJS)
 
+        instance.chartJS.update();
         // instance.chartJS.updateValues({
         //     labels: instance.MyMap(instance.globalChartData, function (element) {
         //         return new Date(element.dateStr).format("d/m/Y")
