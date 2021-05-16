@@ -334,12 +334,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("t1 - ", t1)
 
-        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
-        //     return element.original
-        // })
-        var numberFormat = '0.000'
+        var t2 = instance.MyMap(instance.globalChartData, function (element) {
+            return element.original
+        })
+        // var numberFormat = '0.000'
 
-        var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
+        // var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
 
         console.log("t2 - ", t2)
 
