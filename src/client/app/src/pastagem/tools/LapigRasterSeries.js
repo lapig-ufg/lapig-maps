@@ -20,7 +20,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     globalChart: [],
 
-    chartJS: new Ext.ux.Chartjs(),
+    chart: {},
 
     data: null,
 
@@ -319,24 +319,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
         console.log("chartData - ", chartData)
-
         instance.globalChart = chartData;
-
-        chartJS = new Ext.ux.Chartjs({
-            type: "Line",
-            data: {
-                labels: instance.globalChart.map(element => new Date(element.dateStr).format("d/m/Y")),
-                datasets: [{
-                    label: "MODIS Original",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    data: instance.globalChart.map(element => element.original.toFixed(4))
-                }
-
-                ]
-            }
-        })
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
 
@@ -871,7 +854,21 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         padding: 10,
                         id: 'lapig-raster-series-tab-series-chart-pnl',
                         items: [
-                            instance.chartJS
+                            new Ext.ux.Chartjs({
+                                type: "Line",
+                                data: {
+                                    labels: instance.globalChart.map(element => new Date(element.dateStr).format("d/m/Y")),
+                                    datasets: [{
+                                        label: "MODIS Original",
+                                        fillColor: "rgba(220,220,220,0.2)",
+                                        strokeColor: "rgba(220,220,220,1)",
+                                        pointColor: "rgba(220,220,220,1)",
+                                        data: instance.globalChart.map(element => new Date(element.original))
+                                    }
+
+                                    ]
+                                }
+                            })
                             // ,{
                             //     xtype: 'linechart',
                             //     id: 'lapig-coordinates-chart-series',
