@@ -895,7 +895,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         id: 'lapig-raster-series-tab-series-chart-pnl',
                         items: [
 
-                            chartJS
+                            instance.chartJS
                             // new Ext.ux.Chartjs({
                             //     type: "Line",
                             //     data: {
