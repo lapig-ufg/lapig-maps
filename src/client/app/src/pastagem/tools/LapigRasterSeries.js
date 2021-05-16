@@ -325,13 +325,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         chartJS = new Ext.ux.Chartjs({
             type: "Line",
             data: {
-                labels: instance.globalChart.map(element => new Date(element.dateStr)),
+                labels: instance.globalChart.map(element => new Date(element.dateStr).format("d/m/Y")),
                 datasets: [{
                     label: "MODIS Original",
                     fillColor: "rgba(220,220,220,0.2)",
                     strokeColor: "rgba(220,220,220,1)",
                     pointColor: "rgba(220,220,220,1)",
-                    data: instance.globalChart.map(element => new Date(element.original))
+                    data: instance.globalChart.map(element => element.original.toFixed(4))
                 }
 
                 ]
