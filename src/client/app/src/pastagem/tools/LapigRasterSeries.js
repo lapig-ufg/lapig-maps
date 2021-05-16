@@ -318,6 +318,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         instance.globalChartData = chartData;
 
+        var t1 = instance.globalChartData.map(element => new Date(element.dateStr).format("d/m/Y"))
+        var t2 = this.tmpModis.map(element => element.original.toFixed(4))
+
+        console.log("t1 - ", t1)
+
+        console.log("t2 - ", t2)
+
         console.log(instance.globalChartData)
 
         chart.setSeriesStyles(instance.getChartSeries(chartData.length));
@@ -854,7 +861,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                                 data: {
                                     labels: ["January", "February", "March", "April", "May", "June", "July"],
                                     datasets: [{
-                                        label: "My First dataset",
+                                        label: "Modis-Original",
                                         fillColor: "rgba(220,220,220,0.2)",
                                         strokeColor: "rgba(220,220,220,1)",
                                         pointColor: "rgba(220,220,220,1)",
