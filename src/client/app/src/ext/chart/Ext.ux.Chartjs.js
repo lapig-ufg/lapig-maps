@@ -15,6 +15,7 @@
  *
  * Available at: https://github.com/tocco/extjs3-chartjs-extension
  */
+var Chart = require('Chart.min.js');
 
 Ext.ns("Ext.ux");
 

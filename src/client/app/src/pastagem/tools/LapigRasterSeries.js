@@ -915,6 +915,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         xtype: 'panel',
                         disabled: true,
                         layout: 'fit',
+                        canResize: true,
                         padding: 10,
                         id: 'lapig-raster-series-tab-series-chart-pnl',
                         items: [
