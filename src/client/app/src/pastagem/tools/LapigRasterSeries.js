@@ -344,8 +344,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log("t2 - ", t2)
 
 
-        chart.setSeriesStyles(instance.getChartSeries(chartData.length));
-        chart.store.loadData(chartData);
+        // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+        // chart.store.loadData(chartData);
     },
 
     initWdwInfo: function () {
