@@ -18,6 +18,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     WGS84_PROJ: new OpenLayers.Projection("EPSG:4326"),
 
+    globalChart: [],
+
+    chartJS: new Ext.ux.Chartjs(),
+
     data: null,
 
     vectors: null,
@@ -315,8 +319,31 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
         console.log("chartData - ", chartData)
-        chart.setSeriesStyles(instance.getChartSeries(chartData.length));
-        chart.store.loadData(chartData);
+
+        instance.globalChart = chartData;
+
+        chartJS = new Ext.ux.Chartjs({
+            type: "Line",
+            data: {
+                labels: instance.globalChart.map(element => new Date(element.dateStr)),
+                datasets: [{
+                    label: "MODIS Original",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    data: instance.globalChart.map(element => new Date(element.original))
+                }
+
+                ]
+            }
+        })
+
+        // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
+
+        // myLineChart.update();
+
+
+        // chart.store.loadData(chartData);
     },
 
     initWdwInfo: function () {
@@ -844,33 +871,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                         padding: 10,
                         id: 'lapig-raster-series-tab-series-chart-pnl',
                         items: [
-                            new Ext.ux.Chartjs({
-                                type: "Line",
-                                data: {
-                                    labels: ["January", "February", "March", "April", "May", "June", "July"],
-                                    datasets: [{
-                                        label: "My First dataset",
-                                        fillColor: "rgba(220,220,220,0.2)",
-                                        strokeColor: "rgba(220,220,220,1)",
-                                        pointColor: "rgba(220,220,220,1)",
-                                        pointStrokeColor: "#fff",
-                                        pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgba(220,220,220,1)",
-                                        data: [65, 59, 80, 81, 56, 55, 40]
-                                    },
-                                    {
-                                        label: "My Second dataset",
-                                        fillColor: "rgba(151,187,205,0.2)",
-                                        strokeColor: "rgba(151,187,205,1)",
-                                        pointColor: "rgba(151,187,205,1)",
-                                        pointStrokeColor: "#fff",
-                                        pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "rgba(151,187,205,1)",
-                                        data: [28, 48, 40, 19, 86, 27, 90]
-                                    }
-                                    ]
-                                }
-                            })
+                            instance.chartJS
                             // ,{
                             //     xtype: 'linechart',
                             //     id: 'lapig-coordinates-chart-series',
