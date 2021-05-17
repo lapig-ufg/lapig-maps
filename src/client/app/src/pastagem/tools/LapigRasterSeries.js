@@ -86,7 +86,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         array.forEach(function(item, index) {
 
             if (key == 'dateStr') {
-                result.push(new Date(item[key]).format("d/m/Y"));
+                result.push(new Date(item[key]));
             } else {
                 result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
             }
@@ -96,8 +96,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     },
 
     arrayIsNull: function(array, key) {
+        console.log(" ------ ", array, key)
         array.forEach(function(item, index) {
-            if (item[key] != null) {
+            console.log(item)
+            if (item[key] !== null) {
                 return false;
             }
         })
