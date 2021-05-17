@@ -122,8 +122,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
             // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
 
-            console.log("chart do ELSE - ", chart)
-
             // chart.setXAxis(new Ext.chart.TimeAxis({
             //     labelRenderer: function (date) {
             //         return date.format("m.Y");
@@ -345,26 +343,61 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("t2 - ", t2)
 
+        // instance.chartJS = new Ext.ux.Chartjs({
+        //     type: "Line",
+        //     data: {
+        //         labels: t1,
+        //         datasets: [{
+        //             label: "Modis-Original",
+        //             fillColor: "rgba(220,220,220,0.2)",
+        //             strokeColor: "rgba(220,220,220,1)",
+        //             pointColor: "rgba(220,220,220,1)",
+        //             pointStrokeColor: "#fff",
+        //             pointHighlightFill: "#fff",
+        //             pointHighlightStroke: "rgba(220,220,220,1)",
+        //             data: t2
+        //         }]
+        //     },
+        //     options:{
+        //         responsive: true,
+
+        //     }
+        // })
+
+
         instance.chartJS = new Ext.ux.Chartjs({
             type: "Line",
-            data: {
-                labels: t1,
-                datasets: [{
-                    label: "Modis-Original",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: t2
-                }]
+            datasets: [{
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: [65, 59, 80, 81, 56, 55, 40]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: [28, 48, 40, 19, 86, 27, 90]
+            }
+            ],
+            options: {
+                responsive: true,
+
             }
         })
 
         console.log("chart no LAPIG - ", instance.chartJS)
 
         // instance.chartJS.update();
+
         // instance.chartJS.updateValues({
         //     labels: instance.MyMap(instance.globalChartData, function (element) {
         //         return new Date(element.dateStr).format("d/m/Y")

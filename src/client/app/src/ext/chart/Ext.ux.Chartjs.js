@@ -42,13 +42,14 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         });
         this.chart = new Chart(ctx)[this.type](this.data, this.options);
         this.chart.resize();
+        this.chart.render();
     },
 
     updateValues: function (data, options) {
 
         this.data = data;
         this.options = options;
-        this.chart.update();
+        this.chart.render();
     }
 });
 
