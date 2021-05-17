@@ -45,7 +45,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
     },
 
     updateValues: function (data, options) {
-        this.chart = null;
+        this.chart.destroy();
         this.type = "Line";
 
         this.data = data;
