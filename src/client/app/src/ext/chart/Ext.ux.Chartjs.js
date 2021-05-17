@@ -41,6 +41,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             responsive: true
         });
         this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
+        this.chart.canvas.parentNode.style.height = '300px';
     },
 
     updateValues: function (data, options) {
@@ -79,20 +80,12 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             // scaleStepWidth: 10,
             // //Number - The scale starting value
             // scaleStartValue: 0
-            scales: {
-                y: {
-                    max: 5,
-                    min: 0,
-                    ticks: {
-                        stepSize: 0.5
-                    }
-                }
-            }
         } : options)
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
         this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
+        this.chart.canvas.parentNode.style.height = '300px';
         this.chart.update();
     },
 
