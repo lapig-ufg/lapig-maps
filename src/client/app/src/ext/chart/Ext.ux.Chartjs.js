@@ -30,7 +30,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
     data: null,
     options: {},
 
-    optionsDefaut: {
+    optionsDefault: {
         maintainAspectRatio: false,
         responsive: true,
         radius: 1,
@@ -71,11 +71,8 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         this.type = (type == null ? "line" : type.toLowerCase());
 
         this.data = data;
-        this.options
 
-        this.options = options;
-
-        this.options = Object.assign(this.options, optionsDefaut);
+        this.options = Object.assign(options, this.optionsDefault);
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
