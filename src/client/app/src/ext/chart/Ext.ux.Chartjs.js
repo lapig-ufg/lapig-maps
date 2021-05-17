@@ -15,6 +15,7 @@
  *
  * Available at: https://github.com/tocco/extjs3-chartjs-extension
  */
+
 Ext.ns("Ext.ux");
 
 /**
@@ -40,7 +41,6 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             responsive: true
         });
         this.chart = new Chart(ctx)[this.type](this.data, this.options);
-        console.log(this.chart)
         this.chart.resize();
     },
 
