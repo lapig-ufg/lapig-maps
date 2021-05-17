@@ -55,9 +55,8 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             // pointDot: false,
             // pointDotRadius: 4,
             // pointHitDetectionRadius: 20,
-            scaleShowLabels: false,
-            scaleShowHorizontalLines: false,
-            scaleShowVerticalLines: true
+            // scaleShowLabels: false,
+            showXAxisLabel: false
 
             // scales: {
             //     yAxes: [{
