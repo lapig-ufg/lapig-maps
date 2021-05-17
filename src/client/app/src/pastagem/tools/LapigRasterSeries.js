@@ -337,7 +337,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log("t1 - ", t1)
 
         var t2 = instance.MyMap(instance.globalChartData, function (element) {
-            return Number(element.original).toFixed(3);
+            return Number(element.original.toFixed(3));
         })
         // var numberFormat = '0.000'
 
@@ -348,9 +348,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         instance.chartJS = new Ext.ux.Chartjs({
             type: "Line",
             data: {
-                labels: instance.MyMap(instance.globalChartData, function (element) {
-                    return new Date(element.dateStr).format("d/m/Y")
-                }),
+                labels: t1,
                 datasets: [{
                     label: "Modis-Original",
                     fillColor: "rgba(220,220,220,0.2)",
@@ -359,9 +357,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: instance.MyMap(instance.globalChartData, function (element) {
-                        return element.original
-                    })
+                    data: t2
                 }]
             }
         })
