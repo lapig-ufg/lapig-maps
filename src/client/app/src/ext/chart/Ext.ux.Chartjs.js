@@ -55,9 +55,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             // pointDotRadius: 4,
             // pointHitDetectionRadius: 20,
             // scaleShowLabels: false,
-            showXAxisLabel: false
-
-            // scales: {
+             // scales: {
             //     yAxes: [{
             //         ticks: {
             //             autoSkip: true,
@@ -81,6 +79,15 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             // scaleStepWidth: 10,
             // //Number - The scale starting value
             // scaleStartValue: 0
+            scales: {
+                y: {
+                    max: 5,
+                    min: 0,
+                    ticks: {
+                        stepSize: 0.5
+                    }
+                }
+            }
         } : options)
 
         var el = Ext.getDom(this.id);
