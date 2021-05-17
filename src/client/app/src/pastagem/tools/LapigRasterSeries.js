@@ -106,11 +106,20 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     },
 
 
-    MyMap: function (obj, callback) {
-        var result = {};
-        Object.keys(obj).forEach(function (key) {
-            result[key] = callback.call(obj, obj[key], key, obj);
-        });
+    // MyMap: function (obj, callback) {
+    //     var result = {};
+    //     Object.keys(obj).forEach(function (key) {
+    //         result[key] = callback.call(obj, obj[key], key, obj);
+    //     });
+    //     return result;
+    // },
+
+    MyMap: function (array, key) {
+        var result = [];
+        array.forEach(function (item, index) {
+            result.push(item[key]);
+        })
+
         return result;
     },
 
@@ -357,9 +366,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         instance.globalChartData = chartData;
         console.log(instance.globalChartData)
 
-        var t1 = instance.MyMap(instance.globalChartData, function (element) {
-            return new Date(element.dateStr).format("d/m/Y")
-        })
+        // var t1 = instance.globalChartData(instance.globalChartData, function (element) {
+        //     return new Date(element.dateStr).format("d/m/Y")
+        // })
+
+        var t1 = instance.MyMap(instance.globalChartData, 'dateStr')
 
         console.log("t1 - ", t1, " tam: ", t1.length)
 
@@ -367,9 +378,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         //     return (element.original == null ? element.original : Number(element.original.toFixed(3)));
         // })
 
-        var t2 = instance.MyMap(instance.globalChartData, function (element) {
-            return element.original;
-        })
+        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
+        //     return element.original;
+        // })
+
+        var t2 = instance.MyMap(instance.globalChartData, 'original')
+
         // var numberFormat = '0.000'
 
         // var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
