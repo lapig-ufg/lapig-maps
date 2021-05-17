@@ -96,10 +96,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     },
 
     arrayIsNull: function(array, key) {
-        console.log(" ------ ", array, key)
         var result = true;
         array.forEach(function(item, index) {
-            console.log(item)
             if (typeof item[key] == 'number' || item[key] != null) {
                 result = false;
             }
@@ -353,7 +351,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var datasetsChart = [];
         if (instance.arrayIsNull(instance.globalChartData, 'original') == false) {
             datasetsChart.push({
-                label: "Original",
+                label: i18n.LAPIGRASTERSERIES_TXT_ORIGINAL,
                 fill: false,
                 borderColor: '#b8162c',
                 backgroundColor: '#b8162c',
@@ -367,7 +365,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         if (instance.arrayIsNull(instance.globalChartData, 'interpolation') == false) {
             datasetsChart.push({
-                label: "Com Filtro",
+                label: i18n.LAPIGRASTERSERIES_TXT_FILTRATED,
                 fill: false,
                 borderColor: '#1f9100',
                 backgroundColor: '#1f9100',
