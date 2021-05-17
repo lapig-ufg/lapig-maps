@@ -280,7 +280,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                           items: [
                               {
                                   xtype: 'box',
-                                  margins: {top:9, left:0, right: 5, bottom:0},
+                                  margins: {top:9, left:0, right: 10, bottom:0},
                                   autoEl: {
                                       tag: 'img',
                                       width: 100,
