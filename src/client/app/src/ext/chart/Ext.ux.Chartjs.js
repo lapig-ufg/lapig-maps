@@ -45,14 +45,16 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         this.chart.render();
     },
 
-    updateValues: function (data, options) {
+    updateValues: function (type, data, options) {
+        this.chart = {};
+        this.type = type;
 
         this.data = data;
-        Ext.applyIf(options, {
-            responsive: true
-        });
 
-        Ext.ux.Chartjs.superclass.afterRender.call(this);
+        this.option = (option == {} ? {
+            responsive: true
+        } : option)
+
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
         this.chart = new Chart(ctx)[this.type](this.data, this.options);

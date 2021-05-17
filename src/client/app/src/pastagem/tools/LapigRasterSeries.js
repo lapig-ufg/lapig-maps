@@ -427,7 +427,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         // instance.chartJS.update();
 
-        instance.chartJS.updateValues({
+        instance.chartJS.updateValues({ type: 'Line' }, {
             labels: t1,
             datasets: [{
                 label: "Modis-Original",
