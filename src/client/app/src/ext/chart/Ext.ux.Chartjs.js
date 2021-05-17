@@ -40,14 +40,12 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         Ext.applyIf(this.options, {
             responsive: true
         });
-        // this.chart = new Chart(ctx)[this.type](this.data, this.options);
         this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
-        this.chart.resize();
     },
 
     updateValues: function (data, options) {
         this.chart.destroy();
-        this.type = "Line";
+        this.type = "line";
 
         this.data = data;
 
@@ -87,8 +85,8 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
-        this.chart = new Chart(ctx).Line(this.data, this.options);
-        this.chart.resize();
+        this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
+        this.chart.update();
     },
 
 });
