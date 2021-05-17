@@ -42,26 +42,33 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         });
         this.chart = new Chart(ctx)[this.type](this.data, this.options);
         this.chart.resize();
-        this.chart.render();
     },
 
     updateValues: function (data, options) {
-        this.chart = {};
+        this.chart = null;
         this.type = "Line";
 
         this.data = data;
 
         this.options = (options == null ? {
-            responsive: true
+            responsive: true,
+            //Boolean - If we want to override with a hard coded scale
+            scaleOverride: true,
+            //** Required if scaleOverride is true **
+            //Number - The number of steps in a hard coded scale
+            scaleSteps: 10,
+            //Number - The value jump in the hard coded scale
+            scaleStepWidth: 10,
+            //Number - The scale starting value
+            scaleStartValue: 0
         } : options)
 
         var el = Ext.getDom(this.id);
+        el.removeChild(this.autoEl);
         var ctx = el.getContext("2d");
-        this.chart = new Chart(ctx)[this.type](this.data, this.options);
-        this.chart.resize();
-        this.chart.update();
-        this.chart.render();
-    }
+        this.chart = new Chart(ctx).Line(this.data, this.options);
+    },
+
 });
 
 Ext.reg("chartjs", Ext.ux.Chartjs);
