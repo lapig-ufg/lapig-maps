@@ -48,7 +48,9 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
     updateValues: function (data, options) {
 
         this.data = data;
-        this.options = options;
+        Ext.applyIf(this.options, {
+            responsive: true
+        });
         this.chart.render();
     }
 });

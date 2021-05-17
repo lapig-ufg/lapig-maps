@@ -48,7 +48,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         },
         options: {
             responsive: true
-
         }
     }),
 
@@ -373,25 +372,25 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("t2 - ", t2)
 
-        instance.chartJS = new Ext.ux.Chartjs({
-            type: "Line",
-            data: {
-                labels: t1,
-                datasets: [{
-                    label: "Modis-Original",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: t2
-                }]
-            },
-            options: {
-                responsive: true
-            }
-        })
+        // instance.chartJS = new Ext.ux.Chartjs({
+        //     type: "Line",
+        //     data: {
+        //         labels: t1,
+        //         datasets: [{
+        //             label: "Modis-Original",
+        //             fillColor: "rgba(220,220,220,0.2)",
+        //             strokeColor: "rgba(220,220,220,1)",
+        //             pointColor: "rgba(220,220,220,1)",
+        //             pointStrokeColor: "#fff",
+        //             pointHighlightFill: "#fff",
+        //             pointHighlightStroke: "rgba(220,220,220,1)",
+        //             data: t2
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true
+        //     }
+        // })
 
 
         // instance.chartJS = new Ext.ux.Chartjs({
@@ -430,23 +429,19 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         // instance.chartJS.update();
 
-        // instance.chartJS.updateValues({
-        //     labels: instance.MyMap(instance.globalChartData, function (element) {
-        //         return new Date(element.dateStr).format("d/m/Y")
-        //     }),
-        //     datasets: [{
-        //         label: "Modis-Original",
-        //         fillColor: "rgba(220,220,220,0.2)",
-        //         strokeColor: "rgba(220,220,220,1)",
-        //         pointColor: "rgba(220,220,220,1)",
-        //         pointStrokeColor: "#fff",
-        //         pointHighlightFill: "#fff",
-        //         pointHighlightStroke: "rgba(220,220,220,1)",
-        //         data: instance.MyMap(instance.globalChartData, function (element) {
-        //             return element.original
-        //         })
-        //     }]
-        // }, {})
+        instance.chartJS.updateValues({
+            labels: t1,
+            datasets: [{
+                label: "Modis-Original",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: t2
+            }]
+        })
 
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
