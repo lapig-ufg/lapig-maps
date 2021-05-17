@@ -293,7 +293,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                                   autoEl: {
                                       tag: 'img',
                                       width: 95,
-                                      height: 56,
+                                      height: 50,
                                       src:'theme/app/img/ufg.png'
                                   }
                               }
