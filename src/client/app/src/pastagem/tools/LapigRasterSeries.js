@@ -425,8 +425,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         //     }
         // })
 
-        console.log("chart no LAPIG - ", instance.chartJS)
-
         // instance.chartJS.update();
 
         instance.chartJS.updateValues({
@@ -441,7 +439,9 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 pointHighlightStroke: "rgba(220,220,220,1)",
                 data: t2
             }]
-        })
+        }, {})
+
+        console.log("chart no LAPIG - ", instance.chartJS)
 
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
