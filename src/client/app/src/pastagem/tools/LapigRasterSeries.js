@@ -121,6 +121,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
 
     MyMap: function(array, key) {
+        var instance = this;
         var result = [];
         array.forEach(function(item, index) {
 
