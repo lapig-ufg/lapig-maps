@@ -453,7 +453,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             labels: t1,
             datasets: [{
                 label: "Modis-Original",
-                fillColor: "rgba(224, 63, 63.2)",
+                // fillColor: "rgba(224, 63, 63.2)",
                 strokeColor: "rgba(224, 63, 63,1)",
                 pointColor: "rgba(224, 63, 63,1)",
                 pointStrokeColor: "#fff",

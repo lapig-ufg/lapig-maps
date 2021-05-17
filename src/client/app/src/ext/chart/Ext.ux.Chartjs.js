@@ -55,22 +55,25 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
             // pointDot: false,
             // pointDotRadius: 4,
             // pointHitDetectionRadius: 20,
-            radius: 1,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        autoSkip: true,
-                        stepSize: 0.2
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 20
-                    },
+            scaleShowLabels: false,
+            scaleShowHorizontalLines: false,
+            scaleShowVerticalLines: true
 
-                }]
-            }
+            // scales: {
+            //     yAxes: [{
+            //         ticks: {
+            //             autoSkip: true,
+            //             stepSize: 0.2
+            //         }
+            //     }],
+            //     xAxes: [{
+            //         ticks: {
+            //             autoSkip: true,
+            //             maxTicksLimit: 20
+            //         },
+
+            //     }]
+            // }
             // //Boolean - If we want to override with a hard coded scale
             // scaleOverride: true,
             // //** Required if scaleOverride is true **
