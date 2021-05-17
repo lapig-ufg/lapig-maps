@@ -350,7 +350,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log(instance.globalChartData)
 
         var datasetsChart = [];
-        if (!instance.arrayIsNull(instance.globalChartData, 'original')) {
+        if (instance.arrayIsNull(instance.globalChartData, 'original') == false) {
             datasetsChart.push({
                 label: "Original",
                 fill: false,
@@ -364,7 +364,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             })
         }
 
-        if (!instance.arrayIsNull(instance.globalChartData, 'interpolation')) {
+        if (instance.arrayIsNull(instance.globalChartData, 'interpolation') == false) {
             datasetsChart.push({
                 label: "Com Filtro",
                 fill: false,
