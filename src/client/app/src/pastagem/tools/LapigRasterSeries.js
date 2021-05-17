@@ -361,16 +361,20 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             return new Date(element.dateStr).format("d/m/Y")
         })
 
-        console.log("t1 - ", t1)
+        console.log("t1 - ", t1, " tam: ", t1.length)
+
+        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
+        //     return (element.original == null ? element.original : Number(element.original.toFixed(3)));
+        // })
 
         var t2 = instance.MyMap(instance.globalChartData, function (element) {
-            return (element.original == null ? element.original : Number(element.original.toFixed(3)));
+            return element.original;
         })
         // var numberFormat = '0.000'
 
         // var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
 
-        console.log("t2 - ", t2)
+        console.log("t2 - ", t2, " tam: ", t2.length)
 
         // instance.chartJS = new Ext.ux.Chartjs({
         //     type: "Line",
