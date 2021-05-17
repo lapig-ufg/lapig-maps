@@ -348,7 +348,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log(instance.globalChartData)
 
         var datasetsChart = [];
-        instance.arrayIsNull(instance.globalChartData, 'original')
         if (!instance.arrayIsNull(instance.globalChartData, 'original')) {
             datasetsChart.push({
                 label: "Original",
@@ -376,6 +375,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 data: instance.MyMap(instance.globalChartData, 'interpolation')
             })
         }
+
+        console.log("datasetChart - ", datasetsChart)
 
         instance.chartJS.updateValues({
             labels: instance.MyMap(instance.globalChartData, 'dateStr'),
