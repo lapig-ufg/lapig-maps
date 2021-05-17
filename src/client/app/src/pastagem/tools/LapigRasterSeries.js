@@ -92,10 +92,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     MyMap: function(array, key) {
         var result = [];
         array.forEach(function(item, index) {
-            if (key == 'original') {
-                result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
-            } else {
+
+            if (key == 'dateStr') {
                 result.push(new Date(item[key]).format("d/m/Y"));
+            } else {
+                result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
             }
         })
 
@@ -345,44 +346,39 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         instance.globalChartData = chartData;
         console.log(instance.globalChartData)
 
-        // var t1 = instance.globalChartData(instance.globalChartData, function (element) {
-        //     return new Date(element.dateStr).format("d/m/Y")
-        // })
+        var datasetsChart = [];
 
-        var t1 = instance.MyMap(instance.globalChartData, 'dateStr')
-
-        console.log("t1 - ", t1, " tam: ", t1.length)
-
-        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
-        //     return (element.original == null ? element.original : Number(element.original.toFixed(3)));
-        // })
-
-        // var t2 = instance.MyMap(instance.globalChartData, function (element) {
-        //     return element.original;
-        // })
-
-        var t2 = instance.MyMap(instance.globalChartData, 'original')
-
-        // var numberFormat = '0.000'
-
-        // var t2 = Ext.util.Format.number(instance.globalChartData.original, numberFormat);
-
-        console.log("t2 - ", t2, " tam: ", t2.length)
-
-
-        instance.chartJS.updateValues({
-            labels: t1,
-            datasets: [{
-                label: "NDVI-Original",
+        if (instance.globalChartData.every(element => element.original !== null)) {
+            datasetsChart.push({
+                label: "Original",
                 fill: false,
-                borderColor: '#0007db',
-                backgroundColor: '#0007db',
+                borderColor: '#b8162c',
+                backgroundColor: '#b8162c',
                 hidden: false,
                 pointRadius: 1,
                 pointHoverRadius: 3,
                 pointStyle: 'rect',
-                data: t2
-            }]
+                data: instance.MyMap(instance.globalChartData, 'original')
+            })
+        }
+
+        if (instance.globalChartData.every(element => element.interpolation !== null)) {
+            datasetsChart.push({
+                label: "Com Filtro",
+                fill: false,
+                borderColor: '#1f9100',
+                backgroundColor: '#1f9100',
+                hidden: false,
+                pointRadius: 1,
+                pointHoverRadius: 3,
+                pointStyle: 'rect',
+                data: instance.MyMap(instance.globalChartData, 'interpolation')
+            })
+        }
+
+        instance.chartJS.updateValues({
+            labels: instance.MyMap(instance.globalChartData, 'dateStr'),
+            datasets: datasetsChart
         })
 
         console.log("chart no LAPIG - ", instance.chartJS)
