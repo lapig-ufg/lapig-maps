@@ -99,7 +99,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log(" ------ ", array, key)
         array.forEach(function(item, index) {
             console.log(item)
-            if (item[key] !== null) {
+            if (item[key] != null) {
                 return false;
             }
         })
