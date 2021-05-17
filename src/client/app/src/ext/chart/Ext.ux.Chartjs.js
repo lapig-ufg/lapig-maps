@@ -52,6 +52,30 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         this.options = (options == null ? {
             responsive: true,
+            pointDot: false,
+            pointDotRadius: 4,
+            pointHitDetectionRadius: 20,
+            radius: 1,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        stepSize: 0.2
+                    }
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        parser: 'D/M/YYYY',
+                        // unit: 'year',
+                        tooltipFormat: "DD/MM/YYYY",
+                    },
+                    ticks: {
+                        autoSkip: true
+                    },
+
+                }]
+            }
             // //Boolean - If we want to override with a hard coded scale
             // scaleOverride: true,
             // //** Required if scaleOverride is true **
