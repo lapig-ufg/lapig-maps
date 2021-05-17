@@ -18,6 +18,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     WGS84_PROJ: new OpenLayers.Projection("EPSG:4326"),
 
+    defaultDatePattern: "",
+
     globalChartData: [],
 
     chartJS: new Ext.ux.Chartjs({
@@ -25,6 +27,50 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         data: {},
         options: {}
     }),
+
+    optionsCategoryTimeSeries: {
+        scales: {
+            xAxes: [{
+                id: 'xAxis1',
+                type: "category",
+                ticks: {
+                    // callback: function (label) {
+                    //     var month = label.split(";")[0];
+                    //     var year = label.split(";")[1];
+                    //     return month;
+                    // }
+                }
+            }],
+        }
+    },
+
+    optionsTimeSeries: {
+        tooltips: {
+            mode: 'index',
+            intersect: true,
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2
+                }
+            }],
+            xAxes: [{
+                type: 'time',
+                time: {
+                    parser: 'D/M/YYYY',
+                    // unit: 'year',
+                    tooltipFormat: "DD/MM/YYYY",
+                },
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 20
+                }
+
+            }]
+        },
+    },
 
     data: null,
 
@@ -86,7 +132,10 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         array.forEach(function(item, index) {
 
             if (key == 'dateStr') {
-                result.push(new Date(item[key]).format("m/Y"));
+                result.push(new Date(item[key]).format("d/m/Y"));
+            } else if (key == 'date') {
+                var str = instance.defaultDatePattern.replace("{}", item[key])
+                result.push(new Date(str).format("m/Y"))
             } else {
                 result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
             }
@@ -98,7 +147,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     arrayIsNull: function(array, key) {
         var result = true;
         array.forEach(function(item, index) {
-            if (typeof item[key] == 'number' || item[key] != null) {
+            if ((typeof item[key] == 'number' && item[key] != 0)) {
                 result = false;
             }
         })
@@ -113,27 +162,26 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var groupedOriginalData = {}
         var groupedInterpolationData = {}
 
-        var chart = Ext.getCmp('lapig-coordinates-chart-' + instance.getSeriesActiveTab().name);
+        // var chart = Ext.getCmp('lapig-coordinates-chart-' + instance.getSeriesActiveTab().name);
         var axisPercent = 0.1
 
         var datePos;
-        var defaultDatePattern;
 
         if (groupType == 'YEAR') {
             datePos = 0;
-            defaultDatePattern = "{}/01/01";
+            instance.defaultDatePattern = "{}/01/01";
             // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'NPP') {
             datePos = 0;
-            defaultDatePattern = "{}/01/01";
+            instance.defaultDatePattern = "{}/01/01";
             // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'MONTH') {
             datePos = 1;
-            defaultDatePattern = "2000/{}/01";
+            instance.defaultDatePattern = "2000/{}/01";
             // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'DAY') {
             datePos = 2;
-            defaultDatePattern = "2000/01/{}";
+            instance.defaultDatePattern = "2000/01/{}";
             // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else {
 
@@ -396,10 +444,29 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("datasetChart - ", datasetsChart)
 
-        instance.chartJS.updateValues({
-            labels: instance.MyMap(instance.globalChartData, 'dateStr'),
+        var type;
+        var labelsChart;
+        var optionsChart;
+
+        if (instance.globalChartData.hasOwnProperty('dateStr')) {
+            type = "line";
+            labelsChart = instance.MyMap(instance.globalChartData, 'dateStr');
+            optionsChart = instance.optionsTimeSeries
+        } else {
+            type = "line";
+            labelsChart = instance.MyMap(instance.globalChartData, 'date');
+            instance.optionsCategoryTimeSeries.scales.xAxes = [{
+                id: 'xAxis1',
+                type: "category",
+                ticks: {}
+            }]
+            optionsChart = instance.optionsCategoryTimeSeries
+        }
+
+        instance.chartJS.updateValues(type, {
+            labels: labelsChart,
             datasets: datasetsChart
-        })
+        }, optionsChart)
 
         console.log("chart no LAPIG - ", instance.chartJS)
 
