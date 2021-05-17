@@ -45,13 +45,13 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         this.chart.render();
     },
 
-    updateValues: function (type, data, options) {
+    updateValues: function (data, options) {
         this.chart = {};
-        this.type = type;
+        this.type = "Line";
 
         this.data = data;
 
-        this.options = (options == {} ? {
+        this.options = (options == null ? {
             responsive: true
         } : options)
 
