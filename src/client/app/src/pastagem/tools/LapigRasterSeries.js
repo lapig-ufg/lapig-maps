@@ -122,19 +122,19 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         if (groupType == 'YEAR') {
             datePos = 0;
             defaultDatePattern = "{}/01/01";
-            chart.setXAxis(new Ext.chart.CategoryAxis({}));
+            // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'NPP') {
             datePos = 0;
             defaultDatePattern = "{}/01/01";
-            chart.setXAxis(new Ext.chart.CategoryAxis({}));
+            // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'MONTH') {
             datePos = 1;
             defaultDatePattern = "2000/{}/01";
-            chart.setXAxis(new Ext.chart.CategoryAxis({}));
+            // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else if (groupType == 'DAY') {
             datePos = 2;
             defaultDatePattern = "2000/01/{}";
-            chart.setXAxis(new Ext.chart.CategoryAxis({}));
+            // chart.setXAxis(new Ext.chart.CategoryAxis({}));
         } else {
 
             var maximum = (Number(endValue) + (Number(endValue) * axisPercent)).toFixed(2);
@@ -147,6 +147,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             //         return date.format("m.Y");
             //     }
             // }));
+
+            instance.chartJS.options.scales.yAxes = [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2,
+                    min: minimum, // minimum value
+                    max: maximum // maximum value
+                }
+            }];
 
             return chartData;
         }
@@ -206,7 +215,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         minimum = (Number(minimum) - (Number(minimum) * axisPercent)).toFixed(2);
 
         if (groupType) {
-            chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
+            instance.chartJS.options.scales.yAxes = [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2,
+                    min: minimum, // minimum value
+                    max: maximum // maximum value
+                }
+            }];
+            // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
         }
 
         return groupedData;
