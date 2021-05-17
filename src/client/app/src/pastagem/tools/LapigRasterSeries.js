@@ -33,14 +33,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             xAxes: [{
                 id: 'xAxis1',
                 type: "category",
-                ticks: {
-                    // callback: function (label) {
-                    //     var month = label.split(";")[0];
-                    //     var year = label.split(";")[1];
-                    //     return month;
-                    // }
-                }
-            }],
+                ticks: {}
+            }]
         }
     },
 
