@@ -41,7 +41,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     optionsTimeSeries: {
         tooltips: {
             mode: 'index',
-            intersect: true,
+            intersect: true
         },
         scales: {
             yAxes: [{
@@ -54,8 +54,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 type: 'time',
                 time: {
                     parser: 'D/M/YYYY',
-                    // unit: 'year',
-                    tooltipFormat: "DD/MM/YYYY",
+                    tooltipFormat: "DD/MM/YYYY"
                 },
                 ticks: {
                     autoSkip: true,
