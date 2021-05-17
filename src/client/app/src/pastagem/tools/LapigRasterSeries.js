@@ -81,14 +81,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     },
 
 
-    // MyMap: function (obj, callback) {
-    //     var result = {};
-    //     Object.keys(obj).forEach(function (key) {
-    //         result[key] = callback.call(obj, obj[key], key, obj);
-    //     });
-    //     return result;
-    // },
-
     MyMap: function(array, key) {
         var result = [];
         array.forEach(function(item, index) {
@@ -101,6 +93,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         })
 
         return result;
+    },
+
+    arrayIsNull: function(array, key) {
+        array.forEach(function(item, index) {
+            if (item[key] != null) {
+                return false;
+            }
+        })
+        return true;
     },
 
     groupChartData: function(startValue, endValue, chartData, groupType, groupOperation) {
@@ -347,8 +348,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         console.log(instance.globalChartData)
 
         var datasetsChart = [];
-
-        if (instance.globalChartData.every(element => element.original !== null)) {
+        instance.arrayIsNull(instance.globalChartData, 'original')
+        if (!instance.arrayIsNull(instance.globalChartData, 'original')) {
             datasetsChart.push({
                 label: "Original",
                 fill: false,
@@ -362,7 +363,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             })
         }
 
-        if (instance.globalChartData.every(element => element.interpolation !== null)) {
+        if (!instance.arrayIsNull(instance.globalChartData, 'interpolation')) {
             datasetsChart.push({
                 label: "Com Filtro",
                 fill: false,
