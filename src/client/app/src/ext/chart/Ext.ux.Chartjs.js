@@ -52,9 +52,9 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         this.options = (options == null ? {
             responsive: true,
-            pointDot: false,
-            pointDotRadius: 4,
-            pointHitDetectionRadius: 20,
+            // pointDot: false,
+            // pointDotRadius: 4,
+            // pointHitDetectionRadius: 20,
             radius: 1,
             scales: {
                 yAxes: [{
@@ -64,14 +64,9 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
                     }
                 }],
                 xAxes: [{
-                    type: 'time',
-                    time: {
-                        parser: 'D/M/YYYY',
-                        // unit: 'year',
-                        tooltipFormat: "DD/MM/YYYY",
-                    },
                     ticks: {
-                        autoSkip: true
+                        autoSkip: true,
+                        maxTicksLimit: 20
                     },
 
                 }]
