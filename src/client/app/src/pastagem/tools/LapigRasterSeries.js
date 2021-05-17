@@ -441,7 +441,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var labelsChart;
         var optionsChart;
 
-        if (instance.globalChartData.hasOwnProperty('dateStr')) {
+        if (instance.globalChartData[0].hasOwnProperty('dateStr')) {
             type = "line";
             labelsChart = instance.MyMap(instance.globalChartData, 'dateStr');
             optionsChart = instance.optionsTimeSeries
