@@ -32,7 +32,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
     chart: {},
 
-    afterRender: function () {
+    afterRender: function() {
         Ext.ux.Chartjs.superclass.afterRender.call(this);
 
         var el = Ext.getDom(this.id);
@@ -40,10 +40,10 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         Ext.applyIf(this.options, {
             responsive: true
         });
-        this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
+        this.chart = new Chart(ctx, { type: this.type.toLowerCase(), data: this.data, options: this.options });
     },
 
-    updateValues: function (data, options) {
+    updateValues: function(data, options) {
         this.chart.destroy();
         this.type = "line";
 
@@ -51,39 +51,26 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         this.options = (options == null ? {
             responsive: true,
-            // pointDot: false,
-            // pointDotRadius: 4,
-            // pointHitDetectionRadius: 20,
-            // scaleShowLabels: false,
-             // scales: {
-            //     yAxes: [{
-            //         ticks: {
-            //             autoSkip: true,
-            //             stepSize: 0.2
-            //         }
-            //     }],
-            //     xAxes: [{
-            //         ticks: {
-            //             autoSkip: true,
-            //             maxTicksLimit: 20
-            //         },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        stepSize: 0.2
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 20
+                    },
 
-            //     }]
-            // }
-            // //Boolean - If we want to override with a hard coded scale
-            // scaleOverride: true,
-            // //** Required if scaleOverride is true **
-            // //Number - The number of steps in a hard coded scale
-            // scaleSteps: 10,
-            // //Number - The value jump in the hard coded scale
-            // scaleStepWidth: 10,
-            // //Number - The scale starting value
-            // scaleStartValue: 0
+                }]
+            }
         } : options)
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
-        this.chart = new Chart(ctx, {type: this.type.toLowerCase(), data: this.data, options:this.options});
+        this.chart = new Chart(ctx, { type: this.type.toLowerCase(), data: this.data, options: this.options });
         this.chart.update();
         this.chart.resize();
     },

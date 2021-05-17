@@ -1,56 +1,66 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Lapig Maps</title>
-        <meta name="keywords" content="lapig, Maps, Modis" />
-        <meta name="author" content="Lapig" />
-        <meta name="description" content="O Lapig Maps é uma plataforma de pesquisa desenvolvida para disponibilizar dados raster e dados vetoriais produzidos pelo Laboratório de Processamento de Imagens e Geoprocessamento (Lapig)." />
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        <link rel="shortcut icon" href="./favicon.ico">
+<head>
+    <title>Lapig Maps</title>
+    <meta name="keywords" content="lapig, Maps, Modis" />
+    <meta name="author" content="Lapig" />
+    <meta name="description" content="O Lapig Maps é uma plataforma de pesquisa desenvolvida para disponibilizar dados raster e dados vetoriais produzidos pelo Laboratório de Processamento de Imagens e Geoprocessamento (Lapig)." />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        
-        <!-- Ext resources -->
-        <link rel="stylesheet" type="text/css" href="src/ext/resources/css/ext-all.css">
-        <link rel="stylesheet" type="text/css" href="src/ext/resources/css/xtheme-gray.css">
-        <script type="text/javascript" src="src/ext/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="src/ext/ext-all.js"></script>
-        <script type="text/javascript" src="src/ext/chart/Chart.min.js"></script>
-        <script type="text/javascript" src="src/ext/chart/Ext.ux.Chartjs.js"></script>
+    <link rel="shortcut icon" href="./favicon.ico">
 
-        <!-- OpenLayers resources -->
-        <link rel="stylesheet" type="text/css" href="src/openlayers/theme/default/style.css">
 
-        <!-- GeoExt resources -->
-        <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/popup.css">
-        <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/layerlegend.css">
-        <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/gxtheme-gray.css">
+    <!-- Ext resources -->
+    <link rel="stylesheet" type="text/css" href="src/ext/resources/css/ext-all.css">
+    <link rel="stylesheet" type="text/css" href="src/ext/resources/css/xtheme-gray.css">
+    <script type="text/javascript" src="src/ext/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="src/ext/ext-all.js"></script>
+    <script type="text/javascript" src="src/ext/chart/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="src/ext/chart/Chart.min.js"></script>
+    <script type="text/javascript" src="src/ext/chart/Ext.ux.Chartjs.js"></script>
 
-        <!-- gxp resources -->
-        <link rel="stylesheet" type="text/css" href="src/gxp/theme/all.css">
-        
-        <!-- thirdparty resources -->
-        <!-- thirdparty resources -->
-        <script type="text/javascript" src="thirdparty/underscore/underscore.min.js"></script>
-        <script type="text/javascript" src="thirdparty/jstat/jstat.min.js"></script>
+    <!-- OpenLayers resources -->
+    <link rel="stylesheet" type="text/css" href="src/openlayers/theme/default/style.css">
 
-        <!-- app resources -->
-        <link rel="stylesheet" type="text/css" href="theme/app/style.css">
-        <script type="text/javascript" src="lib/pastagem.js"></script>
-        <script>
-            Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
-            OpenLayers.ImgPath = "externals/openlayers/img/";
-        </script>
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    <!-- GeoExt resources -->
+    <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/popup.css">
+    <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/layerlegend.css">
+    <link rel="stylesheet" type="text/css" href="src/geoext/resources/css/gxtheme-gray.css">
 
-          ga('create', 'UA-77630203-1', 'auto');
-          ga('send', 'pageview');
+    <!-- gxp resources -->
+    <link rel="stylesheet" type="text/css" href="src/gxp/theme/all.css">
 
-        </script>
-    </head>
-    <body></body>
+    <!-- thirdparty resources -->
+    <!-- thirdparty resources -->
+    <script type="text/javascript" src="thirdparty/underscore/underscore.min.js"></script>
+    <script type="text/javascript" src="thirdparty/jstat/jstat.min.js"></script>
+
+    <!-- app resources -->
+    <link rel="stylesheet" type="text/css" href="theme/app/style.css">
+    <script type="text/javascript" src="lib/pastagem.js"></script>
+    <script>
+        Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
+        OpenLayers.ImgPath = "externals/openlayers/img/";
+    </script>
+    <script>
+        (function(i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-77630203-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</head>
+
+<body></body>
+
 </html>
