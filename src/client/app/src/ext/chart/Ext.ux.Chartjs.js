@@ -51,9 +51,9 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         this.data = data;
 
-        this.option = (option == {} ? {
+        this.options = (options == {} ? {
             responsive: true
-        } : option)
+        } : options)
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
