@@ -64,6 +64,7 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
         } : options)
 
         var el = Ext.getDom(this.id);
+        el.remove();
         var ctx = el.getContext("2d");
         this.chart = new Chart(ctx).Line(this.data, this.options);
         this.chart.resize();

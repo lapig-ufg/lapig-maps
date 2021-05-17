@@ -117,7 +117,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
     MyMap: function (array, key) {
         var result = [];
         array.forEach(function (item, index) {
-            result.push(item[key]);
+            if (key == 'original') {
+                result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
+            } else {
+                result.push(new Date(item[key]).format("d/m/Y"));
+            }
         })
 
         return result;
