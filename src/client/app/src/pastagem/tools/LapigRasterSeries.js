@@ -69,7 +69,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 }
 
             }]
-        },
+        }
     },
 
     data: null,
