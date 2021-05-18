@@ -128,9 +128,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             if (key == 'dateStr') {
                 result.push(new Date(item[key]).format("d/m/Y"));
             } else if (key == 'date') {
-                console.log("aaaaaaa - ", instance.defaultDatePattern)
                 var str = instance.defaultDatePattern.replace("{}", item[key])
-                console.log("bbbbbbbb - ", str)
                 result.push(new Date(str).format("m/Y"))
             } else {
                 result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
@@ -346,8 +344,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var originalPosition = -1;
         var trendPosition = -1;
 
-        console.log("instance - ", instance)
-
         for (var i in instance.chartData[activeTab.index].series) {
             var serie = instance.chartData[activeTab.index].series[i];
             if (serie.id == 'original') {
@@ -407,7 +403,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
         instance.globalChartData = chartData;
-        console.log(instance.globalChartData)
 
         var datasetsChart = [];
         if (instance.arrayIsNull(instance.globalChartData, 'original') == false) {
@@ -438,8 +433,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             })
         }
 
-        console.log("datasetChart - ", datasetsChart)
-
         var type;
         var labelsChart;
         var optionsChart;
@@ -463,8 +456,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             labels: labelsChart,
             datasets: datasetsChart
         }, optionsChart)
-
-        console.log("chart no LAPIG - ", instance.chartJS)
 
 
         // chart.setSeriesStyles(instance.getChartSeries(chartData.length));
@@ -707,16 +698,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             var groupValueSplited = groupCmb.getValue().split("_");
             var groupType = groupValueSplited[0];
             var groupOperation = groupValueSplited[1];
-
-            // console.log("------------- filter:")
-            // console.log("start year - ", startYearCmb.getValue())
-            // console.log("end year - ", endYearCmb.getValue())
-            // console.log("start value - ", startValueCmb.getValue())
-            // console.log("end value - ", endValueCmb.getValue())
-            // console.log("interpolation - ", interpolationCmb.getValue())
-            // console.log("groupSplitted - ", groupValueSplited)
-            // console.log("groupType - ", groupType)
-            // console.log("end year - ", groupOperation)
 
             instance.populateChart(startYearCmb.getValue(), endYearCmb.getValue(),
                 startValueCmb.getValue(), endValueCmb.getValue(), interpolationCmb.getValue(), groupType, groupOperation)
@@ -1461,12 +1442,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 if (jsonResponse.error == undefined) {
                     instance.chartData[activeTab.index] = jsonResponse;
                     instance.populateChart(startYear, endYear, null, null, interpolation);
-                    // instance.drawTrend(instance.chartData[activeTab.index]);
+                    instance.drawTrend(instance.chartData[activeTab.index]);
                 } else {
                     Ext.MessageBox.alert(i18n.LAPIGRASTERSERIES_ALERT_VALIDATION, i18n.LAPIGRASTERSERIES_TXT_ALERTATTENCION + ': ' + jsonResponse.error);
                     instance.chartData[activeTab.index] = oldChartData;
                     instance.populateChart(startYear, endYear, null, null, interpolation);
-                    // instance.drawTrend(instance.chartData[activeTab.index]);
+                    instance.drawTrend(instance.chartData[activeTab.index]);
                 }
 
                 instance.setSeriesActiveTabDisabled(false);
@@ -1480,7 +1461,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         var activeTab = instance.getSeriesActiveTab();
 
-        var chart = Ext.getCmp('lapig-coordinates-chart-' + activeTab.name);
+        // var chart = Ext.getCmp('lapig-coordinates-chart-' + activeTab.name);
         var interpolationCmb = Ext.getCmp('lapig-raster-series-tab-trend-cmb-interpolation');
         var filter = interpolationCmb.getValue();
 
@@ -1514,23 +1495,29 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             chartRecords.push(record);
         });
 
-        chart.setSeriesStyles(instance.getChartSeries(trendData.length));
-        chart.store.loadData(chartRecords);
+        // chart.setSeriesStyles(instance.getChartSeries(trendData.length));
+        // chart.store.loadData(chartRecords);
+
+        console.log("trend Data = ", trendData)
+
+        console.log("chartRecords - ", chartRecords)
 
         var dtType = trendData.values[0][0].split('-').length;
         if (dtType > 1) {
-            chart.setXAxis(new Ext.chart.TimeAxis({
-                labelRenderer: function(date) {
-                    return date.format("m.Y");
-                }
-            }));
+
+
+            // chart.setXAxis(new Ext.chart.TimeAxis({
+            //     labelRenderer: function(date) {
+            //         return date.format("m.Y");
+            //     }
+            // }));
         } else {
-            chart.setXAxis(new Ext.chart.CategoryAxis({
-                labelRenderer: function(time) {
-                    var year = time / 1000 / 60 / 60 / 24 / 365 + 1970;
-                    return Math.floor(year);
-                }
-            }));
+            // chart.setXAxis(new Ext.chart.CategoryAxis({
+            //     labelRenderer: function(time) {
+            //         var year = time / 1000 / 60 / 60 / 24 / 365 + 1970;
+            //         return Math.floor(year);
+            //     }
+            // }));
         }
     },
 
