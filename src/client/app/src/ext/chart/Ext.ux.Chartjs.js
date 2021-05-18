@@ -60,9 +60,11 @@ Ext.ux.Chartjs = Ext.extend(Ext.BoxComponent, {
 
         var el = Ext.getDom(this.id);
         var ctx = el.getContext("2d");
-        Ext.applyIf(this.options, {
-            responsive: true
-        });
+        // Ext.applyIf(this.options, {
+        //     responsive: true
+        // });
+
+        this.options = Object.assign(this.options, this.optionsDefault);
         this.chart = new Chart(ctx, { type: this.type.toLowerCase(), data: this.data, options: this.options });
     },
 
