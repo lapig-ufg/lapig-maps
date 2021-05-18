@@ -198,7 +198,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		var olLayers = [bing];
 		instance.layers = [];
 		appMap.layers.forEach(function(appLayer) {
-			// if(appLayer instanceof OpenLayers.Layer.WMS) {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
@@ -234,7 +233,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 				olLayers.push(olLayer)
 				instance.layers.push(printToolLayer)
-			// }
 		});
 
 		return olLayers;
