@@ -208,7 +208,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						layers: layersParams, 
 						format: 'image/png', 
 						transparent: 'true',
-						msfilter: aappLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
+						msfilter: appLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
 					}, 
 					{ 
 						maxExtent: appLayer.maxExtent, 
