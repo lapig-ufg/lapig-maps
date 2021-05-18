@@ -72,7 +72,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 	printMap: function() {
 		var instance = this;
 		var map = instance.internalMap.map;
-		console.log('Instance on print maps: ',instance)
+
 		/* Url e configuracoes do mapa em PDF ******************************/
 		var strLayers = [];
 		var strLabels = [];
@@ -197,7 +197,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 		var olLayers = [bing];
 		instance.layers = [];
-
+		console.log('appMap: ',appMap)
 		appMap.layers.forEach(function(appLayer) {
 			if(appLayer instanceof OpenLayers.Layer.WMS) {
 				var url = appLayer.url;
