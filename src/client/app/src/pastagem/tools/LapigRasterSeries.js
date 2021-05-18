@@ -1349,7 +1349,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             disabled: true,
                             id: 'lapig-raster-series-tab-trend-chart-pnl',
                             items: [
-                                instance.chartJSTrend,
+                                instance.chartJSTrend
                                 //     {
                                 //     xtype: 'linechart',
                                 //     id: "lapig-coordinates-chart-trend",
