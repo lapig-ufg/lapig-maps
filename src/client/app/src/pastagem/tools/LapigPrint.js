@@ -208,7 +208,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						layers: layersParams, 
 						format: 'image/png', 
 						transparent: 'true',
-						msfilter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : '',
+						msfilter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : ''
 					}, 
 					{ 
 						maxExtent: appLayer.maxExtent, 
@@ -228,7 +228,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					tileSize: new OpenLayers.Size(512,512),
 					format: 'image/png', 
 					transparent: 'true',
-					filter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : '',
+					filter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : ''
 				}
 
 				olLayers.push(olLayer)
