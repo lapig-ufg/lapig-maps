@@ -20,9 +20,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     defaultDatePattern: "",
 
-    globalChartData: [],
-
     chartJS: new Ext.ux.Chartjs({
+        type: "line",
+        data: {},
+        options: {}
+    }),
+
+    chartJSTrend: new Ext.ux.Chartjs({
         type: "line",
         data: {},
         options: {}
@@ -138,6 +142,34 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         return result;
     },
 
+    MyMapLabelsTrend: function(array, key) {
+        var instance = this;
+        var result = [];
+        array.forEach(function(item, index) {
+
+            if (key == 'dateStr') {
+                item[key] = item[key].substring(1);
+
+                var dtType = item[key].split('-').length;
+
+                if (dtType > 1) {
+                    result.push(new Date(item[key]).format("d/m/Y"));
+                } else {
+                    var year = Math.floor(parseInt(item[key]) / 1000 / 60 / 60 / 24 / 365 + 1970);
+                    result.push(year);
+                }
+
+            } else if (key == 'date') {
+                var str = instance.defaultDatePattern.replace("{}", item[key])
+                result.push(new Date(str).format("m/Y"))
+            } else {
+                result.push(item[key] == null ? item[key] : Number(item[key].toFixed(3)));
+            }
+        })
+
+        return result;
+    },
+
     arrayIsNull: function(array, key) {
         var result = true;
         array.forEach(function(item, index) {
@@ -191,6 +223,15 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             // }));
 
             instance.chartJS.options.scales.yAxes = [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2,
+                    min: minimum, // minimum value
+                    max: maximum // maximum value
+                }
+            }];
+
+            instance.chartJSTrend.options.scales.yAxes = [{
                 ticks: {
                     autoSkip: true,
                     stepSize: 0.2,
@@ -265,6 +306,16 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     max: maximum // maximum value
                 }
             }];
+
+            instance.chartJSTrend.options.scales.yAxes = [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2,
+                    min: minimum, // minimum value
+                    max: maximum // maximum value
+                }
+            }];
+
             // chart.setYAxis(new Ext.chart.NumericAxis({ maximum: maximum, minimum: minimum }));
         }
 
@@ -402,10 +453,8 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         chartData = instance.groupChartData(startValue, endValue, chartData, groupType, groupOperation);
 
-        instance.globalChartData = chartData;
-
         var datasetsChart = [];
-        if (instance.arrayIsNull(instance.globalChartData, 'original') == false) {
+        if (instance.arrayIsNull(chartData, 'original') == false) {
             datasetsChart.push({
                 label: i18n.LAPIGRASTERSERIES_TXT_ORIGINAL,
                 fill: false,
@@ -415,11 +464,11 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 pointRadius: 1,
                 pointHoverRadius: 3,
                 pointStyle: 'rect',
-                data: instance.MyMap(instance.globalChartData, 'original')
+                data: instance.MyMap(chartData, 'original')
             })
         }
 
-        if (instance.arrayIsNull(instance.globalChartData, 'interpolation') == false) {
+        if (instance.arrayIsNull(chartData, 'interpolation') == false) {
             datasetsChart.push({
                 label: i18n.LAPIGRASTERSERIES_TXT_FILTRATED,
                 fill: false,
@@ -429,7 +478,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                 pointRadius: 1,
                 pointHoverRadius: 3,
                 pointStyle: 'rect',
-                data: instance.MyMap(instance.globalChartData, 'interpolation')
+                data: instance.MyMap(chartData, 'interpolation')
             })
         }
 
@@ -437,13 +486,13 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         var labelsChart;
         var optionsChart;
 
-        if (instance.globalChartData[0].hasOwnProperty('dateStr')) {
+        if (chartData[0].hasOwnProperty('dateStr')) {
             type = "line";
-            labelsChart = instance.MyMap(instance.globalChartData, 'dateStr');
+            labelsChart = instance.MyMap(chartData, 'dateStr');
             optionsChart = instance.optionsTimeSeries
         } else {
             type = "line";
-            labelsChart = instance.MyMap(instance.globalChartData, 'date');
+            labelsChart = instance.MyMap(chartData, 'date');
             instance.optionsCategoryTimeSeries.scales.xAxes = [{
                 id: 'xAxis1',
                 type: "category",
@@ -1299,93 +1348,96 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                             xtype: 'panel',
                             disabled: true,
                             id: 'lapig-raster-series-tab-trend-chart-pnl',
-                            items: [{
-                                xtype: 'linechart',
-                                id: "lapig-coordinates-chart-trend",
-                                store: new Ext.data.JsonStore({
-                                    fields: ['date', 'original', 'interpolation', 'trend']
-                                }),
-                                xField: 'date',
-                                yAxis: new Ext.chart.NumericAxis(),
-                                xAxis: new Ext.chart.TimeAxis({
-                                    labelRenderer: function(date) {
-                                        return date.format("m.Y");
-                                    }
-                                }),
-                                tipRenderer: function(chart, record, index, series) {
-                                    var numberFormat = '0.000'
-                                    var serie = series.data[index];
+                            items: [
+                                instance.chartJSTrend,
+                                //     {
+                                //     xtype: 'linechart',
+                                //     id: "lapig-coordinates-chart-trend",
+                                //     store: new Ext.data.JsonStore({
+                                //         fields: ['date', 'original', 'interpolation', 'trend']
+                                //     }),
+                                //     xField: 'date',
+                                //     yAxis: new Ext.chart.NumericAxis(),
+                                //     xAxis: new Ext.chart.TimeAxis({
+                                //         labelRenderer: function(date) {
+                                //             return date.format("m.Y");
+                                //         }
+                                //     }),
+                                //     tipRenderer: function(chart, record, index, series) {
+                                //         var numberFormat = '0.000'
+                                //         var serie = series.data[index];
 
-                                    var date = serie.date;
-                                    if (typeof date === 'number')
-                                        date = new Date(date).format("d/m/Y");
+                                //         var date = serie.date;
+                                //         if (typeof date === 'number')
+                                //             date = new Date(date).format("d/m/Y");
 
-                                    var trendValue = Ext.util.Format.number(serie.trend, numberFormat);
+                                //         var trendValue = Ext.util.Format.number(serie.trend, numberFormat);
 
-                                    if (serie.interpolation != null) {
-                                        return date + "\n" +
-                                            i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n" +
-                                            i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
-                                    } else if (serie.original != null) {
-                                        return date + "\n" +
-                                            i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n" +
-                                            i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + Ext.util.Format.number(serie.original, numberFormat);
-                                    }
-                                },
-                                chartStyle: {
-                                    animationEnabled: true,
-                                    xAxis: {
-                                        color: 0xaaaaaa,
-                                        labelSpacing: 5,
-                                        labelDistance: 5,
-                                        majorTicks: { color: 0xaaaaaa, length: 10 },
-                                        minorTicks: { color: 0xdddddd, length: 5 },
-                                        majorGridLines: { size: 1, color: 0xaaaaaa },
-                                        minorGridLines: { size: 0.5, color: 0xdddddd }
-                                    },
-                                    yAxis: {
-                                        color: 0xaaaaaa,
-                                        labelDistance: 6,
-                                        majorTicks: { color: 0xaaaaaa, length: 10 },
-                                        minorTicks: { color: 0xdddddd, length: 5 },
-                                        majorGridLines: { size: 1, color: 0xaaaaaa },
-                                        minorGridLines: { size: 0.5, color: 0xdddddd }
-                                    }
-                                },
-                                series: [{
-                                    type: 'line',
-                                    yField: 'original',
-                                    displayField: 'original',
-                                    style: {
-                                        color: 0xfc4239,
-                                        size: 4,
-                                        lineSize: 2
-                                    }
-                                }, {
-                                    type: 'line',
-                                    yField: 'interpolation',
-                                    displayField: 'interpolation',
-                                    style: {
-                                        color: 0x5057a6,
-                                        size: 4,
-                                        lineSize: 2
-                                    }
-                                }, {
-                                    type: 'line',
-                                    yField: 'trend',
-                                    displayField: 'trend',
-                                    style: {
-                                        color: 0x00cc00,
-                                        size: 0,
-                                        lineSize: 2
-                                    }
-                                }],
-                                listeners: {
-                                    "initialize": function() {
-                                        repopulateChart();
-                                    }
-                                }
-                            }]
+                                //         if (serie.interpolation != null) {
+                                //             return date + "\n" +
+                                //                 i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n" +
+                                //                 i18n.LAPIGRASTERSERIES_TXT_FILTRATED + Ext.util.Format.number(serie.interpolation, numberFormat);
+                                //         } else if (serie.original != null) {
+                                //             return date + "\n" +
+                                //                 i18n.LAPIGRASTERSERIES_TXT_TREND + trendValue + "\n" +
+                                //                 i18n.LAPIGRASTERSERIES_TXT_ORIGINAL + Ext.util.Format.number(serie.original, numberFormat);
+                                //         }
+                                //     },
+                                //     chartStyle: {
+                                //         animationEnabled: true,
+                                //         xAxis: {
+                                //             color: 0xaaaaaa,
+                                //             labelSpacing: 5,
+                                //             labelDistance: 5,
+                                //             majorTicks: { color: 0xaaaaaa, length: 10 },
+                                //             minorTicks: { color: 0xdddddd, length: 5 },
+                                //             majorGridLines: { size: 1, color: 0xaaaaaa },
+                                //             minorGridLines: { size: 0.5, color: 0xdddddd }
+                                //         },
+                                //         yAxis: {
+                                //             color: 0xaaaaaa,
+                                //             labelDistance: 6,
+                                //             majorTicks: { color: 0xaaaaaa, length: 10 },
+                                //             minorTicks: { color: 0xdddddd, length: 5 },
+                                //             majorGridLines: { size: 1, color: 0xaaaaaa },
+                                //             minorGridLines: { size: 0.5, color: 0xdddddd }
+                                //         }
+                                //     },
+                                //     series: [{
+                                //         type: 'line',
+                                //         yField: 'original',
+                                //         displayField: 'original',
+                                //         style: {
+                                //             color: 0xfc4239,
+                                //             size: 4,
+                                //             lineSize: 2
+                                //         }
+                                //     }, {
+                                //         type: 'line',
+                                //         yField: 'interpolation',
+                                //         displayField: 'interpolation',
+                                //         style: {
+                                //             color: 0x5057a6,
+                                //             size: 4,
+                                //             lineSize: 2
+                                //         }
+                                //     }, {
+                                //         type: 'line',
+                                //         yField: 'trend',
+                                //         displayField: 'trend',
+                                //         style: {
+                                //             color: 0x00cc00,
+                                //             size: 0,
+                                //             lineSize: 2
+                                //         }
+                                //     }],
+                                //     listeners: {
+                                //         "initialize": function() {
+                                //             repopulateChart();
+                                //         }
+                                //     }
+                                // }
+                            ]
                         }]
                     }
                 ]
@@ -1502,9 +1554,74 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
         console.log("chartRecords - ", chartRecords)
 
+        var datasetsChart = [];
+        if (instance.arrayIsNull(chartRecords, 'original') == false) {
+            datasetsChart.push({
+                label: i18n.LAPIGRASTERSERIES_TXT_ORIGINAL,
+                fill: false,
+                borderColor: '#b8162c',
+                backgroundColor: '#b8162c',
+                hidden: false,
+                pointRadius: 1,
+                pointHoverRadius: 3,
+                pointStyle: 'rect',
+                data: instance.MyMap(chartRecords, 'original')
+            })
+        }
+
+        if (instance.arrayIsNull(chartRecords, 'interpolation') == false) {
+            datasetsChart.push({
+                label: i18n.LAPIGRASTERSERIES_TXT_FILTRATED,
+                fill: false,
+                borderColor: '#1f9100',
+                backgroundColor: '#1f9100',
+                hidden: false,
+                pointRadius: 1,
+                pointHoverRadius: 3,
+                pointStyle: 'rect',
+                data: instance.MyMap(chartRecords, 'interpolation')
+            })
+        }
+
+        if (instance.arrayIsNull(chartRecords, 'trend') == false) {
+            datasetsChart.push({
+                label: i18n.LAPIGRASTERSERIES_TXT_TREND,
+                fill: false,
+                borderColor: '#0924ed',
+                backgroundColor: '#0924ed',
+                hidden: false,
+                pointRadius: 1,
+                pointHoverRadius: 3,
+                pointStyle: 'rect',
+                data: instance.MyMap(chartRecords, 'trend')
+            })
+        }
+
+        var type;
+        var labelsChart;
+        var optionsChart;
+
+        // if (chartRecords[0].hasOwnProperty('dateStr')) {
+        //     type = "line";
+        //     labelsChart = instance.MyMap(chartRecords, 'dateStr');
+        //     optionsChart = instance.optionsTimeSeries
+        // } else {
+        //     type = "line";
+        //     labelsChart = instance.MyMap(chartRecords, 'date');
+        //     instance.optionsCategoryTimeSeries.scales.xAxes = [{
+        //         id: 'xAxis1',
+        //         type: "category",
+        //         ticks: {}
+        //     }]
+        //     optionsChart = instance.optionsCategoryTimeSeries
+        // }
+
         var dtType = trendData.values[0][0].split('-').length;
         if (dtType > 1) {
 
+            type = "line";
+            labelsChart = instance.MyMapLabelsTrend(chartRecords, 'dateStr');
+            optionsChart = instance.optionsTimeSeries
 
             // chart.setXAxis(new Ext.chart.TimeAxis({
             //     labelRenderer: function(date) {
@@ -1512,13 +1629,25 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             //     }
             // }));
         } else {
-            // chart.setXAxis(new Ext.chart.CategoryAxis({
-            //     labelRenderer: function(time) {
-            //         var year = time / 1000 / 60 / 60 / 24 / 365 + 1970;
-            //         return Math.floor(year);
-            //     }
-            // }));
+
+            type = "line";
+            labelsChart = instance.MyMapLabelsTrend(chartRecords, 'dateStr');
+            instance.optionsCategoryTimeSeries.scales.xAxes = [{
+                id: 'xAxis1',
+                type: "category",
+                ticks: {}
+            }]
+            optionsChart = instance.optionsCategoryTimeSeries
+
         }
+
+        console.log("info charts - labels", labelsChart)
+        console.log("data ", datasetsChart)
+
+        instance.chartJSTrend.updateValues(type, {
+            labels: labelsChart,
+            datasets: datasetsChart
+        }, optionsChart)
     },
 
     initLoadChartDataMask: function() {
