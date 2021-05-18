@@ -201,14 +201,14 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
-				var layersParams = appLayer.params.hasOwnProperty('LAYERS') ? appLayer.params['LAYERS'] : {};
+				var layersParams = appLayer.hasOwnProperty('params') ? appLayer.params['LAYERS'] : '';
 
 				var olLayer = new OpenLayers.Layer.WMS( name, url, 
 					{ 
 						layers: layersParams, 
 						format: 'image/png', 
 						transparent: 'true',
-						msfilter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : ''
+						msfilter: aappLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
 					}, 
 					{ 
 						maxExtent: appLayer.maxExtent, 
@@ -228,7 +228,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					tileSize: new OpenLayers.Size(512,512),
 					format: 'image/png', 
 					transparent: 'true',
-					filter: appLayer.params.hasOwnProperty('MSFILTER') ? appLayer.params['MSFILTER'] : ''
+					filter: appLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
 				}
 
 				olLayers.push(olLayer)
