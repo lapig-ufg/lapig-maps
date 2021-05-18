@@ -34,6 +34,12 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
 
     optionsCategoryTimeSeries: {
         scales: {
+            yAxes: [{
+                ticks: {
+                    autoSkip: true,
+                    stepSize: 0.2
+                }
+            }],
             xAxes: [{
                 id: 'xAxis1',
                 type: "category",
@@ -230,6 +236,7 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
                     max: maximum // maximum value
                 }
             }];
+
 
             instance.chartJSTrend.options.scales.yAxes = [{
                 ticks: {
