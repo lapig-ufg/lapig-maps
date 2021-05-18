@@ -1571,10 +1571,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
         // chart.setSeriesStyles(instance.getChartSeries(trendData.length));
         // chart.store.loadData(chartRecords);
 
-        console.log("trend Data = ", trendData)
-
-        console.log("chartRecords - ", chartRecords)
-
         var datasetsChart = [];
         if (instance.arrayIsNull(chartRecords, 'original') == false) {
             datasetsChart.push({
@@ -1661,9 +1657,6 @@ lapig.tools.RasterSeries = Ext.extend(gxp.plugins.Tool, {
             optionsChart = instance.optionsCategoryTimeSeries
 
         }
-
-        console.log("info charts - labels", labelsChart)
-        console.log("data ", datasetsChart)
 
         instance.chartJSTrend.updateValues(type, {
             labels: labelsChart,
