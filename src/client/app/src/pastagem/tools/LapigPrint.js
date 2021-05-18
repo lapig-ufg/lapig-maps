@@ -198,17 +198,18 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		var olLayers = [bing];
 		instance.layers = [];
 		appMap.layers.forEach(function(appLayer) {
+			if(appLayer instanceof OpenLayers.Layer.WMS) {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
-				var layersParams = appLayer.hasOwnProperty('params') ? appLayer.params['LAYERS'] : '';
+				var layersParams = appLayer.params['LAYERS'];
 
 				var olLayer = new OpenLayers.Layer.WMS( name, url, 
 					{ 
 						layers: layersParams, 
 						format: 'image/png', 
 						transparent: 'true',
-						msfilter: appLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
+						msfilter: appLayer.params.MSFILTER
 					}, 
 					{ 
 						maxExtent: appLayer.maxExtent, 
@@ -228,11 +229,12 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					tileSize: new OpenLayers.Size(512,512),
 					format: 'image/png', 
 					transparent: 'true',
-					filter: appLayer.hasOwnProperty('params') ? appLayer.params['MSFILTER'] : ''
+					filter: appLayer.params.MSFILTER
 				}
 
 				olLayers.push(olLayer)
 				instance.layers.push(printToolLayer)
+			}
 		});
 
 		return olLayers;
