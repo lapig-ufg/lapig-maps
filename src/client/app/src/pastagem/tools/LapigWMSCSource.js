@@ -48,6 +48,7 @@ gxp.plugins.LapigWMSCSource = Ext.extend(gxp.plugins.WMSCSource, {
         if (original) {
 
             var layer = original.getLayer().clone();
+            console.log('layer from LapigWMS: ', layer)
 
             /**
              * TODO: The WMSCapabilitiesReader should allow for creation
