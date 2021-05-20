@@ -455,7 +455,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
               infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
               actionTarget: {target: "map.tbar"},
-              layerParams: ['MSFILTER']
+              layerParams: ['MSFILTER', 'LAYERS']
             },
             { 
               actionTarget: { target: "map.tbar" },
