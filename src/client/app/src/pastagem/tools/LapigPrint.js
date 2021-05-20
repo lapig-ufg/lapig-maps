@@ -197,6 +197,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 		var olLayers = [bing];
 		instance.layers = [];
+		console.log('appMap:', appMap)
 		appMap.layers.forEach(function(appLayer) {
 			if(appLayer instanceof OpenLayers.Layer.WMS) {
 				var url = appLayer.url;
