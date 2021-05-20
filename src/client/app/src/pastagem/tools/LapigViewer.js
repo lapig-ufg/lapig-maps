@@ -565,6 +565,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
 
     addLayers: function() {
         var mapConfig = this.initialConfig.map;
+        console.log(mapConfig.layers)
         if(mapConfig && mapConfig.layers) {
             var conf, source, record, baseRecords = [], overlayRecords = [];
             for (var i=0; i<mapConfig.layers.length; ++i) {
