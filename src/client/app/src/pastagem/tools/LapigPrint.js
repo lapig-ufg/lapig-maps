@@ -261,9 +261,10 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			width: 700,
 			height: 500,
 			region: "center",
-			controls:[],
 			layers: instance.getLayersFromAppMap()
 		});
+
+		console.log("internalMap", instance.internalMap)
 
 		var nav = new Ext.Panel({
 			title: i18n.LAPIGPRINT_TTLAREA_MNPMAP,
