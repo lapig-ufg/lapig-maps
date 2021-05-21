@@ -218,8 +218,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 					}, 
 					{ 
 						maxExtent: appLayer.maxExtent,
-						// projection: new OpenLayers.Projection('EPSG:900913'),
-						projection: new OpenLayers.Projection('EPSG:4674'),
+						projection: new OpenLayers.Projection('EPSG:900913'),
 						visibility: appLayer.visibility, 
 						tileSize: new OpenLayers.Size(512,512)
 					}
@@ -253,7 +252,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		instance.internalMap = new GeoExt.MapPanel({
 			title: i18n.LAPIGPRINT_TTLAREA_MAPS,
 			map: {
-				projection: "EPSG:4674"
+				projection: "EPSG:900913"
 			},
 			center: [appMap.center.lon, appMap.center.lat],
 			zoom: appMap.zoom,
