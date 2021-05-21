@@ -122,6 +122,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			var layer = instance.layers[i];
 			
 			if(layer.enable) {
+				console.log("Layer on Legend: ", layer)
 				var imgLeg = "/ows?EXCEPTIONS=application/vnd.ogc.se_xml&TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER="+layer.id+"&format=image/png&SCALE=34942571.6116478"
 				var htmlLeg = '<img src=' + imgLeg + '" style="max-width: 180px;"/>';
 
@@ -216,8 +217,9 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 						msfilter: appLayer.params.MSFILTER
 					}, 
 					{ 
-						maxExtent: appLayer.maxExtent, 
-						projection: new OpenLayers.Projection('EPSG:900913'), 
+						maxExtent: appLayer.maxExtent,
+						// projection: new OpenLayers.Projection('EPSG:900913'),
+						projection: new OpenLayers.Projection('EPSG:4674'),
 						visibility: appLayer.visibility, 
 						tileSize: new OpenLayers.Size(512,512)
 					}
