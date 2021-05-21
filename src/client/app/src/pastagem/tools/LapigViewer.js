@@ -438,11 +438,11 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                 text: "-"
               }
             },
-            {
-              ptype: "gxp_lapigprint",
-              actionTarget: {target: "map.tbar"},
-              tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
-            },
+            // {
+            //   ptype: "gxp_lapigprint",
+            //   actionTarget: {target: "map.tbar"},
+            //   tooltip: i18n.LAPIGVIEWER_PRINT_TLTP
+            // },
             {
               ptype: "gxp_lapigcoordinates",
               tooltip: i18n.LAPIGVIEWER_COORDINATES_TLTP,
