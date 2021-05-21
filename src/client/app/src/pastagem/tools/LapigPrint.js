@@ -251,7 +251,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		instance.internalMap = new GeoExt.MapPanel({
 			title: i18n.LAPIGPRINT_TTLAREA_MAPS,
 			map: {
-				projection: "EPSG:900913"
+				projection: "EPSG:4674"
 			},
 			center: [appMap.center.lon, appMap.center.lat],
 			zoom: appMap.zoom,
@@ -259,6 +259,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			width: 700,
 			height: 500,
 			region: "center",
+			controls:[],
 			layers: instance.getLayersFromAppMap()
 		});
 
