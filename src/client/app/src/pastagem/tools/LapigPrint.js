@@ -199,7 +199,7 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		instance.layers = [];
 		console.log('appMap:', appMap)
 		appMap.layers.forEach(function(appLayer) {
-			if(appLayer instanceof OpenLayers.Layer.WMS) {
+			if(appLayer instanceof OpenLayers.Layer.XYZ) {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
