@@ -206,8 +206,8 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
-				var layersParams = appLayer.params['LAYERS'];
-				// var layersParams = appLayer.url[0].split('layers=').pop().split('&mode')[0];
+				// var layersParams = appLayer.params['LAYERS'];
+				var layersParams = appLayer.url[0].split('layers=').pop().split('&mode')[0];
 
 				var olLayer = new OpenLayers.Layer.WMS( name, url, 
 					{ 
