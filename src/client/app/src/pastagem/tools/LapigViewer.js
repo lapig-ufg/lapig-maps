@@ -571,9 +571,13 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             for (var i=0; i<mapConfig.layers.length; ++i) {
                 conf = mapConfig.layers[i];
                 source = this.layerSources[conf.source];
+                console.log('conf', conf)
+                console.log('source', source)
+
                 // source may not have loaded properly (failure handled elsewhere)
                 if (source) {
                     record = source.createLayerRecord(conf);
+                    console.log('conf', record)
                     if (record) {
                         if (record.get("group") === "background") {
                             baseRecords.push(record);
@@ -620,6 +624,8 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
                 markerRec.forEach(function(layer) {
                     orderRec.push(layer);
                 })
+
+                console.log('wmsRec', wmsRec)
 
                 panel.layers.add(orderRec);
             }
