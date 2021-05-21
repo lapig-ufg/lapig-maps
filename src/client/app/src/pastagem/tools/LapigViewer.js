@@ -530,7 +530,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             center: [center.lon,center.lat],
             zoom: zoomLevel,
             layers: layers,
-            controls:[],
             items: [
               {
                 xtype: "gx_zoomslider",
