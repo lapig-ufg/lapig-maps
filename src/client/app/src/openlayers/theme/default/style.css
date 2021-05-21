@@ -194,11 +194,11 @@ div.olControlSaveFeaturesItemInactive {
 }
 
 .olControlPanPanel div {
-    background-image: url(img/pan-panel.png);
-    height: 18px;
-    width: 18px;
-    cursor: pointer;
-    position: absolute;
+    /*background-image: url(img/pan-panel.png);*/
+    /*height: 18px;*/
+    /*width: 18px;*/
+    /*cursor: pointer;*/
+    /*position: absolute;*/
 }
 
 .olControlPanPanel .olControlPanNorthItemInactive {
