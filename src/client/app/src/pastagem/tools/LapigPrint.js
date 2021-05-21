@@ -198,12 +198,15 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 		var olLayers = [bing];
 		instance.layers = [];
 		console.log('appMap:', appMap)
-		appMap.layers.forEach(function(appLayer) {
-			if(appLayer instanceof OpenLayers.Layer.XYZ) {
+		appMap.layers.forEach(function(appLayer, index) {
+			// if(appLayer instanceof OpenLayers.Layer.WMS) {
+			//ignore first layers, because is basemaps.
+			if(index > 2) {
 				var url = appLayer.url;
 				var name = appLayer.name;
 				var visibility = appLayer.visibility;
-				var layersParams = appLayer.params['LAYERS'];
+				// var layersParams = appLayer.params['LAYERS'];
+				var layersParams = appLayer.url[0].split('layers=').pop().split('&mode')[0];
 
 				var olLayer = new OpenLayers.Layer.WMS( name, url, 
 					{ 
