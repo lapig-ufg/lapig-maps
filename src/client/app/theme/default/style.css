@@ -193,13 +193,13 @@ div.olControlSaveFeaturesItemInactive {
     left: 5px;
 }
 
-/*.olControlPanPanel div {*/
-/*    background-image: url(img/pan-panel.png);*/
-/*    height: 18px;*/
-/*    width: 18px;*/
-/*    cursor: pointer;*/
-/*    position: absolute;*/
-/*}*/
+.olControlPanPanel div {
+    /*background-image: url(img/pan-panel.png);*/
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+    position: absolute;
+}
 
 .olControlPanPanel .olControlPanNorthItemInactive {
     top: 0;
@@ -228,13 +228,13 @@ div.olControlSaveFeaturesItemInactive {
     left: 14px;
 }
 
-/*.olControlZoomPanel div {*/
-/*    background-image: url(img/zoom-panel.png);*/
-/*    position: absolute;*/
-/*    height: 18px;*/
-/*    width: 18px;*/
-/*    cursor: pointer;*/
-/*}*/
+.olControlZoomPanel div {
+    /*background-image: url(img/zoom-panel.png);*/
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+}
 
 .olControlZoomPanel .olControlZoomInItemInactive {
     top: 0;
