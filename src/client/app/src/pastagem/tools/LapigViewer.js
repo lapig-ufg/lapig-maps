@@ -455,7 +455,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
               popupTitle: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_POPUPTTL, 
               infoActionTip: i18n.LAPIGVIEWER_WMSGETFEATUREINFO_INFOACTTIP,
               actionTarget: {target: "map.tbar"},
-              layerParams: ['MSFILTER', 'LAYERS']
+              layerParams: ['MSFILTER']
             },
             { 
               actionTarget: { target: "map.tbar" },
@@ -530,6 +530,7 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             center: [center.lon,center.lat],
             zoom: zoomLevel,
             layers: layers,
+            controls:[],
             items: [
               {
                 xtype: "gx_zoomslider",
