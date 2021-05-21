@@ -590,7 +590,6 @@ gxp.LapigViewer = Ext.extend(gxp.Viewer, {
             
             var records = baseRecords.concat(overlayRecords);
 
-            console.log('records', conf)
             if (records.length) {
                 var baseRec = [];
                 var markerRec = [];

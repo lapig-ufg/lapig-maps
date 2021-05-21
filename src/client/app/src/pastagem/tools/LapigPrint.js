@@ -122,7 +122,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			var layer = instance.layers[i];
 			
 			if(layer.enable) {
-				console.log("Layer on Legend: ", layer)
 				var imgLeg = "/ows?EXCEPTIONS=application/vnd.ogc.se_xml&TRANSPARENT=TRUE&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER="+layer.id+"&format=image/png&SCALE=34942571.6116478"
 				var htmlLeg = '<img src=' + imgLeg + '" style="max-width: 180px;"/>';
 
@@ -198,7 +197,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 
 		var olLayers = [bing];
 		instance.layers = [];
-		console.log('appMap:', appMap)
 		appMap.layers.forEach(function(appLayer, index) {
 			// if(appLayer instanceof OpenLayers.Layer.WMS) {
 			//ignore first layers, because is basemaps.
@@ -262,8 +260,6 @@ gxp.plugins.LapigPrint = Ext.extend(gxp.plugins.Tool, {
 			region: "center",
 			layers: instance.getLayersFromAppMap()
 		});
-
-		console.log("internalMap", instance.internalMap)
 
 		var nav = new Ext.Panel({
 			title: i18n.LAPIGPRINT_TTLAREA_MNPMAP,

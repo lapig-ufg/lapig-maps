@@ -88,12 +88,10 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
         lapigAnalytics.clickTool('Download Layer','request-download',layerName);
 
         if(params.length > 0) {
-            console.log(vendorParams)
             for (key in vendorParams) {
                 params.push(key + '=' + vendorParams[key]);
             }
 
-            console.log(params);
             var iframe = Ext.DomHelper.append(Ext.getBody(),{
                     tag : 'iframe'
                     ,src: '/ows?' + params.join('&')

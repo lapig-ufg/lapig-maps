@@ -78,7 +78,6 @@ gxp.plugins.LapigLogin = Ext.extend(gxp.plugins.Tool, {
         url: '/user/info',
         method: 'GET',
         success: function (response){
-            console.log(response)
           if(response.responseText == ''){
             isAnyoneHome = false;
             instance.adjustLoginButtons('');
