@@ -61,7 +61,6 @@ module.exports = function(app) {
 		var params = "TS " + id +" "+ mode +" '"+ geoJsonGeometry + "'";
 		var cmd = pythonEnv + ";python " +"'"+ config.pathTimeSeries +"'"+" " + params;
 
-		console.log(cmd)
 
 		ChildProcess.exec(cmd, { maxBuffer: 1024 * 5000 }, function (error, stdout, stderr) {
 				
@@ -198,7 +197,9 @@ module.exports = function(app) {
 							iconCls:'task'
 						}
 
-						childrens.push(children);
+						if(layer.source == 'lapig'){
+							childrens.push(children);
+						}
 					}
 
 					subjectObj['children'] = childrens;
