@@ -32,7 +32,14 @@ class EarthEngine(Datasource):
 		
 		privateKeyFilepath = os.path.join(datasourceParams['run_path'],datasourceParams['private_key'])
 		# self.credentials = ee.ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
-		self.credentials = ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+# 		self.credentials = ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
+
+		EE_PRIVATE_KEY_FILE = '/APP/lapig-maps/src/server/integration/py/time-series/gee-keys/key85.json'
+        data = json.load(open(EE_PRIVATE_KEY_FILE))
+        EE_ACCOUNT = data['client_email']
+
+        EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
+        ee.Initialize(EE_CREDENTIALS)
 
 		self.cache = Cache()
 
@@ -361,11 +368,12 @@ class EarthEngine(Datasource):
 		q.put(eeResult)
 
 	def lookup(self, geoJsonGeometry, mode=None):
-
+        self.cache.enable = '0';
 		cacheStr = ",ts-"+self.layer_id + geoJsonGeometry;
 		cacheKey = sha1(cacheStr.encode()).hexdigest();
 
 		pixelsStruct = None;
+        cacheResult = None;
 
 		if(self.cache.enable == '1'):
 			cacheResult = self.cache.get(cacheKey)
