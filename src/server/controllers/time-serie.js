@@ -205,7 +205,9 @@ module.exports = function(app) {
 
 					subjectObj['children'] = childrens;
 
-					result.push(subjectObj);
+					if(subjectObj.text != 'Temperatura ' || subjectObj.text != 'Temperature '){
+						result.push(subjectObj);
+					}
 					next();
 				});
 
