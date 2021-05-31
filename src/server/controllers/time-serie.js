@@ -169,8 +169,7 @@ module.exports = function(app) {
 		timeSeriesCollection.distinct('subject', { 'project': { $in: projects } }, function(err,subjects) {
 
 			var result = [];
-			//Remove subject Temperature
-			subjects.splice(1, 1);
+
 			var interate = function(subject, next){
 				var subjectObj = {
 							text:subject,
@@ -205,7 +204,7 @@ module.exports = function(app) {
 
 					subjectObj['children'] = childrens;
 
-					if(subjectObj.text != 'Temperatura ' || subjectObj.text != 'Temperature '){
+					if(subjectObj.text != 'Temperatura '){
 						result.push(subjectObj);
 					}
 					next();
