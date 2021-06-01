@@ -1,3 +1,4 @@
+import json
 import ee
 import os
 import utils
@@ -35,13 +36,13 @@ class EarthEngine(Datasource):
 # 		self.credentials = ServiceAccountCredentials(datasourceParams['account'], privateKeyFilepath);
 
 		EE_PRIVATE_KEY_FILE = '/APP/lapig-maps/src/server/integration/py/time-series/gee-keys/key85.json'
-        data = json.load(open(EE_PRIVATE_KEY_FILE))
-        EE_ACCOUNT = data['client_email']
+        	data = json.load(open(EE_PRIVATE_KEY_FILE))
+        	EE_ACCOUNT = data['client_email']
 
-        EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
-        ee.Initialize(EE_CREDENTIALS)
+        	EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
+        	ee.Initialize(EE_CREDENTIALS)
 
-	self.cache = Cache()
+		self.cache = Cache()
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]
