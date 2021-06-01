@@ -41,7 +41,7 @@ class EarthEngine(Datasource):
         EE_CREDENTIALS = ee.ServiceAccountCredentials(EE_ACCOUNT, EE_PRIVATE_KEY_FILE)
         ee.Initialize(EE_CREDENTIALS)
 
-		self.cache = Cache()
+	self.cache = Cache()
 
 	def landsatDate(self, imgId):
 		year = imgId[9:13]
