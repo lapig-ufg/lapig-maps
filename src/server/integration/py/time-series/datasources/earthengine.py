@@ -368,12 +368,12 @@ class EarthEngine(Datasource):
 		q.put(eeResult)
 
 	def lookup(self, geoJsonGeometry, mode=None):
-        self.cache.enable = '0';
+        	self.cache.enable = '0';
 		cacheStr = ",ts-"+self.layer_id + geoJsonGeometry;
 		cacheKey = sha1(cacheStr.encode()).hexdigest();
 
 		pixelsStruct = None;
-        cacheResult = None;
+        	cacheResult = None;
 
 		if(self.cache.enable == '1'):
 			cacheResult = self.cache.get(cacheKey)
