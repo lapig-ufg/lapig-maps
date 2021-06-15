@@ -1,7 +1,7 @@
 var sqlite3 = require('spatialite').verbose(),
 		async = require('async'),
 		csvWriter = require('csv-write-stream'),
-		iconv = require('iconv-lite');
+		iconv = require('iconv');
 
 module.exports = function(app) {
 
