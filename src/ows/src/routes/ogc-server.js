@@ -24,7 +24,7 @@ module.exports = function (app) {
 		}
 	}
 
-	app.get('/ows', filterUrl, ogcServer.ows);
+	app.get('/ows', ogcServer.ows);
 	app.get('/sld/:filename', ogcServer.sld);
 
 	app.get('/', function(req, res) { res.end(); });
