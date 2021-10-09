@@ -94,7 +94,7 @@ gxp.plugins.LapigDownload = Ext.extend(gxp.plugins.Tool, {
 
             var iframe = Ext.DomHelper.append(Ext.getBody(),{
                     tag : 'iframe'
-                    ,src: '/ows?' + params.join('&')
+                    ,src: 'https://ows.lapig.iesa.ufg.br/ows?' + params.join('&')
                     ,cls: 'x-hidden'
             });
             
