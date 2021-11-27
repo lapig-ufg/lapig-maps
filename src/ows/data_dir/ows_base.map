@@ -38,6 +38,14 @@ MAP
     FORMATOPTION "GAMMA=0.75"
   END
 
+   OUTPUTFORMAT
+    NAME "application/json"
+    DRIVER "OGR/GEOJSON"
+    MIMETYPE "application/json"
+    FORMATOPTION "FORM=SIMPLE"
+    FORMATOPTION "STORAGE=memory"
+  END
+
   OUTPUTFORMAT
     NAME GEOTIFF_F32
     DRIVER "GDAL/GTiff"
@@ -108,8 +116,8 @@ MAP
       "ows_title"	"{ows_title}"
       "wms_getfeatureinfo_formatlist"	"{wms_getfeatureinfo_formatlist}"
       "wms_bbox_extended"	"{wms_bbox_extended}"
-      "ows_featureid" "FID"
-      "wfs_getfeature_formatlist" "CSV,GML,SHAPE-ZIP"
+      "ows_featureid" "GID"
+      "wfs_getfeature_formatlist" "CSV,GML,SHAPE-ZIP,application/json"
       "ows_encoding" "UTF-8"
       "ows_sld_enabled" "TRUE"
       "wcs_srs" "{ows_srs}"
