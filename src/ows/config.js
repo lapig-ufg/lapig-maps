@@ -31,8 +31,8 @@ module.exports = function (app) {
 		, 'ows_title': 'LAPIG-OWS'
 
 
-		, 'wms_getmap_formatlist': 'image/png,application/json'
-		, 'wfs_getfeature_formatlist': 'CSV,GML,SHAPE-ZIP,application/json,GEOPACKAGE'
+		, 'wms_getmap_formatlist': 'image/png,application/json,pdf'
+		, 'wfs_getfeature_formatlist': 'CSV,GML,SHAPE-ZIP,application/json,GEOPACKAGE,geojson,SQLITE-ZIP'
 		, 'wms_getfeatureinfo_formatlist': 'gml'
 		, 'wms_bbox_extended': 'TRUE'
 		, 'wms_encoding': 'UTF-8'

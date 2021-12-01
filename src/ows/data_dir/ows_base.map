@@ -73,7 +73,7 @@ MAP
   OUTPUTFORMAT
     NAME "SHAPE-ZIP"
     DRIVER "OGR/ESRI Shapefile"
-    FORMATOPTION "STORAGE=filesystem"
+    FORMATOPTION "STORAGE=memory"
     FORMATOPTION "FORM=zip"
     FORMATOPTION "FILENAME=basename.ext.zip"
   END
@@ -82,11 +82,11 @@ MAP
     NAME "GEOPACKAGE"
     DRIVER "OGR/GPKG"
     MIMETYPE "application/geopackage+sqlite3"
-    FORMATOPTION "STORAGE=filesystem"
-    #FORMATOPTION "FORM=simple" # Need this or will get zip
-    #FORMATOPTION "FILENAME=result.gpkg"
-    FORMATOPTION "FORM=zip"
-    FORMATOPTION "FILENAME=basename.ext.zip"
+    FORMATOPTION "STORAGE=memory"
+    FORMATOPTION "FORM=simple" # Need this or will get zip
+    FORMATOPTION "FILENAME=result.gpkg"
+    #FORMATOPTION "FORM=zip"
+    #FORMATOPTION "FILENAME=basename.ext.zip"
   END
   
   OUTPUTFORMAT
@@ -103,6 +103,24 @@ MAP
     MIMETYPE "image/tiff"
     IMAGEMODE RGB
     EXTENSION "tif"
+  END
+
+  OUTPUTFORMAT
+    NAME "geojson"
+    DRIVER "OGR/GEOJSON"
+    MIMETYPE "application/json; subtype=geojson"
+    FORMATOPTION "STORAGE=stream"
+    FORMATOPTION "FORM=SIMPLE"
+  END
+
+  OUTPUTFORMAT
+    NAME           "SQLITE-ZIP"
+    DRIVER         "OGR/SQLITE"
+    MIMETYPE       "application/zip"
+    FORMATOPTION   "DSCO:SPATIALITE=YES"
+    FORMATOPTION   "STORAGE=memory"
+    FORMATOPTION   "FORM=zip"
+    FORMATOPTION   "FILENAME=result.db.zip"
   END
 
   OUTPUTFORMAT
