@@ -77,6 +77,17 @@ MAP
     FORMATOPTION "FORM=zip"
     FORMATOPTION "FILENAME=basename.ext.zip"
   END
+
+  OUTPUTFORMAT
+    NAME "GEOPACKAGE"
+    DRIVER "OGR/GPKG"
+    MIMETYPE "application/geopackage+sqlite3"
+    FORMATOPTION "STORAGE=filesystem"
+    #FORMATOPTION "FORM=simple" # Need this or will get zip
+    #FORMATOPTION "FILENAME=result.gpkg"
+    FORMATOPTION "FORM=zip"
+    FORMATOPTION "FILENAME=basename.ext.zip"
+  END
   
   OUTPUTFORMAT
     NAME "TIFF-ZIP"
@@ -104,6 +115,16 @@ MAP
     FORMATOPTION "DUPLICATES=false"
   END
 
+  OUTPUTFORMAT
+    NAME "CSV"
+    DRIVER "OGR/CSV"
+    MIMETYPE "text/csv"
+    FORMATOPTION "LCO:GEOMETRY=AS_WKT"
+    FORMATOPTION "STORAGE=memory"
+    FORMATOPTION "FORM=simple"
+    FORMATOPTION "FILENAME=result.csv"
+  END
+
   WEB
     FOOTER ""
     HEADER ""
@@ -117,12 +138,12 @@ MAP
       "wms_getfeatureinfo_formatlist"	"{wms_getfeatureinfo_formatlist}"
       "wms_bbox_extended"	"{wms_bbox_extended}"
       "ows_featureid" "GID"
-      "wfs_getfeature_formatlist" "CSV,GML,SHAPE-ZIP,application/json"
+      "wfs_getfeature_formatlist" "{wfs_getfeature_formatlist}"
       "ows_encoding" "UTF-8"
       "ows_sld_enabled" "TRUE"
       "wcs_srs" "{ows_srs}"
       "wcs_enable_request" "*"
-      "wms_getmap_formatlist" "image/png,application/json"
+      "wms_getmap_formatlist" {wms_getmap_formatlist}
     END
   END
 

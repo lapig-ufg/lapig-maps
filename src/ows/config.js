@@ -30,6 +30,9 @@ module.exports = function (app) {
 		, 'ows_srs': 'EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857 EPSG:4674 EPSG:900913'
 		, 'ows_title': 'LAPIG-OWS'
 
+
+		, 'wms_getmap_formatlist': 'image/png,application/json'
+		, 'wfs_getfeature_formatlist': 'CSV,GML,SHAPE-ZIP,application/json,GEOPACKAGE'
 		, 'wms_getfeatureinfo_formatlist': 'gml'
 		, 'wms_bbox_extended': 'TRUE'
 		, 'wms_encoding': 'UTF-8'
@@ -37,7 +40,6 @@ module.exports = function (app) {
 		, 'pattern_mapfile': '*.map'
 		, 'read_mapfile_with_sld': appRoot + '/src/integration/py/read_mapfile_with_sld.py'
 		, 'path_enhance_img': appRoot + '/src/integration/py/enhance_img_clahe.py'
-
 		, 'cacheDir': '/STORAGE/ows-cache/layers'
 		, 'cachePrefix': "pastagem.org"
 		, 'cacheEnable': false
