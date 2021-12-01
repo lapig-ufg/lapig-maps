@@ -20,6 +20,8 @@ Link to access: [https://maps.lapig.iesa.ufg.br/lapig.html](https://maps.lapig.i
 
 -nvm 0.37.0 or higher
 
+- python-mapscript 7.2.2-1 specific
+
 ## Running:
  1. Start MongoDB
  ```
