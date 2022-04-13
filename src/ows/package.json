@@ -7,7 +7,7 @@
     "always": "^2.2.0",
     "app-root-path": "^2.1.0",
     "archiver": "^2.1.1",
-    "async": "^2.6.1",
+    "async": "^3.2.2",
     "compression": "^1.7.3",
     "express": "^4.16.3",
     "express-cluster": "0.0.5",
