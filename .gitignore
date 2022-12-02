@@ -17,3 +17,4 @@ src/ee-tms/lapig-ee-09144f43f3b5.pem
 *.rdb
 src/server/passwords.json
 *.sqlite
+.env
