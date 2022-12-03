@@ -27,7 +27,7 @@ app.middleware.repository.init(function() {
 	app.repository = app.middleware.repository;
 
 	app.use(compression());
-	app.use(express.static(app.config.clientDir));
+	// app.use(express.static(app.config.clientDir));
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
 
